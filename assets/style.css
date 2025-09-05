@@ -558,6 +558,79 @@ body {
 }
 
 /* ========== RESPONSIVE DESIGN ========== */
+
+/* Tablet Portrait específico (768px width) */
+@media (min-width: 768px) and (max-width: 768px) and (orientation: portrait) {
+    .stButton > button {
+        min-height: 44px !important;
+        padding: 0.75rem 1.5rem !important;
+        font-size: 1rem !important;
+        touch-action: manipulation;
+        cursor: pointer;
+    }
+    
+    /* Botones en sidebar también deben ser tocables */
+    .sidebar-content button {
+        min-height: 44px !important;
+        padding: 0.75rem 1rem !important;
+    }
+    
+    /* Elementos de navegación */
+    .stSelectbox > div > div {
+        min-height: 44px !important;
+    }
+    
+    .stTextInput > div > div > input {
+        min-height: 44px !important;
+        padding: 0.75rem !important;
+    }
+}
+
+/* Tablets en general (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .stButton > button {
+        min-height: 44px !important;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        touch-action: manipulation;
+    }
+    
+    .main-header {
+        padding: 1.75rem 1.5rem;
+        margin-bottom: 1.75rem;
+    }
+
+    .metric-card {
+        padding: 1.25rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .chart-container {
+        padding: 1.25rem;
+        margin-bottom: 1.75rem;
+    }
+}
+
+/* Desktop Standard específico (1366x768) */
+@media (min-width: 1366px) and (max-width: 1366px) {
+    .main-header {
+        padding: 2rem 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .main-header h1 {
+        font-size: 2.1rem;
+    }
+    
+    .chart-container {
+        padding: 1.5rem;
+    }
+    
+    .metric-card {
+        padding: 1.25rem;
+    }
+}
+
 @media (max-width: 768px) {
     .main-header {
         padding: 1.5rem 1rem;
@@ -602,9 +675,11 @@ body {
     }
 
     .stButton > button {
-        padding: 0.5rem 1rem;
+        min-height: 44px !important;
+        padding: 0.75rem 1rem;
         font-size: 0.9rem;
         width: 100%;
+        touch-action: manipulation;
     }
 
     .stDataFrame {
@@ -619,6 +694,50 @@ body {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;
+    }
+}
+
+/* Mobile Large específico (414x896) */
+@media (min-width: 414px) and (max-width: 414px) {
+    .stButton > button {
+        min-height: 48px !important;
+        padding: 0.875rem 1.25rem !important;
+        font-size: 1rem !important;
+        width: 100%;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .sidebar-content button {
+        min-height: 48px !important;
+        padding: 0.875rem 1rem !important;
+    }
+}
+
+/* Mobile Small específico (360x640) */
+@media (min-width: 360px) and (max-width: 360px) {
+    .stButton > button {
+        min-height: 48px !important;
+        padding: 0.875rem 1rem !important;
+        font-size: 0.95rem !important;
+        width: 100%;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        border-radius: 8px;
+    }
+    
+    .sidebar-content button {
+        min-height: 48px !important;
+        padding: 0.875rem 0.75rem !important;
+    }
+    
+    .main-header {
+        padding: 1rem 0.75rem;
+    }
+    
+    .metric-card {
+        padding: 0.875rem;
+        margin-bottom: 0.875rem;
     }
 }
 
@@ -669,6 +788,15 @@ body {
 
     .chart-container {
         padding: 0.75rem;
+    }
+
+    .stButton > button {
+        min-height: 48px !important;
+        padding: 0.875rem 1rem !important;
+        font-size: 0.9rem !important;
+        width: 100%;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
     }
 
     .stDataFrame td {

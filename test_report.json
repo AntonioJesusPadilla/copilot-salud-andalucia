@@ -1,0 +1,453 @@
+{
+  "timestamp": "2025-09-05T15:18:57.427396",
+  "total_tests": 54,
+  "passed_tests": 54,
+  "failed_tests": 0,
+  "warnings": 0,
+  "test_details": [
+    {
+      "test_name": "basic_connectivity",
+      "status": "PASS",
+      "message": "Aplicación accesible en 0.02s",
+      "execution_time": 0.02103137969970703,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:07.628014"
+    },
+    {
+      "test_name": "file_structure_app.py",
+      "status": "PASS",
+      "message": "Aplicación principal existe (74626 bytes)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:07.629166"
+    },
+    {
+      "test_name": "file_structure_modules_auth_system.py",
+      "status": "PASS",
+      "message": "Sistema de autenticación existe (32366 bytes)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:07.629611"
+    },
+    {
+      "test_name": "file_structure_modules_ai_processor.py",
+      "status": "PASS",
+      "message": "Procesador IA existe (14462 bytes)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:07.629911"
+    },
+    {
+      "test_name": "file_structure_modules_chart_generator.py",
+      "status": "PASS",
+      "message": "Generador de gráficos existe (20497 bytes)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:07.630272"
+    },
+    {
+      "test_name": "file_structure_modules_interactive_maps.py",
+      "status": "PASS",
+      "message": "Mapas interactivos existe (21171 bytes)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:07.630612"
+    },
+    {
+      "test_name": "file_structure_data_users.json",
+      "status": "PASS",
+      "message": "Base de datos de usuarios existe (1469 bytes)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:07.630988"
+    },
+    {
+      "test_name": "file_structure_assets_style.css",
+      "status": "PASS",
+      "message": "Estilos CSS existe (31193 bytes)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:07.631302"
+    },
+    {
+      "test_name": "file_structure_requirements.txt",
+      "status": "PASS",
+      "message": "Dependencias Python existe (1160 bytes)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:07.631646"
+    },
+    {
+      "test_name": "import_streamlit",
+      "status": "PASS",
+      "message": "Framework principal importado correctamente",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:07.632375"
+    },
+    {
+      "test_name": "import_pandas",
+      "status": "PASS",
+      "message": "Manipulación de datos importado correctamente",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:07.632640"
+    },
+    {
+      "test_name": "import_plotly",
+      "status": "PASS",
+      "message": "Visualizaciones importado correctamente",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:07.632849"
+    },
+    {
+      "test_name": "import_folium",
+      "status": "PASS",
+      "message": "Mapas interactivos importado correctamente",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.204233"
+    },
+    {
+      "test_name": "import_bcrypt",
+      "status": "PASS",
+      "message": "Encriptación importado correctamente",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.207475"
+    },
+    {
+      "test_name": "import_groq",
+      "status": "PASS",
+      "message": "IA (opcional) importado correctamente",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.878572"
+    },
+    {
+      "test_name": "data_hospitales_malaga_2025.csv",
+      "status": "PASS",
+      "message": "Dataset válido: 10 filas, 14 columnas",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.887270"
+    },
+    {
+      "test_name": "data_demografia_malaga_2025.csv",
+      "status": "PASS",
+      "message": "Dataset válido: 20 filas, 9 columnas",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.893919"
+    },
+    {
+      "test_name": "data_servicios_sanitarios_2025.csv",
+      "status": "PASS",
+      "message": "Dataset válido: 9 filas, 20 columnas",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.898324"
+    },
+    {
+      "test_name": "data_accesibilidad_sanitaria_2025.csv",
+      "status": "PASS",
+      "message": "Dataset válido: 15 filas, 8 columnas",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.903089"
+    },
+    {
+      "test_name": "data_indicadores_salud_2025.csv",
+      "status": "PASS",
+      "message": "Dataset válido: 6 filas, 15 columnas",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.907550"
+    },
+    {
+      "test_name": "auth_user_admin",
+      "status": "PASS",
+      "message": "Usuario admin existe en sistema",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.908744"
+    },
+    {
+      "test_name": "auth_user_gestor",
+      "status": "PASS",
+      "message": "Usuario gestor.malaga existe en sistema",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.908984"
+    },
+    {
+      "test_name": "auth_user_analista",
+      "status": "PASS",
+      "message": "Usuario analista.datos existe en sistema",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.909186"
+    },
+    {
+      "test_name": "auth_user_invitado",
+      "status": "PASS",
+      "message": "Usuario demo existe en sistema",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.909392"
+    },
+    {
+      "test_name": "env_GROQ_API_KEY",
+      "status": "PASS",
+      "message": "Clave API para Chat IA configurada",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.910658"
+    },
+    {
+      "test_name": "env_JWT_SECRET",
+      "status": "PASS",
+      "message": "Clave secreta para JWT configurada",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.910915"
+    },
+    {
+      "test_name": "responsive_desktop_hd_layout_adaptation",
+      "status": "PASS",
+      "message": "Layout se adapta correctamente en desktop_hd (1920x1080)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.911553"
+    },
+    {
+      "test_name": "responsive_desktop_hd_text_readability",
+      "status": "PASS",
+      "message": "Texto legible sin zoom en desktop_hd (1920x1080)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.911596"
+    },
+    {
+      "test_name": "responsive_desktop_hd_button_size",
+      "status": "PASS",
+      "message": "Botones suficientemente grandes en desktop_hd (1920x1080)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.911679"
+    },
+    {
+      "test_name": "responsive_desktop_hd_navigation_usable",
+      "status": "PASS",
+      "message": "Navegación usable en desktop_hd (1920x1080)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.911723"
+    },
+    {
+      "test_name": "responsive_desktop_standard_layout_adaptation",
+      "status": "PASS",
+      "message": "Layout se adapta correctamente en desktop_standard (1366x768)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.911948"
+    },
+    {
+      "test_name": "responsive_desktop_standard_text_readability",
+      "status": "PASS",
+      "message": "Texto legible sin zoom en desktop_standard (1366x768)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.912004"
+    },
+    {
+      "test_name": "responsive_desktop_standard_button_size",
+      "status": "PASS",
+      "message": "Botones suficientemente grandes en desktop_standard (1366x768)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.912037"
+    },
+    {
+      "test_name": "responsive_desktop_standard_navigation_usable",
+      "status": "PASS",
+      "message": "Navegación usable en desktop_standard (1366x768)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.912068"
+    },
+    {
+      "test_name": "responsive_tablet_landscape_layout_adaptation",
+      "status": "PASS",
+      "message": "Layout se adapta correctamente en tablet_landscape (1024x768)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.912307"
+    },
+    {
+      "test_name": "responsive_tablet_landscape_text_readability",
+      "status": "PASS",
+      "message": "Texto legible sin zoom en tablet_landscape (1024x768)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.912354"
+    },
+    {
+      "test_name": "responsive_tablet_landscape_button_size",
+      "status": "PASS",
+      "message": "Botones suficientemente grandes en tablet_landscape (1024x768)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.912393"
+    },
+    {
+      "test_name": "responsive_tablet_landscape_navigation_usable",
+      "status": "PASS",
+      "message": "Navegación usable en tablet_landscape (1024x768)",
+      "execution_time": 0,
+      "device": "desktop",
+      "timestamp": "2025-09-05T15:19:08.912429"
+    },
+    {
+      "test_name": "responsive_tablet_portrait_layout_adaptation",
+      "status": "PASS",
+      "message": "Layout se adapta correctamente en tablet_portrait (768x1024)",
+      "execution_time": 0,
+      "device": "tablet",
+      "timestamp": "2025-09-05T15:19:08.912649"
+    },
+    {
+      "test_name": "responsive_tablet_portrait_text_readability",
+      "status": "PASS",
+      "message": "Texto legible sin zoom en tablet_portrait (768x1024)",
+      "execution_time": 0,
+      "device": "tablet",
+      "timestamp": "2025-09-05T15:19:08.912693"
+    },
+    {
+      "test_name": "responsive_tablet_portrait_button_size",
+      "status": "PASS",
+      "message": "Botones suficientemente grandes en tablet_portrait (768x1024)",
+      "execution_time": 0,
+      "device": "tablet",
+      "timestamp": "2025-09-05T15:19:08.912727"
+    },
+    {
+      "test_name": "responsive_tablet_portrait_navigation_usable",
+      "status": "PASS",
+      "message": "Navegación usable en tablet_portrait (768x1024)",
+      "execution_time": 0,
+      "device": "tablet",
+      "timestamp": "2025-09-05T15:19:08.912761"
+    },
+    {
+      "test_name": "responsive_mobile_large_layout_adaptation",
+      "status": "PASS",
+      "message": "Layout se adapta correctamente en mobile_large (414x896)",
+      "execution_time": 0,
+      "device": "mobile",
+      "timestamp": "2025-09-05T15:19:08.913017"
+    },
+    {
+      "test_name": "responsive_mobile_large_text_readability",
+      "status": "PASS",
+      "message": "Texto legible sin zoom en mobile_large (414x896)",
+      "execution_time": 0,
+      "device": "mobile",
+      "timestamp": "2025-09-05T15:19:08.913059"
+    },
+    {
+      "test_name": "responsive_mobile_large_button_size",
+      "status": "PASS",
+      "message": "Botones suficientemente grandes en mobile_large (414x896)",
+      "execution_time": 0,
+      "device": "mobile",
+      "timestamp": "2025-09-05T15:19:08.913091"
+    },
+    {
+      "test_name": "responsive_mobile_large_navigation_usable",
+      "status": "PASS",
+      "message": "Navegación usable en mobile_large (414x896)",
+      "execution_time": 0,
+      "device": "mobile",
+      "timestamp": "2025-09-05T15:19:08.913134"
+    },
+    {
+      "test_name": "responsive_mobile_standard_layout_adaptation",
+      "status": "PASS",
+      "message": "Layout se adapta correctamente en mobile_standard (375x667)",
+      "execution_time": 0,
+      "device": "mobile",
+      "timestamp": "2025-09-05T15:19:08.913364"
+    },
+    {
+      "test_name": "responsive_mobile_standard_text_readability",
+      "status": "PASS",
+      "message": "Texto legible sin zoom en mobile_standard (375x667)",
+      "execution_time": 0,
+      "device": "mobile",
+      "timestamp": "2025-09-05T15:19:08.913397"
+    },
+    {
+      "test_name": "responsive_mobile_standard_button_size",
+      "status": "PASS",
+      "message": "Botones suficientemente grandes en mobile_standard (375x667)",
+      "execution_time": 0,
+      "device": "mobile",
+      "timestamp": "2025-09-05T15:19:08.913421"
+    },
+    {
+      "test_name": "responsive_mobile_standard_navigation_usable",
+      "status": "PASS",
+      "message": "Navegación usable en mobile_standard (375x667)",
+      "execution_time": 0,
+      "device": "mobile",
+      "timestamp": "2025-09-05T15:19:08.913445"
+    },
+    {
+      "test_name": "responsive_mobile_small_layout_adaptation",
+      "status": "PASS",
+      "message": "Layout se adapta correctamente en mobile_small (360x640)",
+      "execution_time": 0,
+      "device": "mobile",
+      "timestamp": "2025-09-05T15:19:08.913765"
+    },
+    {
+      "test_name": "responsive_mobile_small_text_readability",
+      "status": "PASS",
+      "message": "Texto legible sin zoom en mobile_small (360x640)",
+      "execution_time": 0,
+      "device": "mobile",
+      "timestamp": "2025-09-05T15:19:08.913797"
+    },
+    {
+      "test_name": "responsive_mobile_small_button_size",
+      "status": "PASS",
+      "message": "Botones suficientemente grandes en mobile_small (360x640)",
+      "execution_time": 0,
+      "device": "mobile",
+      "timestamp": "2025-09-05T15:19:08.913820"
+    },
+    {
+      "test_name": "responsive_mobile_small_navigation_usable",
+      "status": "PASS",
+      "message": "Navegación usable en mobile_small (360x640)",
+      "execution_time": 0,
+      "device": "mobile",
+      "timestamp": "2025-09-05T15:19:08.913842"
+    }
+  ],
+  "performance_metrics": {
+    "initial_load_time": {
+      "value": 0.02103137969970703,
+      "unit": "seconds",
+      "timestamp": "2025-09-05T15:19:07.628033"
+    }
+  },
+  "compatibility_matrix": {},
+  "recommendations": [
+    "✅ Excelente tasa de éxito (100.0%). Sistema estable."
+  ],
+  "success_rate": 100.0
+}
