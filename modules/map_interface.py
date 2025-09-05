@@ -435,7 +435,7 @@ class MapInterface:
             title_x=0.5
         )
         
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
     
     def render_map_info_panel(self, data: Dict):
         """Panel de información adicional sobre mapas"""
