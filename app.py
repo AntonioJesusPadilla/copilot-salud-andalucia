@@ -61,9 +61,9 @@ except ImportError as e:
 # Cargar variables de entorno
 load_dotenv()
 
-@st.cache_data
+@st.cache_data(ttl=3600, show_spinner="Cargando datos sanitarios...")
 def load_health_datasets():
-    """Cargar datasets de salud"""
+    """Cargar datasets de salud con optimización para cloud"""
     try:
         datasets = {}
         file_mapping = {
@@ -74,16 +74,53 @@ def load_health_datasets():
             'indicadores': 'data/raw/indicadores_salud_2025.csv'
         }
         
+        # Contador de archivos cargados para progreso
+        loaded_files = 0
+        total_files = len(file_mapping)
+        
         for key, filepath in file_mapping.items():
             if os.path.exists(filepath):
-                datasets[key] = pd.read_csv(filepath)
+                try:
+                    # Optimización: usar dtype específicos para reducir memoria
+                    if key == 'demografia':
+                        datasets[key] = pd.read_csv(filepath, dtype={
+                            'municipio': 'string',
+                            'poblacion_2025': 'int32',
+                            'poblacion_2024': 'int32',
+                            'crecimiento_2024_2025': 'int16',
+                            'densidad_hab_km2_2025': 'float32',
+                            'renta_per_capita_2024': 'float32',
+                            'indice_envejecimiento_2025': 'float32'
+                        })
+                    elif key == 'hospitales':
+                        datasets[key] = pd.read_csv(filepath, dtype={
+                            'nombre': 'string',
+                            'tipo_centro': 'category',
+                            'distrito_sanitario': 'category',
+                            'camas_funcionamiento_2025': 'int16',
+                            'personal_sanitario_2025': 'int16',
+                            'poblacion_referencia_2025': 'int32'
+                        })
+                    else:
+                        # Carga estándar para otros archivos
+                        datasets[key] = pd.read_csv(filepath)
+                    
+                    loaded_files += 1
+                    
+                except Exception as file_error:
+                    st.warning(f"⚠️ Error cargando {filepath}: {str(file_error)}")
             else:
                 st.warning(f"⚠️ Archivo no encontrado: {filepath}")
         
-        return datasets if datasets else None
+        if datasets:
+            st.success(f"✅ Cargados {loaded_files}/{total_files} datasets correctamente")
+            return datasets
+        else:
+            st.error("❌ No se pudieron cargar los datasets")
+            return None
         
     except Exception as e:
-        st.error(f"❌ Error cargando datasets: {str(e)}")
+        st.error(f"❌ Error crítico cargando datasets: {str(e)}")
         return None
 
 # Configuración de la página
