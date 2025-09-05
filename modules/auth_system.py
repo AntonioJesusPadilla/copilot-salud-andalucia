@@ -480,9 +480,9 @@ def render_login_page():
             
             col1, col2 = st.columns(2)
             with col1:
-                login_button = st.form_submit_button("🚀 Iniciar Sesión", use_container_width=True)
+                login_button = st.form_submit_button("🚀 Iniciar Sesión", width="stretch")
             with col2:
-                demo_button = st.form_submit_button("👤 Acceso Demo", use_container_width=True)
+                demo_button = st.form_submit_button("👤 Acceso Demo", width="stretch")
         
         # Procesar login
         if login_button or demo_button:
@@ -602,7 +602,7 @@ def render_user_management():
             
             if users_data:
                 users_df = pd.DataFrame(users_data)
-                st.dataframe(users_df, use_container_width=True)
+                st.dataframe(users_df, width="stretch")
                 
                 # Mostrar estadísticas
                 st.markdown("##### 📊 Estadísticas")

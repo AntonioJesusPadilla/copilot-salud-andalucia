@@ -362,50 +362,50 @@ class SecureHealthAnalyticsApp:
             if sidebar_style == 'expanded':
                 st.markdown("### 🚀 Panel de Control")
                 
-                if st.button("🏛️ Vista Ejecutiva", use_container_width=True):
+                if st.button("🏛️ Vista Ejecutiva", width="stretch"):
                     st.session_state.page = "main"
                     st.rerun()
                     
                 if self.has_permission('gestion_usuarios'):
-                    if st.button("👥 Gestión de Usuarios", use_container_width=True):
+                    if st.button("👥 Gestión de Usuarios", width="stretch"):
                         st.session_state.page = "gestion_usuarios"
                         st.rerun()
                         
-                if st.button("📊 Análisis Estratégico", use_container_width=True):
+                if st.button("📊 Análisis Estratégico", width="stretch"):
                     st.session_state.page = "main"
                     st.rerun()
                     
             elif sidebar_style == 'compact':
                 st.markdown("### ⚙️ Gestión")
                 
-                if st.button("📊 Dashboard", use_container_width=True):
+                if st.button("📊 Dashboard", width="stretch"):
                     st.session_state.page = "main"
                     st.rerun()
                     
-                if st.button("🗺️ Mapas", use_container_width=True):
+                if st.button("🗺️ Mapas", width="stretch"):
                     st.session_state.page = "main"
                     st.rerun()
                     
             elif sidebar_style == 'detailed':
                 st.markdown("### 📈 Análisis")
                 
-                if st.button("📊 Dashboard Analítico", use_container_width=True):
+                if st.button("📊 Dashboard Analítico", width="stretch"):
                     st.session_state.page = "main"
                     st.rerun()
                     
-                if st.button("🔍 Exploración de Datos", use_container_width=True):
+                if st.button("🔍 Exploración de Datos", width="stretch"):
                     st.session_state.page = "main"
                     st.rerun()
                     
             else:  # minimal
                 st.markdown("### 📋 Navegación")
                 
-                if st.button("🏠 Inicio", use_container_width=True):
+                if st.button("🏠 Inicio", width="stretch"):
                     st.session_state.page = "main"
                     st.rerun()
             
             # Perfil siempre disponible
-            if st.button("👤 Mi Perfil", use_container_width=True):
+            if st.button("👤 Mi Perfil", width="stretch"):
                 st.session_state.page = "profile"
                 st.rerun()
                 
