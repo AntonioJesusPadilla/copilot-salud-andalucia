@@ -143,8 +143,21 @@ dmypy.json
 ehthumbs.db
 Thumbs.db
 
+# Streamlit específico
+.streamlit/secrets.toml
+.streamlit/credentials.toml
+
 # Project specific
 *.bak
 *.backup
 temp/
 tmp/
+
+# Datos procesados grandes (opcional, mantener solo raw data)
+data/processed/large_files/
+data/cache/
+
+# Logs y archivos temporales de la aplicación
+logs/
+*.log
+session_states/
