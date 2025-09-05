@@ -539,7 +539,7 @@ def main():
         <p><strong>⏰ Sesión:</strong> {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} | 
         <strong>🔑 Permisos:</strong> {len(app.role_info['permissions'])} activos | 
         <strong>🤖 IA:</strong> {'🟢 Disponible' if app.ai_processor else '🔒 Restringida'}</p>
-        <p><em>🏥 Sistema de Análisis Sociosanitario de Málaga - Acceso Autorizado</em></p>
+        <p><em>🏥 Sistema de Análisis Sociosanitario de Málaga v2.1 - Acceso Autorizado</em></p>
         </div>
         """, unsafe_allow_html=True)
 
