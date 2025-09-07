@@ -131,47 +131,19 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Importar CSS con manejo seguro de errores
-try:
-    with open('assets/style.css', 'r', encoding='utf-8', errors='ignore') as f:
-        css_content = f.read()
-except Exception as e:
-    st.warning(f"No se pudo cargar style.css: {e}")
-    css_content = ""
+# Importar CSS externo con tema sanitario avanzado y layout desktop
+with open('assets/style.css', 'r', encoding='utf-8') as f:
+    css_content = f.read()
 
-try:
-    with open('assets/desktop_layout.css', 'r', encoding='utf-8', errors='ignore') as f:
-        desktop_css = f.read()
-except Exception as e:
-    st.warning(f"No se pudo cargar desktop_layout.css: {e}")
-    desktop_css = ""
-
-# CSS básico de respaldo si hay problemas
-basic_css = """
-/* CSS básico de respaldo */
-.main .block-container {
-    max-width: none !important;
-    min-width: 1200px !important;
-    padding-top: 2rem !important;
-    padding-bottom: 2rem !important;
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
-}
-
-@media screen and (max-width: 768px) {
-    .main .block-container {
-        min-width: 1200px !important;
-        overflow-x: auto !important;
-    }
-}
-"""
+with open('assets/desktop_layout.css', 'r', encoding='utf-8') as f:
+    desktop_css = f.read()
 
 st.markdown(f"""
 <style>
 /* Importar fuentes modernas */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 
-{css_content if css_content else basic_css}
+{css_content}
 
 {desktop_css}
 </style>
@@ -1110,7 +1082,7 @@ def render_infrastructure_report_secure(app):
         st.metric("🎯 Estado vs OMS", status)
     
     # Gráfico de distribución
-    tipo_analysis = app.data['hospitales'].groupby('tipo_centro', observed=True).agg({
+    tipo_analysis = app.data['hospitales'].groupby('tipo_centro').agg({
         'camas_funcionamiento_2025': ['sum', 'mean'],
         'personal_sanitario_2025': 'sum',
         'poblacion_referencia_2025': 'sum'
@@ -1381,7 +1353,7 @@ def render_route_optimization(app):
     st.markdown("#### 🚗 Optimización de Rutas de Acceso")
     
     # Análisis de tiempos de acceso
-    access_analysis = app.data['accesibilidad'].groupby('municipio_origen', observed=True).agg({
+    access_analysis = app.data['accesibilidad'].groupby('municipio_origen').agg({
         'tiempo_coche_minutos': ['mean', 'min', 'max'],
         'coste_transporte_euros': 'mean'
     }).round(1)
@@ -1647,6 +1619,4 @@ def render_epic_maps_tab(app):
                 st.write(f"- Accesibilidad: {len(app.data.get('accesibilidad', []))}")
 
 if __name__ == "__main__":
-    main()#   F o r z a r   a c t u a l i z a c i � n   -   0 9 / 0 7 / 2 0 2 5   1 0 : 5 5 : 1 2 
- 
- 
+    main()
