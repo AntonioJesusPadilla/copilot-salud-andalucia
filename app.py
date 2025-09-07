@@ -1082,7 +1082,7 @@ def render_infrastructure_report_secure(app):
         st.metric("🎯 Estado vs OMS", status)
     
     # Gráfico de distribución
-    tipo_analysis = app.data['hospitales'].groupby('tipo_centro').agg({
+    tipo_analysis = app.data['hospitales'].groupby('tipo_centro', observed=True).agg({
         'camas_funcionamiento_2025': ['sum', 'mean'],
         'personal_sanitario_2025': 'sum',
         'poblacion_referencia_2025': 'sum'
@@ -1353,7 +1353,7 @@ def render_route_optimization(app):
     st.markdown("#### 🚗 Optimización de Rutas de Acceso")
     
     # Análisis de tiempos de acceso
-    access_analysis = app.data['accesibilidad'].groupby('municipio_origen').agg({
+    access_analysis = app.data['accesibilidad'].groupby('municipio_origen', observed=True).agg({
         'tiempo_coche_minutos': ['mean', 'min', 'max'],
         'coste_transporte_euros': 'mean'
     }).round(1)
