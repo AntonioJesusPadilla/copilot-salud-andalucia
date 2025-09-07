@@ -13,6 +13,32 @@ os.environ.setdefault('STREAMLIT_SERVER_HEADLESS', 'true')
 os.environ.setdefault('STREAMLIT_SERVER_PORT', '8501')
 os.environ.setdefault('STREAMLIT_BROWSER_GATHER_USAGE_STATS', 'false')
 
+# Forzar layout de escritorio - CSS adicional para Streamlit Cloud
+import streamlit as st
+st.markdown("""
+<style>
+/* FORZAR LAYOUT DE ESCRITORIO EN STREAMLIT CLOUD */
+.main .block-container {
+    max-width: none !important;
+    min-width: 1200px !important;
+}
+
+@media screen and (max-width: 768px) {
+    .main .block-container {
+        min-width: 1200px !important;
+        overflow-x: auto !important;
+    }
+}
+</style>
+<script>
+// Forzar viewport desktop en Streamlit Cloud
+var viewport = document.querySelector("meta[name=viewport]");
+if (viewport) {
+    viewport.setAttribute('content', 'width=1200, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+}
+</script>
+""", unsafe_allow_html=True)
+
 # Importar y ejecutar la aplicación principal
 try:
     from app import main

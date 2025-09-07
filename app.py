@@ -137,7 +137,85 @@ st.markdown("""
 <style>
 /* Importar fuentes modernas para mejor tipografía */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* FORZAR LAYOUT DE ESCRITORIO - EVITAR MODO MÓVIL */
+.main .block-container {
+    max-width: none !important;
+    min-width: 1200px !important;
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+}
+
+/* Forzar viewport de escritorio en todos los dispositivos */
+@media screen and (max-width: 768px) {
+    .main .block-container {
+        min-width: 1200px !important;
+        overflow-x: auto !important;
+    }
+    
+    /* Forzar sidebar visible como en desktop */
+    .css-1d391kg, .css-1lcbmhc, .stSidebar > div {
+        width: 21rem !important;
+        min-width: 21rem !important;
+        display: block !important;
+    }
+    
+    /* Evitar que se colapse la sidebar */
+    .css-1lcbmhc {
+        display: block !important;
+    }
+    
+    /* Forzar ancho completo para elementos */
+    .stColumn > div, .stContainer {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+}
+
+/* Evitar responsive en gráficos - mantener tamaño desktop */
+.js-plotly-plot, .stPlotlyChart {
+    min-width: 800px !important;
+}
+
+/* Forzar ancho mínimo en tablas */
+.stDataFrame {
+    min-width: 600px !important;
+}
+
+/* Elementos de formulario mantienen tamaño desktop */
+.stSelectbox, .stTextInput, .stButton {
+    min-width: 200px !important;
+}
+
+/* Forzar columnas a mantener proporción desktop */
+div[data-testid="column"] {
+    min-width: 300px !important;
+}
 </style>
+
+<script>
+// Forzar viewport de escritorio mediante JavaScript
+(function() {
+    var viewport = document.querySelector("meta[name=viewport]");
+    if (viewport) {
+        viewport.setAttribute('content', 'width=1200, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+    } else {
+        var meta = document.createElement('meta');
+        meta.name = "viewport";
+        meta.content = "width=1200, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
+        document.getElementsByTagName('head')[0].appendChild(meta);
+    }
+    
+    // Forzar recarga si se detecta modo móvil
+    if (window.innerWidth < 1200 && !document.body.classList.contains('desktop-forced')) {
+        document.body.classList.add('desktop-forced');
+        document.body.style.minWidth = '1200px';
+        document.body.style.overflowX = 'auto';
+    }
+})();
+</script>
 """, unsafe_allow_html=True)
 
 class SecureHealthAnalyticsApp:

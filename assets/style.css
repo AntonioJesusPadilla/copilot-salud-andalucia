@@ -559,7 +559,70 @@ body {
 
 /* ========== RESPONSIVE DESIGN ========== */
 
-/* Tablet Portrait específico (768px width) */
+/* FORZAR LAYOUT DE ESCRITORIO - OVERRIDES IMPORTANTES */
+.main .block-container {
+    max-width: none !important;
+    min-width: 1200px !important;
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+}
+
+/* Forzar sidebar desktop en todos los tamaños */
+.stSidebar {
+    width: 21rem !important;
+    min-width: 21rem !important;
+}
+
+/* Forzar columnas a mantener proporción desktop */
+div[data-testid="column"] {
+    min-width: 300px !important;
+    flex: 1 !important;
+}
+
+/* Desktop Large (1920px+) - Optimizado */
+@media (min-width: 1920px) {
+    .main .block-container {
+        max-width: 1800px !important;
+        margin: 0 auto !important;
+    }
+    
+    .main-header h1 {
+        font-size: 2.8rem;
+    }
+    
+    .chart-container {
+        padding: 2.5rem;
+    }
+}
+
+/* Desktop Standard (1366px-1919px) - Optimizado */
+@media (min-width: 1366px) and (max-width: 1919px) {
+    .main .block-container {
+        min-width: 1200px !important;
+        max-width: 1400px !important;
+        margin: 0 auto !important;
+    }
+    
+    .main-header h1 {
+        font-size: 2.4rem;
+    }
+}
+
+/* Desktop Medium (1024px-1365px) - Forzar desktop */
+@media (min-width: 1024px) and (max-width: 1365px) {
+    .main .block-container {
+        min-width: 1200px !important;
+        overflow-x: auto !important;
+    }
+    
+    .main-header {
+        padding: 2rem 1.5rem;
+    }
+}
+
+/* Tablet Portrait específico (768px width) - FORZAR DESKTOP */
 @media (min-width: 768px) and (max-width: 768px) and (orientation: portrait) {
     .stButton > button {
         min-height: 44px !important;
