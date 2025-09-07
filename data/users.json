@@ -16,7 +16,7 @@
     "role": "gestor",
     "organization": "SAS Málaga",
     "created_date": "2025-09-03T13:13:03.253460",
-    "last_login": "2025-09-07T10:41:17.746737",
+    "last_login": "2025-09-07T10:49:31.353629",
     "active": true
   },
   "analista.datos": {
@@ -36,7 +36,7 @@
     "role": "invitado",
     "organization": "Demostración",
     "created_date": "2025-09-03T13:13:03.780244",
-    "last_login": "2025-09-07T10:31:48.487404",
+    "last_login": "2025-09-07T10:48:38.434750",
     "active": true
   }
 }
