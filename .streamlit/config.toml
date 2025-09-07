@@ -25,3 +25,13 @@ magicEnabled = true
 
 [logger]
 level = "info"
+
+[client]
+# Forzar layout de escritorio
+showSidebarNavigation = true
+toolbarMode = "auto"
+
+[ui]
+# Configuración específica para forzar layout desktop
+hideTopBar = false
+hideSidebarNav = false
