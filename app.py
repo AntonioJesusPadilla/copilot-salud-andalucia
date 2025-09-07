@@ -131,19 +131,47 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Importar CSS externo con tema sanitario avanzado y layout desktop
-with open('assets/style.css', 'r', encoding='utf-8') as f:
-    css_content = f.read()
+# Importar CSS con manejo seguro de errores
+try:
+    with open('assets/style.css', 'r', encoding='utf-8', errors='ignore') as f:
+        css_content = f.read()
+except Exception as e:
+    st.warning(f"No se pudo cargar style.css: {e}")
+    css_content = ""
 
-with open('assets/desktop_layout.css', 'r', encoding='utf-8') as f:
-    desktop_css = f.read()
+try:
+    with open('assets/desktop_layout.css', 'r', encoding='utf-8', errors='ignore') as f:
+        desktop_css = f.read()
+except Exception as e:
+    st.warning(f"No se pudo cargar desktop_layout.css: {e}")
+    desktop_css = ""
+
+# CSS básico de respaldo si hay problemas
+basic_css = """
+/* CSS básico de respaldo */
+.main .block-container {
+    max-width: none !important;
+    min-width: 1200px !important;
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+}
+
+@media screen and (max-width: 768px) {
+    .main .block-container {
+        min-width: 1200px !important;
+        overflow-x: auto !important;
+    }
+}
+"""
 
 st.markdown(f"""
 <style>
 /* Importar fuentes modernas */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 
-{css_content}
+{css_content if css_content else basic_css}
 
 {desktop_css}
 </style>
