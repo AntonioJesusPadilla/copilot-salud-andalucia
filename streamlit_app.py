@@ -1,5 +1,9 @@
-# Archivo de entrada para Vercel/Streamlit
-# Este archivo importa y ejecuta la aplicación principal
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Archivo de entrada limpio para Streamlit
+Este archivo importa y ejecuta la aplicación principal
+"""
 
 import os
 import sys
@@ -13,7 +17,6 @@ os.environ.setdefault('STREAMLIT_SERVER_HEADLESS', 'true')
 os.environ.setdefault('STREAMLIT_SERVER_PORT', '8501')
 os.environ.setdefault('STREAMLIT_BROWSER_GATHER_USAGE_STATS', 'false')
 
-
 # Importar y ejecutar la aplicación principal
 try:
     from app import main
@@ -23,3 +26,7 @@ try:
 except Exception as e:
     st.error(f"❌ Error iniciando la aplicación: {str(e)}")
     st.info("🔧 Verifica que todas las dependencias estén instaladas correctamente")
+    
+    # Información adicional de debug
+    import traceback
+    st.code(traceback.format_exc())
