@@ -30,8 +30,3 @@ level = "info"
 # Forzar layout de escritorio
 showSidebarNavigation = true
 toolbarMode = "auto"
-
-[ui]
-# Configuración específica para forzar layout desktop
-hideTopBar = false
-hideSidebarNav = false
