@@ -242,7 +242,7 @@ class HealthMetricsCalculator:
             accesibilidad = data['accesibilidad']
             
             # Agrupar por municipio origen
-            gaps_analysis = accesibilidad.groupby('municipio_origen').agg({
+            gaps_analysis = accesibilidad.groupby('municipio_origen', observed=True).agg({
                 'tiempo_coche_minutos': ['mean', 'min'],
                 'accesibilidad_score': 'mean',
                 'coste_transporte_euros': 'mean'
