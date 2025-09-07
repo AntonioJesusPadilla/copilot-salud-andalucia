@@ -6,7 +6,7 @@
     "role": "admin",
     "organization": "Consejería de Salud",
     "created_date": "2025-09-03T13:13:02.989810",
-    "last_login": "2025-09-05T19:56:24.877478",
+    "last_login": "2025-09-07T10:24:13.394669",
     "active": true
   },
   "gestor.malaga": {
@@ -36,7 +36,7 @@
     "role": "invitado",
     "organization": "Demostración",
     "created_date": "2025-09-03T13:13:03.780244",
-    "last_login": "2025-09-04T14:16:30.205424",
+    "last_login": "2025-09-07T10:31:48.487404",
     "active": true
   }
 }
