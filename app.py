@@ -1619,4 +1619,6 @@ def render_epic_maps_tab(app):
                 st.write(f"- Accesibilidad: {len(app.data.get('accesibilidad', []))}")
 
 if __name__ == "__main__":
-    main()
+    main()#   F o r z a r   a c t u a l i z a c i � n   -   0 9 / 0 7 / 2 0 2 5   1 0 : 5 5 : 1 2 
+ 
+ 
