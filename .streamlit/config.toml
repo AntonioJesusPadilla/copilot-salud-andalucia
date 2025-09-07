@@ -9,6 +9,8 @@ enableXsrfProtection = false
 port = 8501
 maxUploadSize = 200
 maxMessageSize = 200
+runOnSave = true
+fileWatcherType = "poll"
 
 [browser]
 gatherUsageStats = false
