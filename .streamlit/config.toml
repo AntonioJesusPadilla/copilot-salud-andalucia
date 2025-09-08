@@ -34,5 +34,3 @@ level = "info"
 showSidebarNavigation = true
 toolbarMode = "auto"
 
-[layout]
-wide = true
