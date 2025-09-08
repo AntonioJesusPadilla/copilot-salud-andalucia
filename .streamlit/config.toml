@@ -1,7 +1,7 @@
 [global]
 developmentMode = false
 showWarningOnDirectExecution = false
-layout = "wide"
+
 
 [server]
 headless = true
@@ -33,3 +33,6 @@ level = "info"
 # Forzar layout de escritorio
 showSidebarNavigation = true
 toolbarMode = "auto"
+
+[layout]
+wide = true
