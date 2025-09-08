@@ -95,8 +95,8 @@ def load_health_datasets():
                     elif key == 'hospitales':
                         datasets[key] = pd.read_csv(filepath, dtype={
                             'nombre': 'string',
-                            'tipo_centro': 'category',
-                            'distrito_sanitario': 'category',
+                            'tipo_centro': 'string',
+                            'distrito_sanitario': 'string',
                             'camas_funcionamiento_2025': 'int16',
                             'personal_sanitario_2025': 'int16',
                             'poblacion_referencia_2025': 'int32'
