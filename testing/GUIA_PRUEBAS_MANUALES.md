@@ -827,7 +827,6 @@ Esta guía proporciona instrucciones detalladas para realizar pruebas manuales e
 3. **Contactar**:
    - **Desarrollador**: Antonio Jesús Padilla
    - **Email**: antoniojesuspadilla.dev@proton.me
-   - **GitHub**: Issues en el repositorio del proyecto
 
 ---
 
