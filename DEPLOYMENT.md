@@ -46,7 +46,7 @@ APP_ENVIRONMENT = "production"
 ENABLE_DEBUG_MODE = false
 SYSTEM_NAME = "Copilot Salud Andalucía"
 SYSTEM_VERSION = "2.0"
-ADMIN_EMAIL = "tu-email@dominio.com"
+ADMIN_EMAIL = "admin@tuorganizacion.com"
 ```
 
 #### Paso 4: Deploy
@@ -187,9 +187,8 @@ git push heroku main
 - **Local**: Los logs aparecen en la terminal
 
 ### Contacto
-- **Desarrollador**: [Tu información de contacto]
-- **Documentación**: [Link a documentación adicional]
-- **Issues**: [Link al repositorio de GitHub]
+- **Desarrollador**: [antoniojesuspadilla.dev@proton.me]
+- **Issues**: [https://github.com/antonioJesusPadilla/]
 
 ---
 
