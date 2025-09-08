@@ -1,6 +1,7 @@
 [global]
 developmentMode = false
 showWarningOnDirectExecution = false
+layout = "wide"
 
 [server]
 headless = true
