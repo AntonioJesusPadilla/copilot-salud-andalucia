@@ -1,0 +1,28 @@
+# Configuración de desarrollo para Streamlit
+# Usar: streamlit run app.py --config .streamlit/config.dev.toml
+
+[global]
+developmentMode = true
+
+[server]
+headless = false
+port = 8501
+enableCORS = true
+enableXsrfProtection = true
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+primaryColor = "#00A86B"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F0F2F6"
+textColor = "#262730"
+font = "Inter"
+
+[logger]
+level = "debug"
+
+[runner]
+fastReruns = true
+enforceSerializableSessionState = false

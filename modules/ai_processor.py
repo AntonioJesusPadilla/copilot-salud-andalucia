@@ -4,6 +4,8 @@ import pandas as pd
 from groq import Groq
 from typing import Dict, List, Optional
 import re
+import streamlit as st
+from datetime import datetime
 
 class HealthAnalyticsAI:
     def __init__(self):
@@ -312,3 +314,60 @@ class HealthMetricsCalculator:
             
         except Exception as e:
             return {'error': f'Error identificando brechas: {str(e)}'}
+    
+    def process_health_query_async(self, query: str, data: Dict, user_role: str = "invitado") -> Dict:
+        """Procesar consulta de salud de forma asíncrona"""
+        try:
+            # Importar wrapper asíncrono
+            from modules.streamlit_async_wrapper import get_streamlit_async_wrapper
+            
+            # Obtener wrapper asíncrono
+            async_wrapper = get_streamlit_async_wrapper()
+            
+            # Preparar contexto del usuario
+            user_context = {
+                'role': user_role,
+                'timestamp': datetime.now().isoformat()
+            }
+            
+            # Procesar consulta de forma asíncrona
+            result = async_wrapper.process_query_sync(query, data, user_role, user_context)
+            
+            # Añadir información adicional
+            result['processed_async'] = True
+            result['processing_time'] = datetime.now().isoformat()
+            
+            return result
+            
+        except Exception as e:
+            # Fallback a procesamiento síncrono si hay error
+            st.warning(f"⚠️ Error en procesamiento asíncrono, usando modo síncrono: {str(e)}")
+            return self.process_health_query(query, data)
+    
+    def get_async_processing_metrics(self) -> Dict:
+        """Obtener métricas del procesamiento asíncrono"""
+        try:
+            from modules.streamlit_async_wrapper import get_streamlit_async_wrapper
+            async_wrapper = get_streamlit_async_wrapper()
+            return async_wrapper.get_processing_metrics()
+        except Exception as e:
+            return {'error': f'Error obteniendo métricas: {str(e)}'}
+    
+    def clear_async_cache(self) -> None:
+        """Limpiar cache del procesamiento asíncrono"""
+        try:
+            from modules.streamlit_async_wrapper import get_streamlit_async_wrapper
+            async_wrapper = get_streamlit_async_wrapper()
+            async_wrapper.clear_ai_cache()
+            st.success("✅ Cache de IA limpiado")
+        except Exception as e:
+            st.error(f"❌ Error limpiando cache: {str(e)}")
+    
+    def render_async_status(self) -> None:
+        """Renderizar estado del procesamiento asíncrono"""
+        try:
+            from modules.streamlit_async_wrapper import get_streamlit_async_wrapper
+            async_wrapper = get_streamlit_async_wrapper()
+            async_wrapper.render_processing_status()
+        except Exception as e:
+            st.error(f"❌ Error mostrando estado: {str(e)}")

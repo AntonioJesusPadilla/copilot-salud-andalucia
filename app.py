@@ -37,17 +37,35 @@ try:
     import importlib
     import sys
     
-    # Forzar recarga de módulos si ya están cargados
-    if 'modules.map_interface' in sys.modules:
-        importlib.reload(sys.modules['modules.map_interface'])
-    if 'modules.interactive_maps' in sys.modules:
-        importlib.reload(sys.modules['modules.interactive_maps'])
+    # Verificar dependencias de mapas primero
+    try:
+        import geopy
+        import folium
+        import geopandas
+        import shapely
+        import pyproj
+        MAPS_DEPENDENCIES_OK = True
+    except ImportError as deps_error:
+        st.warning(f"⚠️ Dependencias de mapas no disponibles: {str(deps_error)}")
+        st.info("💡 Instala las dependencias con: pip install geopy folium geopandas shapely pyproj")
+        MAPS_DEPENDENCIES_OK = False
     
-    from modules.map_interface import MapInterface
-    from modules.interactive_maps import EpicHealthMaps
-    MAPS_AVAILABLE = True
+    if MAPS_DEPENDENCIES_OK:
+        # Forzar recarga de módulos si ya están cargados
+        if 'modules.map_interface' in sys.modules:
+            importlib.reload(sys.modules['modules.map_interface'])
+        if 'modules.interactive_maps' in sys.modules:
+            importlib.reload(sys.modules['modules.interactive_maps'])
+        
+        from modules.map_interface import MapInterface
+        from modules.interactive_maps import EpicHealthMaps
+        MAPS_AVAILABLE = True
+    else:
+        MAPS_AVAILABLE = False
+        
 except ImportError as e:
     st.error(f"❌ Error importando módulos de mapas: {str(e)}")
+    st.info("💡 Asegúrate de instalar todas las dependencias: pip install -r requirements.txt")
     MAPS_AVAILABLE = False
 
 # Importar dashboards personalizados por rol
@@ -58,12 +76,44 @@ except ImportError as e:
     st.error(f"❌ Error importando dashboards por rol: {str(e)}")
     ROLE_DASHBOARDS_AVAILABLE = False
 
+# Importar sistemas de optimización y seguridad
+try:
+    from modules.performance_optimizer import get_performance_optimizer, PerformanceOptimizer
+    from modules.security_auditor import get_security_auditor, SecurityAuditor
+    from modules.rate_limiter import get_rate_limiter, RateLimiter
+    from modules.data_encryption import get_data_encryption, DataEncryption
+    OPTIMIZATION_AVAILABLE = True
+except ImportError as e:
+    st.error(f"❌ Error importando sistemas de optimización: {str(e)}")
+    OPTIMIZATION_AVAILABLE = False
+
 # Cargar variables de entorno
 load_dotenv()
 
+def load_health_datasets_optimized(user_role: str = "invitado"):
+    """Cargar datasets de salud con optimización avanzada por rol"""
+    if not OPTIMIZATION_AVAILABLE:
+        st.warning("⚠️ Sistema de optimización no disponible, usando carga estándar")
+        return load_health_datasets_legacy()
+    
+    try:
+        # Obtener optimizador de rendimiento
+        optimizer = get_performance_optimizer()
+        
+        # Usar cache inteligente por rol
+        @optimizer.cached_data_loader(user_role, "load_datasets")
+        def _load_datasets():
+            return optimizer.load_health_datasets_optimized(user_role)
+        
+        return _load_datasets()
+        
+    except Exception as e:
+        st.error(f"❌ Error en carga optimizada: {str(e)}")
+        return load_health_datasets_legacy()
+
 @st.cache_data(ttl=3600, show_spinner="Cargando datos sanitarios...")
-def load_health_datasets():
-    """Cargar datasets de salud con optimización para cloud"""
+def load_health_datasets_legacy():
+    """Cargar datasets de salud con optimización básica (fallback)"""
     try:
         datasets = {}
         file_mapping = {
@@ -184,6 +234,12 @@ class SecureHealthAnalyticsApp:
         self.metrics_calculator = None
         self.map_interface = None
         
+        # Inicializar sistemas de optimización y seguridad
+        self.performance_optimizer = None
+        self.security_auditor = None
+        self.rate_limiter = None
+        self.data_encryption = None
+        
         if not AUTH_AVAILABLE:
             st.error("❌ Sistema de autenticación no disponible")
             return
@@ -196,6 +252,24 @@ class SecureHealthAnalyticsApp:
                 self.user = st.session_state.user
                 self.auth = HealthAuthenticator()
                 self.role_info = self.auth.get_role_info(self.user['role'])
+                
+                # Inicializar sistemas de optimización y seguridad
+                if OPTIMIZATION_AVAILABLE:
+                    self.performance_optimizer = get_performance_optimizer()
+                    self.security_auditor = get_security_auditor()
+                    self.rate_limiter = get_rate_limiter()
+                    self.data_encryption = get_data_encryption()
+                    
+                    # Registrar inicio de sesión
+                    self.security_auditor.log_user_action(
+                        user=self.user['username'],
+                        action="login",
+                        resource="application",
+                        success=True,
+                        details={"role": self.user['role']}
+                    )
+                
+                # Cargar datasets con optimización
                 self.load_datasets()
                 
                 # Inicializar IA si está disponible y el usuario tiene permisos
@@ -267,19 +341,54 @@ class SecureHealthAnalyticsApp:
         return True
         
     def _load_datasets_static(self):
-        """Cargar datasets con verificación de permisos"""
-        return load_health_datasets()
+        """Cargar datasets con verificación de permisos y optimización"""
+        if OPTIMIZATION_AVAILABLE and self.performance_optimizer:
+            return load_health_datasets_optimized(self.user['role'])
+        else:
+            return load_health_datasets_legacy()
     
     def load_datasets(self):
-        """Inicializar datasets"""
+        """Inicializar datasets con optimización y auditoría"""
         try:
             if self.has_permission('ver_datos'):
+                # Verificar rate limiting
+                if self.rate_limiter:
+                    allowed, message, details = self.rate_limiter.is_allowed(
+                        self.user['username'], 
+                        'data_access'
+                    )
+                    if not allowed:
+                        st.error(f"🚫 {message}")
+                        self.data = None
+                        return
+                
+                # Cargar datos
                 self.data = self._load_datasets_static()
+                
+                # Registrar acceso a datos
+                if self.security_auditor:
+                    self.security_auditor.log_user_action(
+                        user=self.user['username'],
+                        action="data_access",
+                        resource="health_datasets",
+                        success=self.data is not None,
+                        details={"role": self.user['role'], "datasets_loaded": len(self.data) if self.data else 0}
+                    )
             else:
                 self.data = None
         except Exception as e:
             print(f"❌ Error inicializando datasets: {str(e)}")
             self.data = None
+            
+            # Registrar error
+            if self.security_auditor:
+                self.security_auditor.log_user_action(
+                    user=self.user['username'],
+                    action="data_access",
+                    resource="health_datasets",
+                    success=False,
+                    details={"error": str(e)}
+                )
         
     def render_secure_header(self):
         """Cabecera personalizada según el rol del usuario"""
@@ -626,7 +735,7 @@ def render_page_navigation(app):
                 st.error("❌ No tienes permisos para acceder a ninguna funcionalidad")
 
 def render_secure_chat(app):
-    """Chat con verificación de permisos"""
+    """Chat con verificación de permisos, rate limiting y auditoría"""
     st.markdown("### 🤖 Asistente IA Seguro")
     
     if not app.require_permission('analisis_ia'):
@@ -635,6 +744,41 @@ def render_secure_chat(app):
             st.warning("🔒 **Chat IA no disponible**: Los usuarios invitados no tienen acceso al asistente de IA.")
             st.info("💡 **Sugerencia**: Solicita una cuenta con permisos de 'Analista' o superior para acceder al Chat IA.")
         return
+    
+    # Verificar rate limiting para consultas IA
+    if app.rate_limiter:
+        allowed, message, details = app.rate_limiter.is_allowed(
+            app.user['username'], 
+            'ai_query'
+        )
+        if not allowed:
+            st.error(f"🚫 {message}")
+            if 'retry_after' in details:
+                st.info(f"⏰ Intenta de nuevo en {details['retry_after']} segundos")
+            return
+        elif details.get('warning'):
+            st.warning(f"⚠️ {details['warning']}")
+    
+    # Mostrar requests restantes y estado de procesamiento asíncrono
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        if app.rate_limiter:
+            remaining = app.rate_limiter.get_remaining_requests(app.user['username'], 'ai_query')
+            st.info(f"📊 Consultas IA restantes: {remaining}")
+    
+    with col2:
+        if app.ai_processor:
+            # Mostrar métricas de procesamiento asíncrono
+            try:
+                metrics = app.ai_processor.get_async_processing_metrics()
+                if 'error' not in metrics:
+                    success_rate = (metrics.get('successful_requests', 0) / max(1, metrics.get('total_requests', 1))) * 100
+                    st.success(f"🤖 IA Asíncrona: {success_rate:.1f}% éxito")
+                else:
+                    st.info("🤖 IA Asíncrona: Disponible")
+            except:
+                st.info("🤖 IA Asíncrona: Disponible")
     
     # Estado de IA mejorado
     st.markdown(f"""
@@ -725,6 +869,16 @@ def render_secure_chat(app):
     
     # Input del usuario
     if prompt := st.chat_input(f"Consulta como {app.role_info['name']}..."):
+        # Registrar intento de consulta IA
+        if app.security_auditor:
+            app.security_auditor.log_user_action(
+                user=app.user['username'],
+                action="ai_query",
+                resource="chat_interface",
+                success=True,
+                details={"prompt_length": len(prompt), "role": app.user['role']}
+            )
+        
         # Añadir contexto de usuario a la consulta
         enhanced_prompt = f"[Usuario: {app.user['name']}, Rol: {app.role_info['name']}, Org: {app.user['organization']}] {prompt}"
         
@@ -736,10 +890,14 @@ def render_secure_chat(app):
         # Procesar con IA si está disponible
         with st.chat_message("assistant"):
             if app.ai_processor and app.chart_generator:
-                with st.spinner("🔒 Procesando consulta segura..."):
+                with st.spinner("🔒 Procesando consulta segura con IA asíncrona..."):
                     try:
-                        # Procesar consulta con contexto de rol
-                        analysis = app.ai_processor.process_health_query(enhanced_prompt, app.data)
+                        # Procesar consulta con contexto de rol usando procesamiento asíncrono
+                        analysis = app.ai_processor.process_health_query_async(
+                            enhanced_prompt, 
+                            app.data, 
+                            app.user['role']
+                        )
                         
                         if analysis.get('analysis_type') != 'error':
                             # Mostrar análisis con información de auditoría

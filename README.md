@@ -27,6 +27,68 @@
 
 ---
 
+## ⚡ **Instalación Rápida**
+
+### **Opción 1: Instalación Automática (Recomendada)**
+```bash
+# Clonar el repositorio
+git clone https://github.com/tu-usuario/copilot-salud-andalucia.git
+cd copilot-salud-andalucia
+
+# Instalación automática de dependencias
+python install_dependencies.py
+
+# Configurar secrets (opcional para desarrollo)
+cp .streamlit/secrets.toml.example .streamlit/secrets.toml
+# Edita .streamlit/secrets.toml con tu GROQ_API_KEY
+
+# Ejecutar la aplicación
+python start_app.py
+# O alternativamente: streamlit run app.py
+```
+
+### **Opción 2: Instalación Manual**
+```bash
+# Crear entorno virtual
+python -m venv venv
+
+# Activar entorno virtual
+# Windows:
+venv\Scripts\activate
+# Linux/Mac:
+source venv/bin/activate
+
+# Instalar dependencias
+pip install -r requirements.txt
+
+# Verificar instalación
+python check_dependencies.py
+
+# Ejecutar aplicación
+streamlit run app.py
+```
+
+### **🔧 Solución de Problemas de Dependencias**
+
+Si encuentras errores como `No module named 'geopy'`:
+
+1. **Verificar instalación:**
+   ```bash
+   python check_dependencies.py
+   ```
+
+2. **Reinstalar dependencias de mapas:**
+   ```bash
+   pip install --upgrade geopy folium geopandas shapely pyproj
+   ```
+
+3. **Instalación completa:**
+   ```bash
+   pip install -r requirements.txt --force-reinstall
+   ```
+
+---
+
 ## 🚀 **Funcionalidades Principales**
 
 ### 🤖 **1. Asistente de Inteligencia Artificial**
