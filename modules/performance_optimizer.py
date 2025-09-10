@@ -64,7 +64,7 @@ class PerformanceOptimizer:
         # Datasets requeridos por rol
         self.role_datasets = {
             'admin': ['hospitales', 'demografia', 'servicios', 'accesibilidad', 'indicadores'],
-            'gestor': ['hospitales', 'demografia', 'servicios', 'accesibilidad'],
+            'gestor': ['hospitales', 'demografia', 'servicios', 'accesibilidad', 'indicadores'],
             'analista': ['demografia', 'indicadores', 'servicios'],
             'invitado': ['hospitales', 'demografia']
         }
