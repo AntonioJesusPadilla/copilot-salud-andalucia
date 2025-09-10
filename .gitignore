@@ -150,6 +150,10 @@ config/.streamlit/secrets.toml
 **/secrets.toml
 **/.env*
 
+# Mantener archivos de ejemplo
+!.streamlit/secrets.toml.example
+!config/.streamlit/secrets.toml.example
+
 # Archivos de configuración con secrets
 *.secrets
 *.keys
