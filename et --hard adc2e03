@@ -1,5 +1,0 @@
-[33me701f6a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m  Preparar para despliegue en Streamlit Cloud (sin secrets)
-[33madc2e03[m  Fix: Corregir path de importación de módulos
-[33m9c82bf8[m  Actualizar imports después de reorganización
-[33m546e308[m  Reorganizar: Mover archivos de verificación a carpeta testing
-[33m63c4667[m  Fix: Añadir dataset 'accesibilidad' al rol 'analista'
