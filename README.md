@@ -258,7 +258,7 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para
 
 **Antonio Jesús Padilla**
 - GitHub: [@AntonioJesusPadilla](https://github.com/AntonioJesusPadilla)
-- Email: [email_protegido](antoniojesuspadilla.dev@proton.me)
+- Email: [email_protegido](mailto:antoniojesuspadilla.dev@proton.me)
 
 ---
 
