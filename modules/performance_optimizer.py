@@ -65,7 +65,7 @@ class PerformanceOptimizer:
         self.role_datasets = {
             'admin': ['hospitales', 'demografia', 'servicios', 'accesibilidad', 'indicadores'],
             'gestor': ['hospitales', 'demografia', 'servicios', 'accesibilidad', 'indicadores'],
-            'analista': ['hospitales', 'demografia', 'indicadores', 'servicios'],
+            'analista': ['hospitales', 'demografia', 'indicadores', 'servicios', 'accesibilidad'],
             'invitado': ['hospitales', 'demografia']
         }
     
