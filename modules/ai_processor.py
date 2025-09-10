@@ -143,7 +143,7 @@ class HealthAnalyticsAI:
                 ],
                 "explanation": content[:500] + "..." if len(content) > 500 else content
             }
-                
+            
         except Exception as e:
             return {
                 "analysis_type": "error",
@@ -188,6 +188,59 @@ class HealthAnalyticsAI:
                 'error': [f'Error ejecutando consulta: {str(e)}'],
                 'query': [query]
             })
+    
+    def process_health_query_async(self, query: str, data: Dict, user_role: str = "invitado") -> Dict:
+        """Procesar consulta de salud de forma asíncrona (simulado)"""
+        try:
+            # Por ahora, usar procesamiento síncrono normal
+            # TODO: Implementar procesamiento asíncrono real cuando sea necesario
+            result = self.process_health_query(query, data)
+            
+            # Añadir información de procesamiento asíncrono simulado
+            result['processed_async'] = True
+            result['processing_time'] = datetime.now().isoformat()
+            result['async_simulation'] = True
+            
+            return result
+            
+        except Exception as e:
+            # Fallback a procesamiento síncrono si hay error
+            st.warning(f"⚠️ Error en procesamiento asíncrono, usando modo síncrono: {str(e)}")
+            return self.process_health_query(query, data)
+    
+    def get_async_processing_metrics(self) -> Dict:
+        """Obtener métricas del procesamiento asíncrono"""
+        try:
+            # Métricas simuladas para procesamiento asíncrono
+            return {
+                'total_requests': 0,
+                'successful_requests': 0,
+                'failed_requests': 0,
+                'cache_hits': 0,
+                'average_response_time': 0.0,
+                'active_tasks': 0,
+                'last_update': datetime.now().isoformat(),
+                'async_simulation': True
+            }
+        except Exception as e:
+            return {'error': f'Error obteniendo métricas: {str(e)}'}
+    
+    def clear_async_cache(self) -> None:
+        """Limpiar cache del procesamiento asíncrono"""
+        try:
+            # Limpiar cache simulado
+            st.success("✅ Cache de IA limpiado (simulado)")
+        except Exception as e:
+            st.error(f"❌ Error limpiando cache: {str(e)}")
+    
+    def render_async_status(self) -> None:
+        """Renderizar estado del procesamiento asíncrono"""
+        try:
+            # Estado simulado del procesamiento asíncrono
+            st.info("🔄 Procesamiento asíncrono simulado activo")
+        except Exception as e:
+            st.error(f"❌ Error mostrando estado: {str(e)}")
+
 
 class HealthMetricsCalculator:
     """Calculadora de métricas sanitarias especializadas"""
@@ -314,55 +367,3 @@ class HealthMetricsCalculator:
             
         except Exception as e:
             return {'error': f'Error identificando brechas: {str(e)}'}
-    
-    def process_health_query_async(self, query: str, data: Dict, user_role: str = "invitado") -> Dict:
-        """Procesar consulta de salud de forma asíncrona (simulado)"""
-        try:
-            # Por ahora, usar procesamiento síncrono normal
-            # TODO: Implementar procesamiento asíncrono real cuando sea necesario
-            result = self.process_health_query(query, data)
-            
-            # Añadir información de procesamiento asíncrono simulado
-            result['processed_async'] = True
-            result['processing_time'] = datetime.now().isoformat()
-            result['async_simulation'] = True
-            
-            return result
-            
-        except Exception as e:
-            # Fallback a procesamiento síncrono si hay error
-            st.warning(f"⚠️ Error en procesamiento asíncrono, usando modo síncrono: {str(e)}")
-            return self.process_health_query(query, data)
-    
-    def get_async_processing_metrics(self) -> Dict:
-        """Obtener métricas del procesamiento asíncrono"""
-        try:
-            # Métricas simuladas para procesamiento asíncrono
-            return {
-                'total_requests': 0,
-                'successful_requests': 0,
-                'failed_requests': 0,
-                'cache_hits': 0,
-                'average_response_time': 0.0,
-                'active_tasks': 0,
-                'last_update': datetime.now().isoformat(),
-                'async_simulation': True
-            }
-        except Exception as e:
-            return {'error': f'Error obteniendo métricas: {str(e)}'}
-    
-    def clear_async_cache(self) -> None:
-        """Limpiar cache del procesamiento asíncrono"""
-        try:
-            # Limpiar cache simulado
-            st.success("✅ Cache de IA limpiado (simulado)")
-        except Exception as e:
-            st.error(f"❌ Error limpiando cache: {str(e)}")
-    
-    def render_async_status(self) -> None:
-        """Renderizar estado del procesamiento asíncrono"""
-        try:
-            # Estado simulado del procesamiento asíncrono
-            st.info("🔄 Procesamiento asíncrono simulado activo")
-        except Exception as e:
-            st.error(f"❌ Error mostrando estado: {str(e)}")
