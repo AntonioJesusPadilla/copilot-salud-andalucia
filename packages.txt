@@ -1,0 +1,6 @@
+# Dependencias del sistema para Streamlit Cloud
+# Este archivo es necesario para instalar paquetes del sistema
+
+libgeos-dev
+libproj-dev
+libgdal-dev

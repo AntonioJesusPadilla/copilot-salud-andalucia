@@ -1,36 +1,25 @@
 [global]
 developmentMode = false
-showWarningOnDirectExecution = false
-
 
 [server]
 headless = true
+port = 8501
 enableCORS = false
 enableXsrfProtection = false
-port = 8501
-maxUploadSize = 200
-maxMessageSize = 200
-runOnSave = true
-fileWatcherType = "poll"
 
 [browser]
 gatherUsageStats = false
 
 [theme]
-primaryColor = "#059669"
-backgroundColor = "#ffffff"
-secondaryBackgroundColor = "#f0f2f6"
+primaryColor = "#00A86B"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F0F2F6"
 textColor = "#262730"
-font = "sans serif"
-
-[runner]
-magicEnabled = true
+font = "Inter"
 
 [logger]
 level = "info"
 
-[client]
-# Forzar layout de escritorio
-showSidebarNavigation = true
-toolbarMode = "auto"
-
+[runner]
+fastReruns = true
+enforceSerializableSessionState = false
