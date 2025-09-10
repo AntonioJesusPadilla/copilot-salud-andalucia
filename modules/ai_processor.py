@@ -316,26 +316,16 @@ class HealthMetricsCalculator:
             return {'error': f'Error identificando brechas: {str(e)}'}
     
     def process_health_query_async(self, query: str, data: Dict, user_role: str = "invitado") -> Dict:
-        """Procesar consulta de salud de forma asíncrona"""
+        """Procesar consulta de salud de forma asíncrona (simulado)"""
         try:
-            # Importar wrapper asíncrono
-            from modules.streamlit_async_wrapper import get_streamlit_async_wrapper
+            # Por ahora, usar procesamiento síncrono normal
+            # TODO: Implementar procesamiento asíncrono real cuando sea necesario
+            result = self.process_health_query(query, data)
             
-            # Obtener wrapper asíncrono
-            async_wrapper = get_streamlit_async_wrapper()
-            
-            # Preparar contexto del usuario
-            user_context = {
-                'role': user_role,
-                'timestamp': datetime.now().isoformat()
-            }
-            
-            # Procesar consulta de forma asíncrona
-            result = async_wrapper.process_query_sync(query, data, user_role, user_context)
-            
-            # Añadir información adicional
+            # Añadir información de procesamiento asíncrono simulado
             result['processed_async'] = True
             result['processing_time'] = datetime.now().isoformat()
+            result['async_simulation'] = True
             
             return result
             
@@ -347,27 +337,32 @@ class HealthMetricsCalculator:
     def get_async_processing_metrics(self) -> Dict:
         """Obtener métricas del procesamiento asíncrono"""
         try:
-            from modules.streamlit_async_wrapper import get_streamlit_async_wrapper
-            async_wrapper = get_streamlit_async_wrapper()
-            return async_wrapper.get_processing_metrics()
+            # Métricas simuladas para procesamiento asíncrono
+            return {
+                'total_requests': 0,
+                'successful_requests': 0,
+                'failed_requests': 0,
+                'cache_hits': 0,
+                'average_response_time': 0.0,
+                'active_tasks': 0,
+                'last_update': datetime.now().isoformat(),
+                'async_simulation': True
+            }
         except Exception as e:
             return {'error': f'Error obteniendo métricas: {str(e)}'}
     
     def clear_async_cache(self) -> None:
         """Limpiar cache del procesamiento asíncrono"""
         try:
-            from modules.streamlit_async_wrapper import get_streamlit_async_wrapper
-            async_wrapper = get_streamlit_async_wrapper()
-            async_wrapper.clear_ai_cache()
-            st.success("✅ Cache de IA limpiado")
+            # Limpiar cache simulado
+            st.success("✅ Cache de IA limpiado (simulado)")
         except Exception as e:
             st.error(f"❌ Error limpiando cache: {str(e)}")
     
     def render_async_status(self) -> None:
         """Renderizar estado del procesamiento asíncrono"""
         try:
-            from modules.streamlit_async_wrapper import get_streamlit_async_wrapper
-            async_wrapper = get_streamlit_async_wrapper()
-            async_wrapper.render_processing_status()
+            # Estado simulado del procesamiento asíncrono
+            st.info("🔄 Procesamiento asíncrono simulado activo")
         except Exception as e:
             st.error(f"❌ Error mostrando estado: {str(e)}")
