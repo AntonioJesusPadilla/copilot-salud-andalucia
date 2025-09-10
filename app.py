@@ -32,40 +32,41 @@ except ImportError as e:
         st.error(f"❌ Error importando módulos IA: {str(e)}")
         AI_AVAILABLE = False
 
-# Importar módulos de mapas
+# Importar módulos de mapas (opcional para Streamlit Cloud)
 try:
     import importlib
     import sys
     
-    # Verificar dependencias de mapas primero
+    # Verificar dependencias básicas de mapas
     try:
-        import geopy
         import folium
-        import geopandas
-        import shapely
-        import pyproj
+        import streamlit_folium
         MAPS_DEPENDENCIES_OK = True
     except ImportError as deps_error:
         st.warning(f"⚠️ Dependencias de mapas no disponibles: {str(deps_error)}")
-        st.info("💡 Instala las dependencias con: pip install geopy folium geopandas shapely pyproj")
+        st.info("💡 Los mapas no estarán disponibles en este despliegue")
         MAPS_DEPENDENCIES_OK = False
     
     if MAPS_DEPENDENCIES_OK:
-        # Forzar recarga de módulos si ya están cargados
-        if 'modules.map_interface' in sys.modules:
-            importlib.reload(sys.modules['modules.map_interface'])
-        if 'modules.interactive_maps' in sys.modules:
-            importlib.reload(sys.modules['modules.interactive_maps'])
-        
-        from modules.map_interface import MapInterface
-        from modules.interactive_maps import EpicHealthMaps
-        MAPS_AVAILABLE = True
+        try:
+            # Forzar recarga de módulos si ya están cargados
+            if 'modules.map_interface' in sys.modules:
+                importlib.reload(sys.modules['modules.map_interface'])
+            if 'modules.interactive_maps' in sys.modules:
+                importlib.reload(sys.modules['modules.interactive_maps'])
+            
+            from modules.map_interface import MapInterface
+            from modules.interactive_maps import EpicHealthMaps
+            MAPS_AVAILABLE = True
+        except ImportError as module_error:
+            st.warning(f"⚠️ Módulos de mapas no disponibles: {str(module_error)}")
+            MAPS_AVAILABLE = False
     else:
         MAPS_AVAILABLE = False
         
-except ImportError as e:
-    st.error(f"❌ Error importando módulos de mapas: {str(e)}")
-    st.info("💡 Asegúrate de instalar todas las dependencias: pip install -r requirements.txt")
+except Exception as e:
+    st.warning(f"⚠️ Mapas no disponibles: {str(e)}")
+    st.info("💡 La aplicación funcionará sin mapas interactivos")
     MAPS_AVAILABLE = False
 
 # Importar dashboards personalizados por rol

@@ -1,25 +1,25 @@
 {
-  "timestamp": "2025-09-07T11:19:25.632096",
+  "timestamp": "2025-09-10T17:37:11.898219",
   "total_tests": 54,
-  "passed_tests": 53,
-  "failed_tests": 1,
+  "passed_tests": 54,
+  "failed_tests": 0,
   "warnings": 0,
   "test_details": [
     {
       "test_name": "basic_connectivity",
       "status": "PASS",
       "message": "Aplicación accesible en 0.03s",
-      "execution_time": 0.028928279876708984,
+      "execution_time": 0.030071735382080078,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.074113"
+      "timestamp": "2025-09-10T17:37:22.239398"
     },
     {
       "test_name": "file_structure_app.py",
       "status": "PASS",
-      "message": "Aplicación principal existe (75538 bytes)",
+      "message": "Aplicación principal existe (82447 bytes)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.075328"
+      "timestamp": "2025-09-10T17:37:22.241651"
     },
     {
       "test_name": "file_structure_modules_auth_system.py",
@@ -27,15 +27,15 @@
       "message": "Sistema de autenticación existe (32339 bytes)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.075605"
+      "timestamp": "2025-09-10T17:37:22.242295"
     },
     {
       "test_name": "file_structure_modules_ai_processor.py",
       "status": "PASS",
-      "message": "Procesador IA existe (14477 bytes)",
+      "message": "Procesador IA existe (17117 bytes)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.075821"
+      "timestamp": "2025-09-10T17:37:22.243034"
     },
     {
       "test_name": "file_structure_modules_chart_generator.py",
@@ -43,7 +43,7 @@
       "message": "Generador de gráficos existe (20497 bytes)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.076070"
+      "timestamp": "2025-09-10T17:37:22.243745"
     },
     {
       "test_name": "file_structure_modules_interactive_maps.py",
@@ -51,7 +51,7 @@
       "message": "Mapas interactivos existe (21171 bytes)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.076324"
+      "timestamp": "2025-09-10T17:37:22.244424"
     },
     {
       "test_name": "file_structure_data_users.json",
@@ -59,7 +59,7 @@
       "message": "Base de datos de usuarios existe (1469 bytes)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.076515"
+      "timestamp": "2025-09-10T17:37:22.245028"
     },
     {
       "test_name": "file_structure_assets_style.css",
@@ -67,15 +67,15 @@
       "message": "Estilos CSS existe (32733 bytes)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.076669"
+      "timestamp": "2025-09-10T17:37:22.245667"
     },
     {
       "test_name": "file_structure_requirements.txt",
       "status": "PASS",
-      "message": "Dependencias Python existe (1160 bytes)",
+      "message": "Dependencias Python existe (1370 bytes)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.076881"
+      "timestamp": "2025-09-10T17:37:22.246400"
     },
     {
       "test_name": "import_streamlit",
@@ -83,7 +83,7 @@
       "message": "Framework principal importado correctamente",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.077247"
+      "timestamp": "2025-09-10T17:37:22.247544"
     },
     {
       "test_name": "import_pandas",
@@ -91,7 +91,7 @@
       "message": "Manipulación de datos importado correctamente",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.077435"
+      "timestamp": "2025-09-10T17:37:22.247973"
     },
     {
       "test_name": "import_plotly",
@@ -99,7 +99,7 @@
       "message": "Visualizaciones importado correctamente",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.077569"
+      "timestamp": "2025-09-10T17:37:22.248399"
     },
     {
       "test_name": "import_folium",
@@ -107,7 +107,7 @@
       "message": "Mapas interactivos importado correctamente",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.308803"
+      "timestamp": "2025-09-10T17:37:22.762546"
     },
     {
       "test_name": "import_bcrypt",
@@ -115,7 +115,7 @@
       "message": "Encriptación importado correctamente",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.310848"
+      "timestamp": "2025-09-10T17:37:22.766128"
     },
     {
       "test_name": "import_groq",
@@ -123,7 +123,7 @@
       "message": "IA (opcional) importado correctamente",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.657400"
+      "timestamp": "2025-09-10T17:37:23.537528"
     },
     {
       "test_name": "data_hospitales_malaga_2025.csv",
@@ -131,7 +131,7 @@
       "message": "Dataset válido: 10 filas, 14 columnas",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.661735"
+      "timestamp": "2025-09-10T17:37:23.549169"
     },
     {
       "test_name": "data_demografia_malaga_2025.csv",
@@ -139,7 +139,7 @@
       "message": "Dataset válido: 20 filas, 9 columnas",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.663574"
+      "timestamp": "2025-09-10T17:37:23.553916"
     },
     {
       "test_name": "data_servicios_sanitarios_2025.csv",
@@ -147,7 +147,7 @@
       "message": "Dataset válido: 9 filas, 20 columnas",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.665349"
+      "timestamp": "2025-09-10T17:37:23.559234"
     },
     {
       "test_name": "data_accesibilidad_sanitaria_2025.csv",
@@ -155,7 +155,7 @@
       "message": "Dataset válido: 15 filas, 8 columnas",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.666830"
+      "timestamp": "2025-09-10T17:37:23.564128"
     },
     {
       "test_name": "data_indicadores_salud_2025.csv",
@@ -163,7 +163,7 @@
       "message": "Dataset válido: 6 filas, 15 columnas",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.669630"
+      "timestamp": "2025-09-10T17:37:23.572280"
     },
     {
       "test_name": "auth_user_admin",
@@ -171,7 +171,7 @@
       "message": "Usuario admin existe en sistema",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.671176"
+      "timestamp": "2025-09-10T17:37:23.574255"
     },
     {
       "test_name": "auth_user_gestor",
@@ -179,7 +179,7 @@
       "message": "Usuario gestor.malaga existe en sistema",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.671400"
+      "timestamp": "2025-09-10T17:37:23.574628"
     },
     {
       "test_name": "auth_user_analista",
@@ -187,7 +187,7 @@
       "message": "Usuario analista.datos existe en sistema",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.671553"
+      "timestamp": "2025-09-10T17:37:23.574904"
     },
     {
       "test_name": "auth_user_invitado",
@@ -195,7 +195,7 @@
       "message": "Usuario demo existe en sistema",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.671667"
+      "timestamp": "2025-09-10T17:37:23.575235"
     },
     {
       "test_name": "env_GROQ_API_KEY",
@@ -203,7 +203,7 @@
       "message": "Clave API para Chat IA configurada",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.672419"
+      "timestamp": "2025-09-10T17:37:23.577046"
     },
     {
       "test_name": "env_JWT_SECRET",
@@ -211,7 +211,7 @@
       "message": "Clave secreta para JWT configurada",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.672591"
+      "timestamp": "2025-09-10T17:37:23.577366"
     },
     {
       "test_name": "responsive_desktop_hd_layout_adaptation",
@@ -219,7 +219,7 @@
       "message": "Layout se adapta correctamente en desktop_hd (1920x1080)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.673083"
+      "timestamp": "2025-09-10T17:37:23.578241"
     },
     {
       "test_name": "responsive_desktop_hd_text_readability",
@@ -227,7 +227,7 @@
       "message": "Texto legible sin zoom en desktop_hd (1920x1080)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.673137"
+      "timestamp": "2025-09-10T17:37:23.578297"
     },
     {
       "test_name": "responsive_desktop_hd_button_size",
@@ -235,7 +235,7 @@
       "message": "Botones suficientemente grandes en desktop_hd (1920x1080)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.673158"
+      "timestamp": "2025-09-10T17:37:23.578331"
     },
     {
       "test_name": "responsive_desktop_hd_navigation_usable",
@@ -243,7 +243,7 @@
       "message": "Navegación usable en desktop_hd (1920x1080)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.673176"
+      "timestamp": "2025-09-10T17:37:23.578363"
     },
     {
       "test_name": "responsive_desktop_standard_layout_adaptation",
@@ -251,7 +251,7 @@
       "message": "Layout se adapta correctamente en desktop_standard (1366x768)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.673335"
+      "timestamp": "2025-09-10T17:37:23.578821"
     },
     {
       "test_name": "responsive_desktop_standard_text_readability",
@@ -259,7 +259,7 @@
       "message": "Texto legible sin zoom en desktop_standard (1366x768)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.673361"
+      "timestamp": "2025-09-10T17:37:23.578894"
     },
     {
       "test_name": "responsive_desktop_standard_button_size",
@@ -267,7 +267,7 @@
       "message": "Botones suficientemente grandes en desktop_standard (1366x768)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.673378"
+      "timestamp": "2025-09-10T17:37:23.578949"
     },
     {
       "test_name": "responsive_desktop_standard_navigation_usable",
@@ -275,7 +275,7 @@
       "message": "Navegación usable en desktop_standard (1366x768)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.673395"
+      "timestamp": "2025-09-10T17:37:23.579009"
     },
     {
       "test_name": "responsive_tablet_landscape_layout_adaptation",
@@ -283,7 +283,7 @@
       "message": "Layout se adapta correctamente en tablet_landscape (1024x768)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.673536"
+      "timestamp": "2025-09-10T17:37:23.579457"
     },
     {
       "test_name": "responsive_tablet_landscape_text_readability",
@@ -291,7 +291,7 @@
       "message": "Texto legible sin zoom en tablet_landscape (1024x768)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.673553"
+      "timestamp": "2025-09-10T17:37:23.579506"
     },
     {
       "test_name": "responsive_tablet_landscape_button_size",
@@ -299,7 +299,7 @@
       "message": "Botones suficientemente grandes en tablet_landscape (1024x768)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.673566"
+      "timestamp": "2025-09-10T17:37:23.579549"
     },
     {
       "test_name": "responsive_tablet_landscape_navigation_usable",
@@ -307,7 +307,7 @@
       "message": "Navegación usable en tablet_landscape (1024x768)",
       "execution_time": 0,
       "device": "desktop",
-      "timestamp": "2025-09-07T11:19:27.673577"
+      "timestamp": "2025-09-10T17:37:23.579582"
     },
     {
       "test_name": "responsive_tablet_portrait_layout_adaptation",
@@ -315,7 +315,7 @@
       "message": "Layout se adapta correctamente en tablet_portrait (768x1024)",
       "execution_time": 0,
       "device": "tablet",
-      "timestamp": "2025-09-07T11:19:27.673734"
+      "timestamp": "2025-09-10T17:37:23.579896"
     },
     {
       "test_name": "responsive_tablet_portrait_text_readability",
@@ -323,7 +323,7 @@
       "message": "Texto legible sin zoom en tablet_portrait (768x1024)",
       "execution_time": 0,
       "device": "tablet",
-      "timestamp": "2025-09-07T11:19:27.673758"
+      "timestamp": "2025-09-10T17:37:23.579956"
     },
     {
       "test_name": "responsive_tablet_portrait_button_size",
@@ -331,7 +331,7 @@
       "message": "Botones suficientemente grandes en tablet_portrait (768x1024)",
       "execution_time": 0,
       "device": "tablet",
-      "timestamp": "2025-09-07T11:19:27.673771"
+      "timestamp": "2025-09-10T17:37:23.580001"
     },
     {
       "test_name": "responsive_tablet_portrait_navigation_usable",
@@ -339,7 +339,7 @@
       "message": "Navegación usable en tablet_portrait (768x1024)",
       "execution_time": 0,
       "device": "tablet",
-      "timestamp": "2025-09-07T11:19:27.673785"
+      "timestamp": "2025-09-10T17:37:23.580047"
     },
     {
       "test_name": "responsive_mobile_large_layout_adaptation",
@@ -347,7 +347,7 @@
       "message": "Layout se adapta correctamente en mobile_large (414x896)",
       "execution_time": 0,
       "device": "mobile",
-      "timestamp": "2025-09-07T11:19:27.674048"
+      "timestamp": "2025-09-10T17:37:23.580426"
     },
     {
       "test_name": "responsive_mobile_large_text_readability",
@@ -355,7 +355,7 @@
       "message": "Texto legible sin zoom en mobile_large (414x896)",
       "execution_time": 0,
       "device": "mobile",
-      "timestamp": "2025-09-07T11:19:27.674087"
+      "timestamp": "2025-09-10T17:37:23.580595"
     },
     {
       "test_name": "responsive_mobile_large_button_size",
@@ -363,7 +363,7 @@
       "message": "Botones suficientemente grandes en mobile_large (414x896)",
       "execution_time": 0,
       "device": "mobile",
-      "timestamp": "2025-09-07T11:19:27.674107"
+      "timestamp": "2025-09-10T17:37:23.580653"
     },
     {
       "test_name": "responsive_mobile_large_navigation_usable",
@@ -371,7 +371,7 @@
       "message": "Navegación usable en mobile_large (414x896)",
       "execution_time": 0,
       "device": "mobile",
-      "timestamp": "2025-09-07T11:19:27.674125"
+      "timestamp": "2025-09-10T17:37:23.580706"
     },
     {
       "test_name": "responsive_mobile_standard_layout_adaptation",
@@ -379,7 +379,7 @@
       "message": "Layout se adapta correctamente en mobile_standard (375x667)",
       "execution_time": 0,
       "device": "mobile",
-      "timestamp": "2025-09-07T11:19:27.674330"
+      "timestamp": "2025-09-10T17:37:23.581121"
     },
     {
       "test_name": "responsive_mobile_standard_text_readability",
@@ -387,7 +387,7 @@
       "message": "Texto legible sin zoom en mobile_standard (375x667)",
       "execution_time": 0,
       "device": "mobile",
-      "timestamp": "2025-09-07T11:19:27.674359"
+      "timestamp": "2025-09-10T17:37:23.581197"
     },
     {
       "test_name": "responsive_mobile_standard_button_size",
@@ -395,7 +395,7 @@
       "message": "Botones suficientemente grandes en mobile_standard (375x667)",
       "execution_time": 0,
       "device": "mobile",
-      "timestamp": "2025-09-07T11:19:27.674372"
+      "timestamp": "2025-09-10T17:37:23.581253"
     },
     {
       "test_name": "responsive_mobile_standard_navigation_usable",
@@ -403,15 +403,15 @@
       "message": "Navegación usable en mobile_standard (375x667)",
       "execution_time": 0,
       "device": "mobile",
-      "timestamp": "2025-09-07T11:19:27.674383"
+      "timestamp": "2025-09-10T17:37:23.581302"
     },
     {
       "test_name": "responsive_mobile_small_layout_adaptation",
-      "status": "FAIL",
-      "message": "Layout se adapta correctamente FALLA en mobile_small (360x640)",
+      "status": "PASS",
+      "message": "Layout se adapta correctamente en mobile_small (360x640)",
       "execution_time": 0,
       "device": "mobile",
-      "timestamp": "2025-09-07T11:19:27.674545"
+      "timestamp": "2025-09-10T17:37:23.581683"
     },
     {
       "test_name": "responsive_mobile_small_text_readability",
@@ -419,7 +419,7 @@
       "message": "Texto legible sin zoom en mobile_small (360x640)",
       "execution_time": 0,
       "device": "mobile",
-      "timestamp": "2025-09-07T11:19:27.674572"
+      "timestamp": "2025-09-10T17:37:23.581750"
     },
     {
       "test_name": "responsive_mobile_small_button_size",
@@ -427,7 +427,7 @@
       "message": "Botones suficientemente grandes en mobile_small (360x640)",
       "execution_time": 0,
       "device": "mobile",
-      "timestamp": "2025-09-07T11:19:27.674589"
+      "timestamp": "2025-09-10T17:37:23.581803"
     },
     {
       "test_name": "responsive_mobile_small_navigation_usable",
@@ -435,20 +435,19 @@
       "message": "Navegación usable en mobile_small (360x640)",
       "execution_time": 0,
       "device": "mobile",
-      "timestamp": "2025-09-07T11:19:27.674608"
+      "timestamp": "2025-09-10T17:37:23.581854"
     }
   ],
   "performance_metrics": {
     "initial_load_time": {
-      "value": 0.028928279876708984,
+      "value": 0.030071735382080078,
       "unit": "seconds",
-      "timestamp": "2025-09-07T11:19:27.074129"
+      "timestamp": "2025-09-10T17:37:22.239427"
     }
   },
   "compatibility_matrix": {},
   "recommendations": [
-    "❌ 1 pruebas fallaron. Revisar logs detallados.",
-    "✅ Excelente tasa de éxito (98.14814814814815%). Sistema estable."
+    "✅ Excelente tasa de éxito (100.0%). Sistema estable."
   ],
-  "success_rate": 98.15
+  "success_rate": 100.0
 }

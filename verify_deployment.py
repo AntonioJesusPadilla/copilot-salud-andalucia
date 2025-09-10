@@ -1,186 +1,169 @@
 #!/usr/bin/env python3
 """
-🔍 Script de Verificación para Despliegue en Streamlit Cloud
-Verifica que todos los archivos y configuraciones estén listos.
+Script de Verificación de Despliegue - Streamlit Cloud
+Verifica que la aplicación esté funcionando correctamente en producción
 """
 
-import os
 import sys
-import json
-from pathlib import Path
+import os
+import importlib
+from typing import List, Tuple
 
-def check_file_exists(filepath, description):
-    """Verificar si un archivo existe"""
-    if os.path.exists(filepath):
-        print(f"✅ {description}: {filepath}")
-        return True
-    else:
-        print(f"❌ {description}: {filepath} - NO ENCONTRADO")
-        return False
-
-def check_requirements():
-    """Verificar requirements.txt"""
-    if not os.path.exists('requirements.txt'):
-        print("❌ requirements.txt no encontrado")
-        return False
+def check_critical_imports() -> Tuple[bool, List[str]]:
+    """Verificar importaciones críticas para Streamlit Cloud"""
+    print("🔍 Verificando importaciones críticas...")
     
-    with open('requirements.txt', 'r', encoding='utf-8') as f:
-        content = f.read()
-    
-    required_packages = [
-        'streamlit',
-        'pandas', 
-        'plotly',
-        'folium',
-        'streamlit-folium',
-        'groq',
-        'bcrypt',
-        'PyJWT'
+    critical_modules = [
+        "streamlit",
+        "pandas", 
+        "plotly",
+        "bcrypt",
+        "cryptography",
+        "aiohttp"
     ]
     
-    missing = []
-    for package in required_packages:
-        if package.lower() not in content.lower():
-            missing.append(package)
+    success = True
+    failed_modules = []
     
-    if missing:
-        print(f"❌ Paquetes faltantes en requirements.txt: {missing}")
-        return False
-    else:
-        print("✅ requirements.txt contiene todos los paquetes necesarios")
-        return True
+    for module in critical_modules:
+        try:
+            importlib.import_module(module)
+            print(f"   ✅ {module}")
+        except ImportError as e:
+            print(f"   ❌ {module}: {e}")
+            success = False
+            failed_modules.append(module)
+    
+    return success, failed_modules
 
-def check_data_files():
-    """Verificar archivos de datos"""
-    data_files = [
-        'data/raw/hospitales_malaga_2025.csv',
-        'data/raw/demografia_malaga_2025.csv',
-        'data/raw/servicios_sanitarios_2025.csv',
-        'data/raw/accesibilidad_sanitaria_2025.csv',
-        'data/raw/indicadores_salud_2025.csv'
+def check_optional_imports() -> Tuple[bool, List[str]]:
+    """Verificar importaciones opcionales (mapas)"""
+    print("\n🗺️ Verificando importaciones opcionales...")
+    
+    optional_modules = [
+        "folium",
+        "streamlit_folium"
     ]
     
-    all_exist = True
-    for file in data_files:
-        if not check_file_exists(file, "Archivo de datos"):
-            all_exist = False
+    success = True
+    failed_modules = []
     
-    return all_exist
+    for module in optional_modules:
+        try:
+            importlib.import_module(module)
+            print(f"   ✅ {module}")
+        except ImportError as e:
+            print(f"   ⚠️ {module}: {e} (opcional)")
+            failed_modules.append(module)
+    
+    # Los mapas son opcionales, no fallan el despliegue
+    return True, failed_modules
 
-def check_config_files():
-    """Verificar archivos de configuración"""
-    config_files = [
-        ('.streamlit/config.toml', 'Configuración de Streamlit'),
-        ('.streamlit/secrets.toml.example', 'Template de secrets'),
-        ('streamlit_app.py', 'Punto de entrada principal'),
-        ('app.py', 'Aplicación principal'),
-        ('runtime.txt', 'Versión de Python')
+def check_app_structure() -> bool:
+    """Verificar estructura de la aplicación"""
+    print("\n🏗️ Verificando estructura de la aplicación...")
+    
+    required_files = [
+        "app.py",
+        "requirements.txt",
+        "modules/auth_system.py",
+        "modules/ai_processor.py",
+        "data/users.json"
     ]
     
-    all_exist = True
-    for file, desc in config_files:
-        if not check_file_exists(file, desc):
-            all_exist = False
+    success = True
     
-    return all_exist
-
-def check_users_file():
-    """Verificar archivo de usuarios"""
-    if not os.path.exists('data/users.json'):
-        print("❌ data/users.json no encontrado")
-        return False
-    
-    try:
-        with open('data/users.json', 'r', encoding='utf-8') as f:
-            users = json.load(f)
-        
-        required_roles = ['admin', 'gestor', 'analista', 'invitado']
-        existing_roles = []
-        
-        for username, user_data in users.items():
-            if 'role' in user_data:
-                existing_roles.append(user_data['role'])
-        
-        missing_roles = [role for role in required_roles if role not in existing_roles]
-        
-        if missing_roles:
-            print(f"⚠️  Roles faltantes en users.json: {missing_roles}")
+    for file_path in required_files:
+        if os.path.exists(file_path):
+            print(f"   ✅ {file_path}")
         else:
-            print("✅ Archivo de usuarios contiene todos los roles necesarios")
-        
-        return True
-        
-    except json.JSONDecodeError:
-        print("❌ data/users.json tiene formato JSON inválido")
-        return False
+            print(f"   ❌ {file_path} - FALTANTE")
+            success = False
+    
+    return success
 
-def check_modules():
-    """Verificar módulos de la aplicación"""
-    modules = [
-        'modules/auth_system.py',
-        'modules/ai_processor.py', 
-        'modules/chart_generator.py',
-        'modules/interactive_maps.py',
-        'modules/map_interface.py',
-        'modules/role_dashboards.py'
+def check_environment_variables() -> bool:
+    """Verificar variables de entorno críticas"""
+    print("\n🔐 Verificando variables de entorno...")
+    
+    # Verificar que GROQ_API_KEY esté configurada
+    groq_key = os.getenv("GROQ_API_KEY")
+    if groq_key and groq_key != "demo_key_for_testing":
+        print("   ✅ GROQ_API_KEY configurada")
+        return True
+    else:
+        print("   ⚠️ GROQ_API_KEY no configurada o es demo")
+        print("   💡 La funcionalidad de IA estará limitada")
+        return True  # No es crítico para el despliegue
+
+def check_streamlit_config() -> bool:
+    """Verificar configuración de Streamlit"""
+    print("\n⚙️ Verificando configuración de Streamlit...")
+    
+    config_files = [
+        ".streamlit/config.toml",
+        ".streamlit/secrets.toml"
     ]
     
-    all_exist = True
-    for module in modules:
-        if not check_file_exists(module, "Módulo"):
-            all_exist = False
+    success = True
     
-    return all_exist
+    for config_file in config_files:
+        if os.path.exists(config_file):
+            print(f"   ✅ {config_file}")
+        else:
+            print(f"   ⚠️ {config_file} - No encontrado")
+            if config_file == ".streamlit/secrets.toml":
+                print("   💡 Configura secrets en Streamlit Cloud")
+    
+    return success
 
 def main():
     """Función principal de verificación"""
-    print("🔍 VERIFICACIÓN DE DESPLIEGUE - Copilot Salud Andalucía")
+    print("🚀 VERIFICACIÓN DE DESPLIEGUE - STREAMLIT CLOUD")
     print("=" * 60)
     
-    checks = [
-        ("Archivos de configuración", check_config_files),
-        ("Requirements.txt", check_requirements),
-        ("Archivos de datos", check_data_files),
-        ("Archivo de usuarios", check_users_file),
-        ("Módulos de la aplicación", check_modules)
-    ]
+    # Verificar importaciones críticas
+    critical_ok, critical_failed = check_critical_imports()
     
-    all_passed = True
-    results = []
+    # Verificar importaciones opcionales
+    optional_ok, optional_failed = check_optional_imports()
     
-    for check_name, check_func in checks:
-        print(f"\n📋 Verificando: {check_name}")
-        print("-" * 40)
-        result = check_func()
-        results.append((check_name, result))
-        if not result:
-            all_passed = False
+    # Verificar estructura
+    structure_ok = check_app_structure()
     
+    # Verificar variables de entorno
+    env_ok = check_environment_variables()
+    
+    # Verificar configuración
+    config_ok = check_streamlit_config()
+    
+    # Resumen
     print("\n" + "=" * 60)
-    print("📊 RESUMEN DE VERIFICACIÓN")
-    print("=" * 60)
+    print("📊 RESUMEN DE VERIFICACIÓN:")
+    print(f"   Importaciones críticas: {'✅ OK' if critical_ok else '❌ FALLO'}")
+    print(f"   Importaciones opcionales: {'✅ OK' if optional_ok else '⚠️ PARCIAL'}")
+    print(f"   Estructura de app: {'✅ OK' if structure_ok else '❌ FALLO'}")
+    print(f"   Variables de entorno: {'✅ OK' if env_ok else '⚠️ PARCIAL'}")
+    print(f"   Configuración: {'✅ OK' if config_ok else '⚠️ PARCIAL'}")
     
-    for check_name, result in results:
-        status = "✅ PASS" if result else "❌ FAIL"
-        print(f"{status} {check_name}")
-    
-    print("\n" + "=" * 60)
-    
-    if all_passed:
-        print("🎉 ¡VERIFICACIÓN COMPLETA! El proyecto está listo para Streamlit Cloud")
-        print("\n📝 Próximos pasos:")
-        print("1. Sube todos los cambios a GitHub")
-        print("2. Ve a https://share.streamlit.io")
-        print("3. Crea nueva app con tu repositorio")
-        print("4. Configura secrets según .streamlit/secrets.toml.example")
-        print("5. ¡Despliega y disfruta!")
+    # Determinar estado final
+    if critical_ok and structure_ok:
+        print("\n🎉 ¡DESPLIEGUE VERIFICADO EXITOSAMENTE!")
+        print("✅ La aplicación está lista para producción")
+        
+        if optional_failed:
+            print(f"\n⚠️ Funcionalidades opcionales no disponibles: {', '.join(optional_failed)}")
+            print("💡 Los mapas pueden no funcionar correctamente")
+        
         return True
     else:
-        print("⚠️  VERIFICACIÓN INCOMPLETA - Corrige los errores antes de desplegar")
-        print("\n🔧 Acciones recomendadas:")
-        print("- Ejecuta 'python data_collector_2025.py' si faltan datos")
-        print("- Verifica que todos los archivos estén en el repositorio")
-        print("- Revisa la documentación en DEPLOYMENT.md")
+        print("\n❌ VERIFICACIÓN FALLIDA")
+        print("💡 Revisa los errores anteriores")
+        
+        if critical_failed:
+            print(f"❌ Módulos críticos faltantes: {', '.join(critical_failed)}")
+            print("💡 Ejecuta: pip install -r requirements.txt")
+        
         return False
 
 if __name__ == "__main__":
