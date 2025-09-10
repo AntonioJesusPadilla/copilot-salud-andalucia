@@ -20,9 +20,9 @@ def check_environment():
     
     # Verificar archivos críticos
     required_files = [
-        "app.py",
-        "requirements.txt",
-        ".streamlit/config.toml"
+        "src/app.py",
+        "config/requirements.txt",
+        "config/.streamlit/config.toml"
     ]
     
     for file_path in required_files:
@@ -74,7 +74,7 @@ def start_application():
     
     # Comando para iniciar Streamlit
     cmd = [
-        sys.executable, "-m", "streamlit", "run", "app.py",
+        sys.executable, "-m", "streamlit", "run", "src/app.py",
         "--server.port", "8501",
         "--server.headless", "true",
         "--browser.gatherUsageStats", "false"

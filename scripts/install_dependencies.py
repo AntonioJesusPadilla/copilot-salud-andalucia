@@ -38,14 +38,14 @@ def install_dependencies():
     print("=" * 60)
     
     # Verificar que requirements.txt existe
-    if not os.path.exists("requirements.txt"):
-        print("❌ Archivo requirements.txt no encontrado")
+    if not os.path.exists("config/requirements.txt"):
+        print("❌ Archivo config/requirements.txt no encontrado")
         return False
     
     # Comandos de instalación
     commands = [
         ("pip install --upgrade pip", "Actualizando pip"),
-        ("pip install -r requirements.txt", "Instalando dependencias principales"),
+        ("pip install -r config/requirements.txt", "Instalando dependencias principales"),
         ("pip install --upgrade geopy folium geopandas shapely pyproj", "Instalando dependencias de mapas"),
         ("pip install --upgrade cryptography aiohttp", "Instalando dependencias de seguridad"),
     ]
@@ -114,18 +114,18 @@ def setup_config_files():
     """Configurar archivos de configuración"""
     print("⚙️ Configurando archivos de configuración...")
     
-    # Crear directorio .streamlit si no existe
-    os.makedirs(".streamlit", exist_ok=True)
+    # Crear directorio config/.streamlit si no existe
+    os.makedirs("config/.streamlit", exist_ok=True)
     
     # Verificar si secrets.toml existe
-    if not os.path.exists(".streamlit/secrets.toml"):
-        if os.path.exists(".streamlit/secrets.toml.example"):
+    if not os.path.exists("config/.streamlit/secrets.toml"):
+        if os.path.exists("config/.streamlit/secrets.toml.example"):
             print("📋 Archivo de ejemplo de secrets encontrado")
-            print("💡 Copia .streamlit/secrets.toml.example a .streamlit/secrets.toml")
+            print("💡 Copia config/.streamlit/secrets.toml.example a config/.streamlit/secrets.toml")
             print("   y configura tus API keys")
         else:
             print("⚠️ Archivo de secrets no encontrado")
-            print("💡 Crea .streamlit/secrets.toml con tu GROQ_API_KEY")
+            print("💡 Crea config/.streamlit/secrets.toml con tu GROQ_API_KEY")
     
     print("✅ Configuración de archivos completada")
     return True
@@ -148,7 +148,7 @@ def main():
     # Instalar dependencias
     if not install_dependencies():
         print("\n❌ Error instalando dependencias")
-        print("💡 Intenta instalar manualmente: pip install -r requirements.txt")
+        print("💡 Intenta instalar manualmente: pip install -r config/requirements.txt")
         sys.exit(1)
     
     # Verificar instalación

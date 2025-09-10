@@ -8,13 +8,13 @@ import sys
 from dotenv import load_dotenv
 
 # Añadir módulos al path de forma más robusta
-modules_path = os.path.join(os.path.dirname(__file__), 'modules')
+modules_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'modules')
 if modules_path not in sys.path:
     sys.path.append(modules_path)
 
 # Importar sistema de autenticación
 try:
-    from modules.auth_system import (
+    from modules.core.auth_system import (
         check_authentication, render_login_page, logout, 
         render_user_management, render_user_profile, HealthAuthenticator
     )
@@ -25,8 +25,8 @@ except ImportError as e:
 
 # Importar módulos IA
 try:
-    from modules.ai_processor import HealthAnalyticsAI, HealthMetricsCalculator
-    from modules.chart_generator import SmartChartGenerator, DataAnalyzer
+    from modules.ai.ai_processor import HealthAnalyticsAI, HealthMetricsCalculator
+    from modules.visualization.chart_generator import SmartChartGenerator, DataAnalyzer
     AI_AVAILABLE = True
 except ImportError as e:
         st.error(f"❌ Error importando módulos IA: {str(e)}")
@@ -55,8 +55,8 @@ try:
             if 'modules.interactive_maps' in sys.modules:
                 importlib.reload(sys.modules['modules.interactive_maps'])
             
-            from modules.map_interface import MapInterface
-            from modules.interactive_maps import EpicHealthMaps
+            from modules.visualization.map_interface import MapInterface
+            from modules.visualization.interactive_maps import EpicHealthMaps
             MAPS_AVAILABLE = True
         except ImportError as module_error:
             st.warning(f"⚠️ Módulos de mapas no disponibles: {str(module_error)}")
@@ -71,7 +71,7 @@ except Exception as e:
 
 # Importar dashboards personalizados por rol
 try:
-    from modules.role_dashboards import RoleDashboards
+    from modules.core.role_dashboards import RoleDashboards
     ROLE_DASHBOARDS_AVAILABLE = True
 except ImportError as e:
     st.error(f"❌ Error importando dashboards por rol: {str(e)}")
@@ -79,10 +79,10 @@ except ImportError as e:
 
 # Importar sistemas de optimización y seguridad
 try:
-    from modules.performance_optimizer import get_performance_optimizer, PerformanceOptimizer
-    from modules.security_auditor import get_security_auditor, SecurityAuditor
-    from modules.rate_limiter import get_rate_limiter, RateLimiter
-    from modules.data_encryption import get_data_encryption, DataEncryption
+    from modules.performance.performance_optimizer import get_performance_optimizer, PerformanceOptimizer
+    from modules.security.security_auditor import get_security_auditor, SecurityAuditor
+    from modules.security.rate_limiter import get_rate_limiter, RateLimiter
+    from modules.security.data_encryption import get_data_encryption, DataEncryption
     OPTIMIZATION_AVAILABLE = True
 except ImportError as e:
     st.error(f"❌ Error importando sistemas de optimización: {str(e)}")
