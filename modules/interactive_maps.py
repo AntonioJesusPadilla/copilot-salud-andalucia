@@ -5,8 +5,15 @@ import numpy as np
 from typing import Dict, List, Tuple
 import json
 import streamlit as st
-from geopy.distance import geodesic
 import plotly.express as px
+
+# Importación opcional de geopy
+try:
+    from geopy.distance import geodesic
+    GEOPY_AVAILABLE = True
+except ImportError:
+    GEOPY_AVAILABLE = False
+    st.warning("⚠️ geopy no disponible - algunas funciones de mapas estarán limitadas")
 
 class EpicHealthMaps:
     def __init__(self):
