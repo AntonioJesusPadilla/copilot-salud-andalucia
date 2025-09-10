@@ -10,7 +10,9 @@ import jwt
 class HealthAuthenticator:
     def __init__(self):
         self.users_file = "data/users.json"
-        self.secret_key = os.getenv("JWT_SECRET", "health_copilot_secret_2025")
+        self.secret_key = os.getenv("JWT_SECRET_KEY", os.getenv("JWT_SECRET", None))
+        if not self.secret_key:
+            raise ValueError("JWT_SECRET_KEY no configurada. Configura la variable de entorno JWT_SECRET_KEY")
         self.users_db = self.load_users()
         
         # Roles del sistema sanitario con permisos específicos y personalización
