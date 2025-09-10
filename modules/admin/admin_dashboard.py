@@ -354,7 +354,7 @@ class AdminDashboard:
         
         try:
             # Importar módulo de IA
-            from modules.ai_processor import HealthAnalyticsAI
+            from modules.ai.ai_processor import HealthAnalyticsAI
             
             # Crear instancia temporal para obtener métricas
             ai_processor = HealthAnalyticsAI()

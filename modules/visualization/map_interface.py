@@ -5,7 +5,7 @@ import pandas as pd
 from typing import Dict
 
 try:
-    from modules.interactive_maps import EpicHealthMaps
+    from modules.visualization.interactive_maps import EpicHealthMaps
     MAPS_AVAILABLE = True
 except ImportError:
     try:
