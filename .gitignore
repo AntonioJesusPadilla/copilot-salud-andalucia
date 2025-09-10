@@ -147,6 +147,12 @@ Thumbs.db
 .streamlit/secrets.toml
 .streamlit/credentials.toml
 config/.streamlit/secrets.toml
+**/secrets.toml
+**/.env*
+
+# Archivos de configuración con secrets
+*.secrets
+*.keys
 
 # Project specific
 *.bak

@@ -6,3 +6,5 @@ libsqlite3-mod-spatialite
 build-essential
 libffi-dev
 libssl-dev
+libspatialindex-dev
+libgeos-c1v5
