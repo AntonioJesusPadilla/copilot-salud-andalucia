@@ -175,9 +175,16 @@ def load_health_datasets_legacy():
         return None
 
 # Configuración de la página
+# Intentar usar favicon personalizado, fallback a emoji
+favicon_path = "assets/favicon.svg"
+if os.path.exists(favicon_path):
+    page_icon = favicon_path
+else:
+    page_icon = "🏥"
+
 st.set_page_config(
-    page_title="Copilot Salud Andalucía - Secure",
-    page_icon="🔐",
+    page_title="Copilot Salud Andalucía",
+    page_icon=page_icon,
     layout="wide",
     initial_sidebar_state="expanded"
 )
