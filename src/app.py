@@ -7,10 +7,10 @@ import os
 import sys
 from dotenv import load_dotenv
 
-# Añadir módulos al path de forma más robusta
-modules_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'modules')
-if modules_path not in sys.path:
-    sys.path.append(modules_path)
+# Añadir directorio raíz del proyecto al path
+project_root = os.path.dirname(os.path.dirname(__file__))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
 # Importar sistema de autenticación
 try:
