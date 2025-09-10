@@ -1,0 +1,14 @@
+# Dependencias del sistema para Streamlit Cloud
+# Este archivo es necesario para instalar paquetes del sistema
+
+# Dependencias para mapas y geolocalización
+libgeos-dev
+libproj-dev
+libgdal-dev
+libspatialite-dev
+libsqlite3-mod-spatialite
+
+# Dependencias adicionales para Python
+build-essential
+libffi-dev
+libssl-dev
