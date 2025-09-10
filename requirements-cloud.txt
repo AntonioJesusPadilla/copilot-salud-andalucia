@@ -1,0 +1,34 @@
+# Core dependencies optimizadas para Streamlit Cloud
+streamlit>=1.29.0
+pandas>=2.1.0
+numpy>=1.24.0
+plotly>=5.17.0
+
+# AI and NLP
+groq>=0.4.0
+python-dotenv>=1.0.0
+
+# Data processing
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+
+# Visualization
+seaborn>=0.13.0
+matplotlib>=3.7.0
+
+# Authentication
+bcrypt>=4.1.0
+PyJWT>=2.8.0
+
+# Dependencias adicionales para estabilidad en cloud
+watchdog>=3.0.0
+pillow>=10.0.0
+pytz>=2023.3
+
+# Optimización y Seguridad
+cryptography>=41.0.0
+aiohttp>=3.8.0
+
+# MAPAS - versiones compatibles con Streamlit Cloud
+folium>=0.15.0
+streamlit-folium>=0.15.0
