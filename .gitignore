@@ -146,6 +146,7 @@ Thumbs.db
 # Streamlit específico
 .streamlit/secrets.toml
 .streamlit/credentials.toml
+config/.streamlit/secrets.toml
 
 # Project specific
 *.bak
