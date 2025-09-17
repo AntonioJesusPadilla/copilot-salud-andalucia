@@ -1,16 +1,31 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime
 import os
 import sys
+import re
+from io import StringIO
 from dotenv import load_dotenv
 
-# Añadir directorio raíz del proyecto al path
-project_root = os.path.dirname(os.path.dirname(__file__))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
+# Añadir directorios al path ANTES de importar módulos locales
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(current_dir)
+src_dir = os.path.join(project_root, 'src')
+
+# Asegurar que tanto la raíz como src están en el path
+for path in [project_root, src_dir]:
+    if path not in sys.path:
+        sys.path.insert(0, path)
+
+# Ahora importar módulos locales
+from modules.ai.streamlit_async_wrapper import get_streamlit_async_wrapper
+
+print(f"Project root: {project_root}")
+print(f"Source dir: {src_dir}")
+print(f"Python path: {sys.path}")
 
 # Importar sistema de autenticación
 try:
@@ -91,6 +106,495 @@ except ImportError as e:
 # Cargar variables de entorno
 load_dotenv()
 
+# Comprobar si reportlab está disponible para generación de PDF
+try:
+    import reportlab
+    from reportlab.lib.pagesizes import A4
+    from reportlab.pdfgen import canvas as rl_canvas
+    REPORTLAB_AVAILABLE = True
+    REPORTLAB_IMPORT_ERROR = None
+except Exception as e:
+    REPORTLAB_AVAILABLE = False
+    REPORTLAB_IMPORT_ERROR = str(e)
+
+def create_pdf_bytes(title: str, text: str, use_simple_header: bool = False) -> bytes:
+    """Genera un PDF profesional y elegante usando ReportLab Platypus.
+
+    Características mejoradas:
+    - Diseño profesional con cabecera corporativa
+    - Estilos tipográficos elegantes y consistentes
+    - Detección inteligente de secciones y tablas
+    - Formateo automático de contenido markdown
+    - Espaciado y disposición optimizada
+    - Pie de página con información contextual
+    """
+    if not REPORTLAB_AVAILABLE:
+        raise RuntimeError(f"reportlab no disponible: {REPORTLAB_IMPORT_ERROR}")
+
+    from io import BytesIO
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table as RLTable, TableStyle, PageBreak
+    from reportlab.lib.units import mm
+    from reportlab.lib import colors
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.utils import ImageReader
+    import os
+    import re
+
+    buffer = BytesIO()
+
+    left_margin = 18 * mm
+    right_margin = 18 * mm
+    top_margin = 22 * mm
+    bottom_margin = 18 * mm
+
+    doc = SimpleDocTemplate(buffer, pagesize=A4,
+                            rightMargin=right_margin, leftMargin=left_margin,
+                            topMargin=top_margin, bottomMargin=bottom_margin)
+    # Añadir el modo de header como atributo del documento
+    doc.simple_header = use_simple_header
+
+    # Registrar fuentes TTF si existen en assets/fonts/
+    font_name = 'Helvetica'
+    assets_fonts_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'assets', 'fonts')
+    try:
+        if os.path.isdir(assets_fonts_dir):
+            # Buscar una fuente preferente
+            for fname in os.listdir(assets_fonts_dir):
+                if fname.lower().endswith('.ttf'):
+                    font_path = os.path.join(assets_fonts_dir, fname)
+                    try:
+                        pdfmetrics.registerFont(TTFont('CustomFont', font_path))
+                        font_name = 'CustomFont'
+                        break
+                    except Exception:
+                        continue
+    except Exception:
+        pass
+
+    styles = getSampleStyleSheet()
+
+    # Estilos profesionales corporativos mejorados
+    main_title_style = ParagraphStyle(
+        'MainTitle', parent=styles['Heading1'],
+        fontName=font_name if font_name else 'Helvetica-Bold',
+        fontSize=24, leading=28,
+        spaceAfter=16, spaceBefore=8,
+        textColor=colors.white,
+        backColor=colors.HexColor('#3b82f6'),
+        borderWidth=1, borderColor=colors.HexColor('#1e40af'),
+        borderRadius=6,
+        leftIndent=16, rightIndent=16,
+        alignment=1  # Center
+    )
+
+    title_style = ParagraphStyle(
+        'ProfessionalTitle', parent=styles['Heading1'],
+        fontName=font_name if font_name else 'Helvetica-Bold',
+        fontSize=20, leading=24,
+        spaceAfter=12, spaceBefore=10,
+        textColor=colors.HexColor('#1e40af'),
+        backColor=colors.HexColor('#dbeafe'),
+        borderWidth=1, borderColor=colors.HexColor('#3b82f6'),
+        borderRadius=4,
+        leftIndent=12, rightIndent=12,
+        alignment=0  # Left align
+    )
+
+    subtitle_style = ParagraphStyle(
+        'ProfessionalSubtitle', parent=styles['Heading2'],
+        fontName=font_name if font_name else 'Helvetica-Bold',
+        fontSize=16, leading=20,
+        spaceBefore=12, spaceAfter=8,
+        textColor=colors.HexColor('#1e293b'),
+        backColor=colors.HexColor('#f8fafc'),
+        borderWidth=0, borderColor=colors.HexColor('#e2e8f0'),
+        borderRadius=3,
+        leftIndent=10, rightIndent=10,
+        alignment=0
+    )
+
+    heading_style = ParagraphStyle(
+        'ProfessionalHeading', parent=styles['Heading3'],
+        fontName=font_name if font_name else 'Helvetica-Bold',
+        fontSize=14, leading=17,
+        spaceBefore=10, spaceAfter=6,
+        textColor=colors.HexColor('#334155'),
+        backColor=colors.HexColor('#f1f5f9'),
+        leftIndent=8, rightIndent=8
+    )
+
+    body_style = ParagraphStyle(
+        'ProfessionalBody', parent=styles['BodyText'],
+        fontName=font_name if font_name else 'Helvetica',
+        fontSize=11, leading=15,
+        spaceBefore=4, spaceAfter=6,
+        textColor=colors.HexColor('#374151'),
+        alignment=4,  # Justify
+        leftIndent=0, rightIndent=0
+    )
+
+    important_style = ParagraphStyle(
+        'ImportantBox', parent=body_style,
+        backColor=colors.HexColor('#fef3c7'),
+        borderColor=colors.HexColor('#f59e0b'),
+        borderWidth=1, borderRadius=4,
+        leftIndent=14, rightIndent=14,
+        spaceBefore=8, spaceAfter=8,
+        textColor=colors.HexColor('#92400e')
+    )
+
+    recommendation_style = ParagraphStyle(
+        'RecommendationBox', parent=body_style,
+        backColor=colors.HexColor('#dcfce7'),
+        borderColor=colors.HexColor('#16a34a'),
+        borderWidth=1, borderRadius=4,
+        leftIndent=14, rightIndent=14,
+        spaceBefore=8, spaceAfter=8,
+        textColor=colors.HexColor('#166534')
+    )
+
+    conclusion_style = ParagraphStyle(
+        'ConclusionBox', parent=body_style,
+        backColor=colors.HexColor('#eff6ff'),
+        borderColor=colors.HexColor('#3b82f6'),
+        borderWidth=1, borderRadius=4,
+        leftIndent=14, rightIndent=14,
+        spaceBefore=8, spaceAfter=8,
+        textColor=colors.HexColor('#1e40af')
+    )
+
+    highlight_style = ParagraphStyle(
+        'HighlightBox', parent=body_style,
+        backColor=colors.HexColor('#dbeafe'),
+        borderColor=colors.HexColor('#3b82f6'),
+        borderWidth=1, borderRadius=4,
+        leftIndent=12, rightIndent=12,
+        spaceBefore=6, spaceAfter=6,
+        textColor=colors.HexColor('#1e40af'),
+        fontName=font_name if font_name else 'Helvetica-Bold'
+    )
+
+    list_style = ParagraphStyle(
+        'ListItem', parent=body_style,
+        leftIndent=20, rightIndent=0,
+        spaceBefore=2, spaceAfter=2,
+        bulletIndent=12,
+        bulletFontName=font_name if font_name else 'Helvetica-Bold',
+        bulletColor=colors.HexColor('#3b82f6')
+    )
+
+    small_style = ParagraphStyle(
+        'SmallText', parent=styles['BodyText'],
+        fontName=font_name if font_name else 'Helvetica',
+        fontSize=9, leading=11,
+        textColor=colors.HexColor('#64748b'),
+        spaceBefore=2, spaceAfter=2
+    )
+
+    story = []
+
+    # Helper: dibujar header/footer
+    def _header_footer(canvas, doc):
+        # Debug print para verificar el modo de header
+        print(f"Generating header with simple_mode: {doc.simple_header}")
+        canvas.saveState()
+        width, height = A4
+        # Logo en la izquierda si existe
+        try:
+            logo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'assets', 'logo.png')
+            if os.path.exists(logo_path):
+                img = ImageReader(logo_path)
+                img_w = 36
+                img_h = 36
+                canvas.drawImage(img, left_margin, height - top_margin + 6, width=img_w, height=img_h, preserveAspectRatio=True, mask='auto')
+        except Exception:
+            pass
+
+            # Elegir entre header simple o mejorado
+            try:
+                if doc.simple_header:
+                    # Header simple minimalista en rojo
+                    canvas.setFont(font_name if font_name else 'Helvetica', 12)
+                    canvas.setFillColor(colors.HexColor('#FF0000'))  # Rojo
+                    canvas.drawString(left_margin, height - top_margin + 12, "VERSIÓN SIMPLE")
+                    canvas.setFont(font_name if font_name else 'Helvetica-Bold', 14)
+                    canvas.drawString(left_margin, height - top_margin + 30, title)
+                    
+                    # Línea roja gruesa
+                    canvas.setStrokeColor(colors.red)
+                    canvas.setLineWidth(2)
+                    canvas.line(left_margin, height - top_margin + 4, width - right_margin, height - top_margin + 4)
+                else:
+                    # Header profesional con diseño médico/sanitario
+                    header_h = 75
+
+                    # Fondo degradado azul médico
+                    canvas.setFillColor(colors.HexColor('#1e40af'))  # Azul médico principal
+                    canvas.rect(0, height - top_margin - header_h + 4, width, header_h, fill=1, stroke=0)
+
+                    # Franja decorativa lateral
+                    canvas.setFillColor(colors.HexColor('#0ea5e9'))  # Azul claro
+                    canvas.rect(0, height - top_margin - header_h + 4, 8, header_h, fill=1, stroke=0)
+
+                    # Logo/símbolo médico (cruz)
+                    canvas.setFillColor(colors.white)
+                    cross_x = left_margin + 15
+                    cross_y = height - top_margin - 15
+                    # Cruz médica estilizada
+                    canvas.rect(cross_x - 1, cross_y - 8, 2, 16, fill=1, stroke=0)
+                    canvas.rect(cross_x - 6, cross_y - 1, 12, 2, fill=1, stroke=0)
+
+                    # Título principal con tipografía elegante
+                    canvas.setFont(font_name if font_name else 'Helvetica-Bold', 18)
+                    canvas.setFillColor(colors.white)
+                    canvas.drawString(left_margin + 35, height - top_margin - 8, title)
+
+                    # Subtítulo descriptivo
+                    canvas.setFont(font_name if font_name else 'Helvetica', 11)
+                    canvas.setFillColor(colors.HexColor('#bfdbfe'))
+                    canvas.drawString(left_margin + 35, height - top_margin - 25, "Sistema de Análisis Sanitario - Copilot Salud Andalucía")
+
+                    # Información contextual
+                    canvas.setFont(font_name if font_name else 'Helvetica', 9)
+                    canvas.setFillColor(colors.HexColor('#93c5fd'))
+                    fecha = datetime.now().strftime("%d de %B de %Y - %H:%M")
+                    canvas.drawString(left_margin + 35, height - top_margin - 40, f"Generado: {fecha}")
+
+                    # Línea decorativa inferior
+                    canvas.setStrokeColor(colors.HexColor('#0ea5e9'))
+                    canvas.setLineWidth(2)
+                    canvas.line(left_margin, height - top_margin - header_h + 2, width - right_margin, height - top_margin - header_h + 2)
+            except Exception:
+                # Fallback ultra simple
+                canvas.setFont(font_name if font_name else 'Helvetica-Bold', 12)
+                canvas.setFillColor(colors.black)
+                canvas.drawString(left_margin, height - top_margin + 18, title)        # Línea separadora
+        canvas.setStrokeColor(colors.grey)
+        canvas.setLineWidth(0.5)
+        canvas.line(left_margin, height - top_margin + 4, width - right_margin, height - top_margin + 4)
+
+        # Footer con paginado
+        canvas.setFont(font_name if font_name else 'Helvetica', 8)
+        canvas.setFillColor(colors.grey)
+        page_num_text = f"Página {canvas.getPageNumber()}"
+        canvas.drawRightString(width - right_margin, bottom_margin - 6, page_num_text)
+        canvas.restoreState()
+
+    # Añadir encabezado inicial visual en el story
+    story.append(Paragraph(title, title_style))
+    story.append(Spacer(1, 6))
+
+    # Detectar bloques de tablas Markdown y procesar el texto en bloques intercalados
+    lines = text.split('\n')
+    blocks = []
+    cur_table = []
+    cur_text = []
+    def flush_text():
+        nonlocal cur_text
+        if cur_text:
+            blocks.append(('text', '\n'.join(cur_text).strip()))
+            cur_text = []
+    def flush_table():
+        nonlocal cur_table
+        if cur_table:
+            blocks.append(('table', list(cur_table)))
+            cur_table = []
+
+    for line in lines:
+        if line.strip().startswith('|') and '|' in line:
+            # parte de tabla
+            if cur_text:
+                flush_text()
+            cur_table.append(line)
+        else:
+            if cur_table:
+                flush_table()
+            cur_text.append(line)
+    flush_table()
+    flush_text()
+
+    # Procesar bloques y añadir al story con estilos profesionales
+    for btype, content in blocks:
+        if btype == 'text':
+            # Procesar línea a línea con detección inteligente de contenido
+            for line in content.split('\n'):
+                ln = line.strip()
+                if not ln:
+                    # Espacio entre párrafos
+                    story.append(Spacer(1, 3))
+                    continue
+
+                # Encabezados con estilos específicos
+                if ln.startswith('# '):
+                    content_text = ln[2:].strip()
+                    story.append(Paragraph(content_text, main_title_style))
+                    story.append(Spacer(1, 6))
+                    continue
+                elif ln.startswith('## '):
+                    content_text = ln[3:].strip()
+                    story.append(Paragraph(content_text, title_style))
+                    story.append(Spacer(1, 4))
+                    continue
+                elif ln.startswith('### '):
+                    content_text = ln[4:].strip()
+                    story.append(Paragraph(content_text, subtitle_style))
+                    story.append(Spacer(1, 3))
+                    continue
+
+                # Detección de contenido importante y aplicación de estilos
+                ln_lower = ln.lower()
+
+                # Contenido con formato especial para información importante
+                if ln.startswith('**') and ln.endswith('**'):
+                    content_text = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", ln)
+                    story.append(Paragraph(content_text, highlight_style))
+                    continue
+
+                # Listas con viñetas usando el estilo de lista
+                elif ln.startswith('- ') or ln.startswith('* '):
+                    item = ln[2:].strip()
+                    # Reemplazar markdown en línea
+                    item = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", item)
+                    item = re.sub(r"\*(.+?)\*", r"<i>\1</i>", item)
+                    story.append(Paragraph(f"• {item}", list_style))
+                    continue
+
+                # Listas numeradas
+                elif re.match(r"^\d+\.\s+", ln):
+                    ln_repl = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", ln)
+                    ln_repl = re.sub(r"\*(.+?)\*", r"<i>\1</i>", ln_repl)
+                    story.append(Paragraph(ln_repl, list_style))
+                    continue
+
+                # Contenido importante (alertas)
+                elif any(word in ln_lower for word in ['importante', 'clave', 'crítico', 'esencial', 'alerta', 'atención']):
+                    # Agregar icono de alerta
+                    content_text = f"⚠️ {ln}"
+                    content_text = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", content_text)
+                    story.append(Paragraph(content_text, important_style))
+                    continue
+
+                # Recomendaciones
+                elif any(word in ln_lower for word in ['recomendación', 'sugerencia', 'mejora', 'optimización', 'propuesta']):
+                    content_text = f"💡 {ln}"
+                    content_text = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", content_text)
+                    story.append(Paragraph(content_text, recommendation_style))
+                    continue
+
+                # Conclusiones y resultados
+                elif any(word in ln_lower for word in ['conclusión', 'resultado', 'hallazgo', 'resumen', 'balance']):
+                    content_text = f"📋 {ln}"
+                    content_text = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", content_text)
+                    story.append(Paragraph(content_text, conclusion_style))
+                    continue
+
+                # Párrafo normal con procesamiento de markdown
+                else:
+                    safe = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", ln)
+                    safe = re.sub(r"\*(.+?)\*", r"<i>\1</i>", safe)
+                    # Mejorar espaciado
+                    safe = safe.replace('  ', ' ')
+                    if safe:  # Solo agregar si no está vacío
+                        story.append(Paragraph(safe, body_style))
+
+            story.append(Spacer(1, 4))
+        elif btype == 'table':
+            # Parsear tabla Markdown
+            try:
+                rows = []
+                for r in content:
+                    # eliminar barras iniciales/finales y split
+                    cols = [c.strip() for c in r.strip().strip('|').split('|')]
+                    rows.append(cols)
+                # Si la segunda fila es separador ---|---, quitarla
+                if len(rows) > 1 and all(set(cell) <= set('-: ') for cell in rows[1]):
+                    # eliminar fila 1
+                    rows.pop(1)
+                # Crear tabla profesional con estilo corporativo
+                tbl = RLTable(rows, hAlign='CENTER')
+                tbl.setStyle(TableStyle([
+                    # Cabecera con estilo corporativo
+                    ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#3b82f6')),
+                    ('TEXTCOLOR', (0,0), (-1,0), colors.white),
+                    ('FONTNAME', (0,0), (-1,0), font_name if font_name else 'Helvetica-Bold'),
+                    ('FONTSIZE', (0,0), (-1,0), 12),
+
+                    # Filas alternadas para mejor legibilidad
+                    ('BACKGROUND', (0,1), (-1,-1), colors.HexColor('#f8fafc')),
+                    ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, colors.HexColor('#f1f5f9')]),
+
+                    # Estilo de contenido
+                    ('FONTNAME', (0,1), (-1,-1), font_name if font_name else 'Helvetica'),
+                    ('FONTSIZE', (0,1), (-1,-1), 10),
+                    ('TEXTCOLOR', (0,1), (-1,-1), colors.HexColor('#374151')),
+
+                    # Bordes y alineación
+                    ('GRID', (0,0), (-1,-1), 1, colors.HexColor('#e5e7eb')),
+                    ('LINEBELOW', (0,0), (-1,0), 2, colors.HexColor('#1e40af')),
+                    ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+                    ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+
+                    # Espaciado interno mejorado
+                    ('LEFTPADDING', (0,0), (-1,-1), 8),
+                    ('RIGHTPADDING', (0,0), (-1,-1), 8),
+                    ('TOPPADDING', (0,0), (-1,-1), 6),
+                    ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+
+                    # Sombra sutil para la tabla
+                    ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#d1d5db')),
+                ]))
+
+                # Agregar título para la tabla
+                story.append(Paragraph("📊 Tabla de Datos", subtitle_style))
+                story.append(Spacer(1, 4))
+                story.append(tbl)
+                story.append(Spacer(1, 10))
+            except Exception:
+                # En caso de error, insertar como texto
+                story.append(Paragraph('\n'.join(content), body_style))
+                story.append(Spacer(1, 6))
+
+    # Agregar pie de página profesional al documento
+    story.append(Spacer(1, 20))
+
+    # Línea separadora elegante
+    footer_separator = Paragraph(
+        '<para align="center">═══════════════════════════════════════════════════</para>',
+        ParagraphStyle('FooterSeparator', parent=small_style, textColor=colors.HexColor('#9ca3af'))
+    )
+    story.append(footer_separator)
+    story.append(Spacer(1, 8))
+
+    # Información del documento
+    footer_info = f"""
+    <para align="center">
+    <b>📋 Documento generado por Copilot Salud Andalucía</b><br/>
+    Sistema de Análisis Inteligente para la Gestión Sanitaria<br/>
+    <i>Provincia de Málaga - {datetime.now().strftime('%d de %B de %Y')}</i><br/>
+    </para>
+    """
+    story.append(Paragraph(footer_info, small_style))
+    story.append(Spacer(1, 6))
+
+    # Información técnica
+    technical_info = f"""
+    <para align="center">
+    <font color="#64748b" size="8">
+    Generado con ReportLab • Formato PDF Profesional<br/>
+    © 2025 Sistema Sanitario Andaluz - Uso Interno
+    </font>
+    </para>
+    """
+    story.append(Paragraph(technical_info, small_style))
+
+    # Construir el documento con header/footer profesional
+    doc.build(story, onFirstPage=_header_footer, onLaterPages=_header_footer)
+    buffer.seek(0)
+    return buffer.read()
+
 def load_health_datasets_optimized(user_role: str = "invitado"):
     """Cargar datasets de salud con optimización avanzada por rol"""
     if not OPTIMIZATION_AVAILABLE:
@@ -112,7 +616,7 @@ def load_health_datasets_optimized(user_role: str = "invitado"):
         st.error(f"❌ Error en carga optimizada: {str(e)}")
         return load_health_datasets_legacy()
 
-@st.cache_data(ttl=3600, show_spinner="Cargando datos sanitarios...")
+@st.cache_data(ttl=3600)
 def load_health_datasets_legacy():
     """Cargar datasets de salud con optimización básica (fallback)"""
     try:
@@ -195,6 +699,14 @@ with open('assets/style.css', 'r', encoding='utf-8') as f:
 
 with open('assets/desktop_layout.css', 'r', encoding='utf-8') as f:
     desktop_css = f.read()
+
+# Cargar CSS extra si existe
+try:
+    with open('assets/extra_styles.css', 'r', encoding='utf-8') as f:
+        extra_css = f.read()
+    st.markdown(f"<style>{extra_css}</style>", unsafe_allow_html=True)
+except Exception:
+    extra_css = None
 
 st.markdown(f"""
 <style>
@@ -512,6 +1024,7 @@ class SecureHealthAnalyticsApp:
                 
                 if st.button("🏛️ Vista Ejecutiva", width="stretch"):
                     st.session_state.page = "main"
+                    st.session_state.selected_tab = "dashboard"
                     st.rerun()
                     
                 if self.has_permission('gestion_usuarios'):
@@ -521,41 +1034,39 @@ class SecureHealthAnalyticsApp:
                         
                 if st.button("📊 Análisis Estratégico", width="stretch"):
                     st.session_state.page = "main"
-                    st.rerun()
+                    st.session_state.selected_tab = "chat_ia"
                     
             elif sidebar_style == 'compact':
                 st.markdown("### ⚙️ Gestión")
                 
                 if st.button("📊 Dashboard", width="stretch"):
                     st.session_state.page = "main"
-                    st.rerun()
+                    st.session_state.selected_tab = "dashboard"
                     
                 if st.button("🗺️ Mapas", width="stretch"):
                     st.session_state.page = "main"
-                    st.rerun()
+                    st.session_state.selected_tab = "mapas"
                     
             elif sidebar_style == 'detailed':
                 st.markdown("### 📈 Análisis")
                 
                 if st.button("📊 Dashboard Analítico", width="stretch"):
                     st.session_state.page = "main"
-                    st.rerun()
+                    st.session_state.selected_tab = "dashboard"
                     
                 if st.button("🔍 Exploración de Datos", width="stretch"):
                     st.session_state.page = "main"
-                    st.rerun()
+                    st.session_state.selected_tab = "mapas"
                     
             else:  # minimal
                 st.markdown("### 📋 Navegación")
                 
                 if st.button("🏠 Inicio", width="stretch"):
                     st.session_state.page = "main"
-                    st.rerun()
             
             # Perfil siempre disponible
             if st.button("👤 Mi Perfil", width="stretch"):
                 st.session_state.page = "profile"
-                st.rerun()
                 
             st.markdown("---")
                 
@@ -601,56 +1112,27 @@ class SecureHealthAnalyticsApp:
             
             st.markdown("---")
             
-            # Permisos del usuario
-            st.markdown("### 🔐 Mis Permisos")
-            permissions = self.role_info['permissions']
-            permission_names = {
-                # Permisos generales
-                'acceso_completo': '🔓 Acceso Total',
-                'gestion_usuarios': '👥 Gestión de Usuarios',
-                'configuracion_sistema': '⚙️ Configuración del Sistema',
-                'analisis_ia': '🤖 Análisis con IA',
-                'reportes': '📋 Reportes Avanzados',
-                'planificacion': '📈 Planificación Estratégica',
-                'ver_datos': '👀 Visualización de Datos',
-                'analisis_equidad': '⚖️ Análisis de Equidad',
+            # Información del sistema
+            st.markdown("### ℹ️ Información del Sistema")
+            st.info(f"🎭 Rol: {self.role_info['name']}")
+            st.info(f"🏢 Organización: {self.user['organization']}")
+            
+            # Indicador de estado de la aplicación
+            if self.data:
+                st.success("✅ Datos cargados")
+            else:
+                st.warning("⚠️ Cargando datos...")
                 
-                # Permisos de mapas
-                'mapas_todos': '🌟 Todos los Mapas',
-                'mapas_estrategicos': '🎯 Mapas Estratégicos',
-                'mapas_sensibles': '🔒 Mapas con Datos Sensibles',
-                'mapas_operativos': '⚙️ Mapas Operativos',
-                'mapas_gestion': '📊 Mapas de Gestión',
-                'mapas_analiticos': '📈 Mapas Analíticos',
-                'mapas_demograficos': '👥 Mapas Demográficos',
-                'mapas_publicos': '🌐 Mapas Públicos'
-            }
-            
-            # Mostrar permisos organizados por categorías
-            general_perms = []
-            map_perms = []
-            
-            for perm in permissions:
-                perm_display = permission_names.get(perm, f"🔹 {perm}")
-                if perm.startswith('mapas_'):
-                    map_perms.append(perm_display)
-                else:
-                    general_perms.append(perm_display)
-            
-            # Permisos generales
-            if general_perms:
-                st.markdown("**🔧 Permisos Generales:**")
-                for perm_display in general_perms:
-                    st.markdown(f"• {perm_display}")
-            
-            # Permisos de mapas
-            if map_perms:
-                st.markdown("**🗺️ Permisos de Mapas:**")
-                for perm_display in map_perms:
-                    st.markdown(f"• {perm_display}")
+            if self.ai_processor:
+                st.success("🤖 IA Asíncrona activa")
+            else:
+                st.info("🔧 IA limitada")
 
 def main():
     """Función principal con autenticación completa"""
+    
+    # Importar re localmente para evitar problemas de ámbito en funciones anidadas
+    import re
     
     if not AUTH_AVAILABLE:
         st.error("❌ Sistema de autenticación no disponible. Instala: pip install bcrypt PyJWT")
@@ -668,6 +1150,11 @@ def main():
         st.error("❌ Error en la autenticación. Intenta iniciar sesión nuevamente.")
         logout()
         return
+    
+    # Verificar que los datos se cargaron correctamente
+    if app.data is None:
+        st.error("❌ Error cargando los datos. Por favor, recarga la página o contacta al administrador.")
+        st.stop()
     
     # Renderizar aplicación segura
     app.render_secure_header()
@@ -731,16 +1218,125 @@ def render_page_navigation(app):
         if len(tabs_available) == 1:
             tab_functions[0]()
         elif len(tabs_available) > 1:
+            # Verificar si hay un tab específico seleccionado desde el sidebar
+            selected_tab = st.session_state.get('selected_tab', None)
+            
+            # Crear tabs siempre
             tabs = st.tabs(tabs_available)
             
+            # Mostrar todos los tabs normalmente
             for i, tab_function in enumerate(tab_functions):
                 with tabs[i]:
                     tab_function()
+            
+            # Si hay un tab específico seleccionado, mostrar un mensaje informativo
+            if selected_tab:
+                if selected_tab == "dashboard":
+                    st.info("💡 **Vista Ejecutiva**: Haz clic en el tab 'Dashboard' para acceder a la vista ejecutiva")
+                elif selected_tab == "chat_ia":
+                    st.info("💡 **Análisis Estratégico**: Haz clic en el tab 'Chat IA' para realizar análisis con IA")
+                elif selected_tab == "reportes":
+                    st.info("💡 **Reportes**: Haz clic en el tab 'Reportes' para acceder a los reportes")
+                elif selected_tab == "planificacion":
+                    st.info("💡 **Planificación**: Haz clic en el tab 'Planificación' para acceder a las herramientas de planificación")
+                elif selected_tab == "mapas":
+                    st.info("💡 **Mapas**: Haz clic en el tab 'Mapas Épicos' para acceder a los mapas interactivos")
+                
+                # Limpiar la selección
+                st.session_state.selected_tab = None
         else:
             if app.user['role'] == 'invitado':
                 st.info("ℹ️ **Usuario Invitado**: Solo tienes acceso al Dashboard básico. Para más funcionalidades, contacta al administrador.")
             else:
                 st.error("❌ No tienes permisos para acceder a ninguna funcionalidad")
+
+def render_assistant_message_with_css(content):
+    """Renderizar mensaje del asistente con formato CSS adaptado para modo oscuro"""
+
+    # Dividir contenido por párrafos
+    paragraphs = content.split('\n\n')
+
+    for paragraph in paragraphs:
+        paragraph = paragraph.strip()
+        if not paragraph:
+            continue
+
+        lines = paragraph.split('\n')
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+
+            # Limpiar contenido para evitar problemas de renderizado
+            clean_line = line.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
+            # Títulos con ** ** (texto en negrita)
+            if line.startswith('**') and line.endswith('**') and len(line) > 4:
+                title_text = clean_line[2:-2].strip()
+                st.markdown(f"""
+                <div style="
+                    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+                    color: white !important;
+                    padding: 12px 16px !important;
+                    border-radius: 6px !important;
+                    margin: 12px 0 !important;
+                    border: 1px solid #16a34a !important;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+                ">
+                    <h4 style="margin: 0 !important; font-size: 16px !important; font-weight: 600 !important; color: white !important;">{title_text}</h4>
+                </div>
+                """, unsafe_allow_html=True)
+
+            # Elementos de lista que empiezan con -
+            elif line.startswith('- '):
+                list_text = clean_line[2:].strip()
+                # Procesar texto en negrita dentro de la lista
+                list_text = list_text.replace('**', '')
+                st.markdown(f"""
+                <div style="
+                    background: rgba(59, 130, 246, 0.1) !important;
+                    color: var(--text-color, #ffffff) !important;
+                    padding: 8px 12px !important;
+                    border-left: 4px solid #3b82f6 !important;
+                    margin: 6px 0 !important;
+                    border-radius: 0 4px 4px 0 !important;
+                ">
+                    <span style="color: var(--text-color, #ffffff) !important; font-size: 14px !important;">• {list_text}</span>
+                </div>
+                """, unsafe_allow_html=True)
+
+            # Texto con iconos al inicio
+            elif any(line.startswith(icon) for icon in ['📋', '✅', '📊', '💡', '❌', '⚠️', '🔒']):
+                st.markdown(f"""
+                <div style="
+                    background: rgba(99, 102, 241, 0.1) !important;
+                    color: var(--text-color, #ffffff) !important;
+                    padding: 10px 14px !important;
+                    border-radius: 6px !important;
+                    margin: 8px 0 !important;
+                    border: 1px solid rgba(99, 102, 241, 0.3) !important;
+                ">
+                    <span style="color: var(--text-color, #ffffff) !important; font-size: 14px !important;">{clean_line}</span>
+                </div>
+                """, unsafe_allow_html=True)
+
+            # Texto regular con formato mejorado
+            else:
+                # Procesar texto en negrita
+                processed_text = clean_line
+                if '**' in processed_text:
+                    processed_text = processed_text.replace('**', '<strong style="color: #3b82f6 !important;">', 1)
+                    processed_text = processed_text.replace('**', '</strong>', 1)
+
+                st.markdown(f"""
+                <div style="
+                    color: var(--text-color, #ffffff) !important;
+                    padding: 6px 0 !important;
+                    line-height: 1.5 !important;
+                ">
+                    <span style="color: var(--text-color, #ffffff) !important; font-size: 14px !important;">{processed_text}</span>
+                </div>
+                """, unsafe_allow_html=True)
 
 def render_secure_chat(app):
     """Chat con verificación de permisos, rate limiting y auditoría"""
@@ -873,7 +1469,11 @@ def render_secure_chat(app):
     # Mostrar historial específico del usuario
     for message in st.session_state[user_messages_key]:
         with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+            if message["role"] == "assistant":
+                # Convertir resumen de asistente a formato CSS para modo oscuro
+                render_assistant_message_with_css(message["content"])
+            else:
+                st.markdown(message["content"])
     
     # Input del usuario
     if prompt := st.chat_input(f"Consulta como {app.role_info['name']}..."):
@@ -901,84 +1501,574 @@ def render_secure_chat(app):
                 with st.spinner("🔒 Procesando consulta segura con IA asíncrona..."):
                     try:
                         # Procesar consulta con contexto de rol usando procesamiento asíncrono
-                        analysis = app.ai_processor.process_health_query_async(
+                        #analysis = app.ai_processor.process_health_query_async(
+                        #    enhanced_prompt, 
+                        #    app.data, 
+                        #    app.user['role']
+                        #)
+                        
+                        
+                        async_wrapper = get_streamlit_async_wrapper()
+                        analysis = async_wrapper.process_query_sync(
                             enhanced_prompt, 
                             app.data, 
                             app.user['role']
                         )
-                        
+
                         if analysis.get('analysis_type') != 'error':
-                            # Mostrar análisis con información de auditoría
+                            # Mostrar análisis completo con información de auditoría
+                            # Usar full_response si está disponible, sino usar main_insight
+                            full_response = analysis.get('full_response', '')
+                            main_insight = analysis.get('main_insight', 'Análisis completado')
+                            detailed_analysis = analysis.get('detailed_analysis', '')
+                            summary = analysis.get('summary', '')
+                            content = analysis.get('content', '')
+                            
+                            # Usar full_response como prioridad, sino combinar otros campos
+                            if full_response:
+                                full_analysis = full_response
+                            else:
+                                full_analysis = f"""
+# {main_insight}
+
+{detailed_analysis if detailed_analysis else ''}
+
+{summary if summary else ''}
+"""
+                                if detailed_analysis:
+                                    full_analysis += f"\n\n{detailed_analysis}"
+                                if summary:
+                                    full_analysis += f"\n\n{summary}"
+                                if content:
+                                    full_analysis += f"\n\n{content}"
+                            
+                            # Definir función de procesamiento de texto para evitar problemas de alcance
+                            def process_analysis_text(text):
+                                import re  # Importar re localmente para evitar problemas de ámbito
+                                # Eliminar divs y spans HTML
+                                text = text.strip()
+                                text = re.sub(r'<div[^>]*>|</div>|<span[^>]*>|</span>', '', text)
+                                
+                                # Convertir tablas mal formateadas a formato markdown
+                                table_pattern = r'\|\s*([^|\n]+)\s*\|\s*(\d[\d.,]*)\s*\|\s*(\d[\d.,]*)\s*\|\s*([^|\n]+)\s*\|'
+                                text = re.sub(table_pattern, 
+                                           lambda m: f"\n| {m.group(1).strip()} | {m.group(2)} | {m.group(3)} | {m.group(4).strip()} |", 
+                                           text)
+                                return text
+                            
+                            # Procesar el texto del análisis
+                            cleaned_analysis = process_analysis_text(full_analysis)
+                            
+                                                        # Procesar las tablas en el análisis
+                            lines = cleaned_analysis.split('\n')
+                            processed_lines = []
+                            current_table = []
+                            in_table = False
+                            
+                            # Si encontramos una línea que es parte de una tabla
+                            for line in lines:
+                                if '|' in line:
+                                    if not in_table:
+                                        in_table = True
+                                    current_table.append(line.strip())
+                                elif in_table:
+                                    # Termina la tabla actual
+                                    if current_table:
+                                        # Si no hay separador, crear uno
+                                        if not any('---' in row for row in current_table):
+                                            header = current_table[0]
+                                            separator = '|' + '|'.join('-' * len(part.strip()) for part in header.split('|')[1:-1]) + '|'
+                                            current_table.insert(1, separator)
+                                        processed_lines.extend(current_table)
+                                        processed_lines.append('')
+                                    current_table = []
+                                    in_table = False
+                                    if line.strip():
+                                        processed_lines.append(line)
+                                else:
+                                    if line.strip():
+                                        processed_lines.append(line)
+                            
+                            # Procesar la última tabla si existe
+                            if current_table:
+                                if not any('---' in row for row in current_table):
+                                    header = current_table[0]
+                                    separator = '|' + '|'.join('-' * len(part.strip()) for part in header.split('|')[1:-1]) + '|'
+                                    current_table.insert(1, separator)
+                                processed_lines.extend(current_table)
+                            
+                            cleaned_analysis = '\n'.join(processed_lines)
+                            
+                            # Importar re localmente para evitar problemas de ámbito
+                            import re
+                            
+                            # Formatear encabezados markdown
+                            cleaned_analysis = re.sub(r'^(?!#)([A-Z][^\n:]+:)', r'### \1', cleaned_analysis, flags=re.MULTILINE)
+                            
+                            # Formatear secciones y subsecciones
+                            sections = {
+                                'Resumen Ejecutivo': '## ',
+                                'Análisis de Indicadores': '## ',
+                                'Métricas de Rendimiento': '## ',
+                                'Recomendaciones Estratégicas': '## ',
+                                'Conclusión': '## '
+                            }
+                            
+                            for section, prefix in sections.items():
+                                cleaned_analysis = re.sub(f'^{section}:', f'{prefix}{section}', 
+                                                       cleaned_analysis, flags=re.MULTILINE)
+                            
+                            # Formatear listas
+                            cleaned_analysis = re.sub(r'^[-*]\s+', '- ', cleaned_analysis, flags=re.MULTILINE)
+                            
+                            # Formatear negritas
+                            cleaned_analysis = re.sub(r'\*\*([^*]+)\*\*-', r'**\1**:', cleaned_analysis)
+                            
+                            # Eliminar líneas vacías excesivas
+                            cleaned_analysis = re.sub(r'\n{3,}', '\n\n', cleaned_analysis)
+                            
+                            # Asegurar espaciado consistente alrededor de secciones
+                            cleaned_analysis = re.sub(r'(#{1,3}[^\n]+)\n(?!\n)', r'\1\n\n', cleaned_analysis)
+                            
+                            # Procesar el texto para el formato profesional
+                            processed_text = cleaned_analysis
+
+                            # Mostrar análisis con cabecera profesional
+                            st.markdown("---")
+
+                            # Cabecera del análisis
                             st.markdown(f"""
-                            <div style="background: rgba(76, 175, 80, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid #4CAF50;">
-                                <strong>🔍 Análisis Procesado</strong><br>
-                                <small>Usuario: {app.user['name']} | Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</small><br>
-                                <strong>{analysis.get('main_insight', 'Análisis completado')}</strong>
+                            <div style="
+                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                color: white;
+                                padding: 20px;
+                                border-radius: 10px;
+                                margin: 20px 0;
+                                text-align: center;
+                            ">
+                                <h2 style="margin: 0; font-size: 24px;">🔍 Análisis del Sistema Sanitario</h2>
+                                <p style="margin: 8px 0 0 0; opacity: 0.9;">Copilot Salud Andalucía - {app.role_info['name']}</p>
                             </div>
                             """, unsafe_allow_html=True)
+
+                            # Información del usuario
+                            col1, col2 = st.columns(2)
+                            with col1:
+                                st.info(f"👤 **Usuario:** {app.user['name']}")
+                            with col2:
+                                st.info(f"📅 **Generado:** {datetime.now().strftime('%d/%m/%Y %H:%M')}")
+
+                            st.markdown("---")
+
+                            # Función para procesar y mostrar contenido con formato profesional
+                            def render_professional_analysis(text):
+                                lines = text.split('\n')
+
+                                for line in lines:
+                                    line = line.strip()
+                                    # Filtrar líneas vacías, con solo espacios o caracteres especiales
+                                    if not line or len(line) < 3 or line in ['---', '___', '***']:
+                                        continue
+
+                                    # Limpiar contenido para evitar problemas de renderizado
+                                    clean_line = line.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
+                                    # Títulos principales
+                                    if clean_line.startswith('# '):
+                                        st.markdown(f"""
+                                        <div style="
+                                            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%) !important;
+                                            color: white !important;
+                                            padding: 18px !important;
+                                            border-radius: 8px !important;
+                                            margin: 16px 0 !important;
+                                            text-align: center !important;
+                                            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+                                            border: 2px solid #1e40af !important;
+                                        ">
+                                            <h2 style="margin: 0 !important; font-size: 20px !important; font-weight: 600 !important; color: white !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.5) !important;">{clean_line[2:].strip()}</h2>
+                                        </div>
+                                        """, unsafe_allow_html=True)
+
+                                    # Títulos secundarios
+                                    elif clean_line.startswith('## '):
+                                        subtitle_text = clean_line[3:].strip()
+                                        if subtitle_text:  # Solo mostrar si hay contenido
+                                            st.markdown(f"""
+                                            <div style="
+                                                background: rgba(59, 130, 246, 0.1) !important;
+                                                border-left: 4px solid #3b82f6 !important;
+                                                padding: 15px !important;
+                                                margin: 15px 0 !important;
+                                                border-radius: 5px !important;
+                                                box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2) !important;
+                                                border: 1px solid rgba(59, 130, 246, 0.3) !important;
+                                            ">
+                                                <h3 style="margin: 0 !important; color: #3b82f6 !important; font-size: 18px !important; font-weight: 600 !important; text-shadow: none !important;">{subtitle_text}</h3>
+                                            </div>
+                                            """, unsafe_allow_html=True)
+
+                                    # Subtítulos
+                                    elif clean_line.startswith('### '):
+                                        subheading_text = clean_line[4:].strip()
+                                        if subheading_text:  # Solo mostrar si hay contenido
+                                            st.markdown(f"""
+                                            <div style="
+                                                background: rgba(100, 116, 139, 0.1) !important;
+                                                border-left: 3px solid #64748b !important;
+                                                padding: 12px !important;
+                                                margin: 12px 0 !important;
+                                                border-radius: 4px !important;
+                                                border: 1px solid rgba(100, 116, 139, 0.3) !important;
+                                            ">
+                                                <h4 style="margin: 0 !important; color: #64748b !important; font-size: 16px !important; font-weight: 500 !important;">{subheading_text}</h4>
+                                            </div>
+                                            """, unsafe_allow_html=True)
+
+                                    # Contenido con formato especial para información importante
+                                    elif clean_line.startswith('**') and clean_line.endswith('**'):
+                                        bold_text = clean_line[2:-2].strip()
+                                        if bold_text:  # Solo mostrar si hay contenido
+                                            st.markdown(f"""
+                                            <div style="
+                                                background: #dbeafe;
+                                                border: 1px solid #3b82f6;
+                                                padding: 12px;
+                                                margin: 8px 0;
+                                                border-radius: 6px;
+                                                font-weight: 600;
+                                                color: #1e40af;
+                                            ">
+                                                <strong>{bold_text}</strong>
+                                            </div>
+                                            """, unsafe_allow_html=True)
+
+                                    # Listas con viñetas
+                                    elif clean_line.startswith('- '):
+                                        list_text = clean_line[2:].strip()
+                                        if list_text:  # Solo mostrar si hay contenido
+                                            st.markdown(f"""
+                                            <div style="
+                                                margin: 4px 0 !important;
+                                                padding: 8px 20px !important;
+                                                color: var(--text-color, #ffffff) !important;
+                                                background: rgba(59, 130, 246, 0.1) !important;
+                                                border-radius: 4px !important;
+                                                border-left: 3px solid #3b82f6 !important;
+                                            ">
+                                                <span style="color: #3b82f6 !important; font-weight: bold !important;">•</span> {list_text}
+                                            </div>
+                                            """, unsafe_allow_html=True)
+
+                                    # Listas numeradas
+                                    elif any(clean_line.startswith(f'{i}. ') for i in range(1, 10)):
+                                        st.markdown(f"""
+                                        <div style="margin: 4px 0 !important; padding: 8px 12px !important; background: rgba(100, 116, 139, 0.1) !important; border-radius: 4px !important; color: var(--text-color, #ffffff) !important; border-left: 3px solid #64748b !important;">
+                                            {clean_line}
+                                        </div>
+                                        """, unsafe_allow_html=True)
+
+                                    # Resaltado de contenido importante
+                                    elif any(word in clean_line.lower() for word in ['importante', 'clave', 'crítico', 'esencial', 'alerta']):
+                                        st.markdown(f"""
+                                        <div style="
+                                            background: #fef3c7;
+                                            border: 1px solid #f59e0b;
+                                            padding: 12px;
+                                            border-radius: 6px;
+                                            margin: 8px 0;
+                                            color: #92400e;
+                                        ">
+                                            ⚠️ {clean_line}
+                                        </div>
+                                        """, unsafe_allow_html=True)
+
+                                    elif any(word in clean_line.lower() for word in ['recomendación', 'sugerencia', 'mejora', 'optimización']):
+                                        st.markdown(f"""
+                                        <div style="
+                                            background: #dcfce7;
+                                            border: 1px solid #16a34a;
+                                            padding: 12px;
+                                            border-radius: 6px;
+                                            margin: 8px 0;
+                                            color: #166534;
+                                        ">
+                                            💡 {clean_line}
+                                        </div>
+                                        """, unsafe_allow_html=True)
+
+                                    elif any(word in clean_line.lower() for word in ['conclusión', 'resultado', 'hallazgo', 'resumen']):
+                                        st.markdown(f"""
+                                        <div style="
+                                            background: #eff6ff;
+                                            border: 1px solid #3b82f6;
+                                            padding: 12px;
+                                            border-radius: 6px;
+                                            margin: 8px 0;
+                                            color: #1e40af;
+                                        ">
+                                            📋 {clean_line}
+                                        </div>
+                                        """, unsafe_allow_html=True)
+
+                                    # Líneas con tablas (saltar, se procesan después)
+                                    elif '|' in clean_line and clean_line.startswith('|'):
+                                        continue
+
+                                    # Contenido normal
+                                    else:
+                                        # Solo mostrar si tiene contenido significativo
+                                        if clean_line and len(clean_line.strip()) > 2:
+                                            st.markdown(f"""
+                                            <div style="
+                                                margin: 6px 0 !important;
+                                                line-height: 1.6 !important;
+                                                color: var(--text-color, #ffffff) !important;
+                                                padding: 8px 12px !important;
+                                                background: rgba(255, 255, 255, 0.05) !important;
+                                                border-radius: 4px !important;
+                                                border-left: 2px solid #3b82f6 !important;
+                                                font-size: 14px !important;
+                                            ">
+                                                {clean_line}
+                                            </div>
+                                            """, unsafe_allow_html=True)
+
+                            # Renderizar el análisis con formato profesional
+                            render_professional_analysis(processed_text)
+
+                            # Información sobre la exportación PDF
+                            st.info("📋 **Exportación PDF**: Se genera un documento profesional con cabecera corporativa, estilos mejorados y formato optimizado para presentaciones.")
                             
-                            # Ejecutar y mostrar resultados
-                            if 'data_query' in analysis:
-                                try:
-                                    result_data = app.ai_processor.execute_data_query(analysis['data_query'], app.data)
-                                    
-                                    if not result_data.empty and 'error' not in result_data.columns:
-                                        chart_config = analysis.get('chart_config', {})
-                                        
-                                        # Generar gráfico
-                                        if not chart_config.get('type'):
-                                            chart_config['type'] = DataAnalyzer.suggest_chart_type(
-                                                result_data, analysis.get('analysis_type', 'general')
-                                            )
-                                        
-                                        if not chart_config.get('x_axis'):
-                                            key_cols = DataAnalyzer.detect_key_columns(
-                                                result_data, analysis.get('analysis_type', 'general')
-                                            )
-                                            chart_config.update(key_cols)
-                                        
-                                        fig = app.chart_generator.generate_chart(chart_config, result_data)
-                                        st.plotly_chart(fig, width='stretch')
-                                    
-                                        # Mostrar datos con restricciones por rol
-                                        if app.has_permission('acceso_completo'):
-                                            with st.expander("📊 Datos completos del análisis"):
-                                                st.dataframe(result_data, width='stretch')
-                                        elif app.has_permission('analisis_ia'):
-                                            with st.expander("📊 Vista resumida de datos"):
-                                                st.dataframe(result_data.head(10), width='stretch')
-                                                st.info(f"Mostrando 10 de {len(result_data)} registros (limitado por rol)")
+                            # Botón para exportar a PDF (usa función global create_pdf_bytes)
+                            try:
+                                # Detectar bloques de tablas Markdown para intentar renderizarlas en el PDF
+                                def extract_markdown_tables(text: str):
+                                    tables = []
+                                    lines = [l for l in text.split('\n')]
+                                    cur = []
+                                    for line in lines:
+                                        if line.strip().startswith('|') and '|' in line:
+                                            cur.append(line)
                                         else:
-                                            st.info("🔒 Vista de datos restringida para tu rol")
-                                except Exception as e:
-                                    st.error(f"❌ Error ejecutando análisis: {str(e)}")
-                            
-                            # Métricas y recomendaciones
-                            if 'metrics' in analysis and analysis['metrics']:
-                                st.markdown("#### 📈 Métricas Clave")
-                                cols = st.columns(min(len(analysis['metrics']), 4))
-                                for i, metric in enumerate(analysis['metrics'][:4]):
-                                    with cols[i]:
-                                        st.metric(
-                                            metric.get('name', 'Métrica'), 
-                                            metric.get('value', 'N/A'),
-                                            help=metric.get('unit', '')
+                                            if cur:
+                                                tables.append(cur)
+                                                cur = []
+                                    if cur:
+                                        tables.append(cur)
+                                    return tables
+
+                                tables = extract_markdown_tables(processed_text)
+
+                                # Usar siempre la función create_pdf_bytes profesional
+                                if False:  # Deshabilitado: usar siempre create_pdf_bytes
+                                    # Construir un texto base y adjuntar tablas en el PDF
+                                    from reportlab.platypus import Table as RLTable, TableStyle
+                                    from reportlab.lib import colors
+                                    from io import BytesIO
+
+                                    # Intentaremos componer un Story similar al create_pdf_bytes
+                                    from reportlab.lib.styles import getSampleStyleSheet
+                                    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+                                    from reportlab.lib.units import mm
+
+                                    buffer = BytesIO()
+                                    doc = SimpleDocTemplate(buffer, pagesize=A4,
+                                                            rightMargin=20*mm, leftMargin=20*mm,
+                                                            topMargin=20*mm, bottomMargin=20*mm)
+                                    styles = getSampleStyleSheet()
+                                    story = []
+                                    story.append(Paragraph(f"Análisis generado por {app.user['name']}", styles['Heading2']))
+                                    story.append(Spacer(1, 4))
+                                    # En lugar de texto simple, usar la función profesional
+                                    # Desactivar esta generación manual y usar solo create_pdf_bytes
+                                    pass  # Se elimina para usar solo create_pdf_bytes
+                                    story.append(Spacer(1, 6))
+
+                                    # Añadir la primera tabla detectada (si existe)
+                                    if tables:
+                                        try:
+                                            md_table = tables[0]
+                                            # Parsear cabecera y filas
+                                            rows = []
+                                            for r in md_table:
+                                                # Quitar barras laterales y separar por |
+                                                cols = [c.strip() for c in r.strip().strip('|').split('|')]
+                                                rows.append(cols)
+                                            rl_table = RLTable(rows, hAlign='LEFT')
+                                            rl_table.setStyle(TableStyle([
+                                                ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#f2f7fb')),
+                                                ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
+                                                ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+                                                ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+                                            ]))
+                                            story.append(rl_table)
+                                            story.append(Spacer(1,6))
+                                        except Exception:
+                                            # Si falla la conversión, continuar sin tabla
+                                            pass
+
+                                    doc.build(story)
+                                    buffer.seek(0)
+                                    report_bytes = buffer.read()
+
+                                # Usar siempre la función profesional create_pdf_bytes
+                                if REPORTLAB_AVAILABLE:
+                                    # Usar el header mejorado por defecto con título más descriptivo
+                                    report_title = f"Análisis del Sistema Sanitario - {app.user['name']}"
+                                    report_bytes = create_pdf_bytes(report_title, processed_text, use_simple_header=False)
+                                else:
+                                    report_bytes = None
+
+                                # Ofrecer descarga del PDF profesional
+                                if report_bytes:
+                                    st.download_button(
+                                    "📋 Exportar Reporte PDF Profesional",
+                                    data=report_bytes,
+                                    file_name=f"reporte_sanitario_{app.user['username']}_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf",
+                                    mime='application/pdf',
+                                    help="Documento PDF con diseño profesional, cabecera corporativa y formato optimizado"
+                                )
+                                else:
+                                    st.error("❌ No se pudo generar el PDF del análisis con reportlab.")
+                                    # Siempre ofrecer exportación HTML que preserva CSS para imprimir a PDF desde el navegador
+                                    try:
+                                        css_inline = extra_css if extra_css else ''
+                                    except Exception:
+                                        css_inline = ''
+
+                                    html_export = f"""
+                                    <!doctype html>
+                                    <html lang=\"es\"> 
+                                    <head>
+                                    <meta charset=\"utf-8\" />
+                                    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
+                                    <style>
+                                    {css_inline}
+                                    body {{ font-family: Inter, Poppins, Arial, sans-serif; padding:20px; background:#fff; color:#111 }}
+                                    .analysis-card {{ 
+                                        margin-bottom: 12px; 
+                                        padding: 16px; 
+                                        border: 1px solid #e2e8f0; 
+                                        border-radius: 8px; 
+                                        background: #f8fafc;
+                                    }}
+                                    .analysis-title {{ 
+                                        font-size: 18px; 
+                                        font-weight: 600; 
+                                        color: #1e293b; 
+                                        margin-bottom: 8px;
+                                    }}
+                                    .analysis-subtitle {{ 
+                                        font-size: 14px; 
+                                        color: #64748b; 
+                                        margin-bottom: 12px;
+                                    }}
+                                    .analysis-highlight {{ 
+                                        background: #dbeafe; 
+                                        color: #1e40af; 
+                                        padding: 4px 8px; 
+                                        border-radius: 4px; 
+                                        font-size: 12px; 
+                                        font-weight: 500;
+                                    }}
+                                    </style>
+                                    <title>Análisis - {app.user['name']}</title>
+                                    </head>
+                                    <body>
+                                    <div class=\"analysis-card\">{processed_text.split('\n')[0][:1000].replace('\n','<br/>')}</div>
+                                    <div>{processed_text.replace('\n','<br/>')}</div>
+                                    </body>
+                                    </html>
+                                    """
+
+                                    st.download_button(
+                                        "🌐 Exportar Reporte HTML Profesional",
+                                        data=html_export,
+                                        file_name=f"reporte_sanitario_{app.user['username']}_{datetime.now().strftime('%Y%m%d_%H%M')}.html",
+                                        mime='text/html',
+                                        help="Documento HTML profesional optimizado para impresión y presentaciones"
+                                    )
+
+                                    # Ofrecer también TXT como última opción
+                                    st.download_button("📄 Exportar análisis (TXT)", data=cleaned_analysis, file_name=f"analisis_{app.user['username']}_{datetime.now().strftime('%Y%m%d_%H%M')}.txt", mime='text/plain')
+
+                            except Exception as e:
+                                # Si reportlab no está instalado, dar una instrucción clara para instalarlo
+                                if 'reportlab' in str(e).lower():
+                                    st.error("❌ reportlab no disponible: instala con `pip install reportlab` e intenta de nuevo.")
+                                else:
+                                    st.error(f"❌ Error exportando análisis: {e}")
+                                # Fallback claro a TXT
+                                st.download_button("📄 Exportar análisis (TXT)", data=cleaned_analysis, file_name=f"analisis_{app.user['username']}_{datetime.now().strftime('%Y%m%d_%H%M')}.txt", mime='text/plain')
+
+                            # Verificar si necesita visualización y generar gráficos
+                            if analysis.get('needs_visualization', False) and analysis.get('chart_config'):
+                                chart_config = analysis.get('chart_config', {})
+                                st.markdown("---")
+                                st.markdown("### 📊 Visualizaciones Generadas Automáticamente")
+
+                                try:
+                                    # Generar gráfico basado en la configuración
+                                    if app.chart_generator:
+                                        # Determinar qué dataset usar basado en data_query
+                                        data_query = analysis.get('data_query', 'data')
+
+                                        if data_query and data_query != 'data':
+                                            # Usar dataset específico (ej: data['hospitales'])
+                                            try:
+                                                dataset_name = data_query.replace("data['", "").replace("']", "")
+                                                chart_data_input = app.data.get(dataset_name, app.data['hospitales'])
+                                            except Exception:
+                                                chart_data_input = app.data['hospitales']
+                                        else:
+                                            chart_data_input = app.data['hospitales']
+
+                                        # Mejorar configuración del gráfico con datos específicos
+                                        enhanced_config = chart_config.copy()
+                                        if enhanced_config.get('x_axis') is None and len(chart_data_input.columns) > 0:
+                                            # Seleccionar automáticamente columnas apropiadas
+                                            if 'nombre' in chart_data_input.columns:
+                                                enhanced_config['x_axis'] = 'nombre'
+                                            elif 'municipio' in chart_data_input.columns:
+                                                enhanced_config['x_axis'] = 'municipio'
+                                            elif 'distrito' in chart_data_input.columns:
+                                                enhanced_config['x_axis'] = 'distrito'
+                                            else:
+                                                enhanced_config['x_axis'] = chart_data_input.columns[0]
+
+                                        if enhanced_config.get('y_axis') is None and len(chart_data_input.columns) > 1:
+                                            # Buscar columnas numéricas relevantes
+                                            numeric_cols = chart_data_input.select_dtypes(include=['number']).columns
+                                            if 'camas_funcionamiento_2025' in numeric_cols:
+                                                enhanced_config['y_axis'] = 'camas_funcionamiento_2025'
+                                            elif 'personal_total' in numeric_cols:
+                                                enhanced_config['y_axis'] = 'personal_total'
+                                            elif len(numeric_cols) > 0:
+                                                enhanced_config['y_axis'] = numeric_cols[0]
+
+                                        chart_data = app.chart_generator.generate_chart(
+                                            enhanced_config,
+                                            chart_data_input
                                         )
-                        
-                            if 'recommendations' in analysis and analysis['recommendations']:
-                                st.markdown(f"""
-                                <div style="background: rgba(156, 39, 176, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid #9c27b0;">
-                                    <h4>🎯 Recomendaciones para {app.role_info['name']}</h4>
-                                    <ul>
-                                        {''.join([f'<li>{rec}</li>' for rec in analysis['recommendations']])}
-                                    </ul>
-                                </div>
-                                """, unsafe_allow_html=True)
-                            
-                            response = f"✅ **Análisis autorizado completado** por {app.user['name']}: {analysis.get('main_insight', 'Consulta procesada')}"
+
+                                        if chart_data:
+                                            st.plotly_chart(chart_data, use_container_width=True)
+                                            st.success("📊 Visualización generada automáticamente")
+                                        else:
+                                            st.info("📈 Visualización sugerida: " + chart_config.get('title', 'Gráfico recomendado'))
+                                    else:
+                                        st.info("📈 Visualización sugerida: " + chart_config.get('title', 'Gráfico recomendado'))
+                                except Exception as e:
+                                    st.warning(f"⚠️ No se pudo generar la visualización: {str(e)}")
+                                    st.info("📈 Visualización sugerida: " + chart_config.get('title', 'Gráfico recomendado'))
+
+                            # Agregar respuesta completa al historial (usar respuesta de IA)
+                            response = full_response
+
                         else:
                             response = f"❌ **Error en análisis**: {analysis.get('main_insight', 'No se pudo procesar')}"
-                        
+
                     except Exception as e:
                         response = f"⚠️ **Error de sistema**: {str(e)}"
                         st.error(response)
@@ -1175,6 +2265,7 @@ def render_secure_reportes(app):
         render_equity_report_secure(app)
     elif "Análisis Completo" in selected_report:
         render_complete_analysis_secure(app)
+    # Nota: la opción de Planificación Málaga se ha eliminado temporalmente mientras se estabiliza la aplicación.
 
 def render_executive_report_secure(app):
     """Reporte ejecutivo con auditoría"""

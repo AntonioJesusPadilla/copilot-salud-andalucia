@@ -19,6 +19,7 @@ class HealthAuthenticator:
         self.roles = {
             "admin": {
                 "name": "Administrador del Sistema",
+                "description": "Acceso completo al sistema con capacidades de supervisión, gestión de usuarios y configuración del sistema. Puede acceder a todos los datos, funcionalidades y configuraciones.",
                 "permissions": [
                     "acceso_completo",        # ✅ Acceso total
                     "gestion_usuarios",       # ✅ Gestión de usuarios
@@ -48,6 +49,7 @@ class HealthAuthenticator:
             },
             "gestor": {
                 "name": "Gestor Sanitario",
+                "description": "Responsable de la gestión operativa del sistema sanitario. Enfocado en la planificación de recursos, análisis de capacidad hospitalaria y optimización de servicios sanitarios.",
                 "permissions": [
                     "analisis_ia",           # ✅ Chat IA especializado en gestión
                     "ver_datos",             # ✅ Dashboard con métricas clave
@@ -74,6 +76,7 @@ class HealthAuthenticator:
             },
             "analista": {
                 "name": "Analista de Datos",
+                "description": "Especialista en análisis estadístico y visualización de datos sanitarios. Enfocado en el análisis de tendencias demográficas, correlaciones y generación de insights basados en datos.",
                 "permissions": [
                     "analisis_ia",           # ✅ Chat IA para análisis estadísticos
                     "ver_datos",             # ✅ Dashboard con visualizaciones avanzadas
@@ -99,6 +102,7 @@ class HealthAuthenticator:
             },
             "invitado": {
                 "name": "Usuario Invitado",
+                "description": "Acceso limitado a información pública del sistema sanitario. Puede visualizar datos generales y mapas públicos, pero sin acceso a análisis avanzados o datos sensibles.",
                 "permissions": [
                     "ver_datos",          # ✅ Dashboard básico con métricas generales
                     "mapas_publicos"      # ✅ Mapas públicos básicos
@@ -706,21 +710,71 @@ def render_user_profile():
         st.write(f"**🏢 Organización:** {user['organization']}")
         st.write(f"**📅 Último Acceso:** {user['last_login'][:16] if user['last_login'] else 'Primer acceso'}")
         
+        # Información específica del rol
+        st.markdown("#### 🎭 Información del Rol")
+        st.write(f"**🎯 Descripción:** {role_info.get('description', 'Sin descripción disponible')}")
+        
+        # Áreas de enfoque del rol
+        theme = role_info.get('theme', {})
+        focus_areas = theme.get('focus_areas', [])
+        if focus_areas:
+            st.markdown("**🎯 Áreas de Enfoque:**")
+            for i, area in enumerate(focus_areas, 1):
+                st.write(f"{i}. {area}")
+        
+        # Mensaje de bienvenida personalizado
+        welcome_msg = theme.get('welcome_message', 'Bienvenido al sistema')
+        st.info(f"💬 {welcome_msg}")
+        
         st.markdown("#### 🔐 Permisos")
         permissions = role_info['permissions']
+        
+        # Mapeo de permisos con iconos y descripciones
+        permission_names = {
+            # Permisos generales
+            'acceso_completo': '🔓 Acceso Total',
+            'gestion_usuarios': '👥 Gestión de Usuarios',
+            'configuracion_sistema': '⚙️ Configuración del Sistema',
+            'analisis_ia': '🤖 Análisis con IA',
+            'ver_datos': '👀 Visualización de Datos',
+            'reportes': '📋 Reportes Avanzados',
+            'planificacion': '🗺️ Planificación Estratégica',
+            'analisis_equidad': '⚖️ Análisis de Equidad',
+            
+            # Permisos de mapas
+            'mapas_todos': '🌟 Todos los Mapas',
+            'mapas_estrategicos': '🎯 Mapas Estratégicos',
+            'mapas_sensibles': '🔒 Mapas con Datos Sensibles',
+            'mapas_operativos': '🏥 Mapas Operativos',
+            'mapas_gestion': '📊 Mapas de Gestión',
+            'mapas_analiticos': '📈 Mapas Analíticos',
+            'mapas_demograficos': '👥 Mapas Demográficos',
+            'mapas_publicos': '🌐 Mapas Públicos'
+        }
+        
+        # Separar permisos generales y de mapas
+        general_perms = []
+        map_perms = []
+        
         for perm in permissions:
-            permission_names = {
-                'full_access': '🔓 Acceso Completo',
-                'user_management': '👥 Gestión de Usuarios',
-                'system_config': '⚙️ Configuración del Sistema',
-                'analytics': '📊 Análisis Avanzado',
-                'reports': '📋 Reportes',
-                'planning': '🗺️ Planificación',
-                'view_data': '👀 Visualización de Datos',
-                'basic_analytics': '📈 Análisis Básico',
-                'analisis_equidad': '⚖️ Análisis de Equidad'
-            }
-            st.write(f"✅ {permission_names.get(perm, perm)}")
+            if perm.startswith('mapas_'):
+                display_name = permission_names.get(perm, perm)
+                map_perms.append(display_name)
+            else:
+                display_name = permission_names.get(perm, perm)
+                general_perms.append(display_name)
+        
+        # Mostrar permisos generales
+        if general_perms:
+            st.markdown("**🔧 Permisos Generales:**")
+            for perm_display in general_perms:
+                st.markdown(f"• {perm_display}")
+        
+        # Mostrar permisos de mapas
+        if map_perms:
+            st.markdown("**🗺️ Permisos de Mapas:**")
+            for perm_display in map_perms:
+                st.markdown(f"• {perm_display}")
 
 def check_authentication():
     """Verificar si el usuario está autenticado"""

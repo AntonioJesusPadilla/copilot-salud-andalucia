@@ -13,6 +13,7 @@ from datetime import datetime
 import os
 from concurrent.futures import ThreadPoolExecutor
 import threading
+import re
 
 class AsyncAIProcessor:
     def __init__(self):
@@ -84,14 +85,17 @@ class AsyncAIProcessor:
     
     async def _make_groq_request_async(self, query: str, context: str, user_role: str) -> Dict[str, Any]:
         """Realizar petición asíncrona a Groq API"""
+        if not self.groq_api_key:
+            raise Exception("GROQ_API_KEY no configurada")
+
         headers = {
             "Authorization": f"Bearer {self.groq_api_key}",
             "Content-Type": "application/json"
         }
-        
+
         # Preparar prompt optimizado
         system_prompt = self._create_optimized_system_prompt(context, user_role)
-        
+
         payload = {
             "model": self.model,
             "messages": [
@@ -137,23 +141,76 @@ class AsyncAIProcessor:
         """Crear prompt del sistema optimizado según el rol"""
         role_prompts = {
             'admin': """
-            Eres un asistente especializado en análisis sociosanitario con acceso administrativo completo.
-            Puedes acceder a todos los datos del sistema sanitario de Málaga.
-            Proporciona análisis ejecutivos, métricas de rendimiento y recomendaciones estratégicas.
+            Eres un DIRECTOR EJECUTIVO del Sistema Sanitario de Málaga especializado en análisis estratégico de alto nivel.
+
+            TU ENFOQUE ESPECÍFICO:
+            - Análisis de rendimiento global del sistema sanitario
+            - Evaluación de KPIs críticos y métricas de gestión ejecutiva
+            - Identificación de oportunidades de mejora sistémica
+            - Recomendaciones para decisiones estratégicas de recursos
+            - Análisis de impacto económico y eficiencia operativa
+            - Evaluación de cumplimiento de objetivos institucionales
+
+            FORMATO DE RESPUESTA REQUERIDO:
+            - Resumen ejecutivo con conclusiones clave
+            - Métricas críticas y tendencias principales
+            - Recomendaciones estratégicas priorizadas
+            - Análisis de riesgos y oportunidades
+            - Próximos pasos operativos concretos
             """,
             'gestor': """
-            Eres un asistente especializado en gestión sanitaria operacional.
-            Te enfocas en optimización de recursos, planificación y gestión de servicios.
-            Proporciona análisis operacionales y recomendaciones de gestión.
+            Eres un GESTOR OPERACIONAL del Sistema Sanitario de Málaga especializado en optimización de servicios.
+
+            TU ENFOQUE ESPECÍFICO:
+            - Optimización de flujos de trabajo y procesos operativos
+            - Gestión eficiente de recursos humanos y materiales
+            - Planificación táctica de servicios sanitarios
+            - Coordinación entre centros y departamentos
+            - Análisis de capacidad y demanda operativa
+            - Mejora de la experiencia del usuario/paciente
+
+            FORMATO DE RESPUESTA REQUERIDO:
+            - Diagnóstico operativo actual
+            - Identificación de cuellos de botella
+            - Propuestas de optimización específicas
+            - Plan de implementación por fases
+            - Métricas de seguimiento operativo
             """,
             'analista': """
-            Eres un asistente especializado en análisis estadístico y de datos sanitarios.
-            Te enfocas en análisis técnicos, visualizaciones y estadísticas avanzadas.
-            Proporciona análisis detallados y metodologías estadísticas.
+            Eres un ANALISTA DE DATOS SANITARIOS especializado en estadística avanzada y análisis técnico profundo.
+
+            TU ENFOQUE ESPECÍFICO:
+            - Análisis estadístico riguroso de datos sanitarios
+            - Identificación de patrones y correlaciones significativas
+            - Metodologías avanzadas de análisis de datos
+            - Visualizaciones técnicas y modelado predictivo
+            - Evaluación de calidad y validez de datos
+            - Análisis de tendencias y proyecciones técnicas
+
+            FORMATO DE RESPUESTA REQUERIDO:
+            - Metodología de análisis utilizada
+            - Hallazgos estadísticos con significancia
+            - Análisis de correlaciones y patrones
+            - Limitaciones técnicas del análisis
+            - Recomendaciones para análisis adicionales
             """,
             'invitado': """
-            Eres un asistente de consulta para información básica del sistema sanitario.
-            Proporcionas información general y consultas básicas sobre salud pública.
+            Eres un CONSULTOR PÚBLICO del Sistema Sanitario de Málaga especializado en información ciudadana.
+
+            TU ENFOQUE ESPECÍFICO:
+            - Información general accesible sobre servicios sanitarios
+            - Datos públicos relevantes para la ciudadanía
+            - Orientación sobre acceso a servicios de salud
+            - Estadísticas básicas de salud pública
+            - Información educativa sobre prevención
+            - Recursos disponibles para la comunidad
+
+            FORMATO DE RESPUESTA REQUERIDO:
+            - Información clara y comprensible
+            - Datos verificados y públicos únicamente
+            - Orientación práctica para ciudadanos
+            - Recursos y contactos útiles
+            - Limitaciones claras sobre información restringida
             """
         }
         
@@ -162,15 +219,18 @@ class AsyncAIProcessor:
         return f"""
         {base_prompt}
         
-        CONTEXTO DE DATOS:
+        CONTEXTO DE DATOS DISPONIBLES:
         {context}
         
         INSTRUCCIONES:
-        1. Responde en español
-        2. Sé preciso y basado en datos
-        3. Proporciona visualizaciones cuando sea apropiado
-        4. Incluye métricas específicas cuando sea relevante
-        5. Adapta el nivel técnico al rol del usuario
+        1. Responde ÚNICAMENTE en español
+        2. Basa tu respuesta en los datos proporcionados en el contexto
+        3. Si tienes datos relevantes en el contexto, úsalos para responder
+        4. NO inventes datos específicos que no estén en el contexto
+        5. Si no tienes datos suficientes para una consulta específica, sé honesto sobre las limitaciones
+        6. Proporciona análisis útiles basados en los datos disponibles
+        7. Adapta el nivel técnico al rol del usuario
+        8. Si la consulta requiere datos que no están disponibles, sugiere qué información adicional se necesitaría
         """
     
     def _prepare_context_by_role(self, data: dict, user_role: str, user_context: dict = None) -> str:
@@ -179,17 +239,40 @@ class AsyncAIProcessor:
         
         # Datos básicos para todos los roles
         if 'hospitales' in data:
-            context_parts.append(f"Hospitales: {len(data['hospitales'])} centros")
+            if hasattr(data['hospitales'], '__len__'):
+                context_parts.append(f"Hospitales: {len(data['hospitales'])} centros")
+            else:
+                context_parts.append("Hospitales: datos disponibles")
         
         if 'demografia' in data:
-            total_pop = data['demografia']['poblacion_2025'].sum()
-            context_parts.append(f"Población total: {total_pop:,} habitantes")
+            try:
+                # Manejar tanto DataFrames como diccionarios
+                if hasattr(data['demografia'], 'sum'):  # DataFrame de pandas
+                    total_pop = data['demografia']['poblacion_2025'].sum()
+                elif isinstance(data['demografia'], dict) and 'poblacion_2025' in data['demografia']:
+                    # Diccionario con lista
+                    total_pop = sum(data['demografia']['poblacion_2025'])
+                else:
+                    total_pop = 0
+                context_parts.append(f"Población total: {total_pop:,} habitantes")
+            except Exception as e:
+                context_parts.append("Población: datos no disponibles")
         
         # Datos específicos por rol
         if user_role in ['admin', 'gestor']:
             if 'accesibilidad' in data:
-                avg_time = data['accesibilidad']['tiempo_coche_minutos'].mean()
-                context_parts.append(f"Tiempo medio de acceso: {avg_time:.1f} minutos")
+                try:
+                    if hasattr(data['accesibilidad'], 'mean'):  # DataFrame de pandas
+                        avg_time = data['accesibilidad']['tiempo_coche_minutos'].mean()
+                    elif isinstance(data['accesibilidad'], dict) and 'tiempo_coche_minutos' in data['accesibilidad']:
+                        # Diccionario con lista
+                        times = data['accesibilidad']['tiempo_coche_minutos']
+                        avg_time = sum(times) / len(times) if times else 0
+                    else:
+                        avg_time = 0
+                    context_parts.append(f"Tiempo medio de acceso: {avg_time:.1f} minutos")
+                except Exception as e:
+                    context_parts.append("Tiempo de acceso: datos no disponibles")
         
         if user_role in ['admin', 'analista']:
             if 'indicadores' in data:
@@ -241,24 +324,27 @@ class AsyncAIProcessor:
             # Análisis básico del contenido
             analysis_type = self._detect_analysis_type(content)
             
-            # Extraer métricas si están presentes
-            metrics = self._extract_metrics(content)
+            # Filtrar contenido para eliminar datos inventados
+            filtered_content = self._filter_invented_data(content, data)
+            
+            # Generar métricas reales basadas en datos disponibles
+            metrics = self._generate_real_metrics(data, user_role)
             
             # Generar recomendaciones
-            recommendations = self._generate_recommendations(content, user_role)
+            recommendations = self._generate_recommendations(filtered_content, user_role)
             
             # Detectar si necesita visualización
-            needs_visualization = self._needs_visualization(content)
+            needs_visualization = self._needs_visualization(filtered_content)
             
             return {
-                "main_insight": content[:200] + "..." if len(content) > 200 else content,
-                "full_response": content,
+                "main_insight": filtered_content[:200] + "..." if len(filtered_content) > 200 else filtered_content,
+                "full_response": filtered_content,
                 "analysis_type": analysis_type,
                 "metrics": metrics,
                 "recommendations": recommendations,
                 "needs_visualization": needs_visualization,
-                "data_query": self._generate_data_query(content, data),
-                "chart_config": self._generate_chart_config(content, analysis_type),
+                "data_query": self._generate_data_query(filtered_content, data),
+                "chart_config": self._generate_chart_config(filtered_content, analysis_type),
                 "timestamp": datetime.now().isoformat(),
                 "user_role": user_role
             }
@@ -273,7 +359,26 @@ class AsyncAIProcessor:
         """Detectar tipo de análisis basado en el contenido"""
         content_lower = content.lower()
         
-        if any(word in content_lower for word in ['gráfico', 'chart', 'visualización', 'plot']):
+        # Detectar tipos específicos de análisis sanitario - orden de prioridad
+        if any(word in content_lower for word in ['usuarios', 'administración', 'configuración', 'supervisión', 'gestión de usuarios', 'roles', 'permisos']):
+            return 'user_management'
+        elif any(word in content_lower for word in ['planificación estratégica', 'planificación avanzada', 'estrategia', 'objetivos estratégicos', 'metas', 'plan de acción']):
+            return 'strategic_planning'
+        elif any(word in content_lower for word in ['informe ejecutivo', 'resumen ejecutivo', 'dashboard ejecutivo']):
+            return 'executive_summary'
+        elif any(word in content_lower for word in ['equidad', 'territorial', 'distrito', 'municipio', 'análisis de equidad', 'desigualdades']):
+            return 'equity'
+        elif any(word in content_lower for word in ['demografía', 'población', 'habitantes', 'crecimiento', 'análisis demográfico']):
+            return 'demographic'
+        elif any(word in content_lower for word in ['hospitales', 'centros', 'infraestructura', 'camas', 'análisis de infraestructura']):
+            return 'infrastructure'
+        elif any(word in content_lower for word in ['servicios', 'cobertura', 'disponibilidad', 'acceso', 'análisis de servicios']):
+            return 'services'
+        elif any(word in content_lower for word in ['accesibilidad', 'tiempo', 'distancia', 'transporte', 'análisis de accesibilidad']):
+            return 'accessibility'
+        elif any(word in content_lower for word in ['indicadores', 'métricas', 'ratios', 'kpi', 'análisis de métricas']):
+            return 'metrics'
+        elif any(word in content_lower for word in ['gráfico', 'chart', 'visualización', 'plot']):
             return 'visualization'
         elif any(word in content_lower for word in ['estadística', 'correlación', 'regresión', 'análisis']):
             return 'statistical'
@@ -285,27 +390,99 @@ class AsyncAIProcessor:
             return 'general'
     
     def _extract_metrics(self, content: str) -> List[Dict[str, Any]]:
-        """Extraer métricas del contenido de la respuesta"""
+        """Extraer métricas del contenido de la respuesta - SOLO datos reales"""
+        # NO extraer métricas automáticamente del texto de la IA
+        # Esto evita que se generen datos inventados
+        return []
+    
+    def _generate_real_metrics(self, data: dict, user_role: str) -> List[Dict[str, Any]]:
+        """Generar métricas reales basadas en los datos disponibles"""
         metrics = []
         
-        # Buscar patrones de métricas en el texto
+        try:
+            # Métricas de hospitales
+            if 'hospitales' in data and hasattr(data['hospitales'], '__len__'):
+                metrics.append({
+                    "name": "Centros Sanitarios",
+                    "value": len(data['hospitales']),
+                    "unit": "centros"
+                })
+                
+                # Total de camas si está disponible
+                if hasattr(data['hospitales'], 'sum'):
+                    total_beds = data['hospitales']['camas_funcionamiento_2025'].sum()
+                    metrics.append({
+                        "name": "Camas Totales",
+                        "value": int(total_beds),
+                        "unit": "camas"
+                    })
+            
+            # Métricas de población
+            if 'demografia' in data:
+                if hasattr(data['demografia'], 'sum'):
+                    total_pop = data['demografia']['poblacion_2025'].sum()
+                    metrics.append({
+                        "name": "Población Total",
+                        "value": int(total_pop),
+                        "unit": "habitantes"
+                    })
+            
+            # Métricas de accesibilidad
+            if 'accesibilidad' in data and user_role in ['admin', 'gestor']:
+                if hasattr(data['accesibilidad'], 'mean'):
+                    avg_time = data['accesibilidad']['tiempo_coche_minutos'].mean()
+                    metrics.append({
+                        "name": "Tiempo Medio de Acceso",
+                        "value": round(avg_time, 1),
+                        "unit": "minutos"
+                    })
+            
+        except Exception as e:
+            # Si hay error, no agregar métricas
+            pass
+        
+        return metrics[:4]  # Máximo 4 métricas
+    
+    def _filter_invented_data(self, content: str, data: dict) -> str:
+        """Filtrar datos inventados del contenido de la IA - versión suavizada"""
+        # Por ahora, no filtrar agresivamente para permitir respuestas útiles
+        # Solo filtrar patrones muy específicos de datos claramente inventados
         import re
         
-        # Patrón para números con unidades
-        metric_pattern = r'(\d+(?:\.\d+)?)\s*([a-zA-Z%]+)'
-        matches = re.findall(metric_pattern, content)
+        # Solo filtrar patrones muy específicos de datos inventados comunes
+        specific_invented_patterns = [
+            r'\d+\.\d+\s*minutos?\s*de\s*acceso',  # Tiempos específicos inventados
+            r'\d{1,3}(?:,\d{3})*\s*habitantes?\s*en\s*total',  # Población total inventada
+        ]
         
-        for value, unit in matches:
-            try:
-                metrics.append({
-                    "name": f"Métrica {len(metrics) + 1}",
-                    "value": float(value),
-                    "unit": unit
-                })
-            except ValueError:
-                continue
+        filtered_content = content
+        for pattern in specific_invented_patterns:
+            filtered_content = re.sub(pattern, '[Datos no disponibles]', filtered_content, flags=re.IGNORECASE)
         
-        return metrics[:5]  # Máximo 5 métricas
+        return filtered_content
+    
+    def _get_real_data_summary(self, data: dict) -> str:
+        """Obtener resumen de datos reales disponibles"""
+        summary_parts = []
+        
+        try:
+            if 'hospitales' in data and hasattr(data['hospitales'], '__len__'):
+                summary_parts.append(f"- {len(data['hospitales'])} centros hospitalarios")
+            
+            if 'demografia' in data and hasattr(data['demografia'], 'sum'):
+                total_pop = data['demografia']['poblacion_2025'].sum()
+                summary_parts.append(f"- Población total: {total_pop:,} habitantes")
+            
+            if 'servicios' in data and hasattr(data['servicios'], '__len__'):
+                summary_parts.append(f"- {len(data['servicios'])} centros de servicios")
+            
+            if 'indicadores' in data and hasattr(data['indicadores'], '__len__'):
+                summary_parts.append(f"- {len(data['indicadores'])} distritos con indicadores")
+                
+        except Exception:
+            summary_parts.append("- Datos básicos del sistema sanitario")
+        
+        return "\n".join(summary_parts) if summary_parts else "Datos limitados disponibles"
     
     def _generate_recommendations(self, content: str, user_role: str) -> List[str]:
         """Generar recomendaciones basadas en el contenido y rol"""
@@ -357,44 +534,69 @@ class AsyncAIProcessor:
     
     def _generate_data_query(self, content: str, data: dict) -> str:
         """Generar consulta de datos basada en el contenido"""
-        # Esta es una implementación simplificada
-        # En una implementación real, se usaría NLP para generar consultas SQL/Pandas
+        content_lower = content.lower()
         
-        if 'hospitales' in content.lower():
+        # Detectar qué datos específicos necesita la consulta
+        if any(word in content_lower for word in ['hospitales', 'centros', 'camas', 'personal']):
             return "data['hospitales']"
-        elif 'demografía' in content.lower() or 'población' in content.lower():
+        elif any(word in content_lower for word in ['demografía', 'población', 'habitantes', 'municipio']):
             return "data['demografia']"
-        elif 'servicios' in content.lower():
+        elif any(word in content_lower for word in ['servicios', 'cobertura', 'disponibilidad']):
             return "data['servicios']"
+        elif any(word in content_lower for word in ['accesibilidad', 'tiempo', 'distancia', 'acceso']):
+            return "data['accesibilidad']"
+        elif any(word in content_lower for word in ['indicadores', 'métricas', 'ratios', 'equidad']):
+            return "data['indicadores']"
+        elif any(word in content_lower for word in ['equidad', 'territorial', 'distrito']):
+            # Para análisis de equidad, combinar datos relevantes
+            return "data"
         else:
             return "data"
     
     def _generate_chart_config(self, content: str, analysis_type: str) -> Dict[str, Any]:
         """Generar configuración de gráfico basada en el contenido"""
+        content_lower = content.lower()
+        
+        # Debug: mostrar contenido y tipo de análisis
+        
+        # Configuraciones específicas por tipo de análisis
         chart_configs = {
-            'visualization': {
-                'type': 'bar',
-                'title': 'Análisis Visual'
-            },
-            'statistical': {
-                'type': 'scatter',
-                'title': 'Análisis Estadístico'
-            },
-            'predictive': {
-                'type': 'line',
-                'title': 'Análisis Predictivo'
-            },
-            'recommendation': {
-                'type': 'pie',
-                'title': 'Recomendaciones'
-            },
-            'general': {
-                'type': 'bar',
-                'title': 'Análisis General'
-            }
+            'user_management': {'type': 'bar', 'title': 'Gestión de Usuarios y Permisos'},
+            'strategic_planning': {'type': 'bar', 'title': 'Planificación Estratégica - Objetivos y Metas'},
+            'executive_summary': {'type': 'bar', 'title': 'Resumen Ejecutivo del Sistema Sanitario'},
+            'equity': {'type': 'bar', 'title': 'Análisis de Equidad Territorial'},
+            'demographic': {'type': 'bar', 'title': 'Análisis Demográfico'},
+            'infrastructure': {'type': 'bar', 'title': 'Análisis de Infraestructura Sanitaria'},
+            'services': {'type': 'bar', 'title': 'Análisis de Servicios'},  # Cambiado de heatmap a bar
+            'accessibility': {'type': 'histogram', 'title': 'Análisis de Accesibilidad'},
+            'metrics': {'type': 'scatter', 'title': 'Análisis de Métricas'},
+            'visualization': {'type': 'bar', 'title': 'Análisis Visual'},
+            'statistical': {'type': 'scatter', 'title': 'Análisis Estadístico'},
+            'predictive': {'type': 'line', 'title': 'Análisis Predictivo'},
+            'recommendation': {'type': 'pie', 'title': 'Recomendaciones'},
+            'general': {'type': 'bar', 'title': 'Análisis General'}
         }
         
-        return chart_configs.get(analysis_type, chart_configs['general'])
+        # Usar configuración específica del tipo de análisis
+        config = chart_configs.get(analysis_type, chart_configs['general'])
+        # Solo sobrescribir si hay palabras clave muy específicas y el tipo de análisis no es específico
+        if analysis_type in ['general', 'visualization']:
+            if any(word in content_lower for word in ['distribución', 'porcentaje', 'proporción', 'parte']):
+                config['type'] = 'pie'
+                config['title'] = 'Distribución de Datos'
+            elif any(word in content_lower for word in ['tendencia', 'evolución', 'tiempo', 'año', 'mes']):
+                config['type'] = 'line'
+                config['title'] = 'Evolución Temporal'
+            elif any(word in content_lower for word in ['correlación', 'relación', 'comparación', 'scatter']):
+                config['type'] = 'scatter'
+                config['title'] = 'Análisis de Correlación'
+        
+        # Añadir campos de detección automática
+        config['x_axis'] = None
+        config['y_axis'] = None
+        config['color_by'] = None
+        
+        return config
     
     def _generate_cache_key(self, query: str, user_role: str) -> str:
         """Generar clave de cache para la consulta"""
