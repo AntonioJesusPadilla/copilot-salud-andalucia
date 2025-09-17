@@ -1,0 +1,90 @@
+# Configuración de Variables de Entorno - Copilot Salud Andalucía
+# IMPORTANTE: Copia este contenido a un archivo .env en la raíz del proyecto
+
+# ===========================================
+# API KEYS - CONFIGURAR CON TUS CLAVES REALES
+# ===========================================
+
+# API Key de Groq para funcionalidad de IA
+# Obtener en: https://console.groq.com/keys
+GROQ_API_KEY=tu_groq_api_key_aqui
+
+# Clave secreta JWT para autenticación (mínimo 32 caracteres)
+# Generar con: python -c "import secrets; print(secrets.token_urlsafe(32))"
+JWT_SECRET_KEY=tu_clave_jwt_super_segura_de_32_caracteres_o_mas
+
+# Clave secreta de la aplicación (mínimo 32 caracteres)
+SECRET_KEY=tu_clave_secreta_de_32_caracteres_o_mas
+
+# ===========================================
+# CONFIGURACIÓN DE LA APLICACIÓN
+# ===========================================
+
+# Entorno de ejecución (development, production)
+APP_ENVIRONMENT=development
+
+# Puerto de Streamlit (por defecto 8501)
+STREAMLIT_SERVER_PORT=8501
+
+# Modo headless para producción
+STREAMLIT_SERVER_HEADLESS=false
+
+# ===========================================
+# CONFIGURACIÓN DE IA ASÍNCRONA
+# ===========================================
+
+# Tiempo de timeout para peticiones IA (segundos)
+AI_REQUEST_TIMEOUT=30
+
+# Número máximo de peticiones concurrentes
+MAX_CONCURRENT_AI_REQUESTS=5
+
+# Número de reintentos para peticiones fallidas
+AI_RETRY_ATTEMPTS=3
+
+# TTL del cache de respuestas IA (segundos)
+AI_CACHE_TTL=300
+
+# ===========================================
+# CONFIGURACIÓN DE SEGURIDAD
+# ===========================================
+
+# Habilitar autenticación de dos factores
+ENABLE_2FA=false
+
+# Tiempo de expiración de sesión (horas)
+SESSION_TIMEOUT_HOURS=24
+
+# Límite de consultas IA por hora por usuario
+MAX_AI_QUERIES_PER_HOUR=50
+
+# ===========================================
+# CONFIGURACIÓN DE CACHE
+# ===========================================
+
+# TTL del cache para administradores (segundos)
+CACHE_TTL_ADMIN=600
+
+# TTL del cache para usuarios normales (segundos)
+CACHE_TTL_USER=300
+
+# ===========================================
+# CONFIGURACIÓN DE LOGS
+# ===========================================
+
+# Nivel de logging (DEBUG, INFO, WARNING, ERROR)
+LOG_LEVEL=INFO
+
+# Habilitar logs de auditoría
+ENABLE_AUDIT_LOGS=true
+
+# ===========================================
+# INSTRUCCIONES DE CONFIGURACIÓN
+# ===========================================
+
+# 1. Copia este archivo como .env: copy config\env_template.txt .env
+# 2. Reemplaza 'tu_groq_api_key_aqui' con tu API key real de Groq
+# 3. Genera claves seguras para JWT_SECRET_KEY y SECRET_KEY
+# 4. Ajusta la configuración según tu entorno
+# 5. Para producción, cambia APP_ENVIRONMENT=production
+# 6. Para Streamlit Cloud, usa la interfaz de secrets en lugar de este archivo

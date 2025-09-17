@@ -7,6 +7,7 @@ import streamlit as st
 import asyncio
 import threading
 from typing import Dict, Any, Optional
+from datetime import datetime
 from modules.ai.async_ai_processor import get_async_ai_processor
 
 class StreamlitAsyncWrapper:

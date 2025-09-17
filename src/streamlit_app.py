@@ -9,8 +9,19 @@ import os
 import sys
 import streamlit as st
 
-# Agregar el directorio actual al path
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# Configurar paths
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(current_dir)
+
+# Asegurar que tanto la raíz como src están en el path
+for path in [project_root, current_dir]:
+    if path not in sys.path:
+        sys.path.insert(0, path)
+
+print(f"Streamlit app paths:")
+print(f"Current dir: {current_dir}")
+print(f"Project root: {project_root}")
+print(f"Python path: {sys.path}")
 
 # Configuración para producción
 os.environ.setdefault('STREAMLIT_SERVER_HEADLESS', 'true')

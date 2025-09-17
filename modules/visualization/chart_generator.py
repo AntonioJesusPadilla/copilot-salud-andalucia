@@ -26,28 +26,45 @@ class SmartChartGenerator:
     
     def generate_chart(self, chart_config: Dict, data: pd.DataFrame) -> go.Figure:
         """Generar gráfico basado en configuración de IA"""
-        
+
+        # Validaciones básicas
+        if data is None or data.empty:
+            return self._create_error_chart("Datos vacíos o None")
+
+        if not isinstance(chart_config, dict):
+            return self._create_error_chart("Configuración de gráfico inválida")
+
         chart_type = chart_config.get('type', 'bar')
         title = chart_config.get('title', 'Análisis Sanitario')
-        
+
         try:
             if chart_type == 'bar':
-                return self._create_bar_chart(chart_config, data)
+                result = self._create_bar_chart(chart_config, data)
             elif chart_type == 'line':
-                return self._create_line_chart(chart_config, data)
+                result = self._create_line_chart(chart_config, data)
             elif chart_type == 'scatter':
-                return self._create_scatter_chart(chart_config, data)
+                result = self._create_scatter_chart(chart_config, data)
             elif chart_type == 'pie':
-                return self._create_pie_chart(chart_config, data)
+                result = self._create_pie_chart(chart_config, data)
             elif chart_type == 'heatmap':
-                return self._create_heatmap(chart_config, data)
+                result = self._create_heatmap(chart_config, data)
             elif chart_type == 'map':
-                return self._create_geographic_chart(chart_config, data)
+                result = self._create_geographic_chart(chart_config, data)
+            elif chart_type == 'histogram':
+                result = self._create_histogram_chart(chart_config, data)
             else:
-                return self._create_fallback_chart(title, data)
-                
+                result = self._create_fallback_chart(title, data)
+
+            # Verificar que el resultado no sea None
+            if result is None:
+                return self._create_error_chart(f"Método {chart_type} devolvió None")
+
+            return result
+
         except Exception as e:
-            return self._create_error_chart(f"Error generando gráfico: {str(e)}")
+            import traceback
+            error_details = traceback.format_exc()
+            return self._create_error_chart(f"Error generando gráfico tipo {chart_type}: {str(e)}\n{error_details[:200]}...")
     
     def _create_bar_chart(self, config: Dict, data: pd.DataFrame) -> go.Figure:
         """Crear gráfico de barras inteligente"""
@@ -55,6 +72,7 @@ class SmartChartGenerator:
         x_col = config.get('x_axis', data.columns[0])
         y_col = config.get('y_axis', data.columns[1] if len(data.columns) > 1 else data.columns[0])
         color_col = config.get('color_by', None)
+        
         
         # Determinar orientación automática
         if len(data) > 10 or max(len(str(x)) for x in data[x_col]) > 15:
@@ -77,7 +95,7 @@ class SmartChartGenerator:
                 color_continuous_scale=self.color_scales.get('equity', 'Viridis'),
                 title=config.get('title', 'Análisis de Barras')
             )
-            fig.update_xaxis(tickangle=45)
+            fig.update_xaxes(tickangle=45)
         
         return self._apply_health_theme(fig)
     
@@ -291,6 +309,36 @@ class SmartChartGenerator:
         
         return fig
     
+    def _create_histogram_chart(self, config: Dict, data: pd.DataFrame) -> go.Figure:
+        """Crear histograma para análisis de distribución"""
+        
+        # Detectar columna numérica para el histograma
+        numeric_cols = data.select_dtypes(include=['number']).columns
+        if len(numeric_cols) == 0:
+            return self._create_fallback_chart(config.get('title', 'Histograma'), data)
+        
+        # Usar la primera columna numérica o la especificada
+        col = config.get('x_axis', numeric_cols[0])
+        
+        fig = px.histogram(
+            data,
+            x=col,
+            nbins=20,
+            title=config.get('title', 'Distribución de Datos'),
+            color_discrete_sequence=[self.health_colors['primary']]
+        )
+        
+        # Añadir línea de media
+        mean_val = data[col].mean()
+        fig.add_vline(
+            x=mean_val, 
+            line_dash="dash", 
+            line_color="red",
+            annotation_text=f"Media: {mean_val:.2f}"
+        )
+        
+        return self._apply_health_theme(fig)
+    
     def _create_line_chart(self, config: Dict, data: pd.DataFrame) -> go.Figure:
         """Crear gráfico de líneas para tendencias temporales"""
         
@@ -345,45 +393,81 @@ class SmartChartGenerator:
         return fig
     
     def _apply_health_theme(self, fig: go.Figure) -> go.Figure:
-        """Aplicar tema sanitario consistente"""
-        
+        """Aplicar tema sanitario compatible con modo oscuro"""
+
         fig.update_layout(
-            # Colores del tema
-            plot_bgcolor='rgba(248, 249, 250, 0.8)',
-            paper_bgcolor='white',
-            
-            # Tipografía
-            font=dict(family="Arial, sans-serif", size=12, color="#2c3e50"),
-            title_font=dict(size=16, color="#00a86b", family="Arial Black"),
-            
+            # Colores del tema adaptados para modo oscuro
+            plot_bgcolor='rgba(30, 30, 30, 0.9)',  # Fondo oscuro
+            paper_bgcolor='rgba(20, 20, 20, 0.95)',  # Papel oscuro
+
+            # Tipografía con colores claros
+            font=dict(family="Arial, sans-serif", size=12, color="#ffffff"),  # Texto blanco
+            title_font=dict(size=16, color="#4ade80", family="Arial Black"),  # Verde claro para título
+
             # Márgenes y espaciado
             margin=dict(l=60, r=60, t=80, b=60),
-            
-            # Grid y ejes
+
+            # Grid y ejes con colores claros
             xaxis=dict(
-                showgrid=True, 
-                gridcolor='rgba(0,0,0,0.1)',
-                linecolor='rgba(0,0,0,0.2)'
+                showgrid=True,
+                gridcolor='rgba(255,255,255,0.2)',  # Grid blanco transparente
+                linecolor='rgba(255,255,255,0.4)',  # Líneas del eje blancas
+                tickfont=dict(color='#ffffff'),  # Etiquetas blancas
+                titlefont=dict(color='#ffffff')  # Título del eje blanco
             ),
             yaxis=dict(
-                showgrid=True, 
-                gridcolor='rgba(0,0,0,0.1)',
-                linecolor='rgba(0,0,0,0.2)'
+                showgrid=True,
+                gridcolor='rgba(255,255,255,0.2)',  # Grid blanco transparente
+                linecolor='rgba(255,255,255,0.4)',  # Líneas del eje blancas
+                tickfont=dict(color='#ffffff'),  # Etiquetas blancas
+                titlefont=dict(color='#ffffff')  # Título del eje blanco
             ),
-            
-            # Hover
+
+            # Hover con tema oscuro
             hoverlabel=dict(
-                bgcolor="white",
+                bgcolor="rgba(40, 40, 40, 0.95)",  # Fondo oscuro para hover
+                bordercolor="rgba(255,255,255,0.3)",  # Borde claro
                 font_size=12,
-                font_family="Arial"
+                font_family="Arial",
+                font_color="#ffffff"  # Texto blanco en hover
+            ),
+
+            # Leyenda con tema oscuro
+            legend=dict(
+                bgcolor="rgba(30, 30, 30, 0.8)",
+                bordercolor="rgba(255,255,255,0.3)",
+                font=dict(color="#ffffff")
             )
         )
         
-        # Actualizar colores de barras si es un gráfico de barras
-        if hasattr(fig.data[0], 'marker') and hasattr(fig.data[0].marker, 'color'):
-            if isinstance(fig.data[0].marker.color, str):
-                fig.update_traces(marker_color=self.health_colors['primary'])
-        
+        # Actualizar colores de elementos para modo oscuro
+        if len(fig.data) > 0:
+            # Colores optimizados para modo oscuro
+            dark_colors = [
+                '#4ade80',  # Verde claro
+                '#60a5fa',  # Azul claro
+                '#f472b6',  # Rosa claro
+                '#fbbf24',  # Amarillo claro
+                '#a78bfa',  # Púrpura claro
+                '#34d399',  # Esmeralda claro
+                '#fb7185',  # Rojo claro
+                '#fcd34d'   # Ámbar claro
+            ]
+
+            # Aplicar colores según el tipo de gráfico
+            for i, trace in enumerate(fig.data):
+                if hasattr(trace, 'marker'):
+                    # Para gráficos de barras, scatter, etc.
+                    if isinstance(getattr(trace.marker, 'color', None), str):
+                        fig.data[i].marker.color = dark_colors[i % len(dark_colors)]
+                    elif hasattr(trace.marker, 'colorscale'):
+                        # Para gráficos con escala de colores
+                        fig.data[i].marker.colorscale = 'Viridis'
+
+                if hasattr(trace, 'line') and hasattr(trace.line, 'color'):
+                    # Para gráficos de líneas
+                    fig.data[i].line.color = dark_colors[i % len(dark_colors)]
+
         return fig
 
 # Clase auxiliar para análisis automático de datos
@@ -401,28 +485,46 @@ class DataAnalyzer:
         categorical_cols = len(data.select_dtypes(include=['object', 'category']).columns)
         total_rows = len(data)
         
-        # Reglas basadas en el tipo de análisis
-        if analysis_type == "geographic":
-            if 'lat' in data.columns or 'latitud' in data.columns:
-                return "map"
-            else:
-                return "bar"
-                
-        elif analysis_type == "equity":
+        # Reglas específicas por tipo de análisis sanitario
+        if analysis_type == "equity":
             if numeric_cols >= 3:
                 return "heatmap"
+            elif 'distrito' in data.columns or 'municipio' in data.columns:
+                return "bar"
+            else:
+                return "scatter"
+                
+        elif analysis_type == "demographic":
+            if 'municipio' in data.columns and 'poblacion' in data.columns:
+                return "bar"
+            elif total_rows > 20:
+                return "scatter"
             else:
                 return "bar"
                 
-        elif analysis_type == "demographic":
-            if total_rows > 20:
-                return "scatter"
+        elif analysis_type == "infrastructure":
+            if 'tipo_centro' in data.columns:
+                return "pie" if total_rows <= 8 else "bar"
+            elif 'camas' in data.columns or 'personal' in data.columns:
+                return "bar"
             else:
                 return "bar"
                 
         elif analysis_type == "services":
             if categorical_cols > 0 and numeric_cols > 0:
-                return "pie" if total_rows < 8 else "bar"
+                return "pie" if total_rows <= 8 else "bar"
+            else:
+                return "heatmap"
+                
+        elif analysis_type == "accessibility":
+            if 'tiempo' in str(data.columns).lower():
+                return "histogram"
+            else:
+                return "bar"
+                
+        elif analysis_type == "metrics":
+            if numeric_cols >= 2:
+                return "scatter"
             else:
                 return "bar"
         
@@ -460,6 +562,14 @@ class DataAnalyzer:
         numeric_cols = data.select_dtypes(include=['number']).columns.tolist()
         categorical_cols = data.select_dtypes(include=['object', 'category']).columns.tolist()
         
+        # Forzar detección de columnas específicas que sabemos que son categóricas
+        known_categorical = ['distrito_sanitario', 'tipo_centro', 'municipio', 'nombre', 'codigo_sas']
+        for col in known_categorical:
+            if col in data.columns and col not in categorical_cols:
+                categorical_cols.append(col)
+        
+        # Debug: mostrar tipos de columnas detectadas
+        
         # Detectar columnas por nombre/contexto
         name_patterns = {
             'geographic': ['municipio', 'distrito', 'provincia', 'zona'],
@@ -469,21 +579,165 @@ class DataAnalyzer:
             'time': ['fecha', 'año', 'mes', 'tiempo']
         }
         
-        # Asignar X (categórica preferiblemente)
-        if categorical_cols:
-            # Priorizar columnas importantes por contexto
-            for pattern_type, patterns in name_patterns.items():
-                for col in categorical_cols:
-                    if any(pattern in col.lower() for pattern in patterns):
-                        result['x_axis'] = col
-                        break
-                if result['x_axis']:
-                    break
-            
-            if not result['x_axis']:
+        # Asignar X e Y basado en el tipo de análisis
+        if analysis_type == "executive_summary":
+            # Para resumen ejecutivo, usar tipo de centro como X y métricas clave como Y
+            if 'tipo_centro' in categorical_cols:
+                result['x_axis'] = 'tipo_centro'
+            elif 'distrito_sanitario' in categorical_cols:
+                result['x_axis'] = 'distrito_sanitario'
+            elif 'municipio' in categorical_cols:
+                result['x_axis'] = 'municipio'
+            elif categorical_cols:
                 result['x_axis'] = categorical_cols[0]
+            else:
+                result['x_axis'] = data.columns[0]
+            
+            # Para Y, usar métricas clave del sistema sanitario
+            if 'camas_funcionamiento_2025' in numeric_cols:
+                result['y_axis'] = 'camas_funcionamiento_2025'
+            elif 'personal_sanitario_2025' in numeric_cols:
+                result['y_axis'] = 'personal_sanitario_2025'
+            elif 'poblacion_referencia_2025' in numeric_cols:
+                result['y_axis'] = 'poblacion_referencia_2025'
+            elif numeric_cols:
+                result['y_axis'] = numeric_cols[0]
+            else:
+                result['y_axis'] = data.columns[1] if len(data.columns) > 1 else data.columns[0]
+                
+        elif analysis_type == "strategic_planning":
+            # Para planificación estratégica, usar distritos como X y métricas de rendimiento como Y
+            if 'distrito_sanitario' in categorical_cols:
+                result['x_axis'] = 'distrito_sanitario'
+            elif 'tipo_centro' in categorical_cols:
+                result['x_axis'] = 'tipo_centro'
+            elif 'municipio' in categorical_cols:
+                result['x_axis'] = 'municipio'
+            elif categorical_cols:
+                result['x_axis'] = categorical_cols[0]
+            else:
+                result['x_axis'] = data.columns[0]
+            
+            # Para Y, usar métricas de rendimiento o eficiencia
+            if 'personal_sanitario_2025' in numeric_cols:
+                result['y_axis'] = 'personal_sanitario_2025'
+            elif 'camas_funcionamiento_2025' in numeric_cols:
+                result['y_axis'] = 'camas_funcionamiento_2025'
+            elif 'poblacion_referencia_2025' in numeric_cols:
+                result['y_axis'] = 'poblacion_referencia_2025'
+            elif numeric_cols:
+                result['y_axis'] = numeric_cols[0]
+            else:
+                result['y_axis'] = data.columns[1] if len(data.columns) > 1 else data.columns[0]
+                
+        elif analysis_type == "user_management":
+            # Para gestión de usuarios, crear un gráfico de distribución por tipo de centro
+            if 'tipo_centro' in categorical_cols:
+                result['x_axis'] = 'tipo_centro'
+            elif 'distrito_sanitario' in categorical_cols:
+                result['x_axis'] = 'distrito_sanitario'
+            elif 'municipio' in categorical_cols:
+                result['x_axis'] = 'municipio'
+            elif categorical_cols:
+                result['x_axis'] = categorical_cols[0]
+            else:
+                result['x_axis'] = data.columns[0]
+            
+            # Para Y, usar personal sanitario como proxy de usuarios
+            if 'personal_sanitario_2025' in numeric_cols:
+                result['y_axis'] = 'personal_sanitario_2025'
+            elif 'camas_funcionamiento_2025' in numeric_cols:
+                result['y_axis'] = 'camas_funcionamiento_2025'
+            elif 'poblacion_referencia_2025' in numeric_cols:
+                result['y_axis'] = 'poblacion_referencia_2025'
+            elif numeric_cols:
+                result['y_axis'] = numeric_cols[0]
+            else:
+                result['y_axis'] = data.columns[1] if len(data.columns) > 1 else data.columns[0]
+            
+            # Para gestión de usuarios, usar color por distrito para mostrar distribución
+            if 'distrito_sanitario' in categorical_cols:
+                result['color_by'] = 'distrito_sanitario'
+                
+        elif analysis_type == "equity":
+            # Para equidad, priorizar distrito_sanitario sobre municipio
+            if 'distrito_sanitario' in categorical_cols:
+                result['x_axis'] = 'distrito_sanitario'
+            elif 'municipio' in categorical_cols:
+                result['x_axis'] = 'municipio'
+            elif categorical_cols:
+                result['x_axis'] = categorical_cols[0]
+            else:
+                result['x_axis'] = data.columns[0]
+            
+            # Para Y, priorizar métricas de equidad (evitar latitud/longitud)
+            equity_metrics = ['camas_funcionamiento_2025', 'personal_sanitario_2025', 'poblacion_referencia_2025', 'urgencias_24h', 'uci_camas', 'quirofanos_activos']
+            for metric in equity_metrics:
+                if metric in numeric_cols:
+                    result['y_axis'] = metric
+                    break
+            else:
+                # Si no encuentra métricas de equidad, usar la primera numérica que no sea latitud/longitud
+                for col in numeric_cols:
+                    if col not in ['latitud', 'longitud']:
+                        result['y_axis'] = col
+                        break
+                else:
+                    result['y_axis'] = numeric_cols[0] if numeric_cols else data.columns[1] if len(data.columns) > 1 else data.columns[0]
+                
+        elif analysis_type == "demographic":
+            # Para demografía, usar municipio como X y población como Y
+            if 'municipio' in categorical_cols:
+                result['x_axis'] = 'municipio'
+            elif categorical_cols:
+                result['x_axis'] = categorical_cols[0]
+            else:
+                result['x_axis'] = data.columns[0]
+            
+            if 'poblacion_2025' in numeric_cols:
+                result['y_axis'] = 'poblacion_2025'
+            elif 'crecimiento_2024_2025' in numeric_cols:
+                result['y_axis'] = 'crecimiento_2024_2025'
+            elif numeric_cols:
+                result['y_axis'] = numeric_cols[0]
+            else:
+                result['y_axis'] = data.columns[1] if len(data.columns) > 1 else data.columns[0]
+                
+        elif analysis_type == "infrastructure":
+            # Para infraestructura, usar nombre/tipo como X y camas/personal como Y
+            if 'nombre' in categorical_cols:
+                result['x_axis'] = 'nombre'
+            elif 'tipo_centro' in categorical_cols:
+                result['x_axis'] = 'tipo_centro'
+            elif categorical_cols:
+                result['x_axis'] = categorical_cols[0]
+            else:
+                result['x_axis'] = data.columns[0]
+            
+            if 'camas_funcionamiento_2025' in numeric_cols:
+                result['y_axis'] = 'camas_funcionamiento_2025'
+            elif 'personal_sanitario_2025' in numeric_cols:
+                result['y_axis'] = 'personal_sanitario_2025'
+            elif numeric_cols:
+                result['y_axis'] = numeric_cols[0]
+            else:
+                result['y_axis'] = data.columns[1] if len(data.columns) > 1 else data.columns[0]
         else:
-            result['x_axis'] = data.columns[0]
+            # Lógica general
+            if categorical_cols:
+                # Priorizar columnas importantes por contexto
+                for pattern_type, patterns in name_patterns.items():
+                    for col in categorical_cols:
+                        if any(pattern in col.lower() for pattern in patterns):
+                            result['x_axis'] = col
+                            break
+                    if result['x_axis']:
+                        break
+                
+                if not result['x_axis']:
+                    result['x_axis'] = categorical_cols[0]
+            else:
+                result['x_axis'] = data.columns[0]
         
         # Asignar Y (numérica preferiblemente)
         if numeric_cols:

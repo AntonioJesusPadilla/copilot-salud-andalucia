@@ -133,9 +133,7 @@ class PerformanceOptimizer:
                         datasets[key] = pd.read_csv(file_mapping[key], dtype=dtype_config)
                         loaded_count += 1
                         
-                        # Mostrar progreso
-                        progress = loaded_count / total_count
-                        st.progress(progress, text=f"Cargando {key}... ({loaded_count}/{total_count})")
+                        # Progreso silencioso (sin mostrar barras)
                         
                     except Exception as file_error:
                         st.warning(f"⚠️ Error cargando {file_mapping[key]}: {str(file_error)}")
@@ -143,12 +141,7 @@ class PerformanceOptimizer:
                     st.warning(f"⚠️ Archivo no encontrado: {file_mapping.get(key, 'N/A')}")
             
             if datasets:
-                st.success(f"✅ Cargados {loaded_count}/{total_count} datasets optimizados para {user_role}")
-                
-                # Mostrar estadísticas de memoria
-                total_memory = sum(df.memory_usage(deep=True).sum() for df in datasets.values())
-                st.info(f"💾 Memoria utilizada: {total_memory / 1024 / 1024:.2f} MB")
-                
+                # Carga silenciosa (sin mensajes)
                 return datasets
             else:
                 st.error("❌ No se pudieron cargar los datasets")
