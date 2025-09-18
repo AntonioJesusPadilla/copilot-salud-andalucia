@@ -90,7 +90,7 @@ class SmartChartGenerator:
                     print(f"    Data: {entry['data']}")
             print("="*60 + "\n")
     
-    def generate_chart(self, chart_config: Dict, data: pd.DataFrame) -> go.Figure:
+    def generate_chart(self, chart_config: Dict, data: pd.DataFrame, theme_mode: str = 'light') -> go.Figure:
         """Generar gráfico basado en configuración de IA"""
 
         # RESET del log de debug
@@ -238,7 +238,7 @@ class SmartChartGenerator:
         # INSPECCIÓN ANTES DEL TEMA
         self.debug_figure_inspection(fig, "ANTES-DEL-TEMA")
 
-        result = self._apply_health_theme(fig)
+        result = self._apply_health_theme(fig, theme_mode)
 
         # INSPECCIÓN DESPUÉS DEL TEMA
         self.debug_figure_inspection(result, "DESPUÉS-DEL-TEMA")
@@ -290,7 +290,7 @@ class SmartChartGenerator:
         # INSPECCIÓN ANTES DEL TEMA
         self.debug_figure_inspection(fig, "ANTES-DEL-TEMA")
 
-        result = self._apply_health_theme(fig)
+        result = self._apply_health_theme(fig, theme_mode)
 
         # INSPECCIÓN DESPUÉS DEL TEMA
         self.debug_figure_inspection(result, "DESPUÉS-DEL-TEMA")
@@ -355,7 +355,7 @@ class SmartChartGenerator:
         # INSPECCIÓN ANTES DEL TEMA
         self.debug_figure_inspection(fig, "ANTES-DEL-TEMA")
 
-        result = self._apply_health_theme(fig)
+        result = self._apply_health_theme(fig, theme_mode)
 
         # INSPECCIÓN DESPUÉS DEL TEMA
         self.debug_figure_inspection(result, "DESPUÉS-DEL-TEMA")
@@ -403,7 +403,7 @@ class SmartChartGenerator:
         # INSPECCIÓN ANTES DEL TEMA
         self.debug_figure_inspection(fig, "ANTES-DEL-TEMA")
 
-        result = self._apply_health_theme(fig)
+        result = self._apply_health_theme(fig, theme_mode)
 
         # INSPECCIÓN DESPUÉS DEL TEMA
         self.debug_figure_inspection(result, "DESPUÉS-DEL-TEMA")
@@ -474,7 +474,7 @@ class SmartChartGenerator:
         # INSPECCIÓN ANTES DEL TEMA
         self.debug_figure_inspection(fig, "ANTES-DEL-TEMA")
 
-        result = self._apply_health_theme(fig)
+        result = self._apply_health_theme(fig, theme_mode)
 
         # INSPECCIÓN DESPUÉS DEL TEMA
         self.debug_figure_inspection(result, "DESPUÉS-DEL-TEMA")
@@ -573,7 +573,7 @@ class SmartChartGenerator:
         # INSPECCIÓN ANTES DEL TEMA
         self.debug_figure_inspection(fig, "ANTES-DEL-TEMA")
 
-        result = self._apply_health_theme(fig)
+        result = self._apply_health_theme(fig, theme_mode)
 
         # INSPECCIÓN DESPUÉS DEL TEMA
         self.debug_figure_inspection(result, "DESPUÉS-DEL-TEMA")
@@ -608,7 +608,7 @@ class SmartChartGenerator:
         # INSPECCIÓN ANTES DEL TEMA
         self.debug_figure_inspection(fig, "ANTES-DEL-TEMA")
 
-        result = self._apply_health_theme(fig)
+        result = self._apply_health_theme(fig, theme_mode)
 
         # INSPECCIÓN DESPUÉS DEL TEMA
         self.debug_figure_inspection(result, "DESPUÉS-DEL-TEMA")
@@ -645,7 +645,7 @@ class SmartChartGenerator:
         # INSPECCIÓN ANTES DEL TEMA
         self.debug_figure_inspection(fig, "ANTES-DEL-TEMA")
 
-        result = self._apply_health_theme(fig)
+        result = self._apply_health_theme(fig, theme_mode)
 
         # INSPECCIÓN DESPUÉS DEL TEMA
         self.debug_figure_inspection(result, "DESPUÉS-DEL-TEMA")
@@ -717,7 +717,7 @@ class SmartChartGenerator:
                 pass
             return fig
 
-    def _apply_health_theme(self, fig: go.Figure) -> go.Figure:
+    def _apply_health_theme(self, fig: go.Figure, theme_mode: str = 'light') -> go.Figure:
         """Aplicar tema sanitario compatible con modo claro y oscuro"""
 
         self.debug_log_add("🎨 INICIANDO aplicación de tema sanitario adaptativo")
@@ -728,55 +728,86 @@ class SmartChartGenerator:
         self.debug_log_add("✅ Configuración validada")
 
         # Tema adaptativo que funciona tanto en claro como en oscuro
-        fig.update_layout(
-            # Fondo transparente que se adapta al tema del sistema
-            plot_bgcolor='rgba(255, 255, 255, 0.95)',  # Fondo claro principal
-            paper_bgcolor='rgba(248, 250, 252, 0.98)',  # Papel claro
+        if theme_mode == 'dark':
+            # Colores para modo oscuro
+            plot_bg = 'rgba(17, 24, 39, 0.95)'
+            paper_bg = 'rgba(31, 41, 55, 0.98)'
+            text_color = '#f9fafb'
+            title_color = '#4ade80'
+            grid_color = 'rgba(156, 163, 175, 0.3)'
+            line_color = 'rgba(156, 163, 175, 0.5)'
+            hover_bg = 'rgba(31, 41, 55, 0.95)'
+            hover_border = 'rgba(74, 222, 128, 0.5)'
+            legend_bg = 'rgba(17, 24, 39, 0.9)'
+            legend_border = 'rgba(75, 85, 99, 0.5)'
+        else:
+            # Colores para modo claro
+            plot_bg = 'rgba(255, 255, 255, 0.95)'
+            paper_bg = 'rgba(248, 250, 252, 0.98)'
+            text_color = '#1f2937'
+            title_color = '#059669'
+            grid_color = 'rgba(156, 163, 175, 0.3)'
+            line_color = 'rgba(75, 85, 99, 0.5)'
+            hover_bg = 'rgba(255, 255, 255, 0.95)'
+            hover_border = 'rgba(0, 168, 107, 0.5)'
+            legend_bg = 'rgba(255, 255, 255, 0.9)'
+            legend_border = 'rgba(156, 163, 175, 0.3)'
 
-            # Tipografía con colores que se adaptan
-            font=dict(family="Inter, Arial, sans-serif", size=12, color="#1f2937"),  # Texto oscuro
-            title_font=dict(size=16, color="#059669", family="Inter"),  # Verde sanitario para título
+        fig.update_layout(
+            # Fondo adaptativo según tema
+            plot_bgcolor=plot_bg,
+            paper_bgcolor=paper_bg,
+
+            # Tipografía con colores adaptativos
+            font=dict(family="Inter, Arial, sans-serif", size=12, color=text_color),
+            title_font=dict(size=16, color=title_color, family="Inter"),
 
             # Márgenes y espaciado
             margin=dict(l=60, r=60, t=80, b=60),
 
-            # Grid y ejes con colores neutros
+            # Grid y ejes con colores adaptativos
             xaxis=dict(
                 showgrid=True,
-                gridcolor='rgba(156, 163, 175, 0.3)',  # Grid gris neutro
-                linecolor='rgba(75, 85, 99, 0.5)',  # Líneas del eje grises
-                tickfont=dict(color='#374151'),  # Etiquetas grises oscuras
-                title=dict(font=dict(color='#1f2937')),  # Título del eje oscuro
+                gridcolor=grid_color,
+                linecolor=line_color,
+                tickfont=dict(color=text_color),
+                title=dict(font=dict(color=text_color)),
                 rangeslider=dict(visible=False),  # IMPORTANTE: sin rangeslider
                 showrangeslider=False  # DOBLE PROTECCIÓN
             ),
             yaxis=dict(
                 showgrid=True,
-                gridcolor='rgba(156, 163, 175, 0.3)',  # Grid gris neutro
-                linecolor='rgba(75, 85, 99, 0.5)',  # Líneas del eje grises
-                tickfont=dict(color='#374151'),  # Etiquetas grises oscuras
-                title=dict(font=dict(color='#1f2937'))  # Título del eje oscuro
+                gridcolor=grid_color,
+                linecolor=line_color,
+                tickfont=dict(color=text_color),
+                title=dict(font=dict(color=text_color))
             ),
 
-            # Hover con tema claro
+            # Hover con tema adaptativo - SIN hoversubplots para evitar errores
             hoverlabel=dict(
-                bgcolor="rgba(255, 255, 255, 0.95)",  # Fondo claro para hover
-                bordercolor="rgba(0, 168, 107, 0.5)",  # Borde verde
+                bgcolor=hover_bg,
+                bordercolor=hover_border,
                 font_size=12,
                 font_family="Inter",
-                font_color="#1f2937"  # Texto oscuro en hover
+                font_color=text_color
             ),
+            hovermode="closest",  # Modo hover simple para evitar errores de subplots
 
-            # Leyenda con tema claro
+            # Leyenda con tema adaptativo
             legend=dict(
-                bgcolor="rgba(255, 255, 255, 0.9)",
-                bordercolor="rgba(156, 163, 175, 0.3)",
-                font=dict(color="#1f2937")
+                bgcolor=legend_bg,
+                bordercolor=legend_border,
+                font=dict(color=text_color)
             ),
 
             # PROTECCIONES ADICIONALES PARA STREAMLIT
             showrangeslider=False,  # Global
-            rangeslider=dict(visible=False)  # Global fallback
+            rangeslider=dict(visible=False),  # Global fallback
+
+            # PROTECCIÓN CONTRA ERRORES DE HOVER EN SUBPLOTS
+            hoversubplots="axis",  # Evitar errores con "single" o valores inválidos
+            hoverdistance=100,  # Distancia de hover para evitar conflictos
+            spikedistance=100   # Distancia de spike para evitar errores
         )
 
         # Actualizar colores de elementos para mejor legibilidad
