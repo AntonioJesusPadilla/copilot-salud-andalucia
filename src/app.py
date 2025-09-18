@@ -1169,26 +1169,6 @@ class SecureHealthAnalyticsApp:
             </div>
             """, unsafe_allow_html=True)
 
-            # Toggle de tema claro/oscuro
-            st.markdown("---")
-
-            # Inicializar tema en session_state si no existe
-            if 'theme_mode' not in st.session_state:
-                st.session_state.theme_mode = 'light'  # Por defecto modo claro
-
-            col1, col2, col3 = st.columns([1, 2, 1])
-            with col2:
-                # Toggle visual con iconos
-                if st.button(
-                    "🌙 Oscuro" if st.session_state.theme_mode == 'light' else "☀️ Claro",
-                    key="theme_toggle",
-                    help="Cambiar entre tema claro y oscuro",
-                    use_container_width=True
-                ):
-                    # Cambiar tema
-                    st.session_state.theme_mode = 'dark' if st.session_state.theme_mode == 'light' else 'light'
-                    st.rerun()  # Recargar para aplicar el nuevo tema
-
             # Botón de logout
             if st.button("🚪 Cerrar Sesión", key="logout_sidebar"):
                 logout()
