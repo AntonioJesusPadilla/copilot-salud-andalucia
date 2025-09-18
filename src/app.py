@@ -776,14 +776,14 @@ except Exception as e:
     # Si no se pueden cargar los archivos específicos, continuar sin ellos
     pass
 
+# Solo aplicar estilos adicionales si es necesario (el CSS adaptativo ya está cargado)
 st.markdown(f"""
 <style>
 /* Importar fuentes modernas */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 
-{css_content}
-
-{desktop_css}
+/* Estilos adicionales solo si no se cargó el CSS adaptativo */
+{'' if css_loaded == 'adaptive' else 'body { font-family: Inter, sans-serif; }'}
 </style>
 
 <script>
@@ -798,7 +798,7 @@ st.markdown(f"""
         meta.content = "width=1200, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
         document.getElementsByTagName('head')[0].appendChild(meta);
     }}
-    
+
     // Forzar layout desktop
     if (window.innerWidth < 1200 && !document.body.classList.contains('desktop-forced')) {{
         document.body.classList.add('desktop-forced');
