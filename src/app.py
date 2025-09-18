@@ -693,14 +693,27 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Importar CSS externo con tema sanitario avanzado y layout desktop
-with open('assets/style.css', 'r', encoding='utf-8') as f:
-    css_content = f.read()
+# Importar CSS adaptativo que funciona en modo claro y oscuro
+try:
+    with open('assets/adaptive_theme.css', 'r', encoding='utf-8') as f:
+        adaptive_css = f.read()
+        st.markdown(f"<style>{adaptive_css}</style>", unsafe_allow_html=True)
+    css_loaded = "adaptive"
+except Exception as e:
+    # Fallback al CSS original si no se encuentra el adaptativo
+    try:
+        with open('assets/style.css', 'r', encoding='utf-8') as f:
+            css_content = f.read()
+        with open('assets/desktop_layout.css', 'r', encoding='utf-8') as f:
+            desktop_css = f.read()
+        st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
+        st.markdown(f"<style>{desktop_css}</style>", unsafe_allow_html=True)
+        css_loaded = "legacy"
+    except Exception as e2:
+        st.warning(f"⚠️ No se pudieron cargar los estilos CSS: {e2}")
+        css_loaded = "none"
 
-with open('assets/desktop_layout.css', 'r', encoding='utf-8') as f:
-    desktop_css = f.read()
-
-# Cargar CSS extra si existe
+# Cargar CSS extra si existe (mantener compatibilidad)
 try:
     with open('assets/extra_styles.css', 'r', encoding='utf-8') as f:
         extra_css = f.read()

@@ -143,13 +143,31 @@ class SmartChartGenerator:
                 self.debug_log_add(f"❌ Método {chart_type} devolvió None")
                 return self._create_error_chart(f"Método {chart_type} devolvió None")
 
-            # PROTECCIÓN FINAL: Asegurar que no hay rangeslider problemático
-            self.debug_log_add("🛡️ Aplicando protección final anti-rangeslider")
+            # PROTECCIÓN FINAL EXTREMA: Asegurar que no hay rangeslider problemático para Streamlit
+            self.debug_log_add("🛡️ Aplicando protección final extrema anti-rangeslider para Streamlit")
             try:
-                result.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
-                self.debug_log_add("✅ Protección aplicada correctamente")
+                # Múltiples métodos de protección
+                result.update_layout(
+                    xaxis=dict(
+                        rangeslider=dict(visible=False),
+                        showrangeslider=False
+                    ),
+                    showrangeslider=False,
+                    rangeslider=dict(visible=False)
+                )
+
+                # Protección adicional para subplots
+                for i in range(10):
+                    if i == 0:
+                        continue
+                    try:
+                        result.update_layout(**{f'xaxis{i+1}': dict(rangeslider=dict(visible=False), showrangeslider=False)})
+                    except:
+                        pass
+
+                self.debug_log_add("✅ Protección extrema aplicada correctamente")
             except Exception as e:
-                self.debug_log_add(f"⚠️ Warning: No se pudo deshabilitar rangeslider: {e}")
+                self.debug_log_add(f"⚠️ Warning: No se pudo aplicar protección extrema: {e}")
 
             # INSPECCIÓN FINAL
             self.debug_figure_inspection(result, "FINAL")
@@ -206,11 +224,14 @@ class SmartChartGenerator:
             )
             fig.update_xaxes(tickangle=45)
         
-        # PROTECCIÓN: Eliminar rangeslider antes de aplicar tema
-        self.debug_log_add("🛡️ Aplicando protección anti-rangeslider en método individual")
+        # PROTECCIÓN EXTREMA: Eliminar rangeslider antes de aplicar tema
+        self.debug_log_add("🛡️ Aplicando protección extrema anti-rangeslider en método individual")
         try:
-            fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
-            self.debug_log_add("✅ Protección aplicada en método individual")
+            fig.update_layout(
+                xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
+                showrangeslider=False
+            )
+            self.debug_log_add("✅ Protección extrema aplicada en método individual")
         except Exception as e:
             self.debug_log_add(f"⚠️ Error en protección individual: {e}")
 
@@ -255,11 +276,14 @@ class SmartChartGenerator:
                 color_continuous_scale='Plasma'
             )
         
-        # PROTECCIÓN: Eliminar rangeslider antes de aplicar tema
-        self.debug_log_add("🛡️ Aplicando protección anti-rangeslider en método individual")
+        # PROTECCIÓN EXTREMA: Eliminar rangeslider antes de aplicar tema
+        self.debug_log_add("🛡️ Aplicando protección extrema anti-rangeslider en método individual")
         try:
-            fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
-            self.debug_log_add("✅ Protección aplicada en método individual")
+            fig.update_layout(
+                xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
+                showrangeslider=False
+            )
+            self.debug_log_add("✅ Protección extrema aplicada en método individual")
         except Exception as e:
             self.debug_log_add(f"⚠️ Error en protección individual: {e}")
 
@@ -317,11 +341,14 @@ class SmartChartGenerator:
             hovertemplate='<b>%{label}</b><br>Valor: %{value}<br>Porcentaje: %{percent}<extra></extra>'
         )
         
-        # PROTECCIÓN: Eliminar rangeslider antes de aplicar tema
-        self.debug_log_add("🛡️ Aplicando protección anti-rangeslider en método individual")
+        # PROTECCIÓN EXTREMA: Eliminar rangeslider antes de aplicar tema
+        self.debug_log_add("🛡️ Aplicando protección extrema anti-rangeslider en método individual")
         try:
-            fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
-            self.debug_log_add("✅ Protección aplicada en método individual")
+            fig.update_layout(
+                xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
+                showrangeslider=False
+            )
+            self.debug_log_add("✅ Protección extrema aplicada en método individual")
         except Exception as e:
             self.debug_log_add(f"⚠️ Error en protección individual: {e}")
 
@@ -362,11 +389,14 @@ class SmartChartGenerator:
                 text_auto=True
             )
         
-        # PROTECCIÓN: Eliminar rangeslider antes de aplicar tema
-        self.debug_log_add("🛡️ Aplicando protección anti-rangeslider en método individual")
+        # PROTECCIÓN EXTREMA: Eliminar rangeslider antes de aplicar tema
+        self.debug_log_add("🛡️ Aplicando protección extrema anti-rangeslider en método individual")
         try:
-            fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
-            self.debug_log_add("✅ Protección aplicada en método individual")
+            fig.update_layout(
+                xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
+                showrangeslider=False
+            )
+            self.debug_log_add("✅ Protección extrema aplicada en método individual")
         except Exception as e:
             self.debug_log_add(f"⚠️ Error en protección individual: {e}")
 
@@ -430,11 +460,14 @@ class SmartChartGenerator:
             # Fallback: crear gráfico de barras
             return self._create_bar_chart(config, data)
         
-        # PROTECCIÓN: Eliminar rangeslider antes de aplicar tema
-        self.debug_log_add("🛡️ Aplicando protección anti-rangeslider en método individual")
+        # PROTECCIÓN EXTREMA: Eliminar rangeslider antes de aplicar tema
+        self.debug_log_add("🛡️ Aplicando protección extrema anti-rangeslider en método individual")
         try:
-            fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
-            self.debug_log_add("✅ Protección aplicada en método individual")
+            fig.update_layout(
+                xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
+                showrangeslider=False
+            )
+            self.debug_log_add("✅ Protección extrema aplicada en método individual")
         except Exception as e:
             self.debug_log_add(f"⚠️ Error en protección individual: {e}")
 
@@ -526,11 +559,14 @@ class SmartChartGenerator:
             annotation_text=f"Media: {mean_val:.2f}"
         )
         
-        # PROTECCIÓN: Eliminar rangeslider antes de aplicar tema
-        self.debug_log_add("🛡️ Aplicando protección anti-rangeslider en método individual")
+        # PROTECCIÓN EXTREMA: Eliminar rangeslider antes de aplicar tema
+        self.debug_log_add("🛡️ Aplicando protección extrema anti-rangeslider en método individual")
         try:
-            fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
-            self.debug_log_add("✅ Protección aplicada en método individual")
+            fig.update_layout(
+                xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
+                showrangeslider=False
+            )
+            self.debug_log_add("✅ Protección extrema aplicada en método individual")
         except Exception as e:
             self.debug_log_add(f"⚠️ Error en protección individual: {e}")
 
@@ -558,11 +594,14 @@ class SmartChartGenerator:
             markers=True
         )
 
-        # PROTECCIÓN: Eliminar rangeslider antes de aplicar tema
-        self.debug_log_add("🛡️ Aplicando protección anti-rangeslider en método individual")
+        # PROTECCIÓN EXTREMA: Eliminar rangeslider antes de aplicar tema
+        self.debug_log_add("🛡️ Aplicando protección extrema anti-rangeslider en método individual")
         try:
-            fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
-            self.debug_log_add("✅ Protección aplicada en método individual")
+            fig.update_layout(
+                xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
+                showrangeslider=False
+            )
+            self.debug_log_add("✅ Protección extrema aplicada en método individual")
         except Exception as e:
             self.debug_log_add(f"⚠️ Error en protección individual: {e}")
 
@@ -592,11 +631,14 @@ class SmartChartGenerator:
             value_counts = data[cat_col].value_counts()
             fig = px.bar(x=value_counts.index, y=value_counts.values, title=title)
         
-        # PROTECCIÓN: Eliminar rangeslider antes de aplicar tema
-        self.debug_log_add("🛡️ Aplicando protección anti-rangeslider en método individual")
+        # PROTECCIÓN EXTREMA: Eliminar rangeslider antes de aplicar tema
+        self.debug_log_add("🛡️ Aplicando protección extrema anti-rangeslider en método individual")
         try:
-            fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
-            self.debug_log_add("✅ Protección aplicada en método individual")
+            fig.update_layout(
+                xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
+                showrangeslider=False
+            )
+            self.debug_log_add("✅ Protección extrema aplicada en método individual")
         except Exception as e:
             self.debug_log_add(f"⚠️ Error en protección individual: {e}")
 
@@ -630,122 +672,125 @@ class SmartChartGenerator:
         return fig
     
     def _validate_plotly_config(self, fig: go.Figure) -> go.Figure:
-        """Validar y corregir configuraciones problemáticas de Plotly"""
+        """Validar y corregir configuraciones problemáticas de Plotly para Streamlit"""
         try:
-            # SOLUCIÓN AGRESIVA: Eliminar completamente cualquier configuración de rangeslider
-            # que pueda causar errores
+            # SOLUCIÓN EXTREMA: Eliminar rangeslider de forma más agresiva para Streamlit
+            self.debug_log_add("🛡️ Iniciando validación extrema anti-rangeslider para Streamlit")
 
-            # Verificar y limpiar xaxis
-            if hasattr(fig.layout, 'xaxis'):
-                try:
-                    # Convertir a dict de forma segura
-                    xaxis_config = fig.layout.xaxis.to_plotly_json()
-                    # Eliminar rangeslider si existe
-                    if 'rangeslider' in xaxis_config:
-                        del xaxis_config['rangeslider']
+            # Método 1: Eliminar rangeslider directamente del layout
+            if hasattr(fig, 'layout'):
+                layout_dict = fig.to_dict()
 
-                    # Actualizar con configuración limpia
-                    fig.update_layout(xaxis=xaxis_config)
-                except Exception as e:
-                    # Fallback: simplemente deshabilitar rangeslider
-                    fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
+                # Eliminar rangeslider de todos los ejes x
+                for key in list(layout_dict.get('layout', {}).keys()):
+                    if 'xaxis' in key:
+                        if 'rangeslider' in layout_dict['layout'][key]:
+                            self.debug_log_add(f"🔴 ELIMINANDO rangeslider de {key}")
+                            del layout_dict['layout'][key]['rangeslider']
 
-            # También verificar todos los subplots si existen
-            try:
-                layout_dict = fig.layout.to_plotly_json()
-                for key in layout_dict.keys():
-                    if key.startswith('xaxis') and isinstance(layout_dict[key], dict):
-                        axis_config = layout_dict[key]
-                        if 'rangeslider' in axis_config:
-                            # Eliminar rangeslider de este eje
-                            del axis_config['rangeslider']
-                            fig.update_layout(**{key: axis_config})
-            except Exception as e:
-                # Si hay problemas con subplots, ignorar
-                pass
+                # Recrear la figura sin rangeslider
+                fig = go.Figure(data=layout_dict['data'], layout=layout_dict['layout'])
+                self.debug_log_add("✅ Figura recreada sin rangeslider")
+
+            # Método 2: Forzar deshabilitación de rangeslider en todas las configuraciones posibles
+            update_dict = {}
+            for i in range(10):  # Hasta 10 subplots
+                if i == 0:
+                    update_dict['xaxis'] = dict(rangeslider=dict(visible=False), showrangeslider=False)
+                else:
+                    update_dict[f'xaxis{i+1}'] = dict(rangeslider=dict(visible=False), showrangeslider=False)
+
+            fig.update_layout(**update_dict)
+            self.debug_log_add("✅ Rangeslider deshabilitado en todos los ejes")
 
             return fig
 
         except Exception as e:
-            print(f"Warning: Error validando configuración Plotly: {e}")
-            # Fallback: crear figura básica sin rangeslider
+            self.debug_log_add(f"❌ Error en validación anti-rangeslider: {e}")
+            # Fallback final: crear figura básica sin nada de rangeslider
             try:
                 fig.update_layout(
-                    xaxis=dict(rangeslider=None),
-                    xaxis2=dict(rangeslider=None) if hasattr(fig.layout, 'xaxis2') else {},
-                    xaxis3=dict(rangeslider=None) if hasattr(fig.layout, 'xaxis3') else {}
+                    xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
+                    showrangeslider=False
                 )
             except:
                 pass
             return fig
 
     def _apply_health_theme(self, fig: go.Figure) -> go.Figure:
-        """Aplicar tema sanitario compatible con modo oscuro"""
+        """Aplicar tema sanitario compatible con modo claro y oscuro"""
 
-        self.debug_log_add("🎨 INICIANDO aplicación de tema sanitario")
+        self.debug_log_add("🎨 INICIANDO aplicación de tema sanitario adaptativo")
 
         # Primero validar configuración
         self.debug_log_add("🔍 Validando configuración Plotly")
         fig = self._validate_plotly_config(fig)
         self.debug_log_add("✅ Configuración validada")
 
+        # Tema adaptativo que funciona tanto en claro como en oscuro
         fig.update_layout(
-            # Colores del tema adaptados para modo oscuro
-            plot_bgcolor='rgba(30, 30, 30, 0.9)',  # Fondo oscuro
-            paper_bgcolor='rgba(20, 20, 20, 0.95)',  # Papel oscuro
+            # Fondo transparente que se adapta al tema del sistema
+            plot_bgcolor='rgba(255, 255, 255, 0.95)',  # Fondo claro principal
+            paper_bgcolor='rgba(248, 250, 252, 0.98)',  # Papel claro
 
-            # Tipografía con colores claros
-            font=dict(family="Arial, sans-serif", size=12, color="#ffffff"),  # Texto blanco
-            title_font=dict(size=16, color="#4ade80", family="Arial Black"),  # Verde claro para título
+            # Tipografía con colores que se adaptan
+            font=dict(family="Inter, Arial, sans-serif", size=12, color="#1f2937"),  # Texto oscuro
+            title_font=dict(size=16, color="#059669", family="Inter"),  # Verde sanitario para título
 
             # Márgenes y espaciado
             margin=dict(l=60, r=60, t=80, b=60),
 
-            # Grid y ejes con colores claros (SIN rangeslider para evitar errores)
+            # Grid y ejes con colores neutros
             xaxis=dict(
                 showgrid=True,
-                gridcolor='rgba(255,255,255,0.2)',  # Grid blanco transparente
-                linecolor='rgba(255,255,255,0.4)',  # Líneas del eje blancas
-                tickfont=dict(color='#ffffff'),  # Etiquetas blancas
-                title=dict(font=dict(color='#ffffff'))  # Título del eje blanco - CORREGIDO
+                gridcolor='rgba(156, 163, 175, 0.3)',  # Grid gris neutro
+                linecolor='rgba(75, 85, 99, 0.5)',  # Líneas del eje grises
+                tickfont=dict(color='#374151'),  # Etiquetas grises oscuras
+                title=dict(font=dict(color='#1f2937')),  # Título del eje oscuro
+                rangeslider=dict(visible=False),  # IMPORTANTE: sin rangeslider
+                showrangeslider=False  # DOBLE PROTECCIÓN
             ),
             yaxis=dict(
                 showgrid=True,
-                gridcolor='rgba(255,255,255,0.2)',  # Grid blanco transparente
-                linecolor='rgba(255,255,255,0.4)',  # Líneas del eje blancas
-                tickfont=dict(color='#ffffff'),  # Etiquetas blancas
-                title=dict(font=dict(color='#ffffff'))  # Título del eje blanco - CORREGIDO
+                gridcolor='rgba(156, 163, 175, 0.3)',  # Grid gris neutro
+                linecolor='rgba(75, 85, 99, 0.5)',  # Líneas del eje grises
+                tickfont=dict(color='#374151'),  # Etiquetas grises oscuras
+                title=dict(font=dict(color='#1f2937'))  # Título del eje oscuro
             ),
 
-            # Hover con tema oscuro
+            # Hover con tema claro
             hoverlabel=dict(
-                bgcolor="rgba(40, 40, 40, 0.95)",  # Fondo oscuro para hover
-                bordercolor="rgba(255,255,255,0.3)",  # Borde claro
+                bgcolor="rgba(255, 255, 255, 0.95)",  # Fondo claro para hover
+                bordercolor="rgba(0, 168, 107, 0.5)",  # Borde verde
                 font_size=12,
-                font_family="Arial",
-                font_color="#ffffff"  # Texto blanco en hover
+                font_family="Inter",
+                font_color="#1f2937"  # Texto oscuro en hover
             ),
 
-            # Leyenda con tema oscuro
+            # Leyenda con tema claro
             legend=dict(
-                bgcolor="rgba(30, 30, 30, 0.8)",
-                bordercolor="rgba(255,255,255,0.3)",
-                font=dict(color="#ffffff")
-            )
+                bgcolor="rgba(255, 255, 255, 0.9)",
+                bordercolor="rgba(156, 163, 175, 0.3)",
+                font=dict(color="#1f2937")
+            ),
+
+            # PROTECCIONES ADICIONALES PARA STREAMLIT
+            showrangeslider=False,  # Global
+            rangeslider=dict(visible=False)  # Global fallback
         )
-        
-        # Actualizar colores de elementos para modo oscuro
+
+        # Actualizar colores de elementos para mejor legibilidad
         if len(fig.data) > 0:
-            # Colores optimizados para modo oscuro
-            dark_colors = [
-                '#4ade80',  # Verde claro
-                '#60a5fa',  # Azul claro
-                '#f472b6',  # Rosa claro
-                '#fbbf24',  # Amarillo claro
-                '#a78bfa',  # Púrpura claro
-                '#34d399',  # Esmeralda claro
-                '#fb7185',  # Rojo claro
-                '#fcd34d'   # Ámbar claro
+            # Colores optimizados para modo claro con buena legibilidad
+            light_colors = [
+                '#059669',  # Verde sanitario principal
+                '#0ea5e9',  # Azul médico
+                '#dc2626',  # Rojo médico
+                '#d97706',  # Naranja advertencia
+                '#7c3aed',  # Púrpura
+                '#0d9488',  # Teal médico
+                '#be185d',  # Rosa médico
+                '#4338ca'   # Índigo
             ]
 
             # Aplicar colores según el tipo de gráfico
@@ -753,16 +798,16 @@ class SmartChartGenerator:
                 if hasattr(trace, 'marker'):
                     # Para gráficos de barras, scatter, etc.
                     if isinstance(getattr(trace.marker, 'color', None), str):
-                        fig.data[i].marker.color = dark_colors[i % len(dark_colors)]
+                        fig.data[i].marker.color = light_colors[i % len(light_colors)]
                     elif hasattr(trace.marker, 'colorscale'):
-                        # Para gráficos con escala de colores
-                        fig.data[i].marker.colorscale = 'Viridis'
+                        # Para gráficos con escala de colores apropiada para modo claro
+                        fig.data[i].marker.colorscale = 'RdYlBu_r'
 
                 if hasattr(trace, 'line') and hasattr(trace.line, 'color'):
                     # Para gráficos de líneas
-                    fig.data[i].line.color = dark_colors[i % len(dark_colors)]
+                    fig.data[i].line.color = light_colors[i % len(light_colors)]
 
-        self.debug_log_add("🎨 TEMA APLICADO exitosamente")
+        self.debug_log_add("🎨 TEMA ADAPTATIVO APLICADO exitosamente")
         return fig
 
     def enable_rangeslider(self, fig: go.Figure, enable_buttons: bool = True) -> go.Figure:
