@@ -693,25 +693,37 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Importar CSS adaptativo que funciona en modo claro y oscuro
+# Inicializar tema si no existe
+if 'theme_mode' not in st.session_state:
+    st.session_state.theme_mode = 'light'
+
+# Cargar CSS según el tema seleccionado
 try:
-    with open('assets/adaptive_theme.css', 'r', encoding='utf-8') as f:
-        adaptive_css = f.read()
-        st.markdown(f"<style>{adaptive_css}</style>", unsafe_allow_html=True)
-    css_loaded = "adaptive"
+    theme_file = f'assets/theme_{st.session_state.theme_mode}.css'
+    with open(theme_file, 'r', encoding='utf-8') as f:
+        theme_css = f.read()
+        st.markdown(f"<style>{theme_css}</style>", unsafe_allow_html=True)
+    css_loaded = f"theme_{st.session_state.theme_mode}"
 except Exception as e:
-    # Fallback al CSS original si no se encuentra el adaptativo
+    # Fallback al CSS adaptativo
     try:
-        with open('assets/style.css', 'r', encoding='utf-8') as f:
-            css_content = f.read()
-        with open('assets/desktop_layout.css', 'r', encoding='utf-8') as f:
-            desktop_css = f.read()
-        st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
-        st.markdown(f"<style>{desktop_css}</style>", unsafe_allow_html=True)
-        css_loaded = "legacy"
+        with open('assets/adaptive_theme.css', 'r', encoding='utf-8') as f:
+            adaptive_css = f.read()
+            st.markdown(f"<style>{adaptive_css}</style>", unsafe_allow_html=True)
+        css_loaded = "adaptive"
     except Exception as e2:
-        st.warning(f"⚠️ No se pudieron cargar los estilos CSS: {e2}")
-        css_loaded = "none"
+        # Último fallback al CSS original
+        try:
+            with open('assets/style.css', 'r', encoding='utf-8') as f:
+                css_content = f.read()
+            with open('assets/desktop_layout.css', 'r', encoding='utf-8') as f:
+                desktop_css = f.read()
+            st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
+            st.markdown(f"<style>{desktop_css}</style>", unsafe_allow_html=True)
+            css_loaded = "legacy"
+        except Exception as e3:
+            st.warning(f"⚠️ No se pudieron cargar los estilos CSS: {e3}")
+            css_loaded = "none"
 
 # Cargar CSS extra si existe (mantener compatibilidad)
 try:
@@ -776,15 +788,62 @@ except Exception as e:
     # Si no se pueden cargar los archivos específicos, continuar sin ellos
     pass
 
-# Solo aplicar estilos adicionales si es necesario (el CSS adaptativo ya está cargado)
+# Aplicar estilos adicionales y toggle de tema flotante
 st.markdown(f"""
 <style>
 /* Importar fuentes modernas */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 
-/* Estilos adicionales solo si no se cargó el CSS adaptativo */
-{'' if css_loaded == 'adaptive' else 'body { font-family: Inter, sans-serif; }'}
+/* Toggle de tema flotante */
+.theme-toggle-float {{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    background: {'rgba(17, 24, 39, 0.9)' if st.session_state.theme_mode == 'dark' else 'rgba(255, 255, 255, 0.9)'};
+    color: {'#f9fafb' if st.session_state.theme_mode == 'dark' else '#1f2937'};
+    border: 2px solid {'rgba(74, 222, 128, 0.3)' if st.session_state.theme_mode == 'dark' else 'rgba(5, 150, 105, 0.3)'};
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    user-select: none;
+}}
+
+.theme-toggle-float:hover {{
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}}
+
+/* Indicador del tema actual */
+.theme-indicator {{
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: {'#4ade80' if st.session_state.theme_mode == 'dark' else '#059669'};
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+}}
+
+@keyframes pulse {{
+    0%, 100% {{ opacity: 1; }}
+    50% {{ opacity: 0.5; }}
+}}
+
+/* Estilos adicionales solo si no se cargó el CSS temático */
+{'' if css_loaded.startswith('theme_') else 'body { font-family: Inter, sans-serif; }'}
 </style>
+
+<!-- Toggle de tema flotante -->
+<div class="theme-toggle-float" onclick="toggleTheme()">
+    <span class="theme-indicator"></span>
+    {'🌙 Modo Oscuro' if st.session_state.theme_mode == 'light' else '☀️ Modo Claro'}
+</div>
 
 <script>
 // Forzar viewport de escritorio
@@ -804,6 +863,34 @@ st.markdown(f"""
         document.body.classList.add('desktop-forced');
         document.body.style.minWidth = '1200px';
         document.body.style.overflowX = 'auto';
+    }}
+
+    // Función para cambiar tema desde el botón flotante
+    window.toggleTheme = function() {{
+        // Simular clic en el botón del sidebar
+        const themeButton = document.querySelector('[data-testid="baseButton-secondary"][aria-label*="theme_toggle"]');
+        if (themeButton) {{
+            themeButton.click();
+        }} else {{
+            // Fallback: recargar página con nuevo tema
+            const currentTheme = localStorage.getItem('theme_mode') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            localStorage.setItem('theme_mode', newTheme);
+            window.location.reload();
+        }}
+    }};
+
+    // Detectar cambios en el tema del sistema
+    if (window.matchMedia) {{
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        mediaQuery.addEventListener('change', function(e) {{
+            // Solo auto-cambiar si el usuario no ha seleccionado manualmente un tema
+            const userTheme = localStorage.getItem('user_theme_preference');
+            if (!userTheme) {{
+                const newTheme = e.matches ? 'dark' : 'light';
+                localStorage.setItem('theme_mode', newTheme);
+            }}
+        }});
     }}
 }})();
 </script>
@@ -1081,7 +1168,27 @@ class SecureHealthAnalyticsApp:
                 </div>
             </div>
             """, unsafe_allow_html=True)
-            
+
+            # Toggle de tema claro/oscuro
+            st.markdown("---")
+
+            # Inicializar tema en session_state si no existe
+            if 'theme_mode' not in st.session_state:
+                st.session_state.theme_mode = 'light'  # Por defecto modo claro
+
+            col1, col2, col3 = st.columns([1, 2, 1])
+            with col2:
+                # Toggle visual con iconos
+                if st.button(
+                    "🌙 Oscuro" if st.session_state.theme_mode == 'light' else "☀️ Claro",
+                    key="theme_toggle",
+                    help="Cambiar entre tema claro y oscuro",
+                    use_container_width=True
+                ):
+                    # Cambiar tema
+                    st.session_state.theme_mode = 'dark' if st.session_state.theme_mode == 'light' else 'light'
+                    st.rerun()  # Recargar para aplicar el nuevo tema
+
             # Botón de logout
             if st.button("🚪 Cerrar Sesión", key="logout_sidebar"):
                 logout()
@@ -2117,7 +2224,8 @@ def render_secure_chat(app):
 
                                         chart_data = app.chart_generator.generate_chart(
                                             enhanced_config,
-                                            chart_data_input
+                                            chart_data_input,
+                                            st.session_state.theme_mode
                                         )
 
                                         if chart_data:
