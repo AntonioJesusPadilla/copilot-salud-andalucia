@@ -1,0 +1,162 @@
+/* ===========================================
+   CORRECCIONES ESPECÍFICAS PARA SAFARI iOS 26
+   =========================================== */
+
+/* Fix para backdrop-filter en Safari iOS 26 */
+.main-header,
+.sidebar-content,
+.chat-container,
+.role-indicator {
+    -webkit-backdrop-filter: blur(20px) !important;
+    backdrop-filter: blur(20px) !important;
+    /* Fallback para iOS 26 si backdrop-filter falla */
+    background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Prevenir zoom accidental en inputs - iOS 26 */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    font-size: 16px !important;
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+}
+
+/* Fix para touch events específico de iOS 26 */
+.stButton > button,
+.sidebar-content button,
+.stSelectbox,
+.stTextInput {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    touch-action: manipulation !important;
+    /* Prevenir comportamientos táctiles no deseados */
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+}
+
+/* Fix para scroll y viewport en iOS 26 */
+html {
+    -webkit-text-size-adjust: 100% !important;
+    text-size-adjust: 100% !important;
+}
+
+body {
+    -webkit-overflow-scrolling: touch !important;
+    overflow-scrolling: touch !important;
+    /* Fix para viewport en Safari iOS 26 */
+    position: relative !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+}
+
+/* Fix para elementos fijos en iOS 26 */
+.role-indicator,
+.logout-button {
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+    position: -webkit-sticky !important;
+    position: sticky !important;
+}
+
+/* Corrección para gradientes en Safari iOS 26 */
+.main-header,
+.stButton > button {
+    background-image: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    /* Fallback sólido para Safari iOS 26 */
+    background-color: #ffffff !important;
+}
+
+.stButton > button {
+    background-image: linear-gradient(135deg, #059669, #10b981) !important;
+    background-color: #059669 !important;
+}
+
+/* Fix para animaciones en iOS 26 */
+* {
+    -webkit-animation-fill-mode: both !important;
+    animation-fill-mode: both !important;
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+}
+
+/* Prevenir bounce scroll en iOS 26 */
+html, body {
+    overscroll-behavior: none !important;
+    -webkit-overflow-scrolling: auto !important;
+}
+
+/* Fix para flex layouts en Safari iOS 26 */
+.main .block-container,
+div[data-testid="column"] {
+    -webkit-flex-shrink: 0 !important;
+    flex-shrink: 0 !important;
+    -webkit-flex-grow: 1 !important;
+    flex-grow: 1 !important;
+}
+
+/* Corrección específica para Streamlit components en iOS 26 */
+div[data-testid="stSidebar"] {
+    -webkit-overflow-scrolling: touch !important;
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+}
+
+/* Fix para inputs de Streamlit en Safari iOS 26 */
+.stTextInput > div > div > input,
+.stSelectbox > div > div {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    border-radius: 12px !important;
+    -webkit-border-radius: 12px !important;
+}
+
+/* Prevenir problemas de rendering en iOS 26 */
+.stApp {
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+}
+
+/* Fix para charts y gráficos en iOS 26 */
+.js-plotly-plot,
+.plotly {
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+}
+
+@media only screen and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1.5) {
+    /* Específico para dispositivos iOS con alta densidad de píxeles */
+    .stButton > button {
+        min-height: 44px !important;
+        min-width: 44px !important;
+    }
+
+    /* Mejorar legibilidad en pantallas Retina de iOS 26 */
+    * {
+        -webkit-font-smoothing: antialiased !important;
+        -moz-osx-font-smoothing: grayscale !important;
+    }
+}
+
+/* Fix para modales y overlays en iOS 26 */
+.stModal,
+.stPopover {
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+    position: fixed !important;
+}
+
+/* Corrección para z-index en Safari iOS 26 */
+.stSidebar {
+    z-index: 999 !important;
+}
+
+.role-indicator {
+    z-index: 9999 !important;
+}
