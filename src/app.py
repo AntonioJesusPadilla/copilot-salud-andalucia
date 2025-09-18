@@ -708,6 +708,61 @@ try:
 except Exception:
     extra_css = None
 
+# Cargar detector y correcciones SOLO para iPhone iOS 26 (condicional)
+ios_detection_script = """
+<script>
+function isIPhoneIOS26() {
+    const userAgent = navigator.userAgent;
+    const isIPhone = /iPhone/.test(userAgent);
+    const isSafari = /Safari/.test(userAgent) && !/Chrome|CriOS|FxiOS/.test(userAgent);
+    const iosVersion = userAgent.match(/OS (\\d+)_/);
+    const isIOS26 = iosVersion && parseInt(iosVersion[1]) >= 26;
+    return isIPhone && isSafari && isIOS26;
+}
+
+// Solo aplicar correcciones si es iPhone iOS 26
+if (isIPhoneIOS26()) {
+    console.log('iPhone iOS 26 detectado - Aplicando correcciones específicas...');
+
+    // Inyectar CSS específico para iOS 26
+    const iosCSS = `PLACEHOLDER_CSS_CONTENT`;
+    const style = document.createElement('style');
+    style.textContent = iosCSS;
+    document.head.appendChild(style);
+
+    // Inyectar JavaScript específico para iOS 26
+    const iosJS = `PLACEHOLDER_JS_CONTENT`;
+    eval(iosJS);
+
+    // Meta tags específicos para iOS 26
+    const viewport = document.querySelector('meta[name="viewport"]') || document.createElement('meta');
+    viewport.setAttribute('name', 'viewport');
+    viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+    if (!document.querySelector('meta[name="viewport"]')) document.head.appendChild(viewport);
+
+    const webAppCapable = document.createElement('meta');
+    webAppCapable.setAttribute('name', 'apple-mobile-web-app-capable');
+    webAppCapable.setAttribute('content', 'yes');
+    document.head.appendChild(webAppCapable);
+}
+</script>
+"""
+
+# Leer CSS y JS para iOS 26 y reemplazar en el script
+try:
+    with open('assets/ios_safari_fixes.css', 'r', encoding='utf-8') as f:
+        ios_fixes_css = f.read().replace('`', '\\`').replace('${', '\\${')
+    with open('assets/safari_detector.js', 'r', encoding='utf-8') as f:
+        safari_js = f.read().replace('`', '\\`').replace('${', '\\${')
+
+    ios_detection_script = ios_detection_script.replace('PLACEHOLDER_CSS_CONTENT', ios_fixes_css)
+    ios_detection_script = ios_detection_script.replace('PLACEHOLDER_JS_CONTENT', safari_js)
+
+    st.markdown(ios_detection_script, unsafe_allow_html=True)
+except Exception as e:
+    # Si no se pueden cargar los archivos específicos, continuar sin ellos
+    pass
+
 st.markdown(f"""
 <style>
 /* Importar fuentes modernas */

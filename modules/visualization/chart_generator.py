@@ -3,9 +3,14 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import pandas as pd
 from typing import Dict, Optional
+import traceback
+import json
 
 class SmartChartGenerator:
     def __init__(self):
+        self.debug_mode = False  # Debug desactivado ahora que encontramos el problema
+        self.debug_log = []
+
         # Paleta de colores sanitarios
         self.health_colors = {
             'primary': '#00a86b',      # Verde sanitario
@@ -23,21 +28,94 @@ class SmartChartGenerator:
             'services': 'Set3',
             'health_metrics': 'Spectral'
         }
+
+    def debug_log_add(self, message: str, data=None):
+        """Agregar entrada al log de debug"""
+        if self.debug_mode:
+            entry = {
+                'message': message,
+                'data': str(data)[:200] if data else None
+            }
+            self.debug_log.append(entry)
+            print(f"🔍 DEBUG: {message}")
+
+    def debug_figure_inspection(self, fig: go.Figure, stage: str):
+        """Inspeccionar figura en profundidad"""
+        if not self.debug_mode:
+            return
+
+        try:
+            self.debug_log_add(f"=== INSPECCIÓN FIGURA EN {stage.upper()} ===")
+
+            # Verificar layout
+            if hasattr(fig, 'layout'):
+                layout_dict = fig.layout.to_dict()
+                self.debug_log_add(f"Layout keys: {list(layout_dict.keys())}")
+
+                # Inspeccionar xaxis específicamente
+                for key in layout_dict.keys():
+                    if 'xaxis' in key:
+                        xaxis_data = layout_dict[key]
+                        self.debug_log_add(f"{key} contenido: {type(xaxis_data)}")
+
+                        if isinstance(xaxis_data, dict):
+                            if 'rangeslider' in xaxis_data:
+                                rangeslider_data = xaxis_data['rangeslider']
+                                self.debug_log_add(f"🚨 ENCONTRADO RANGESLIDER en {key}: {type(rangeslider_data)}")
+                                self.debug_log_add(f"Rangeslider content: {rangeslider_data}")
+
+                                # Verificar si tiene yaxis problemático
+                                if isinstance(rangeslider_data, dict) and 'yaxis' in rangeslider_data:
+                                    yaxis_data = rangeslider_data['yaxis']
+                                    self.debug_log_add(f"🔴 YAXIS EN RANGESLIDER: {type(yaxis_data)} = {yaxis_data}")
+
+            # Verificar data traces
+            if hasattr(fig, 'data'):
+                self.debug_log_add(f"Número de traces: {len(fig.data)}")
+                for i, trace in enumerate(fig.data):
+                    self.debug_log_add(f"Trace {i}: {type(trace).__name__}")
+
+        except Exception as e:
+            self.debug_log_add(f"❌ Error en inspección: {str(e)}")
+
+    def print_debug_report(self):
+        """Imprimir reporte completo de debug"""
+        if self.debug_mode and self.debug_log:
+            print("\n" + "="*60)
+            print("📋 REPORTE DEBUG COMPLETO")
+            print("="*60)
+            for i, entry in enumerate(self.debug_log):
+                print(f"{i+1:2d}. {entry['message']}")
+                if entry['data']:
+                    print(f"    Data: {entry['data']}")
+            print("="*60 + "\n")
     
     def generate_chart(self, chart_config: Dict, data: pd.DataFrame) -> go.Figure:
         """Generar gráfico basado en configuración de IA"""
 
+        # RESET del log de debug
+        self.debug_log = []
+        self.debug_log_add("🚀 INICIANDO GENERACIÓN DE GRÁFICO")
+
         # Validaciones básicas
         if data is None or data.empty:
+            self.debug_log_add("❌ Datos vacíos o None")
             return self._create_error_chart("Datos vacíos o None")
 
         if not isinstance(chart_config, dict):
+            self.debug_log_add("❌ Configuración de gráfico inválida")
             return self._create_error_chart("Configuración de gráfico inválida")
 
         chart_type = chart_config.get('type', 'bar')
         title = chart_config.get('title', 'Análisis Sanitario')
 
+        self.debug_log_add(f"📊 Tipo de gráfico: {chart_type}")
+        self.debug_log_add(f"📝 Título: {title}")
+        self.debug_log_add(f"📋 Datos shape: {data.shape}")
+
         try:
+            self.debug_log_add(f"🎯 Creando gráfico tipo: {chart_type}")
+
             if chart_type == 'bar':
                 result = self._create_bar_chart(chart_config, data)
             elif chart_type == 'line':
@@ -55,15 +133,46 @@ class SmartChartGenerator:
             else:
                 result = self._create_fallback_chart(title, data)
 
+            self.debug_log_add(f"✅ Gráfico creado exitosamente")
+
+            # INSPECCIÓN POST-CREACIÓN
+            self.debug_figure_inspection(result, "POST-CREACIÓN")
+
             # Verificar que el resultado no sea None
             if result is None:
+                self.debug_log_add(f"❌ Método {chart_type} devolvió None")
                 return self._create_error_chart(f"Método {chart_type} devolvió None")
+
+            # PROTECCIÓN FINAL: Asegurar que no hay rangeslider problemático
+            self.debug_log_add("🛡️ Aplicando protección final anti-rangeslider")
+            try:
+                result.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
+                self.debug_log_add("✅ Protección aplicada correctamente")
+            except Exception as e:
+                self.debug_log_add(f"⚠️ Warning: No se pudo deshabilitar rangeslider: {e}")
+
+            # INSPECCIÓN FINAL
+            self.debug_figure_inspection(result, "FINAL")
+
+            # IMPRIMIR REPORTE COMPLETO
+            self.print_debug_report()
 
             return result
 
         except Exception as e:
             import traceback
             error_details = traceback.format_exc()
+
+            # LOG DE ERROR COMPLETO
+            self.debug_log_add(f"💥 ERROR CRÍTICO: {str(e)}")
+            self.debug_log_add(f"📋 Traceback: {error_details}")
+
+            # Verificar si es específicamente el error de rangeslider
+            if 'rangeslider' in str(e).lower() or 'Rangeslider' in str(e):
+                self.debug_log_add("🎯 ERROR CONFIRMADO: Es el problema de Rangeslider")
+
+            self.print_debug_report()
+
             return self._create_error_chart(f"Error generando gráfico tipo {chart_type}: {str(e)}\n{error_details[:200]}...")
     
     def _create_bar_chart(self, config: Dict, data: pd.DataFrame) -> go.Figure:
@@ -97,7 +206,23 @@ class SmartChartGenerator:
             )
             fig.update_xaxes(tickangle=45)
         
-        return self._apply_health_theme(fig)
+        # PROTECCIÓN: Eliminar rangeslider antes de aplicar tema
+        self.debug_log_add("🛡️ Aplicando protección anti-rangeslider en método individual")
+        try:
+            fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
+            self.debug_log_add("✅ Protección aplicada en método individual")
+        except Exception as e:
+            self.debug_log_add(f"⚠️ Error en protección individual: {e}")
+
+        # INSPECCIÓN ANTES DEL TEMA
+        self.debug_figure_inspection(fig, "ANTES-DEL-TEMA")
+
+        result = self._apply_health_theme(fig)
+
+        # INSPECCIÓN DESPUÉS DEL TEMA
+        self.debug_figure_inspection(result, "DESPUÉS-DEL-TEMA")
+
+        return result
     
     def _create_scatter_chart(self, config: Dict, data: pd.DataFrame) -> go.Figure:
         """Crear gráfico de dispersión con insights"""
@@ -130,7 +255,23 @@ class SmartChartGenerator:
                 color_continuous_scale='Plasma'
             )
         
-        return self._apply_health_theme(fig)
+        # PROTECCIÓN: Eliminar rangeslider antes de aplicar tema
+        self.debug_log_add("🛡️ Aplicando protección anti-rangeslider en método individual")
+        try:
+            fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
+            self.debug_log_add("✅ Protección aplicada en método individual")
+        except Exception as e:
+            self.debug_log_add(f"⚠️ Error en protección individual: {e}")
+
+        # INSPECCIÓN ANTES DEL TEMA
+        self.debug_figure_inspection(fig, "ANTES-DEL-TEMA")
+
+        result = self._apply_health_theme(fig)
+
+        # INSPECCIÓN DESPUÉS DEL TEMA
+        self.debug_figure_inspection(result, "DESPUÉS-DEL-TEMA")
+
+        return result
     
     def _create_pie_chart(self, config: Dict, data: pd.DataFrame) -> go.Figure:
         """Crear gráfico circular con etiquetas inteligentes"""
@@ -176,7 +317,23 @@ class SmartChartGenerator:
             hovertemplate='<b>%{label}</b><br>Valor: %{value}<br>Porcentaje: %{percent}<extra></extra>'
         )
         
-        return self._apply_health_theme(fig)
+        # PROTECCIÓN: Eliminar rangeslider antes de aplicar tema
+        self.debug_log_add("🛡️ Aplicando protección anti-rangeslider en método individual")
+        try:
+            fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
+            self.debug_log_add("✅ Protección aplicada en método individual")
+        except Exception as e:
+            self.debug_log_add(f"⚠️ Error en protección individual: {e}")
+
+        # INSPECCIÓN ANTES DEL TEMA
+        self.debug_figure_inspection(fig, "ANTES-DEL-TEMA")
+
+        result = self._apply_health_theme(fig)
+
+        # INSPECCIÓN DESPUÉS DEL TEMA
+        self.debug_figure_inspection(result, "DESPUÉS-DEL-TEMA")
+
+        return result
     
     def _create_heatmap(self, config: Dict, data: pd.DataFrame) -> go.Figure:
         """Crear mapa de calor para análisis de correlación o matriz"""
@@ -205,7 +362,23 @@ class SmartChartGenerator:
                 text_auto=True
             )
         
-        return self._apply_health_theme(fig)
+        # PROTECCIÓN: Eliminar rangeslider antes de aplicar tema
+        self.debug_log_add("🛡️ Aplicando protección anti-rangeslider en método individual")
+        try:
+            fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
+            self.debug_log_add("✅ Protección aplicada en método individual")
+        except Exception as e:
+            self.debug_log_add(f"⚠️ Error en protección individual: {e}")
+
+        # INSPECCIÓN ANTES DEL TEMA
+        self.debug_figure_inspection(fig, "ANTES-DEL-TEMA")
+
+        result = self._apply_health_theme(fig)
+
+        # INSPECCIÓN DESPUÉS DEL TEMA
+        self.debug_figure_inspection(result, "DESPUÉS-DEL-TEMA")
+
+        return result
     
     def _create_geographic_chart(self, config: Dict, data: pd.DataFrame) -> go.Figure:
         """Crear visualización geográfica (scatter_mapbox básico)"""
@@ -257,7 +430,23 @@ class SmartChartGenerator:
             # Fallback: crear gráfico de barras
             return self._create_bar_chart(config, data)
         
-        return self._apply_health_theme(fig)
+        # PROTECCIÓN: Eliminar rangeslider antes de aplicar tema
+        self.debug_log_add("🛡️ Aplicando protección anti-rangeslider en método individual")
+        try:
+            fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
+            self.debug_log_add("✅ Protección aplicada en método individual")
+        except Exception as e:
+            self.debug_log_add(f"⚠️ Error en protección individual: {e}")
+
+        # INSPECCIÓN ANTES DEL TEMA
+        self.debug_figure_inspection(fig, "ANTES-DEL-TEMA")
+
+        result = self._apply_health_theme(fig)
+
+        # INSPECCIÓN DESPUÉS DEL TEMA
+        self.debug_figure_inspection(result, "DESPUÉS-DEL-TEMA")
+
+        return result
     
     def _create_equity_dashboard(self, equity_data: pd.DataFrame) -> go.Figure:
         """Dashboard especializado en equidad sanitaria"""
@@ -337,14 +526,30 @@ class SmartChartGenerator:
             annotation_text=f"Media: {mean_val:.2f}"
         )
         
-        return self._apply_health_theme(fig)
+        # PROTECCIÓN: Eliminar rangeslider antes de aplicar tema
+        self.debug_log_add("🛡️ Aplicando protección anti-rangeslider en método individual")
+        try:
+            fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
+            self.debug_log_add("✅ Protección aplicada en método individual")
+        except Exception as e:
+            self.debug_log_add(f"⚠️ Error en protección individual: {e}")
+
+        # INSPECCIÓN ANTES DEL TEMA
+        self.debug_figure_inspection(fig, "ANTES-DEL-TEMA")
+
+        result = self._apply_health_theme(fig)
+
+        # INSPECCIÓN DESPUÉS DEL TEMA
+        self.debug_figure_inspection(result, "DESPUÉS-DEL-TEMA")
+
+        return result
     
     def _create_line_chart(self, config: Dict, data: pd.DataFrame) -> go.Figure:
         """Crear gráfico de líneas para tendencias temporales"""
-        
+
         x_col = config.get('x_axis', data.columns[0])
         y_col = config.get('y_axis', data.columns[1] if len(data.columns) > 1 else data.columns[0])
-        
+
         fig = px.line(
             data,
             x=x_col,
@@ -352,8 +557,24 @@ class SmartChartGenerator:
             title=config.get('title', 'Evolución Temporal'),
             markers=True
         )
-        
-        return self._apply_health_theme(fig)
+
+        # PROTECCIÓN: Eliminar rangeslider antes de aplicar tema
+        self.debug_log_add("🛡️ Aplicando protección anti-rangeslider en método individual")
+        try:
+            fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
+            self.debug_log_add("✅ Protección aplicada en método individual")
+        except Exception as e:
+            self.debug_log_add(f"⚠️ Error en protección individual: {e}")
+
+        # INSPECCIÓN ANTES DEL TEMA
+        self.debug_figure_inspection(fig, "ANTES-DEL-TEMA")
+
+        result = self._apply_health_theme(fig)
+
+        # INSPECCIÓN DESPUÉS DEL TEMA
+        self.debug_figure_inspection(result, "DESPUÉS-DEL-TEMA")
+
+        return result
     
     def _create_fallback_chart(self, title: str, data: pd.DataFrame) -> go.Figure:
         """Gráfico por defecto cuando no se puede determinar el tipo"""
@@ -371,7 +592,23 @@ class SmartChartGenerator:
             value_counts = data[cat_col].value_counts()
             fig = px.bar(x=value_counts.index, y=value_counts.values, title=title)
         
-        return self._apply_health_theme(fig)
+        # PROTECCIÓN: Eliminar rangeslider antes de aplicar tema
+        self.debug_log_add("🛡️ Aplicando protección anti-rangeslider en método individual")
+        try:
+            fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
+            self.debug_log_add("✅ Protección aplicada en método individual")
+        except Exception as e:
+            self.debug_log_add(f"⚠️ Error en protección individual: {e}")
+
+        # INSPECCIÓN ANTES DEL TEMA
+        self.debug_figure_inspection(fig, "ANTES-DEL-TEMA")
+
+        result = self._apply_health_theme(fig)
+
+        # INSPECCIÓN DESPUÉS DEL TEMA
+        self.debug_figure_inspection(result, "DESPUÉS-DEL-TEMA")
+
+        return result
     
     def _create_error_chart(self, error_message: str) -> go.Figure:
         """Crear gráfico de error"""
@@ -392,8 +629,65 @@ class SmartChartGenerator:
         
         return fig
     
+    def _validate_plotly_config(self, fig: go.Figure) -> go.Figure:
+        """Validar y corregir configuraciones problemáticas de Plotly"""
+        try:
+            # SOLUCIÓN AGRESIVA: Eliminar completamente cualquier configuración de rangeslider
+            # que pueda causar errores
+
+            # Verificar y limpiar xaxis
+            if hasattr(fig.layout, 'xaxis'):
+                try:
+                    # Convertir a dict de forma segura
+                    xaxis_config = fig.layout.xaxis.to_plotly_json()
+                    # Eliminar rangeslider si existe
+                    if 'rangeslider' in xaxis_config:
+                        del xaxis_config['rangeslider']
+
+                    # Actualizar con configuración limpia
+                    fig.update_layout(xaxis=xaxis_config)
+                except Exception as e:
+                    # Fallback: simplemente deshabilitar rangeslider
+                    fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
+
+            # También verificar todos los subplots si existen
+            try:
+                layout_dict = fig.layout.to_plotly_json()
+                for key in layout_dict.keys():
+                    if key.startswith('xaxis') and isinstance(layout_dict[key], dict):
+                        axis_config = layout_dict[key]
+                        if 'rangeslider' in axis_config:
+                            # Eliminar rangeslider de este eje
+                            del axis_config['rangeslider']
+                            fig.update_layout(**{key: axis_config})
+            except Exception as e:
+                # Si hay problemas con subplots, ignorar
+                pass
+
+            return fig
+
+        except Exception as e:
+            print(f"Warning: Error validando configuración Plotly: {e}")
+            # Fallback: crear figura básica sin rangeslider
+            try:
+                fig.update_layout(
+                    xaxis=dict(rangeslider=None),
+                    xaxis2=dict(rangeslider=None) if hasattr(fig.layout, 'xaxis2') else {},
+                    xaxis3=dict(rangeslider=None) if hasattr(fig.layout, 'xaxis3') else {}
+                )
+            except:
+                pass
+            return fig
+
     def _apply_health_theme(self, fig: go.Figure) -> go.Figure:
         """Aplicar tema sanitario compatible con modo oscuro"""
+
+        self.debug_log_add("🎨 INICIANDO aplicación de tema sanitario")
+
+        # Primero validar configuración
+        self.debug_log_add("🔍 Validando configuración Plotly")
+        fig = self._validate_plotly_config(fig)
+        self.debug_log_add("✅ Configuración validada")
 
         fig.update_layout(
             # Colores del tema adaptados para modo oscuro
@@ -407,20 +701,20 @@ class SmartChartGenerator:
             # Márgenes y espaciado
             margin=dict(l=60, r=60, t=80, b=60),
 
-            # Grid y ejes con colores claros
+            # Grid y ejes con colores claros (SIN rangeslider para evitar errores)
             xaxis=dict(
                 showgrid=True,
                 gridcolor='rgba(255,255,255,0.2)',  # Grid blanco transparente
                 linecolor='rgba(255,255,255,0.4)',  # Líneas del eje blancas
                 tickfont=dict(color='#ffffff'),  # Etiquetas blancas
-                titlefont=dict(color='#ffffff')  # Título del eje blanco
+                title=dict(font=dict(color='#ffffff'))  # Título del eje blanco - CORREGIDO
             ),
             yaxis=dict(
                 showgrid=True,
                 gridcolor='rgba(255,255,255,0.2)',  # Grid blanco transparente
                 linecolor='rgba(255,255,255,0.4)',  # Líneas del eje blancas
                 tickfont=dict(color='#ffffff'),  # Etiquetas blancas
-                titlefont=dict(color='#ffffff')  # Título del eje blanco
+                title=dict(font=dict(color='#ffffff'))  # Título del eje blanco - CORREGIDO
             ),
 
             # Hover con tema oscuro
@@ -468,7 +762,55 @@ class SmartChartGenerator:
                     # Para gráficos de líneas
                     fig.data[i].line.color = dark_colors[i % len(dark_colors)]
 
+        self.debug_log_add("🎨 TEMA APLICADO exitosamente")
         return fig
+
+    def enable_rangeslider(self, fig: go.Figure, enable_buttons: bool = True) -> go.Figure:
+        """Habilitar rangeslider en gráficos temporales de forma segura"""
+        try:
+            # Configurar rangeslider con tema sanitario
+            fig.update_layout(
+                xaxis=dict(
+                    rangeslider=dict(
+                        visible=True,
+                        bgcolor='rgba(30, 30, 30, 0.8)',
+                        bordercolor='rgba(76, 175, 80, 0.6)',
+                        borderwidth=2,
+                        thickness=0.15,
+                        # Configuración específica para evitar errores
+                        yaxis=dict(
+                            rangemode='auto'  # CORREGIDO: 'tozero' no es válido para rangeslider
+                        )
+                    ),
+                    type='date' if enable_buttons else 'linear'
+                )
+            )
+
+            # Agregar botones de rango temporal si es necesario
+            if enable_buttons:
+                fig.update_layout(
+                    xaxis=dict(
+                        rangeselector=dict(
+                            buttons=list([
+                                dict(count=7, label="7d", step="day", stepmode="backward"),
+                                dict(count=30, label="30d", step="day", stepmode="backward"),
+                                dict(count=90, label="3m", step="day", stepmode="backward"),
+                                dict(step="all", label="Todo")
+                            ]),
+                            bgcolor='rgba(30, 30, 30, 0.9)',
+                            bordercolor='rgba(76, 175, 80, 0.6)',
+                            font=dict(color='#ffffff')
+                        )
+                    )
+                )
+
+            return fig
+
+        except Exception as e:
+            # Si hay error con rangeslider, devolver sin él
+            print(f"Warning: No se pudo configurar rangeslider: {e}")
+            fig.update_layout(xaxis=dict(rangeslider=dict(visible=False)))
+            return fig
 
 # Clase auxiliar para análisis automático de datos
 class DataAnalyzer:
