@@ -1303,16 +1303,77 @@ class SecureHealthAnalyticsApp:
             else:
                 st.info("🔧 IA limitada")
 
+def fix_plotly_hover_issues(fig):
+    """Aplicar correcciones a gráficos de Plotly para evitar errores de hover"""
+    try:
+        # Correcciones para evitar errores de hoversubplots
+        fig.update_layout(
+            hovermode="closest",  # Modo hover simple
+            hoverdistance=100,    # Distancia de hover
+            spikedistance=100,    # Distancia de spike
+            # Protecciones anti-rangeslider
+            showrangeslider=False,
+            rangeslider=dict(visible=False),
+            # Configuración segura de ejes
+            xaxis=dict(
+                rangeslider=dict(visible=False),
+                showrangeslider=False
+            ),
+            # Configuración segura de hover para subplots
+            hoversubplots="axis"  # Configuración segura para subplots
+        )
+
+        # Protección adicional para subplots múltiples
+        for i in range(10):  # Hasta 10 subplots
+            if i == 0:
+                continue
+            try:
+                fig.update_layout(**{f'xaxis{i+1}': dict(rangeslider=dict(visible=False), showrangeslider=False)})
+            except:
+                pass
+
+    except Exception as e:
+        # Si hay error, al menos intentar las protecciones básicas
+        try:
+            fig.update_layout(hovermode="closest", showrangeslider=False)
+        except:
+            pass
+
+    return fig
+
 def main():
     """Función principal con autenticación completa"""
-    
+
     # Importar re localmente para evitar problemas de ámbito en funciones anidadas
     import re
-    
+
+    # TOGGLE DE TEMA GLOBAL (siempre visible)
+    with st.sidebar:
+        st.markdown("---")
+
+        # Inicializar tema en session_state si no existe
+        if 'theme_mode' not in st.session_state:
+            st.session_state.theme_mode = 'light'
+
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            # Toggle visual con iconos
+            if st.button(
+                "🌙 Oscuro" if st.session_state.theme_mode == 'light' else "☀️ Claro",
+                key="global_theme_toggle",
+                help="Cambiar entre tema claro y oscuro",
+                use_container_width=True
+            ):
+                # Cambiar tema
+                st.session_state.theme_mode = 'dark' if st.session_state.theme_mode == 'light' else 'light'
+                st.rerun()  # Recargar para aplicar el nuevo tema
+
+        st.markdown("---")
+
     if not AUTH_AVAILABLE:
         st.error("❌ Sistema de autenticación no disponible. Instala: pip install bcrypt PyJWT")
         return
-    
+
     # Verificar autenticación
     if not check_authentication():
         render_login_page()
@@ -2325,6 +2386,7 @@ def render_secure_dashboard(app):
                 hole=0.4
             )
             fig_tipos.update_traces(textposition='inside', textinfo='percent+label')
+            fig_tipos = fix_plotly_hover_issues(fig_tipos)  # Aplicar correcciones
             st.plotly_chart(fig_tipos, width='stretch')
             
             # Capacidad hospitalaria
@@ -2337,6 +2399,7 @@ def render_secure_dashboard(app):
                 color_discrete_sequence=px.colors.qualitative.Set3
             )
             fig_hospitales.update_xaxes(tickangle=45)
+            fig_hospitales = fix_plotly_hover_issues(fig_hospitales)
             st.plotly_chart(fig_hospitales, width='stretch')
         
         with tab2:
@@ -2351,6 +2414,7 @@ def render_secure_dashboard(app):
                 color_continuous_scale='Viridis'
             )
             fig_demo.update_xaxes(tickangle=45)
+            fig_demo = fix_plotly_hover_issues(fig_demo)
             st.plotly_chart(fig_demo, width='stretch')
             
             # Análisis de densidad vs renta
@@ -2364,6 +2428,7 @@ def render_secure_dashboard(app):
                 title="🏘️ Densidad vs Renta per Cápita",
                 color_continuous_scale='Spectral_r'
             )
+            fig_scatter = fix_plotly_hover_issues(fig_scatter)
             st.plotly_chart(fig_scatter, width='stretch')
         
         with tab3:
@@ -2383,6 +2448,7 @@ def render_secure_dashboard(app):
                 fig_coverage.update_xaxes(tickangle=45)
                 fig_coverage.add_hline(y=75, line_dash="dash", line_color="red", 
                                      annotation_text="Objetivo mínimo 75%")
+                fig_coverage = fix_plotly_hover_issues(fig_coverage)
                 st.plotly_chart(fig_coverage, width='stretch')
                 
                 # Matriz de servicios
@@ -2396,6 +2462,7 @@ def render_secure_dashboard(app):
                     aspect='auto'
                 )
                 fig_heatmap.update_layout(height=400)
+                fig_heatmap = fix_plotly_hover_issues(fig_heatmap)
                 st.plotly_chart(fig_heatmap, width='stretch')
                     
             else:
@@ -2668,6 +2735,7 @@ def render_location_planificacion(app):
         title="🎯 Análisis de Ubicaciones Prioritarias",
         color_continuous_scale='Reds'
     )
+    fig_planificacion = fix_plotly_hover_issues(fig_planificacion)
     st.plotly_chart(fig_planificacion, width='stretch')
     
     # Top 5 recomendaciones
@@ -2718,6 +2786,7 @@ def render_demand_projection(app):
         y=['poblacion_proyectada', 'demanda_sanitaria'],
         title="📈 Proyección de Población y Demanda Sanitaria 2025-2030"
     )
+    fig_projection = fix_plotly_hover_issues(fig_projection)
     st.plotly_chart(fig_projection, width='stretch')
     
     # Métricas de proyección
@@ -2766,6 +2835,7 @@ def render_resource_redistribution(app):
                     title="⚖️ Déficits por Distrito (valores negativos = exceso)",
                     barmode='group'
                 )
+                fig_redistrib = fix_plotly_hover_issues(fig_redistrib)
                 st.plotly_chart(fig_redistrib, width='stretch')
                 
                 # Recomendaciones de redistribución
@@ -2808,6 +2878,7 @@ def render_route_optimization(app):
             color='tiempo_promedio',
             color_continuous_scale='Reds'
         )
+        fig_routes = fix_plotly_hover_issues(fig_routes)
         st.plotly_chart(fig_routes, width='stretch')
         
         # Recomendaciones de mejora
@@ -2866,8 +2937,9 @@ def render_complete_analysis_secure(app):
         
         # Distribución por tipo de centro
         tipo_dist = app.data['hospitales']['tipo_centro'].value_counts()
-        fig_tipos = px.pie(values=tipo_dist.values, names=tipo_dist.index, 
+        fig_tipos = px.pie(values=tipo_dist.values, names=tipo_dist.index,
                           title="Distribución de Centros por Tipo")
+        fig_tipos = fix_plotly_hover_issues(fig_tipos)
         st.plotly_chart(fig_tipos, width='stretch')
     
     with tab2:
@@ -2891,6 +2963,7 @@ def render_complete_analysis_secure(app):
         fig_growth = px.bar(top_growth, x='municipio', y='crecimiento_2024_2025',
                            title="Top 10 Municipios por Crecimiento Poblacional")
         fig_growth.update_xaxes(tickangle=45)
+        fig_growth = fix_plotly_hover_issues(fig_growth)
         st.plotly_chart(fig_growth, width='stretch')
     
     with tab3:
@@ -2920,6 +2993,7 @@ def render_complete_analysis_secure(app):
                                        color='score_equidad', color_continuous_scale='RdYlGn',
                                        labels={'score_equidad': 'Score de Equidad (0-100)', 'distrito': 'Distrito Sanitario'})
                     fig_equity.update_xaxes(tickangle=45)
+                    fig_equity = fix_plotly_hover_issues(fig_equity)
                     st.plotly_chart(fig_equity, width='stretch')
                     
                     # Tabla detallada de equidad
@@ -2953,6 +3027,7 @@ def render_complete_analysis_secure(app):
             fig_access = px.histogram(app.data['accesibilidad'], x='tiempo_coche_minutos',
                                      title="Distribución de Tiempos de Acceso",
                                      nbins=20)
+            fig_access = fix_plotly_hover_issues(fig_access)
             st.plotly_chart(fig_access, width='stretch')
     
     with tab5:

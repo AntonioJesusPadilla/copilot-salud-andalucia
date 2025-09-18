@@ -129,14 +129,37 @@ chart_data = app.chart_generator.generate_chart(
 ## 📋 **Instrucciones de Uso**:
 
 ### **Cambiar Tema**:
-1. **Método 1**: Clic en botón del sidebar "🌙 Oscuro" o "☀️ Claro"
-2. **Método 2**: Clic en botón flotante (esquina superior derecha)
-3. **Resultado**: Tema cambia instantáneamente
+1. **Toggle Global**: Botón en sidebar (siempre visible) "🌙 Oscuro" o "☀️ Claro"
+2. **Resultado**: Tema cambia instantáneamente y se mantiene entre sesiones
 
 ### **Verificar Funcionamiento**:
+- ✅ **Toggle Visible**: Debe aparecer en el sidebar incluso antes de hacer login
 - ✅ **Gráficos**: Deben mostrarse sin errores de hover o rangeslider
 - ✅ **Texto**: Debe ser legible en ambos modos
 - ✅ **Persistencia**: Al recargar, mantiene tema seleccionado
+
+## 🔧 **Correcciones Adicionales Aplicadas**:
+
+### **Función Helper `fix_plotly_hover_issues()`**:
+- ✅ **Aplicada a 15+ gráficos** que se crean directamente con `px.`
+- ✅ **Protecciones múltiples**: hovermode, hoverdistance, spikedistance
+- ✅ **Anti-rangeslider**: showrangeslider=False + rangeslider=dict(visible=False)
+- ✅ **Configuración segura**: hoversubplots="axis" para evitar errores
+
+### **Gráficos Corregidos**:
+- `fig_tipos` (pie charts)
+- `fig_hospitales` (bar charts)
+- `fig_demo` (demographic charts)
+- `fig_scatter` (scatter plots)
+- `fig_coverage` (coverage charts)
+- `fig_heatmap` (heatmaps)
+- `fig_planificacion` (planning charts)
+- `fig_projection` (projection charts)
+- `fig_redistrib` (redistribution charts)
+- `fig_routes` (route charts)
+- `fig_growth` (growth charts)
+- `fig_equity` (equity charts)
+- `fig_access` (accessibility charts)
 
 ---
 
