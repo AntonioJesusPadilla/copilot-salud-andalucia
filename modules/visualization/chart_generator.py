@@ -117,21 +117,21 @@ class SmartChartGenerator:
             self.debug_log_add(f"🎯 Creando gráfico tipo: {chart_type}")
 
             if chart_type == 'bar':
-                result = self._create_bar_chart(chart_config, data)
+                result = self._create_bar_chart(chart_config, data, theme_mode)
             elif chart_type == 'line':
-                result = self._create_line_chart(chart_config, data)
+                result = self._create_line_chart(chart_config, data, theme_mode)
             elif chart_type == 'scatter':
-                result = self._create_scatter_chart(chart_config, data)
+                result = self._create_scatter_chart(chart_config, data, theme_mode)
             elif chart_type == 'pie':
-                result = self._create_pie_chart(chart_config, data)
+                result = self._create_pie_chart(chart_config, data, theme_mode)
             elif chart_type == 'heatmap':
-                result = self._create_heatmap(chart_config, data)
+                result = self._create_heatmap(chart_config, data, theme_mode)
             elif chart_type == 'map':
-                result = self._create_geographic_chart(chart_config, data)
+                result = self._create_geographic_chart(chart_config, data, theme_mode)
             elif chart_type == 'histogram':
-                result = self._create_histogram_chart(chart_config, data)
+                result = self._create_histogram_chart(chart_config, data, theme_mode)
             else:
-                result = self._create_fallback_chart(title, data)
+                result = self._create_fallback_chart(title, data, theme_mode)
 
             self.debug_log_add(f"✅ Gráfico creado exitosamente")
 
@@ -193,7 +193,7 @@ class SmartChartGenerator:
 
             return self._create_error_chart(f"Error generando gráfico tipo {chart_type}: {str(e)}\n{error_details[:200]}...")
     
-    def _create_bar_chart(self, config: Dict, data: pd.DataFrame) -> go.Figure:
+    def _create_bar_chart(self, config: Dict, data: pd.DataFrame, theme_mode: str = 'light') -> go.Figure:
         """Crear gráfico de barras inteligente"""
         
         x_col = config.get('x_axis', data.columns[0])
@@ -245,7 +245,7 @@ class SmartChartGenerator:
 
         return result
     
-    def _create_scatter_chart(self, config: Dict, data: pd.DataFrame) -> go.Figure:
+    def _create_scatter_chart(self, config: Dict, data: pd.DataFrame, theme_mode: str = 'light') -> go.Figure:
         """Crear gráfico de dispersión con insights"""
         
         x_col = config.get('x_axis', data.columns[0])
@@ -297,7 +297,7 @@ class SmartChartGenerator:
 
         return result
     
-    def _create_pie_chart(self, config: Dict, data: pd.DataFrame) -> go.Figure:
+    def _create_pie_chart(self, config: Dict, data: pd.DataFrame, theme_mode: str = 'light') -> go.Figure:
         """Crear gráfico circular con etiquetas inteligentes"""
         
         # Detectar columna de categorías y valores
@@ -362,7 +362,7 @@ class SmartChartGenerator:
 
         return result
     
-    def _create_heatmap(self, config: Dict, data: pd.DataFrame) -> go.Figure:
+    def _create_heatmap(self, config: Dict, data: pd.DataFrame, theme_mode: str = 'light') -> go.Figure:
         """Crear mapa de calor para análisis de correlación o matriz"""
         
         # Si los datos son numéricos, crear matriz de correlación
@@ -410,7 +410,7 @@ class SmartChartGenerator:
 
         return result
     
-    def _create_geographic_chart(self, config: Dict, data: pd.DataFrame) -> go.Figure:
+    def _create_geographic_chart(self, config: Dict, data: pd.DataFrame, theme_mode: str = 'light') -> go.Figure:
         """Crear visualización geográfica (scatter_mapbox básico)"""
         
         # Buscar columnas de coordenadas
@@ -531,7 +531,7 @@ class SmartChartGenerator:
         
         return fig
     
-    def _create_histogram_chart(self, config: Dict, data: pd.DataFrame) -> go.Figure:
+    def _create_histogram_chart(self, config: Dict, data: pd.DataFrame, theme_mode: str = 'light') -> go.Figure:
         """Crear histograma para análisis de distribución"""
         
         # Detectar columna numérica para el histograma
@@ -580,7 +580,7 @@ class SmartChartGenerator:
 
         return result
     
-    def _create_line_chart(self, config: Dict, data: pd.DataFrame) -> go.Figure:
+    def _create_line_chart(self, config: Dict, data: pd.DataFrame, theme_mode: str = 'light') -> go.Figure:
         """Crear gráfico de líneas para tendencias temporales"""
 
         x_col = config.get('x_axis', data.columns[0])
@@ -615,7 +615,7 @@ class SmartChartGenerator:
 
         return result
     
-    def _create_fallback_chart(self, title: str, data: pd.DataFrame) -> go.Figure:
+    def _create_fallback_chart(self, title: str, data: pd.DataFrame, theme_mode: str = 'light') -> go.Figure:
         """Gráfico por defecto cuando no se puede determinar el tipo"""
         
         # Intentar crear el gráfico más apropiado
