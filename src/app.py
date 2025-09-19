@@ -3,6 +3,13 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+import plotly.io as pio
+
+# CONFIGURACIÓN GLOBAL DE PLOTLY: Deshabilitar hover por defecto
+pio.templates.default = "plotly"  # Asegurar template básico
+# Configurar template personalizado sin hover
+custom_template = pio.templates["plotly"]
+custom_template.layout.hovermode = False
 from datetime import datetime
 import os
 import sys
@@ -1211,40 +1218,95 @@ class SecureHealthAnalyticsApp:
                 st.info("🔧 IA limitada")
 
 def fix_plotly_hover_issues(fig):
-    """Aplicar correcciones a gráficos de Plotly para evitar errores de hover"""
+    """Aplicar correcciones EXTREMAS a gráficos de Plotly para eliminar TODOS los errores de hover"""
     try:
-        # Correcciones para evitar errores de hoversubplots
-        fig.update_layout(
-            hovermode="closest",  # Modo hover simple
-            hoverdistance=100,    # Distancia de hover
-            spikedistance=100,    # Distancia de spike
-            # Protecciones anti-rangeslider
-            showrangeslider=False,
-            rangeslider=dict(visible=False),
-            # Configuración segura de ejes
-            xaxis=dict(
-                rangeslider=dict(visible=False),
-                showrangeslider=False
-            ),
-            # Configuración segura de hover para subplots
-            hoversubplots="axis"  # Configuración segura para subplots
-        )
-
-        # Protección adicional para subplots múltiples
-        for i in range(10):  # Hasta 10 subplots
-            if i == 0:
-                continue
+        # PASO 1: Deshabilitar COMPLETAMENTE hover en todas las trazas
+        for trace in fig.data:
             try:
-                fig.update_layout(**{f'xaxis{i+1}': dict(rangeslider=dict(visible=False), showrangeslider=False)})
+                trace.update(hoverinfo='none', hovertemplate=None)
+                # Eliminar atributos problemáticos si existen
+                if hasattr(trace, 'hoversubplots'):
+                    delattr(trace, 'hoversubplots')
+            except:
+                pass
+
+        # PASO 2: RECREAR COMPLETAMENTE la figura sin hover
+        try:
+            # Obtener datos y layout limpios
+            data = fig.data
+            layout_dict = fig.layout.to_dict()
+
+            # Eliminar TODAS las configuraciones de hover del layout
+            hover_keys = [
+                'hovermode', 'hoversubplots', 'hoverdistance', 'spikedistance',
+                'hoverlabel', 'hovertemplate', 'hoverformat'
+            ]
+
+            clean_layout = {}
+            for k, v in layout_dict.items():
+                if k not in hover_keys:
+                    if isinstance(v, dict):
+                        # Limpiar diccionarios anidados
+                        clean_v = {sk: sv for sk, sv in v.items() if sk not in hover_keys}
+                        clean_layout[k] = clean_v
+                    else:
+                        clean_layout[k] = v
+
+            # Forzar configuración segura
+            clean_layout.update({
+                'hovermode': False,
+                'showrangeslider': False,
+                'rangeslider': dict(visible=False)
+            })
+
+            # Si hay ejes, limpiarlos también
+            for axis in ['xaxis', 'yaxis']:
+                if axis in clean_layout:
+                    if isinstance(clean_layout[axis], dict):
+                        clean_layout[axis].update({
+                            'rangeslider': dict(visible=False),
+                            'showrangeslider': False
+                        })
+                        # Eliminar hover de ejes
+                        hover_axis_keys = ['hoverformat']
+                        for hk in hover_axis_keys:
+                            if hk in clean_layout[axis]:
+                                del clean_layout[axis][hk]
+
+            # Crear nueva figura completamente limpia
+            fig = go.Figure(data=data, layout=clean_layout)
+
+        except Exception as recreation_error:
+            print(f"Error recreando figura: {recreation_error}")
+            # Fallback a método original
+            fig.update_layout(
+                hovermode=False,
+                showrangeslider=False,
+                rangeslider=dict(visible=False)
+            )
+
+        # PASO 3: Protección para subplots múltiples
+        for i in range(1, 11):  # xaxis1 hasta xaxis10
+            try:
+                axis_updates = {
+                    f'xaxis{i}': dict(
+                        rangeslider=dict(visible=False),
+                        showrangeslider=False
+                    )
+                }
+                fig.update_layout(**axis_updates)
             except:
                 pass
 
     except Exception as e:
-        # Si hay error, al menos intentar las protecciones básicas
+        print(f"Error CRÍTICO en fix_plotly_hover_issues: {e}")
+        # ÚLTIMO RECURSO: Crear figura básica sin hover
         try:
-            fig.update_layout(hovermode="closest", showrangeslider=False)
+            fig.update_layout(hovermode=False, showrangeslider=False)
+            for trace in fig.data:
+                trace.update(hoverinfo='none')
         except:
-            pass
+            print("No se pudo aplicar ni las correcciones básicas")
 
     return fig
 
@@ -1254,28 +1316,48 @@ def main():
     # Importar re localmente para evitar problemas de ámbito en funciones anidadas
     import re
 
-    # TOGGLE DE TEMA GLOBAL (siempre visible)
-    with st.sidebar:
-        st.markdown("---")
+    # TOGGLE DE TEMA GLOBAL en esquina superior derecha
+    # Inicializar tema en session_state si no existe
+    if 'theme_mode' not in st.session_state:
+        st.session_state.theme_mode = 'light'
 
-        # Inicializar tema en session_state si no existe
-        if 'theme_mode' not in st.session_state:
-            st.session_state.theme_mode = 'light'
+    # CSS para posicionar el toggle en la esquina superior derecha
+    st.markdown("""
+    <style>
+    /* Reducir padding superior del contenedor principal */
+    .main .block-container {
+        padding-top: 1rem !important;
+    }
 
-        col1, col2, col3 = st.columns([1, 2, 1])
-        with col2:
-            # Toggle visual con iconos
-            if st.button(
-                "🌙 Oscuro" if st.session_state.theme_mode == 'light' else "☀️ Claro",
-                key="global_theme_toggle",
-                help="Cambiar entre tema claro y oscuro",
-                use_container_width=True
-            ):
-                # Cambiar tema
-                st.session_state.theme_mode = 'dark' if st.session_state.theme_mode == 'light' else 'light'
-                st.rerun()  # Recargar para aplicar el nuevo tema
+    /* Estilos para el toggle */
+    div[data-testid="column"]:last-child .stButton > button {
+        position: fixed !important;
+        top: 20px !important;
+        right: 30px !important;
+        z-index: 9999 !important;
+        min-width: 80px !important;
+        padding: 8px 16px !important;
+        border-radius: 25px !important;
+        font-size: 14px !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-        st.markdown("---")
+    # Toggle en columnas para posicionamiento
+    col1, col2, col3 = st.columns([7, 1, 1])
+    with col3:
+        # Toggle visual con iconos
+        current_theme = st.session_state.get('theme_mode', 'light')
+        if st.button(
+            "🌙 Oscuro" if current_theme == 'light' else "☀️ Claro",
+            key="theme_toggle_v6_positioned",
+            help="Cambiar entre tema claro y oscuro"
+        ):
+            # Cambiar tema
+            new_theme = 'dark' if current_theme == 'light' else 'light'
+            st.session_state.theme_mode = new_theme
+            st.rerun()
 
     if not AUTH_AVAILABLE:
         st.error("❌ Sistema de autenticación no disponible. Instala: pip install bcrypt PyJWT")
@@ -2197,6 +2279,8 @@ def render_secure_chat(app):
                                         )
 
                                         if chart_data:
+                                            # Aplicar correcciones de hover antes de mostrar
+                                            chart_data = fix_plotly_hover_issues(chart_data)
                                             st.plotly_chart(chart_data, use_container_width=True)
                                             st.success("📊 Visualización generada automáticamente")
                                         else:
