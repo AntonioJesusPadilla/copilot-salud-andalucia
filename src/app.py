@@ -69,22 +69,8 @@ try:
         st.info("💡 Los mapas no estarán disponibles en este despliegue")
         MAPS_DEPENDENCIES_OK = False
     
-    if MAPS_DEPENDENCIES_OK:
-        try:
-            # Forzar recarga de módulos si ya están cargados
-            if 'modules.map_interface' in sys.modules:
-                importlib.reload(sys.modules['modules.map_interface'])
-            if 'modules.interactive_maps' in sys.modules:
-                importlib.reload(sys.modules['modules.interactive_maps'])
-            
-            from modules.visualization.map_interface import MapInterface
-            from modules.visualization.interactive_maps import EpicHealthMaps
-            MAPS_AVAILABLE = True
-        except ImportError as module_error:
-            st.warning(f"⚠️ Módulos de mapas no disponibles: {str(module_error)}")
-            MAPS_AVAILABLE = False
-    else:
-        MAPS_AVAILABLE = False
+    # Carga diferida de mapas - solo marcar disponibilidad
+    MAPS_AVAILABLE = MAPS_DEPENDENCIES_OK
         
 except Exception as e:
     st.warning(f"⚠️ Mapas no disponibles: {str(e)}")
@@ -693,56 +679,130 @@ if os.path.exists(favicon_path):
 else:
     page_icon = "⚕️"  # Símbolo médico más visible
 
-st.set_page_config(
-    page_title="Copilot Salud Andalucía",
-    page_icon=page_icon,
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+# Detectar si es un dispositivo móvil para optimizar configuración
+try:
+    # Usar user agent para detectar móviles si está disponible
+    is_mobile = False
+    if hasattr(st, 'context') and hasattr(st.context, 'user_agent'):
+        user_agent = st.context.user_agent or ""
+        is_mobile = any(mobile in user_agent.lower() for mobile in ['mobile', 'android', 'iphone', 'ipad'])
+
+    # Configuración optimizada para móviles
+    if is_mobile:
+        st.set_page_config(
+            page_title="Copilot Salud Andalucía",
+            page_icon="⚕️",  # Usar emoji simple en móviles
+            layout="centered",  # Layout más estrecho para móviles
+            initial_sidebar_state="collapsed"  # Sidebar cerrado por defecto
+        )
+    else:
+        st.set_page_config(
+            page_title="Copilot Salud Andalucía",
+            page_icon=page_icon,
+            layout="wide",
+            initial_sidebar_state="expanded"
+        )
+except Exception:
+    # Fallback a configuración básica si hay algún error
+    st.set_page_config(
+        page_title="Copilot Salud Andalucía",
+        page_icon="⚕️",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
 
 # Inicializar tema si no existe
 if 'theme_mode' not in st.session_state:
     st.session_state.theme_mode = 'light'
 
-# Cargar CSS según el tema seleccionado
-try:
-    theme_file = f'assets/theme_{st.session_state.theme_mode}.css'
-    with open(theme_file, 'r', encoding='utf-8') as f:
-        theme_css = f.read()
-        st.markdown(f"<style>{theme_css}</style>", unsafe_allow_html=True)
-    css_loaded = f"theme_{st.session_state.theme_mode}"
-except Exception as e:
-    # Fallback al CSS adaptativo
+# Cargar CSS optimizado para el dispositivo
+def load_optimized_css():
+    """Cargar CSS optimizado según el dispositivo"""
     try:
-        with open('assets/adaptive_theme.css', 'r', encoding='utf-8') as f:
-            adaptive_css = f.read()
-            st.markdown(f"<style>{adaptive_css}</style>", unsafe_allow_html=True)
-        css_loaded = "adaptive"
-    except Exception as e2:
-        # Último fallback al CSS original
+        # Detectar si es móvil de forma básica
+        is_mobile = False
         try:
-            with open('assets/style.css', 'r', encoding='utf-8') as f:
-                css_content = f.read()
-            with open('assets/desktop_layout.css', 'r', encoding='utf-8') as f:
-                desktop_css = f.read()
-            st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
-            st.markdown(f"<style>{desktop_css}</style>", unsafe_allow_html=True)
-            css_loaded = "legacy"
-        except Exception as e3:
-            st.warning(f"⚠️ No se pudieron cargar los estilos CSS: {e3}")
-            css_loaded = "none"
+            # Intentar usar user agent si está disponible
+            if hasattr(st, 'context') and hasattr(st.context, 'user_agent'):
+                user_agent = str(st.context.user_agent or "").lower()
+                is_mobile = any(mobile in user_agent for mobile in ['mobile', 'android', 'iphone', 'ipad'])
+        except:
+            pass
 
-# Cargar CSS extra si existe (mantener compatibilidad)
-try:
-    with open('assets/extra_styles.css', 'r', encoding='utf-8') as f:
-        extra_css = f.read()
-    st.markdown(f"<style>{extra_css}</style>", unsafe_allow_html=True)
-except Exception:
-    extra_css = None
+        # CSS básico para móviles (más liviano)
+        if is_mobile:
+            mobile_css = """
+            <style>
+            /* CSS Básico para Móviles */
+            .main .block-container { padding: 1rem; max-width: 100%; }
+            .stSidebar { background: #f8f9fa; }
+            .stSelectbox label { font-size: 14px; }
+            .stButton button { width: 100%; margin-bottom: 0.5rem; }
+            .metric-card { margin-bottom: 1rem; padding: 1rem; }
+            .stProgress .st-bo { height: 4px; }
+            /* Optimizar plotly para móviles */
+            .js-plotly-plot { width: 100% !important; }
+            .plotly { width: 100% !important; }
+            </style>
+            """
+            st.markdown(mobile_css, unsafe_allow_html=True)
+            return "mobile_basic"
 
-# Cargar detector y correcciones SOLO para iPhone iOS 26 (condicional)
-ios_detection_script = """
-<script>
+        # CSS completo para desktop
+        theme_file = f'assets/theme_{st.session_state.theme_mode}.css'
+        with open(theme_file, 'r', encoding='utf-8') as f:
+            theme_css = f.read()
+            st.markdown(f"<style>{theme_css}</style>", unsafe_allow_html=True)
+        return f"theme_{st.session_state.theme_mode}"
+
+    except Exception as e:
+        # Fallback al CSS adaptativo
+        try:
+            with open('assets/adaptive_theme.css', 'r', encoding='utf-8') as f:
+                adaptive_css = f.read()
+                st.markdown(f"<style>{adaptive_css}</style>", unsafe_allow_html=True)
+            return "adaptive"
+        except Exception as e2:
+            # Último fallback al CSS original
+            try:
+                with open('assets/style.css', 'r', encoding='utf-8') as f:
+                    css_content = f.read()
+                # Solo cargar desktop_layout.css si no es móvil (redefinir variable local)
+                is_mobile_fallback = False
+                try:
+                    if hasattr(st, 'context') and hasattr(st.context, 'user_agent'):
+                        user_agent = str(st.context.user_agent or "").lower()
+                        is_mobile_fallback = any(mobile in user_agent for mobile in ['mobile', 'android', 'iphone', 'ipad'])
+                except:
+                    pass
+
+                if not is_mobile_fallback:
+                    with open('assets/desktop_layout.css', 'r', encoding='utf-8') as f:
+                        desktop_css = f.read()
+                    st.markdown(f"<style>{desktop_css}</style>", unsafe_allow_html=True)
+                st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
+                return "legacy"
+            except Exception as e3:
+                st.warning(f"⚠️ No se pudieron cargar los estilos CSS: {e3}")
+                return "none"
+
+css_loaded = load_optimized_css()
+
+# Cargar CSS extra solo en desktop (mantener compatibilidad)
+extra_css = None
+if css_loaded != "mobile_basic":
+    try:
+        with open('assets/extra_styles.css', 'r', encoding='utf-8') as f:
+            extra_css = f.read()
+        st.markdown(f"<style>{extra_css}</style>", unsafe_allow_html=True)
+    except Exception:
+        pass
+
+# Cargar detector y correcciones SOLO para iPhone iOS 26 (condicional y diferido)
+def load_ios_fixes():
+    """Cargar fixes de iOS solo cuando sea necesario"""
+    ios_detection_script = """
+    <script>
 function isIPhoneIOS26() {
     const userAgent = navigator.userAgent;
     const isIPhone = /iPhone/.test(userAgent);
@@ -780,53 +840,99 @@ if (isIPhoneIOS26()) {
 </script>
 """
 
-# Leer CSS y JS para iOS 26 y reemplazar en el script
+    # Leer CSS y JS para iOS 26 y reemplazar en el script
+    try:
+        with open('assets/ios_safari_fixes.css', 'r', encoding='utf-8') as f:
+            ios_fixes_css = f.read().replace('`', '\\`').replace('${', '\\${')
+        with open('assets/safari_detector.js', 'r', encoding='utf-8') as f:
+            safari_js = f.read().replace('`', '\\`').replace('${', '\\${')
+
+        ios_detection_script = ios_detection_script.replace('PLACEHOLDER_CSS_CONTENT', ios_fixes_css)
+        ios_detection_script = ios_detection_script.replace('PLACEHOLDER_JS_CONTENT', safari_js)
+
+        st.markdown(ios_detection_script, unsafe_allow_html=True)
+    except Exception as e:
+        # Si no se pueden cargar los archivos específicos, continuar sin ellos
+        pass
+
+# Solo cargar iOS fixes si realmente es iOS
 try:
-    with open('assets/ios_safari_fixes.css', 'r', encoding='utf-8') as f:
-        ios_fixes_css = f.read().replace('`', '\\`').replace('${', '\\${')
-    with open('assets/safari_detector.js', 'r', encoding='utf-8') as f:
-        safari_js = f.read().replace('`', '\\`').replace('${', '\\${')
+    # Detectar si es posible que sea iOS
+    is_possible_ios = False
+    try:
+        if hasattr(st, 'context') and hasattr(st.context, 'user_agent'):
+            user_agent = str(st.context.user_agent or "").lower()
+            is_possible_ios = any(ios_term in user_agent for ios_term in ['iphone', 'ipad', 'safari'])
+    except:
+        is_possible_ios = True  # Si no podemos detectar, cargar por precaución
 
-    ios_detection_script = ios_detection_script.replace('PLACEHOLDER_CSS_CONTENT', ios_fixes_css)
-    ios_detection_script = ios_detection_script.replace('PLACEHOLDER_JS_CONTENT', safari_js)
-
-    st.markdown(ios_detection_script, unsafe_allow_html=True)
-except Exception as e:
-    # Si no se pueden cargar los archivos específicos, continuar sin ellos
+    if is_possible_ios:
+        load_ios_fixes()
+except Exception:
     pass
 
-# Aplicar estilos adicionales básicos
-st.markdown(f"""
-<style>
-/* Importar fuentes modernas */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+# Aplicar estilos adicionales optimizados
+if css_loaded == "mobile_basic":
+    # Estilos básicos para móviles - no cargar fuentes pesadas
+    st.markdown("""
+    <style>
+    /* Usar fuente del sistema en móviles para mejor performance */
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        font-size: 16px; /* Prevenir zoom en iOS */
+    }
+    </style>
+    """, unsafe_allow_html=True)
+else:
+    # Estilos completos para desktop
+    st.markdown(f"""
+    <style>
+    /* Importar fuentes modernas */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 
-/* Estilos adicionales solo si no se cargó el CSS temático */
-{'' if css_loaded.startswith('theme_') else 'body { font-family: Inter, sans-serif; }'}
-</style>
+    /* Estilos adicionales solo si no se cargó el CSS temático */
+    {'' if css_loaded.startswith('theme_') else 'body { font-family: Inter, sans-serif; }'}
+    </style>
 
-<script>
-// Forzar viewport de escritorio
-(function() {{
-    var viewport = document.querySelector("meta[name=viewport]");
-    if (viewport) {{
-        viewport.setAttribute('content', 'width=1200, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-    }} else {{
-        var meta = document.createElement('meta');
-        meta.name = "viewport";
-        meta.content = "width=1200, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
-        document.getElementsByTagName('head')[0].appendChild(meta);
-    }}
+    <script>
+    // Script optimizado por dispositivo
+    (function() {{
+        // Detectar si es móvil
+        var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-    // Forzar layout desktop
-    if (window.innerWidth < 1200 && !document.body.classList.contains('desktop-forced')) {{
-        document.body.classList.add('desktop-forced');
-        document.body.style.minWidth = '1200px';
-        document.body.style.overflowX = 'auto';
-    }}
+        if (isMobile) {{
+            // Configuración móvil - viewport responsive
+            var viewport = document.querySelector("meta[name=viewport]");
+            if (viewport) {{
+                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes');
+            }} else {{
+                var meta = document.createElement('meta');
+                meta.name = "viewport";
+                meta.content = "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes";
+                document.getElementsByTagName('head')[0].appendChild(meta);
+            }}
+        }} else {{
+            // Configuración desktop - forzar ancho mínimo
+            var viewport = document.querySelector("meta[name=viewport]");
+            if (viewport) {{
+                viewport.setAttribute('content', 'width=1200, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+            }} else {{
+                var meta = document.createElement('meta');
+                meta.name = "viewport";
+                meta.content = "width=1200, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
+                document.getElementsByTagName('head')[0].appendChild(meta);
+            }}
 
-    // Funciones básicas de la aplicación pueden ir aquí si es necesario
-}})();
+            // Forzar layout desktop
+            if (window.innerWidth < 1200 && !document.body.classList.contains('desktop-forced')) {{
+                document.body.classList.add('desktop-forced');
+                document.body.style.minWidth = '1200px';
+                document.body.style.overflowX = 'auto';
+            }}
+        }}
+
+        // Funciones básicas de la aplicación pueden ir aquí si es necesario
+    }})();
 </script>
 """, unsafe_allow_html=True)
 
@@ -887,20 +993,9 @@ class SecureHealthAnalyticsApp:
                     self.chart_generator = SmartChartGenerator()
                     self.metrics_calculator = HealthMetricsCalculator()
                 
-                # Inicializar mapas si está disponible
-                if MAPS_AVAILABLE:
-                    try:
-                        self.map_interface = MapInterface()
-                        # Verificar que el método tenga la signatura correcta
-                        import inspect
-                        sig = inspect.signature(self.map_interface.render_epic_maps_dashboard)
-                        params = list(sig.parameters.keys())
-                        print(f"🔧 MapInterface parámetros: {params}")
-                    except Exception as e:
-                        print(f"❌ Error inicializando MapInterface: {str(e)}")
-                        self.map_interface = None
-                else:
-                    self.map_interface = None
+                # Carga diferida de mapas - no cargar hasta que se necesiten
+                self.map_interface = None
+                self.map_interface_loaded = False
                 
                 # Inicializar dashboards personalizados
                 if ROLE_DASHBOARDS_AVAILABLE:
@@ -926,6 +1021,37 @@ class SecureHealthAnalyticsApp:
             
         except Exception as e:
             print(f"❌ Error verificando permisos: {str(e)}")
+            return False
+
+    def load_map_interface(self):
+        """Cargar interfaz de mapas de forma diferida solo cuando se necesite"""
+        if not MAPS_AVAILABLE:
+            return False
+
+        if self.map_interface_loaded and self.map_interface is not None:
+            return True
+
+        try:
+            # Mostrar spinner solo en carga inicial
+            with st.spinner("🗺️ Cargando sistema de mapas..."):
+                # Importar módulos de mapas dinámicamente
+                from modules.visualization.map_interface import MapInterface
+
+                self.map_interface = MapInterface()
+                self.map_interface_loaded = True
+
+                # Verificar signatura del método
+                import inspect
+                sig = inspect.signature(self.map_interface.render_epic_maps_dashboard)
+                params = list(sig.parameters.keys())
+                print(f"🔧 MapInterface cargado con parámetros: {params}")
+
+                return True
+
+        except Exception as e:
+            st.error(f"❌ Error cargando mapas: {str(e)}")
+            self.map_interface = None
+            self.map_interface_loaded = False
             return False
     
     def require_permission(self, permission: str) -> bool:
@@ -3087,17 +3213,22 @@ def render_epic_maps_tab(app):
     
     # Renderizar dashboard de mapas épicos con permisos del usuario
     try:
-        user_permissions = app.role_info['permissions']
-        
-        # Verificar si el método acepta user_permissions
-        try:
-            app.map_interface.render_epic_maps_dashboard(app.data, user_permissions)
-        except TypeError as te:
-            if "takes 2 positional arguments but 3 were given" in str(te):
-                st.warning("⚠️ Usando versión de mapas sin permisos diferenciados")
-                app.map_interface.render_epic_maps_dashboard(app.data)
-            else:
-                raise te
+        # Cargar mapas de forma diferida
+        if app.load_map_interface():
+            user_permissions = app.role_info['permissions']
+
+            # Verificar si el método acepta user_permissions
+            try:
+                app.map_interface.render_epic_maps_dashboard(app.data, user_permissions)
+            except TypeError as te:
+                if "takes 2 positional arguments but 3 were given" in str(te):
+                    st.warning("⚠️ Usando versión de mapas sin permisos diferenciados")
+                    app.map_interface.render_epic_maps_dashboard(app.data)
+                else:
+                    raise te
+        else:
+            st.error("❌ No se pudieron cargar los mapas interactivos")
+            st.info("💡 Verifica que todas las dependencias estén instaladas")
     except Exception as e:
         st.error(f"❌ Error renderizando mapas épicos: {str(e)}")
         
