@@ -1254,8 +1254,7 @@ def fix_plotly_hover_issues(fig):
 
             # Forzar configuración segura
             clean_layout.update({
-                'hovermode': False,
-                'rangeslider': dict(visible=False)
+                'hovermode': False
             })
 
             # Si hay ejes, limpiarlos también
@@ -1278,8 +1277,7 @@ def fix_plotly_hover_issues(fig):
             print(f"Error recreando figura: {recreation_error}")
             # Fallback a método original
             fig.update_layout(
-                hovermode=False,
-                rangeslider=dict(visible=False)
+                hovermode=False
             )
 
         # PASO 3: Protección para subplots múltiples

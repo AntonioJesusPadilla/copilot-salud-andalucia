@@ -379,63 +379,83 @@ class MapInterface:
     
     def create_epic_summary_chart(self, data: Dict):
         """Crear gráfico resumen épico"""
-        
-        import plotly.graph_objects as go
-        from plotly.subplots import make_subplots
-        
-        # Crear subplots
-        fig = make_subplots(
-            rows=2, cols=2,
-            subplot_titles=('🏥 Hospitales por Tipo', '👥 Top 5 Municipios', 
-                          '⏱️ Tiempos de Acceso', '🛏️ Capacidad vs Población'),
-            specs=[[{"type": "pie"}, {"type": "bar"}],
-                   [{"type": "histogram"}, {"type": "scatter"}]]
-        )
-        
-        # Gráfico 1: Hospitales por tipo (Pie)
-        hospital_types = data['hospitales']['tipo_centro'].value_counts()
-        fig.add_trace(
-            go.Pie(labels=hospital_types.index, values=hospital_types.values, 
-                   name="Hospitales", hole=0.3),
-            row=1, col=1
-        )
-        
-        # Gráfico 2: Top 5 municipios (Bar)
-        top_municipalities = data['demografia'].nlargest(5, 'poblacion_2025')
-        fig.add_trace(
-            go.Bar(x=top_municipalities['municipio'], 
-                   y=top_municipalities['poblacion_2025'],
-                   marker_color='lightblue'),
-            row=1, col=2
-        )
-        
-        # Gráfico 3: Histograma de tiempos de acceso
-        fig.add_trace(
-            go.Histogram(x=data['accesibilidad']['tiempo_coche_minutos'],
-                        nbinsx=20, marker_color='orange'),
-            row=2, col=1
-        )
-        
-        # Gráfico 4: Scatter capacidad vs población
-        fig.add_trace(
-            go.Scatter(x=data['hospitales']['poblacion_referencia_2025'],
-                      y=data['hospitales']['camas_funcionamiento_2025'],
-                      mode='markers+text',
-                      text=data['hospitales']['municipio'],
-                      textposition='top center',
-                      marker=dict(size=10, color='red')),
-            row=2, col=2
-        )
-        
-        # Actualizar layout
-        fig.update_layout(
-            height=600,
-            showlegend=False,
-            title_text="📊 Dashboard Geoespacial Épico - Sistema Sanitario Málaga",
-            title_x=0.5
-        )
-        
-        st.plotly_chart(fig, width="stretch")
+
+        try:
+            import plotly.graph_objects as go
+            from plotly.subplots import make_subplots
+
+            # Verificar que tenemos los datos necesarios
+            required_keys = ['hospitales', 'demografia', 'accesibilidad']
+            missing_keys = [key for key in required_keys if key not in data or data[key].empty]
+
+            if missing_keys:
+                st.warning(f"⚠️ No se puede crear gráfico resumen. Datos faltantes: {', '.join(missing_keys)}")
+                return
+
+            # Crear subplots con especificación más robusta
+            fig = make_subplots(
+                rows=2, cols=2,
+                subplot_titles=('🏥 Hospitales por Tipo', '👥 Top 5 Municipios',
+                              '⏱️ Tiempos de Acceso', '🛏️ Capacidad vs Población'),
+                specs=[[{"type": "pie"}, {"type": "bar"}],
+                       [{"type": "histogram"}, {"type": "scatter"}]]
+            )
+        except Exception as e:
+            st.error(f"❌ Error creando estructura de gráfico: {str(e)}")
+            return
+
+        try:
+            # Gráfico 1: Hospitales por tipo (Pie)
+            hospital_types = data['hospitales']['tipo_centro'].value_counts()
+            fig.add_trace(
+                go.Pie(labels=hospital_types.index, values=hospital_types.values,
+                       name="Hospitales", hole=0.3),
+                row=1, col=1
+            )
+
+            # Gráfico 2: Top 5 municipios (Bar)
+            top_municipalities = data['demografia'].nlargest(5, 'poblacion_2025')
+            fig.add_trace(
+                go.Bar(x=top_municipalities['municipio'],
+                       y=top_municipalities['poblacion_2025'],
+                       marker_color='lightblue'),
+                row=1, col=2
+            )
+
+            # Gráfico 3: Histograma de tiempos de acceso
+            fig.add_trace(
+                go.Histogram(x=data['accesibilidad']['tiempo_coche_minutos'],
+                            nbinsx=20, marker_color='orange'),
+                row=2, col=1
+            )
+
+            # Gráfico 4: Scatter capacidad vs población
+            fig.add_trace(
+                go.Scatter(x=data['hospitales']['poblacion_referencia_2025'],
+                          y=data['hospitales']['camas_funcionamiento_2025'],
+                          mode='markers+text',
+                          text=data['hospitales']['municipio'],
+                          textposition='top center',
+                          marker=dict(size=10, color='red')),
+                row=2, col=2
+            )
+
+            # Actualizar layout
+            fig.update_layout(
+                height=600,
+                showlegend=False,
+                title_text="📊 Dashboard Geoespacial Épico - Sistema Sanitario Málaga",
+                title_x=0.5
+            )
+
+            # Asegurar que no hay rangeslider en xaxis para evitar errores de Streamlit
+            fig.update_xaxes(rangeslider=dict(visible=False))
+
+            st.plotly_chart(fig, use_container_width=True)
+
+        except Exception as e:
+            st.error(f"❌ Error creando gráfico resumen: {str(e)}")
+            st.info("🔍 Algunos datos pueden no estar disponibles para el gráfico completo")
     
     def render_map_info_panel(self, data: Dict):
         """Panel de información adicional sobre mapas"""
