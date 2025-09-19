@@ -1,14 +1,20 @@
 [global]
 developmentMode = false
+maxUploadSize = 200
 
 [server]
 headless = true
 port = 8501
 enableCORS = true
 enableXsrfProtection = false
+maxRequestSize = 200
+baseUrlPath = ""
+runOnSave = false
 
 [browser]
 gatherUsageStats = false
+serverAddress = "localhost"
+serverPort = 8501
 
 [theme]
 primaryColor = "#00A86B"
@@ -23,3 +29,9 @@ level = "info"
 [runner]
 fastReruns = true
 enforceSerializableSessionState = false
+magicEnabled = false
+
+[client]
+caching = true
+displayEnabled = true
+showErrorDetails = false
