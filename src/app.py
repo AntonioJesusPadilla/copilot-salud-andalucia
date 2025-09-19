@@ -64,13 +64,16 @@ try:
         import folium
         import streamlit_folium
         MAPS_DEPENDENCIES_OK = True
+        print("✅ Dependencias de mapas encontradas: folium, streamlit_folium")
     except ImportError as deps_error:
+        print(f"❌ Dependencias de mapas no disponibles: {str(deps_error)}")
         st.warning(f"⚠️ Dependencias de mapas no disponibles: {str(deps_error)}")
         st.info("💡 Los mapas no estarán disponibles en este despliegue")
         MAPS_DEPENDENCIES_OK = False
-    
+
     # Carga diferida de mapas - solo marcar disponibilidad
     MAPS_AVAILABLE = MAPS_DEPENDENCIES_OK
+    print(f"🔧 MAPS_AVAILABLE establecido en: {MAPS_AVAILABLE}")
         
 except Exception as e:
     st.warning(f"⚠️ Mapas no disponibles: {str(e)}")
@@ -852,8 +855,10 @@ if (isIPhoneIOS26()) {
 
         st.markdown(ios_detection_script, unsafe_allow_html=True)
     except Exception as e:
-        # Si no se pueden cargar los archivos específicos, continuar sin ellos
-        pass
+        # Si no se pueden cargar los archivos específicos, usar script básico
+        basic_ios_script = ios_detection_script.replace('PLACEHOLDER_CSS_CONTENT', '/* CSS not available */')
+        basic_ios_script = basic_ios_script.replace('PLACEHOLDER_JS_CONTENT', '/* JS not available */')
+        st.markdown(basic_ios_script, unsafe_allow_html=True)
 
 # Solo cargar iOS fixes si realmente es iOS
 try:
@@ -1025,18 +1030,25 @@ class SecureHealthAnalyticsApp:
 
     def load_map_interface(self):
         """Cargar interfaz de mapas de forma diferida solo cuando se necesite"""
+        # Debug info
+        print(f"🔧 load_map_interface llamado. MAPS_AVAILABLE: {MAPS_AVAILABLE}")
+
         if not MAPS_AVAILABLE:
+            st.error("❌ Los mapas no están disponibles. Dependencias no instaladas.")
             return False
 
         if self.map_interface_loaded and self.map_interface is not None:
+            print("✅ MapInterface ya está cargado")
             return True
 
         try:
             # Mostrar spinner solo en carga inicial
             with st.spinner("🗺️ Cargando sistema de mapas..."):
+                print("📦 Importando módulos de mapas...")
                 # Importar módulos de mapas dinámicamente
                 from modules.visualization.map_interface import MapInterface
 
+                print("🏗️ Creando instancia de MapInterface...")
                 self.map_interface = MapInterface()
                 self.map_interface_loaded = True
 
@@ -1046,10 +1058,21 @@ class SecureHealthAnalyticsApp:
                 params = list(sig.parameters.keys())
                 print(f"🔧 MapInterface cargado con parámetros: {params}")
 
+                st.success("✅ Sistema de mapas cargado correctamente")
                 return True
 
         except Exception as e:
-            st.error(f"❌ Error cargando mapas: {str(e)}")
+            error_msg = f"❌ Error cargando mapas: {str(e)}"
+            print(error_msg)
+            st.error(error_msg)
+
+            # Mostrar detalles adicionales para debugging
+            with st.expander("🔧 Detalles del error (para debugging)"):
+                st.write(f"Tipo de error: {type(e).__name__}")
+                st.write(f"Mensaje: {str(e)}")
+                import traceback
+                st.code(traceback.format_exc())
+
             self.map_interface = None
             self.map_interface_loaded = False
             return False
@@ -3211,24 +3234,44 @@ def render_epic_maps_tab(app):
         st.error("❌ No hay datos disponibles para generar mapas. Ejecuta data_collector_2025.py")
         return
     
+    # Información de estado para debugging
+    st.write(f"🔧 **Estado de MAPS_AVAILABLE:** {MAPS_AVAILABLE}")
+    st.write(f"🔧 **Interface cargada:** {hasattr(app, 'map_interface_loaded') and app.map_interface_loaded}")
+
+    # Botón manual para debugging
+    if st.button("🔄 Reintentar carga de mapas (Debug)", key="reload_maps_debug"):
+        app.map_interface = None
+        app.map_interface_loaded = False
+        st.rerun()
+
     # Renderizar dashboard de mapas épicos con permisos del usuario
     try:
+        print("🗺️ Iniciando renderizado de mapas épicos...")
+
         # Cargar mapas de forma diferida
-        if app.load_map_interface():
+        load_result = app.load_map_interface()
+        print(f"🔧 Resultado de load_map_interface: {load_result}")
+
+        if load_result:
             user_permissions = app.role_info['permissions']
+            print(f"👤 Permisos del usuario: {user_permissions}")
 
             # Verificar si el método acepta user_permissions
             try:
+                print("🎯 Llamando a render_epic_maps_dashboard con permisos...")
                 app.map_interface.render_epic_maps_dashboard(app.data, user_permissions)
+                print("✅ render_epic_maps_dashboard ejecutado exitosamente")
             except TypeError as te:
                 if "takes 2 positional arguments but 3 were given" in str(te):
                     st.warning("⚠️ Usando versión de mapas sin permisos diferenciados")
+                    print("🔄 Reintentando sin permisos...")
                     app.map_interface.render_epic_maps_dashboard(app.data)
                 else:
                     raise te
         else:
             st.error("❌ No se pudieron cargar los mapas interactivos")
             st.info("💡 Verifica que todas las dependencias estén instaladas")
+            print("❌ load_map_interface retornó False")
     except Exception as e:
         st.error(f"❌ Error renderizando mapas épicos: {str(e)}")
         
