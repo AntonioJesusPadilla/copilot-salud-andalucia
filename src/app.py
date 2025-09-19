@@ -58,27 +58,36 @@ except ImportError as e:
 try:
     import importlib
     import sys
-    
+
     # Verificar dependencias básicas de mapas
     try:
         import folium
         import streamlit_folium
+        # Test adicional: verificar que el módulo local existe
+        from modules.visualization.map_interface import MapInterface
+
         MAPS_DEPENDENCIES_OK = True
-        print("✅ Dependencias de mapas encontradas: folium, streamlit_folium")
+        print("✅ GLOBAL INIT: Dependencias de mapas encontradas: folium, streamlit_folium, MapInterface")
     except ImportError as deps_error:
-        print(f"❌ Dependencias de mapas no disponibles: {str(deps_error)}")
-        st.warning(f"⚠️ Dependencias de mapas no disponibles: {str(deps_error)}")
-        st.info("💡 Los mapas no estarán disponibles en este despliegue")
+        print(f"❌ GLOBAL INIT: Dependencias de mapas no disponibles: {str(deps_error)}")
+        # NO mostrar warning en la UI durante la inicialización global
         MAPS_DEPENDENCIES_OK = False
 
     # Carga diferida de mapas - solo marcar disponibilidad
     MAPS_AVAILABLE = MAPS_DEPENDENCIES_OK
-    print(f"🔧 MAPS_AVAILABLE establecido en: {MAPS_AVAILABLE}")
-        
+    print(f"🔧 GLOBAL INIT: MAPS_AVAILABLE establecido en: {MAPS_AVAILABLE}")
+    print(f"🔧 GLOBAL INIT: MAPS_DEPENDENCIES_OK es: {MAPS_DEPENDENCIES_OK}")
+
+    # Si las dependencias no están disponibles globalmente, intentar verificación diferida
+    if not MAPS_DEPENDENCIES_OK:
+        print("⚠️ GLOBAL INIT: Dependencias no disponibles globalmente, se intentará carga diferida")
+
 except Exception as e:
-    st.warning(f"⚠️ Mapas no disponibles: {str(e)}")
-    st.info("💡 La aplicación funcionará sin mapas interactivos")
+    print(f"❌ GLOBAL INIT: Excepción en bloque de mapas: {str(e)}")
+    # NO mostrar warning en la UI durante la inicialización global
     MAPS_AVAILABLE = False
+    MAPS_DEPENDENCIES_OK = False
+    print("🔧 GLOBAL INIT: MAPS_AVAILABLE y MAPS_DEPENDENCIES_OK establecidos en False por excepción")
 
 # Importar dashboards personalizados por rol
 try:
@@ -714,9 +723,9 @@ except Exception:
         initial_sidebar_state="expanded"
     )
 
-# Inicializar tema si no existe
+# Inicializar tema si no existe - TEMA OSCURO POR DEFECTO
 if 'theme_mode' not in st.session_state:
-    st.session_state.theme_mode = 'light'
+    st.session_state.theme_mode = 'dark'
 
 # Cargar CSS optimizado para el dispositivo
 def load_optimized_css():
@@ -856,25 +865,19 @@ if (isIPhoneIOS26()) {
         st.markdown(ios_detection_script, unsafe_allow_html=True)
     except Exception as e:
         # Si no se pueden cargar los archivos específicos, usar script básico
+        print(f"⚠️ No se pudieron cargar archivos iOS específicos: {e}")
         basic_ios_script = ios_detection_script.replace('PLACEHOLDER_CSS_CONTENT', '/* CSS not available */')
         basic_ios_script = basic_ios_script.replace('PLACEHOLDER_JS_CONTENT', '/* JS not available */')
-        st.markdown(basic_ios_script, unsafe_allow_html=True)
 
-# Solo cargar iOS fixes si realmente es iOS
-try:
-    # Detectar si es posible que sea iOS
-    is_possible_ios = False
-    try:
-        if hasattr(st, 'context') and hasattr(st.context, 'user_agent'):
-            user_agent = str(st.context.user_agent or "").lower()
-            is_possible_ios = any(ios_term in user_agent for ios_term in ['iphone', 'ipad', 'safari'])
-    except:
-        is_possible_ios = True  # Si no podemos detectar, cargar por precaución
+        # Solo cargar si no hay errores visibles
+        try:
+            st.markdown(basic_ios_script, unsafe_allow_html=True)
+        except Exception as script_error:
+            print(f"⚠️ Error cargando script iOS básico: {script_error}")
+            # No cargar nada si hay problemas
 
-    if is_possible_ios:
-        load_ios_fixes()
-except Exception:
-    pass
+# NOTA: Los fixes de iOS se cargan ahora de forma diferida en la aplicación principal
+# para evitar que aparezcan como texto durante el login
 
 # Aplicar estilos adicionales optimizados
 if css_loaded == "mobile_basic":
@@ -898,48 +901,7 @@ else:
     /* Estilos adicionales solo si no se cargó el CSS temático */
     {'' if css_loaded.startswith('theme_') else 'body { font-family: Inter, sans-serif; }'}
     </style>
-
-    <script>
-    // Script optimizado por dispositivo
-    (function() {{
-        // Detectar si es móvil
-        var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-        if (isMobile) {{
-            // Configuración móvil - viewport responsive
-            var viewport = document.querySelector("meta[name=viewport]");
-            if (viewport) {{
-                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes');
-            }} else {{
-                var meta = document.createElement('meta');
-                meta.name = "viewport";
-                meta.content = "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes";
-                document.getElementsByTagName('head')[0].appendChild(meta);
-            }}
-        }} else {{
-            // Configuración desktop - forzar ancho mínimo
-            var viewport = document.querySelector("meta[name=viewport]");
-            if (viewport) {{
-                viewport.setAttribute('content', 'width=1200, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-            }} else {{
-                var meta = document.createElement('meta');
-                meta.name = "viewport";
-                meta.content = "width=1200, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
-                document.getElementsByTagName('head')[0].appendChild(meta);
-            }}
-
-            // Forzar layout desktop
-            if (window.innerWidth < 1200 && !document.body.classList.contains('desktop-forced')) {{
-                document.body.classList.add('desktop-forced');
-                document.body.style.minWidth = '1200px';
-                document.body.style.overflowX = 'auto';
-            }}
-        }}
-
-        // Funciones básicas de la aplicación pueden ir aquí si es necesario
-    }})();
-</script>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 class SecureHealthAnalyticsApp:
     def __init__(self):
@@ -1028,6 +990,50 @@ class SecureHealthAnalyticsApp:
             print(f"❌ Error verificando permisos: {str(e)}")
             return False
 
+    def apply_viewport_optimization(self):
+        """Aplicar optimización de viewport solo cuando la app esté cargada"""
+        viewport_script = """
+        <script>
+        // Script optimizado por dispositivo (cargado post-login)
+        (function() {
+            // Detectar si es móvil
+            var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+            if (isMobile) {
+                // Configuración móvil - viewport responsive
+                var viewport = document.querySelector("meta[name=viewport]");
+                if (viewport) {
+                    viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes');
+                } else {
+                    var meta = document.createElement('meta');
+                    meta.name = "viewport";
+                    meta.content = "width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes";
+                    document.getElementsByTagName('head')[0].appendChild(meta);
+                }
+            } else {
+                // Configuración desktop - forzar ancho mínimo
+                var viewport = document.querySelector("meta[name=viewport]");
+                if (viewport) {
+                    viewport.setAttribute('content', 'width=1200, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+                } else {
+                    var meta = document.createElement('meta');
+                    meta.name = "viewport";
+                    meta.content = "width=1200, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
+                    document.getElementsByTagName('head')[0].appendChild(meta);
+                }
+
+                // Forzar layout desktop
+                if (window.innerWidth < 1200 && !document.body.classList.contains('desktop-forced')) {
+                    document.body.classList.add('desktop-forced');
+                    document.body.style.minWidth = '1200px';
+                    document.body.style.overflowX = 'auto';
+                }
+            }
+        })();
+        </script>
+        """
+        st.markdown(viewport_script, unsafe_allow_html=True)
+
     def ensure_map_variables_initialized(self):
         """Asegurar que las variables de mapas estén inicializadas"""
         if not hasattr(self, 'map_interface_loaded'):
@@ -1043,25 +1049,38 @@ class SecureHealthAnalyticsApp:
         # Debug info
         print(f"🔧 load_map_interface llamado. MAPS_AVAILABLE: {MAPS_AVAILABLE}")
 
+        # Mostrar debug en la UI también
+        st.write(f"🔧 **Debug:** MAPS_AVAILABLE = {MAPS_AVAILABLE}")
+
         # Asegurar que las variables estén inicializadas
         self.ensure_map_variables_initialized()
 
+        st.write(f"🔧 **Debug:** Variables inicializadas. map_interface_loaded = {self.map_interface_loaded}")
+
         if not MAPS_AVAILABLE:
             st.error("❌ Los mapas no están disponibles. Dependencias no instaladas.")
+            st.write("💡 **Diagnóstico:** Las dependencias folium/streamlit-folium no están disponibles")
             return False
 
         if self.map_interface_loaded and self.map_interface is not None:
             print("✅ MapInterface ya está cargado")
+            st.success("✅ MapInterface ya está cargado previamente")
             return True
+
+        st.write("🚀 **Debug:** Iniciando carga de MapInterface...")
 
         try:
             # Mostrar spinner solo en carga inicial
             with st.spinner("🗺️ Cargando sistema de mapas..."):
                 print("📦 Importando módulos de mapas...")
+                st.write("📦 **Debug:** Importando módulos...")
+
                 # Importar módulos de mapas dinámicamente
                 from modules.visualization.map_interface import MapInterface
 
                 print("🏗️ Creando instancia de MapInterface...")
+                st.write("🏗️ **Debug:** Creando instancia...")
+
                 self.map_interface = MapInterface()
                 self.map_interface_loaded = True
 
@@ -1072,6 +1091,7 @@ class SecureHealthAnalyticsApp:
                 print(f"🔧 MapInterface cargado con parámetros: {params}")
 
                 st.success("✅ Sistema de mapas cargado correctamente")
+                st.write(f"🔧 **Debug:** Método encontrado con parámetros: {params}")
                 return True
 
         except Exception as e:
@@ -1080,11 +1100,13 @@ class SecureHealthAnalyticsApp:
             st.error(error_msg)
 
             # Mostrar detalles adicionales para debugging
-            with st.expander("🔧 Detalles del error (para debugging)"):
-                st.write(f"Tipo de error: {type(e).__name__}")
-                st.write(f"Mensaje: {str(e)}")
+            with st.expander("🔧 Detalles del error (ABIERTO para debugging)", expanded=True):
+                st.write(f"**Tipo de error:** {type(e).__name__}")
+                st.write(f"**Mensaje:** {str(e)}")
                 import traceback
-                st.code(traceback.format_exc())
+                error_trace = traceback.format_exc()
+                st.code(error_trace)
+                print(f"Traceback completo: {error_trace}")
 
             self.map_interface = None
             self.map_interface_loaded = False
@@ -1473,9 +1495,9 @@ def main():
     import re
 
     # TOGGLE DE TEMA GLOBAL en esquina superior derecha
-    # Inicializar tema en session_state si no existe
+    # Inicializar tema en session_state si no existe - TEMA OSCURO POR DEFECTO
     if 'theme_mode' not in st.session_state:
-        st.session_state.theme_mode = 'light'
+        st.session_state.theme_mode = 'dark'
 
     # CSS para posicionar el toggle en la esquina superior derecha
     st.markdown("""
@@ -1504,7 +1526,7 @@ def main():
     col1, col2, col3 = st.columns([7, 1, 1])
     with col3:
         # Toggle visual con iconos
-        current_theme = st.session_state.get('theme_mode', 'light')
+        current_theme = st.session_state.get('theme_mode', 'dark')
         if st.button(
             "🌙 Oscuro" if current_theme == 'light' else "☀️ Claro",
             key="theme_toggle_v6_positioned",
@@ -1536,7 +1558,29 @@ def main():
     if app.data is None:
         st.error("❌ Error cargando los datos. Por favor, recarga la página o contacta al administrador.")
         st.stop()
-    
+
+    # Aplicar optimización de viewport ahora que la app está cargada
+    try:
+        app.apply_viewport_optimization()
+    except Exception as e:
+        print(f"⚠️ Error aplicando optimización de viewport: {e}")
+
+    # Aplicar fixes de iOS si es necesario
+    try:
+        # Detectar si es posible que sea iOS
+        is_possible_ios = False
+        try:
+            if hasattr(st, 'context') and hasattr(st.context, 'user_agent'):
+                user_agent = str(st.context.user_agent or "").lower()
+                is_possible_ios = any(ios_term in user_agent for ios_term in ['iphone', 'ipad', 'safari'])
+        except:
+            pass  # No cargar iOS fixes si no podemos detectar
+
+        if is_possible_ios:
+            app.load_ios_fixes()
+    except Exception as e:
+        print(f"⚠️ Error aplicando fixes de iOS: {e}")
+
     # Renderizar aplicación segura
     app.render_secure_header()
     app.render_secure_sidebar()
@@ -3220,21 +3264,191 @@ def render_complete_analysis_secure(app):
         for rec in recommendations:
             st.info(rec)
 
+def debug_maps_step_by_step():
+    """Test exhaustivo paso a paso para diagnosticar problemas de mapas"""
+    st.markdown("## 🔬 DEBUG EXHAUSTIVO DE MAPAS ÉPICOS")
+
+    debug_results = {}
+
+    # TEST 1: Variables globales
+    st.subheader("1️⃣ Test de Variables Globales")
+    try:
+        debug_results["globals"] = {
+            "MAPS_AVAILABLE": MAPS_AVAILABLE,
+            "MAPS_DEPENDENCIES_OK": globals().get('MAPS_DEPENDENCIES_OK', 'NO DEFINIDA')
+        }
+        st.json(debug_results["globals"])
+        if MAPS_AVAILABLE:
+            st.success("✅ Variables globales OK")
+        else:
+            st.error("❌ MAPS_AVAILABLE es False")
+    except Exception as e:
+        st.error(f"❌ Error en variables globales: {e}")
+        debug_results["globals"] = {"error": str(e)}
+
+    # TEST 2: Imports básicos
+    st.subheader("2️⃣ Test de Imports Básicos")
+    imports_status = {}
+
+    # Test folium
+    try:
+        import folium
+        imports_status["folium"] = {"status": "OK", "version": getattr(folium, '__version__', 'desconocida')}
+        st.success(f"✅ folium v{imports_status['folium']['version']}")
+    except Exception as e:
+        imports_status["folium"] = {"status": "ERROR", "error": str(e)}
+        st.error(f"❌ folium: {e}")
+
+    # Test streamlit_folium
+    try:
+        import streamlit_folium
+        imports_status["streamlit_folium"] = {"status": "OK"}
+        st.success("✅ streamlit_folium")
+    except Exception as e:
+        imports_status["streamlit_folium"] = {"status": "ERROR", "error": str(e)}
+        st.error(f"❌ streamlit_folium: {e}")
+
+    debug_results["imports_basic"] = imports_status
+
+    # TEST 3: Sistema de archivos
+    st.subheader("3️⃣ Test de Sistema de Archivos")
+    import os
+    import sys
+
+    filesystem_status = {}
+
+    # Verificar directorio actual
+    current_dir = os.getcwd()
+    filesystem_status["current_dir"] = current_dir
+    st.write(f"📁 Directorio actual: {current_dir}")
+
+    # Verificar path de Python
+    filesystem_status["python_path"] = sys.path
+    st.write("🐍 Python path:")
+    for i, path in enumerate(sys.path[:5]):  # Solo primeros 5
+        st.write(f"  {i}: {path}")
+
+    # Verificar estructura de módulos
+    modules_to_check = [
+        "modules",
+        "modules/visualization",
+        "modules/visualization/map_interface.py"
+    ]
+
+    for module_path in modules_to_check:
+        exists = os.path.exists(module_path)
+        filesystem_status[module_path] = exists
+        if exists:
+            st.success(f"✅ {module_path}")
+            if os.path.isdir(module_path):
+                try:
+                    contents = os.listdir(module_path)
+                    st.write(f"   Contenido: {contents[:5]}...")  # Primeros 5
+                except:
+                    st.write("   (No se pudo listar contenido)")
+        else:
+            st.error(f"❌ {module_path}")
+
+    debug_results["filesystem"] = filesystem_status
+
+    # TEST 4: Import del módulo local
+    st.subheader("4️⃣ Test de Import de MapInterface")
+    try:
+        # Primero verificar si el módulo está en sys.modules
+        if 'modules.visualization.map_interface' in sys.modules:
+            st.info("ℹ️ MapInterface ya está en sys.modules")
+
+        # Intentar import
+        from modules.visualization.map_interface import MapInterface
+
+        # Verificar la clase
+        map_interface_info = {
+            "class_type": str(type(MapInterface)),
+            "methods": [method for method in dir(MapInterface) if not method.startswith('_')],
+            "module_file": getattr(MapInterface, '__module__', 'desconocido')
+        }
+        debug_results["map_interface_import"] = map_interface_info
+
+        st.success("✅ MapInterface importado correctamente")
+        st.json(map_interface_info)
+
+        # TEST 5: Instanciación
+        st.subheader("5️⃣ Test de Instanciación")
+        try:
+            instance = MapInterface()
+            instance_info = {
+                "instance_type": str(type(instance)),
+                "attributes": [attr for attr in dir(instance) if not attr.startswith('_')][:10]  # Primeros 10
+            }
+            debug_results["map_interface_instance"] = instance_info
+            st.success("✅ MapInterface instanciado correctamente")
+            st.json(instance_info)
+
+        except Exception as inst_e:
+            debug_results["map_interface_instance"] = {"error": str(inst_e)}
+            st.error(f"❌ Error instanciando MapInterface: {inst_e}")
+            import traceback
+            st.code(traceback.format_exc())
+
+    except Exception as import_e:
+        debug_results["map_interface_import"] = {"error": str(import_e)}
+        st.error(f"❌ Error importando MapInterface: {import_e}")
+        import traceback
+        st.code(traceback.format_exc())
+
+    # RESUMEN FINAL
+    st.subheader("📋 Resumen del Diagnóstico")
+    st.json(debug_results)
+
+    # Determinar la causa más probable
+    if not debug_results["globals"]["MAPS_AVAILABLE"]:
+        st.error("🎯 **CAUSA PRINCIPAL:** MAPS_AVAILABLE es False desde el inicio")
+        st.write("💡 **Solución:** Revisar el bloque de inicialización global al inicio de app.py")
+    elif "error" in debug_results.get("map_interface_import", {}):
+        st.error("🎯 **CAUSA PRINCIPAL:** Error importando MapInterface")
+        st.write("💡 **Solución:** Revisar dependencias dentro del archivo map_interface.py")
+    elif "error" in debug_results.get("map_interface_instance", {}):
+        st.error("🎯 **CAUSA PRINCIPAL:** Error instanciando MapInterface")
+        st.write("💡 **Solución:** Revisar constructor de la clase MapInterface")
+    else:
+        st.success("🎯 **DIAGNÓSTICO:** Los tests básicos pasaron, el problema debe estar en el flujo de la aplicación")
+
 def render_epic_maps_tab(app):
     """Tab de mapas épicos con verificación de permisos"""
     st.markdown("### 🗺️ Mapas Interactivos Épicos")
-    
+
+
     if not app.require_permission('ver_datos'):
         return
     
-    # Verificar disponibilidad de mapas
-    if not MAPS_AVAILABLE:
-        st.error("❌ Sistema de mapas no disponible. Instala: pip install folium streamlit-folium")
-        return
-    
+    # CARGA AUTOMÁTICA DE MAPAS - Sin verificar MAPS_AVAILABLE
     if not app.map_interface:
-        st.error("❌ Interface de mapas no inicializada")
-        return
+        with st.spinner("🗺️ Cargando sistema de mapas automáticamente..."):
+            try:
+                # Intentar cargar directamente
+                from modules.visualization.map_interface import MapInterface
+                app.map_interface = MapInterface()
+                app.map_interface_loaded = True
+                st.success("✅ Sistema de mapas cargado correctamente")
+
+            except Exception as load_error:
+                st.error(f"❌ Error cargando mapas automáticamente: {str(load_error)}")
+
+                # Mostrar opción de bypass manual como fallback
+                with st.expander("🛠️ Bypass Manual", expanded=True):
+                    st.warning("⚠️ Carga automática falló, intenta cargar manualmente:")
+                    if st.button("🚀 Cargar mapas manualmente", key="force_maps_bypass"):
+                        try:
+                            from modules.visualization.map_interface import MapInterface
+                            app.map_interface = MapInterface()
+                            app.map_interface_loaded = True
+                            st.success("✅ Mapas cargados manualmente")
+                            st.rerun()
+                        except Exception as manual_error:
+                            st.error(f"❌ Error en carga manual: {str(manual_error)}")
+                            import traceback
+                            st.code(traceback.format_exc())
+                return
     
     # Información de acceso
     st.markdown(f"""
@@ -3246,55 +3460,20 @@ def render_epic_maps_tab(app):
     if not app.data:
         st.error("❌ No hay datos disponibles para generar mapas. Ejecuta data_collector_2025.py")
         return
-    
-    # Información de estado
-    col1, col2 = st.columns(2)
-    with col1:
-        st.info(f"🗺️ **Estado de mapas:** {'✅ Disponibles' if MAPS_AVAILABLE else '❌ No disponibles'}")
-    with col2:
-        interface_status = "✅ Cargada" if hasattr(app, 'map_interface_loaded') and app.map_interface_loaded else "⏳ Pendiente"
-        st.info(f"🔧 **Interface:** {interface_status}")
 
-    # Botón manual para debugging (solo mostrar si hay problemas)
-    if not MAPS_AVAILABLE or not hasattr(app, 'map_interface_loaded'):
-        if st.button("🔄 Reintentar carga de mapas", key="reload_maps_debug"):
-            if hasattr(app, 'map_interface'):
-                app.map_interface = None
-            if hasattr(app, 'map_interface_loaded'):
-                app.map_interface_loaded = False
-            st.rerun()
-
-    # Renderizar dashboard de mapas épicos con permisos del usuario
+    # Renderizar mapas directamente
     try:
-        print("🗺️ Iniciando renderizado de mapas épicos...")
+        user_permissions = app.role_info['permissions'] if app.role_info else []
 
-        # Asegurar que la app esté completamente inicializada
-        app.ensure_map_variables_initialized()
-
-        # Cargar mapas de forma diferida
-        load_result = app.load_map_interface()
-        print(f"🔧 Resultado de load_map_interface: {load_result}")
-
-        if load_result:
-            user_permissions = app.role_info['permissions']
-            print(f"👤 Permisos del usuario: {user_permissions}")
-
-            # Verificar si el método acepta user_permissions
-            try:
-                print("🎯 Llamando a render_epic_maps_dashboard con permisos...")
-                app.map_interface.render_epic_maps_dashboard(app.data, user_permissions)
-                print("✅ render_epic_maps_dashboard ejecutado exitosamente")
-            except TypeError as te:
-                if "takes 2 positional arguments but 3 were given" in str(te):
-                    st.warning("⚠️ Usando versión de mapas sin permisos diferenciados")
-                    print("🔄 Reintentando sin permisos...")
-                    app.map_interface.render_epic_maps_dashboard(app.data)
-                else:
-                    raise te
-        else:
-            st.error("❌ No se pudieron cargar los mapas interactivos")
-            st.info("💡 Verifica que todas las dependencias estén instaladas")
-            print("❌ load_map_interface retornó False")
+        # Verificar si el método acepta user_permissions
+        try:
+            app.map_interface.render_epic_maps_dashboard(app.data, user_permissions)
+        except TypeError as te:
+            if "takes 2 positional arguments but 3 were given" in str(te):
+                # Versión sin permisos diferenciados
+                app.map_interface.render_epic_maps_dashboard(app.data)
+            else:
+                raise te
     except Exception as e:
         st.error(f"❌ Error renderizando mapas épicos: {str(e)}")
         
