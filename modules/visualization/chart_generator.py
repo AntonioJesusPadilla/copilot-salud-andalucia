@@ -149,11 +149,8 @@ class SmartChartGenerator:
                 # Múltiples métodos de protección
                 result.update_layout(
                     xaxis=dict(
-                        rangeslider=dict(visible=False),
-                        showrangeslider=False
-                    ),
-                    showrangeslider=False,
-                    rangeslider=dict(visible=False)
+                        rangeslider=dict(visible=False)
+                    )
                 )
 
                 # Protección adicional para subplots
@@ -161,7 +158,7 @@ class SmartChartGenerator:
                     if i == 0:
                         continue
                     try:
-                        result.update_layout(**{f'xaxis{i+1}': dict(rangeslider=dict(visible=False), showrangeslider=False)})
+                        result.update_layout(**{f'xaxis{i+1}': dict(rangeslider=dict(visible=False))})
                     except:
                         pass
 
@@ -228,8 +225,7 @@ class SmartChartGenerator:
         self.debug_log_add("🛡️ Aplicando protección extrema anti-rangeslider en método individual")
         try:
             fig.update_layout(
-                xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
-                showrangeslider=False
+                xaxis=dict(rangeslider=dict(visible=False))
             )
             self.debug_log_add("✅ Protección extrema aplicada en método individual")
         except Exception as e:
@@ -280,8 +276,7 @@ class SmartChartGenerator:
         self.debug_log_add("🛡️ Aplicando protección extrema anti-rangeslider en método individual")
         try:
             fig.update_layout(
-                xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
-                showrangeslider=False
+                xaxis=dict(rangeslider=dict(visible=False))
             )
             self.debug_log_add("✅ Protección extrema aplicada en método individual")
         except Exception as e:
@@ -338,15 +333,14 @@ class SmartChartGenerator:
         fig.update_traces(
             textposition='inside',
             textinfo='percent+label',
-            hovertemplate='<b>%{label}</b><br>Valor: %{value}<br>Porcentaje: %{percent}<extra></extra>'
+            hoverinfo='none'  # Deshabilitar hover completamente
         )
         
         # PROTECCIÓN EXTREMA: Eliminar rangeslider antes de aplicar tema
         self.debug_log_add("🛡️ Aplicando protección extrema anti-rangeslider en método individual")
         try:
             fig.update_layout(
-                xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
-                showrangeslider=False
+                xaxis=dict(rangeslider=dict(visible=False))
             )
             self.debug_log_add("✅ Protección extrema aplicada en método individual")
         except Exception as e:
@@ -393,8 +387,7 @@ class SmartChartGenerator:
         self.debug_log_add("🛡️ Aplicando protección extrema anti-rangeslider en método individual")
         try:
             fig.update_layout(
-                xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
-                showrangeslider=False
+                xaxis=dict(rangeslider=dict(visible=False))
             )
             self.debug_log_add("✅ Protección extrema aplicada en método individual")
         except Exception as e:
@@ -464,8 +457,7 @@ class SmartChartGenerator:
         self.debug_log_add("🛡️ Aplicando protección extrema anti-rangeslider en método individual")
         try:
             fig.update_layout(
-                xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
-                showrangeslider=False
+                xaxis=dict(rangeslider=dict(visible=False))
             )
             self.debug_log_add("✅ Protección extrema aplicada en método individual")
         except Exception as e:
@@ -563,8 +555,7 @@ class SmartChartGenerator:
         self.debug_log_add("🛡️ Aplicando protección extrema anti-rangeslider en método individual")
         try:
             fig.update_layout(
-                xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
-                showrangeslider=False
+                xaxis=dict(rangeslider=dict(visible=False))
             )
             self.debug_log_add("✅ Protección extrema aplicada en método individual")
         except Exception as e:
@@ -598,8 +589,7 @@ class SmartChartGenerator:
         self.debug_log_add("🛡️ Aplicando protección extrema anti-rangeslider en método individual")
         try:
             fig.update_layout(
-                xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
-                showrangeslider=False
+                xaxis=dict(rangeslider=dict(visible=False))
             )
             self.debug_log_add("✅ Protección extrema aplicada en método individual")
         except Exception as e:
@@ -635,8 +625,7 @@ class SmartChartGenerator:
         self.debug_log_add("🛡️ Aplicando protección extrema anti-rangeslider en método individual")
         try:
             fig.update_layout(
-                xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
-                showrangeslider=False
+                xaxis=dict(rangeslider=dict(visible=False))
             )
             self.debug_log_add("✅ Protección extrema aplicada en método individual")
         except Exception as e:
@@ -696,9 +685,9 @@ class SmartChartGenerator:
             update_dict = {}
             for i in range(10):  # Hasta 10 subplots
                 if i == 0:
-                    update_dict['xaxis'] = dict(rangeslider=dict(visible=False), showrangeslider=False)
+                    update_dict['xaxis'] = dict(rangeslider=dict(visible=False))
                 else:
-                    update_dict[f'xaxis{i+1}'] = dict(rangeslider=dict(visible=False), showrangeslider=False)
+                    update_dict[f'xaxis{i+1}'] = dict(rangeslider=dict(visible=False))
 
             fig.update_layout(**update_dict)
             self.debug_log_add("✅ Rangeslider deshabilitado en todos los ejes")
@@ -710,8 +699,7 @@ class SmartChartGenerator:
             # Fallback final: crear figura básica sin nada de rangeslider
             try:
                 fig.update_layout(
-                    xaxis=dict(rangeslider=dict(visible=False), showrangeslider=False),
-                    showrangeslider=False
+                    xaxis=dict(rangeslider=dict(visible=False))
                 )
             except:
                 pass
@@ -772,8 +760,7 @@ class SmartChartGenerator:
                 linecolor=line_color,
                 tickfont=dict(color=text_color),
                 title=dict(font=dict(color=text_color)),
-                rangeslider=dict(visible=False),  # IMPORTANTE: sin rangeslider
-                showrangeslider=False  # DOBLE PROTECCIÓN
+                rangeslider=dict(visible=False)  # IMPORTANTE: sin rangeslider
             ),
             yaxis=dict(
                 showgrid=True,
@@ -783,15 +770,8 @@ class SmartChartGenerator:
                 title=dict(font=dict(color=text_color))
             ),
 
-            # Hover con tema adaptativo - SIN hoversubplots para evitar errores
-            hoverlabel=dict(
-                bgcolor=hover_bg,
-                bordercolor=hover_border,
-                font_size=12,
-                font_family="Inter",
-                font_color=text_color
-            ),
-            hovermode="closest",  # Modo hover simple para evitar errores de subplots
+            # Hover deshabilitado completamente para evitar cualquier error
+            hovermode=False,  # Deshabilitar completamente hover para evitar errores
 
             # Leyenda con tema adaptativo
             legend=dict(
@@ -801,13 +781,10 @@ class SmartChartGenerator:
             ),
 
             # PROTECCIONES ADICIONALES PARA STREAMLIT
-            showrangeslider=False,  # Global
-            rangeslider=dict(visible=False),  # Global fallback
+            # rangeslider solo se configura en xaxis específicos
 
-            # PROTECCIÓN CONTRA ERRORES DE HOVER EN SUBPLOTS
-            hoversubplots="axis",  # Evitar errores con "single" o valores inválidos
-            hoverdistance=100,  # Distancia de hover para evitar conflictos
-            spikedistance=100   # Distancia de spike para evitar errores
+            # IMPORTANTE: NO incluir hoversubplots, hoverdistance, spikedistance
+            # Estos parámetros causan errores en Plotly
         )
 
         # Actualizar colores de elementos para mejor legibilidad

@@ -423,7 +423,7 @@ class AdminDashboard:
                 xaxis_title="Hora",
                 yaxis=dict(title="Tiempo de Respuesta (s)", side="left"),
                 yaxis2=dict(title="Tasa de Éxito (%)", side="right", overlaying="y"),
-                hovermode='x unified'
+                hovermode=False  # Deshabilitar hover para evitar errores
             )
             
             st.plotly_chart(fig, use_container_width=True)
