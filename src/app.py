@@ -953,7 +953,8 @@ class SecureHealthAnalyticsApp:
         self.chart_generator = None
         self.metrics_calculator = None
         self.map_interface = None
-        
+        self.map_interface_loaded = False  # IMPORTANTE: Inicializar siempre
+
         # Inicializar sistemas de optimización y seguridad
         self.performance_optimizer = None
         self.security_auditor = None
@@ -999,8 +1000,7 @@ class SecureHealthAnalyticsApp:
                     self.metrics_calculator = HealthMetricsCalculator()
                 
                 # Carga diferida de mapas - no cargar hasta que se necesiten
-                self.map_interface = None
-                self.map_interface_loaded = False
+                # (map_interface y map_interface_loaded ya inicializados arriba)
                 
                 # Inicializar dashboards personalizados
                 if ROLE_DASHBOARDS_AVAILABLE:
@@ -1028,10 +1028,23 @@ class SecureHealthAnalyticsApp:
             print(f"❌ Error verificando permisos: {str(e)}")
             return False
 
+    def ensure_map_variables_initialized(self):
+        """Asegurar que las variables de mapas estén inicializadas"""
+        if not hasattr(self, 'map_interface_loaded'):
+            self.map_interface_loaded = False
+            print("🔧 Inicializando map_interface_loaded = False")
+
+        if not hasattr(self, 'map_interface'):
+            self.map_interface = None
+            print("🔧 Inicializando map_interface = None")
+
     def load_map_interface(self):
         """Cargar interfaz de mapas de forma diferida solo cuando se necesite"""
         # Debug info
         print(f"🔧 load_map_interface llamado. MAPS_AVAILABLE: {MAPS_AVAILABLE}")
+
+        # Asegurar que las variables estén inicializadas
+        self.ensure_map_variables_initialized()
 
         if not MAPS_AVAILABLE:
             st.error("❌ Los mapas no están disponibles. Dependencias no instaladas.")
@@ -3234,19 +3247,29 @@ def render_epic_maps_tab(app):
         st.error("❌ No hay datos disponibles para generar mapas. Ejecuta data_collector_2025.py")
         return
     
-    # Información de estado para debugging
-    st.write(f"🔧 **Estado de MAPS_AVAILABLE:** {MAPS_AVAILABLE}")
-    st.write(f"🔧 **Interface cargada:** {hasattr(app, 'map_interface_loaded') and app.map_interface_loaded}")
+    # Información de estado
+    col1, col2 = st.columns(2)
+    with col1:
+        st.info(f"🗺️ **Estado de mapas:** {'✅ Disponibles' if MAPS_AVAILABLE else '❌ No disponibles'}")
+    with col2:
+        interface_status = "✅ Cargada" if hasattr(app, 'map_interface_loaded') and app.map_interface_loaded else "⏳ Pendiente"
+        st.info(f"🔧 **Interface:** {interface_status}")
 
-    # Botón manual para debugging
-    if st.button("🔄 Reintentar carga de mapas (Debug)", key="reload_maps_debug"):
-        app.map_interface = None
-        app.map_interface_loaded = False
-        st.rerun()
+    # Botón manual para debugging (solo mostrar si hay problemas)
+    if not MAPS_AVAILABLE or not hasattr(app, 'map_interface_loaded'):
+        if st.button("🔄 Reintentar carga de mapas", key="reload_maps_debug"):
+            if hasattr(app, 'map_interface'):
+                app.map_interface = None
+            if hasattr(app, 'map_interface_loaded'):
+                app.map_interface_loaded = False
+            st.rerun()
 
     # Renderizar dashboard de mapas épicos con permisos del usuario
     try:
         print("🗺️ Iniciando renderizado de mapas épicos...")
+
+        # Asegurar que la app esté completamente inicializada
+        app.ensure_map_variables_initialized()
 
         # Cargar mapas de forma diferida
         load_result = app.load_map_interface()
