@@ -1234,7 +1234,7 @@ def fix_plotly_hover_issues(fig):
         try:
             # Obtener datos y layout limpios
             data = fig.data
-            layout_dict = fig.layout.to_dict()
+            layout_dict = dict(fig.layout)
 
             # Eliminar TODAS las configuraciones de hover del layout
             hover_keys = [
@@ -1255,7 +1255,6 @@ def fix_plotly_hover_issues(fig):
             # Forzar configuración segura
             clean_layout.update({
                 'hovermode': False,
-                'showrangeslider': False,
                 'rangeslider': dict(visible=False)
             })
 
@@ -1264,8 +1263,7 @@ def fix_plotly_hover_issues(fig):
                 if axis in clean_layout:
                     if isinstance(clean_layout[axis], dict):
                         clean_layout[axis].update({
-                            'rangeslider': dict(visible=False),
-                            'showrangeslider': False
+                            'rangeslider': dict(visible=False)
                         })
                         # Eliminar hover de ejes
                         hover_axis_keys = ['hoverformat']
@@ -1281,7 +1279,6 @@ def fix_plotly_hover_issues(fig):
             # Fallback a método original
             fig.update_layout(
                 hovermode=False,
-                showrangeslider=False,
                 rangeslider=dict(visible=False)
             )
 
@@ -1290,8 +1287,7 @@ def fix_plotly_hover_issues(fig):
             try:
                 axis_updates = {
                     f'xaxis{i}': dict(
-                        rangeslider=dict(visible=False),
-                        showrangeslider=False
+                        rangeslider=dict(visible=False)
                     )
                 }
                 fig.update_layout(**axis_updates)
@@ -1302,7 +1298,7 @@ def fix_plotly_hover_issues(fig):
         print(f"Error CRÍTICO en fix_plotly_hover_issues: {e}")
         # ÚLTIMO RECURSO: Crear figura básica sin hover
         try:
-            fig.update_layout(hovermode=False, showrangeslider=False)
+            fig.update_layout(hovermode=False)
             for trace in fig.data:
                 trace.update(hoverinfo='none')
         except:

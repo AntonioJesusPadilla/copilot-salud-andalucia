@@ -49,7 +49,7 @@ class SmartChartGenerator:
 
             # Verificar layout
             if hasattr(fig, 'layout'):
-                layout_dict = fig.layout.to_dict()
+                layout_dict = dict(fig.layout)
                 self.debug_log_add(f"Layout keys: {list(layout_dict.keys())}")
 
                 # Inspeccionar xaxis específicamente
@@ -668,7 +668,7 @@ class SmartChartGenerator:
 
             # Método 1: Eliminar rangeslider directamente del layout
             if hasattr(fig, 'layout'):
-                layout_dict = fig.to_dict()
+                layout_dict = fig.to_plotly_json()
 
                 # Eliminar rangeslider de todos los ejes x
                 for key in list(layout_dict.get('layout', {}).keys()):
