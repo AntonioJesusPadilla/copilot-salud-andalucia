@@ -1298,12 +1298,10 @@ class SecureHealthAnalyticsApp:
                 if st.button("🏛️ Vista Ejecutiva", width="stretch"):
                     st.session_state.page = "main"
                     st.session_state.selected_tab = "dashboard"
-                    st.rerun()
                     
                 if self.has_permission('gestion_usuarios'):
                     if st.button("👥 Gestión de Usuarios", width="stretch"):
                         st.session_state.page = "gestion_usuarios"
-                        st.rerun()
                         
                 if st.button("📊 Análisis Estratégico", width="stretch"):
                     st.session_state.page = "main"
@@ -1826,56 +1824,97 @@ def render_secure_chat(app):
             'admin': {
                 'greeting': 'Soy tu asistente de análisis sociosanitario con **acceso administrativo completo**.',
                 'analyses': [
-                    '• Gestión integral del sistema sanitario',
-                    '• Configuración y supervisión de usuarios',
-                    '• Análisis de equidad territorial completo',
-                    '• Planificación estratégica avanzada',
-                    '• Reportes ejecutivos y auditoría',
-                    '• Evaluación de recursos a nivel provincial'
+                    '• **Análisis Estratégico**: ROI hospitales, eficiencia gasto sanitario, sostenibilidad',
+                    '• **Planificación**: ¿Dónde abrir próximo hospital? Optimización red hospitalaria',
+                    '• **Gestión Integral**: Comparar rendimiento distritos, análisis equidad territorial',
+                    '• **Reportes Ejecutivos**: Informes para Consejería, auditoría sistema',
+                    '• **Inversiones**: ¿Qué centros necesitan más inversión? Planificación 5 años',
+                    '• **Recursos**: Evaluación especialidades, distribución personal sanitario'
                 ],
-                'suggestion': 'Como administrador, puedes consultar sobre cualquier aspecto del sistema sanitario de Málaga.'
+                'examples': [
+                    '"Genera un informe ejecutivo del sistema sanitario"',
+                    '"¿Cuál es el ROI de los hospitales por distrito?"',
+                    '"Analiza eficiencia de gasto sanitario per cápita"',
+                    '"¿Qué centros necesitan más inversión?"',
+                    '"Compara rendimiento entre distritos sanitarios"',
+                    '"¿Dónde abrir el próximo hospital?"',
+                    '"Análisis de sostenibilidad financiera"',
+                    '"¿Qué especialidades faltan más?"'
+                ],
+                'suggestion': 'Como administrador, tienes acceso completo a análisis estratégicos, financieros y de planificación.'
             },
             'gestor': {
                 'greeting': 'Soy tu asistente especializado en **gestión sanitaria operacional**.',
                 'analyses': [
-                    '• Optimización de recursos hospitalarios',
-                    '• Análisis de capacidad asistencial',
-                    '• Evaluación de accesibilidad por distrito',
-                    '• Planificación de servicios sanitarios',
-                    '• Reportes operacionales y de gestión',
-                    '• Identificación de déficits asistenciales'
+                    '• **Optimización Camas**: Ocupación, turnos, redistribución de recursos',
+                    '• **Gestión Flujos**: Tiempos espera, saturación, rutas ambulancias',
+                    '• **Personal**: Distribución plantilla, planificación turnos según demanda',
+                    '• **Servicios**: Infrautilización, refuerzo urgencias, coordinación centros',
+                    '• **Planificación**: Recursos invierno/verano, capacidad asistencial',
+                    '• **Eficiencia**: Análisis productividad, indicadores operacionales'
                 ],
-                'suggestion': 'Como gestor sanitario, puedes consultar sobre eficiencia operacional y planificación de recursos.'
+                'examples': [
+                    '"¿Cómo optimizar la ocupación de camas?"',
+                    '"Analiza tiempos de espera por especialidad"',
+                    '"¿Qué hospitales están saturados?"',
+                    '"¿Cómo redistribuir personal sanitario?"',
+                    '"Analiza flujos de pacientes entre centros"',
+                    '"¿Qué servicios están infrautilizados?"',
+                    '"Optimiza rutas de ambulancias"',
+                    '"¿Dónde reforzar urgencias?"',
+                    '"Planifica recursos para invierno"'
+                ],
+                'suggestion': 'Como gestor, puedes optimizar recursos, flujos de pacientes y eficiencia operativa.'
             },
             'analista': {
                 'greeting': 'Soy tu asistente especializado en **análisis estadístico y de datos sanitarios**.',
                 'analyses': [
-                    '• Análisis estadísticos avanzados',
-                    '• Visualizaciones de datos epidemiológicos',
-                    '• Estudios de correlación demográfica',
-                    '• Análisis de tendencias poblacionales',
-                    '• Reportes técnicos especializados',
-                    '• Evaluación de indicadores de salud'
+                    '• **Correlaciones**: Renta vs esperanza vida, factores sociales de salud',
+                    '• **Visualizaciones**: Heatmaps mortalidad, clustering municipios, mapas inequidad',
+                    '• **Predictivo**: Modelos demanda, tendencias envejecimiento, supervivencia',
+                    '• **Equidad**: Acceso especialidades, inequidades territoriales',
+                    '• **Epidemiología**: Análisis preventivo, factores riesgo poblacional',
+                    '• **Estadística**: Análisis multivariante, regresiones, tests significancia'
                 ],
-                'suggestion': 'Como analista, puedes solicitar análisis estadísticos detallados y visualizaciones específicas.'
+                'examples': [
+                    '"Correlación entre renta y esperanza de vida"',
+                    '"Heatmap de mortalidad infantil por zona"',
+                    '"¿Hay inequidades en acceso a cardiología?"',
+                    '"Análisis demográfico predictivo"',
+                    '"¿Qué factores afectan más la salud?"',
+                    '"Clustering de municipios similares"',
+                    '"Tendencias de envejecimiento poblacional"',
+                    '"¿Dónde concentrar prevención?"',
+                    '"Modelos predictivos de demanda"',
+                    '"Análisis de supervivencia por distrito"'
+                ],
+                'suggestion': 'Como analista, puedes realizar estudios estadísticos avanzados y modelos predictivos.'
             },
             'invitado': {
                 'greeting': 'Soy tu asistente de consulta para **información básica del sistema sanitario**.',
                 'analyses': [
-                    '• Información general de hospitales',
-                    '• Datos demográficos básicos',
-                    '• Consultas sobre servicios disponibles',
-                    '• Indicadores generales de salud',
-                    '• Información de accesibilidad básica'
+                    '• **Ubicaciones**: Hospitales cercanos, centros de salud, especialidades',
+                    '• **Servicios**: ¿Qué especialidades están disponibles? Horarios, contactos',
+                    '• **Acceso**: ¿Cómo llegar? Transporte público, tiempos de viaje',
+                    '• **Información Básica**: Datos generales municipios, población, servicios',
+                    '• **Orientación**: Primeros auxilios, consejos salud general'
                 ],
-                'suggestion': 'Como usuario invitado, puedes consultar información general del sistema sanitario.'
+                'examples': [
+                    '"¿Dónde está el hospital más cercano?"',
+                    '"¿Qué servicios tiene mi centro de salud?"',
+                    '"Información básica de mi municipio"',
+                    '"¿Cómo llegar al hospital de Málaga?"',
+                    '"¿Qué especialidades hay disponibles?"',
+                    '"¿Cuál es el teléfono de urgencias?"'
+                ],
+                'suggestion': 'Como invitado, puedes consultar información general y de orientación sanitaria.'
             }
         }
         
         current_role_content = role_specific_content.get(app.user['role'], role_specific_content['invitado'])
         
         st.session_state[user_messages_key] = [
-            {"role": "assistant", "content": f"""¡Hola **{app.user['name']}**! 👋 
+            {"role": "assistant", "content": f"""¡Hola **{app.user['name']}**! 👋
 
 {current_role_content['greeting']}
 
@@ -1888,7 +1927,13 @@ def render_secure_chat(app):
 
 {'  \n'.join(current_role_content['analyses'])}
 
-**💡 {current_role_content['suggestion']}**"""}
+**💡 {current_role_content['suggestion']}**
+
+**📝 Ejemplos de Consultas que puedes hacer:**
+
+{'  \n'.join(current_role_content['examples'])}
+
+**🚀 ¡Prueba cualquiera de estos ejemplos o haz tu propia consulta!**"""}
         ]
     
     # Mostrar historial específico del usuario
@@ -3443,7 +3488,6 @@ def render_epic_maps_tab(app):
                             app.map_interface = MapInterface()
                             app.map_interface_loaded = True
                             st.success("✅ Mapas cargados manualmente")
-                            st.rerun()
                         except Exception as manual_error:
                             st.error(f"❌ Error en carga manual: {str(manual_error)}")
                             import traceback

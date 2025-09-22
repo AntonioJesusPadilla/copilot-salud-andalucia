@@ -327,6 +327,29 @@ class HealthAuthenticator:
     def deactivate_user(self, username: str) -> bool:
         """Desactivar usuario"""
         return self.update_user(username, {'active': False})
+
+    def activate_user(self, username: str) -> bool:
+        """Activar usuario"""
+        return self.update_user(username, {'active': True})
+
+    def delete_user(self, username: str) -> bool:
+        """Eliminar usuario permanentemente"""
+        try:
+            if username in self.users_db:
+                # No permitir eliminar el último admin
+                if self.users_db[username].get('role') == 'admin':
+                    admin_count = sum(1 for user in self.users_db.values() if user.get('role') == 'admin' and user.get('active', True))
+                    if admin_count <= 1:
+                        st.error("❌ No se puede eliminar el último administrador del sistema")
+                        return False
+
+                del self.users_db[username]
+                self.save_users(self.users_db)
+                return True
+            return False
+        except Exception as e:
+            st.error(f"Error eliminando usuario: {str(e)}")
+            return False
     
     def get_all_users(self) -> Dict:
         """Obtener todos los usuarios (sin contraseñas)"""
@@ -568,28 +591,28 @@ def render_login_page():
 
 def render_user_management():
     """Panel de gestión de usuarios (solo admin)"""
-    
+
     if not st.session_state.get('authenticated') or st.session_state.user['role'] != 'admin':
         st.error("❌ Acceso denegado. Solo administradores pueden gestionar usuarios.")
         return
-    
+
     st.markdown("### 👥 Gestión de Usuarios")
-    
+
     auth = HealthAuthenticator()
-    
-    tab1, tab2, tab3 = st.tabs(["📋 Lista de Usuarios", "➕ Crear Usuario", "⚙️ Configuración"])
-    
+
+    tab1, tab2, tab3, tab4 = st.tabs(["📋 Lista de Usuarios", "➕ Crear Usuario", "✏️ Editar Usuario", "🗑️ Eliminar Usuario"])
+
     with tab1:
         st.markdown("#### 📋 Usuarios Registrados")
-        
+
         try:
             users = auth.get_all_users()
             users_data = []
-            
+
             if not users:
                 st.warning("⚠️ No hay usuarios registrados en el sistema.")
                 return
-            
+
             for username, user in users.items():
                 try:
                     role_info = auth.get_role_info(user.get('role', 'viewer'))
@@ -605,11 +628,11 @@ def render_user_management():
                 except Exception as e:
                     st.error(f"❌ Error procesando usuario {username}: {str(e)}")
                     continue
-            
+
             if users_data:
                 users_df = pd.DataFrame(users_data)
                 st.dataframe(users_df, width="stretch")
-                
+
                 # Mostrar estadísticas
                 st.markdown("##### 📊 Estadísticas")
                 col1, col2, col3 = st.columns(3)
@@ -623,28 +646,28 @@ def render_user_management():
                     st.metric("🎭 Roles Únicos", roles_count)
             else:
                 st.warning("⚠️ No se pudieron cargar los datos de usuarios.")
-                
+
         except Exception as e:
             st.error(f"❌ Error cargando usuarios: {str(e)}")
             st.info("💡 Verifica que el archivo de usuarios esté correctamente configurado.")
-    
+
     with tab2:
         st.markdown("#### ➕ Crear Nuevo Usuario")
-        
+
         with st.form("create_user_form"):
             col1, col2 = st.columns(2)
-            
+
             with col1:
                 new_username = st.text_input("👤 Usuario")
                 new_name = st.text_input("📝 Nombre Completo")
                 new_email = st.text_input("📧 Email")
-            
+
             with col2:
-                new_role = st.selectbox("👔 Rol", list(auth.roles.keys()), 
+                new_role = st.selectbox("👔 Rol", list(auth.roles.keys()),
                                        format_func=lambda x: f"{auth.roles[x]['icon']} {auth.roles[x]['name']}")
                 new_organization = st.text_input("🏢 Organización")
                 new_password = st.text_input("🔑 Contraseña", type="password")
-            
+
             if st.form_submit_button("➕ Crear Usuario"):
                 if all([new_username, new_name, new_email, new_password]):
                     user_data = {
@@ -654,7 +677,7 @@ def render_user_management():
                         'organization': new_organization,
                         'password': new_password
                     }
-                    
+
                     if auth.register_user(new_username, user_data):
                         st.success(f"✅ Usuario {new_username} creado exitosamente")
                         st.rerun()
@@ -662,24 +685,153 @@ def render_user_management():
                         st.error("❌ Error creando usuario. Puede que ya exista.")
                 else:
                     st.warning("⚠️ Por favor completa todos los campos")
-    
+
     with tab3:
-        st.markdown("#### ⚙️ Configuración del Sistema")
-        
-        st.info("🔧 Funcionalidades de configuración avanzada (próximamente)")
-        
-        # Estadísticas del sistema
+        st.markdown("#### ✏️ Editar Usuario Existente")
+
         users = auth.get_all_users()
-        total_users = len(users)
-        active_users = len([u for u in users.values() if u.get('active', True)])
-        
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("👥 Total Usuarios", total_users)
-        with col2:
-            st.metric("🟢 Usuarios Activos", active_users)
-        with col3:
-            st.metric("📊 Roles Disponibles", len(auth.roles))
+        if not users:
+            st.warning("⚠️ No hay usuarios para editar.")
+            return
+
+        # Selector de usuario a editar
+        user_to_edit = st.selectbox(
+            "👤 Seleccionar Usuario a Editar",
+            list(users.keys()),
+            format_func=lambda x: f"{x} - {users[x]['name']}"
+        )
+
+        if user_to_edit:
+            current_user = users[user_to_edit]
+
+            st.markdown(f"##### Editando usuario: **{user_to_edit}**")
+
+            with st.form("edit_user_form"):
+                col1, col2 = st.columns(2)
+
+                with col1:
+                    edit_name = st.text_input("📝 Nombre Completo", value=current_user.get('name', ''))
+                    edit_email = st.text_input("📧 Email", value=current_user.get('email', ''))
+                    edit_organization = st.text_input("🏢 Organización", value=current_user.get('organization', ''))
+
+                with col2:
+                    current_role_index = list(auth.roles.keys()).index(current_user.get('role', 'invitado'))
+                    edit_role = st.selectbox(
+                        "👔 Rol",
+                        list(auth.roles.keys()),
+                        index=current_role_index,
+                        format_func=lambda x: f"{auth.roles[x]['icon']} {auth.roles[x]['name']}"
+                    )
+
+                    edit_active = st.checkbox("✅ Usuario Activo", value=current_user.get('active', True))
+                    edit_password = st.text_input("🔑 Nueva Contraseña (dejar vacío para mantener)", type="password", placeholder="Solo si quieres cambiarla")
+
+                col_save, col_cancel = st.columns(2)
+                with col_save:
+                    save_changes = st.form_submit_button("💾 Guardar Cambios", type="primary")
+                with col_cancel:
+                    reset_password = st.form_submit_button("🔑 Solo Cambiar Contraseña")
+
+                if save_changes:
+                    updates = {
+                        'name': edit_name,
+                        'email': edit_email,
+                        'role': edit_role,
+                        'organization': edit_organization,
+                        'active': edit_active
+                    }
+
+                    if edit_password:
+                        updates['password'] = edit_password
+
+                    if auth.update_user(user_to_edit, updates):
+                        st.success(f"✅ Usuario {user_to_edit} actualizado exitosamente")
+                        st.rerun()
+                    else:
+                        st.error("❌ Error actualizando usuario")
+
+                if reset_password:
+                    if edit_password:
+                        if auth.update_user(user_to_edit, {'password': edit_password}):
+                            st.success(f"✅ Contraseña de {user_to_edit} actualizada exitosamente")
+                            st.rerun()
+                        else:
+                            st.error("❌ Error actualizando contraseña")
+                    else:
+                        st.warning("⚠️ Ingresa una nueva contraseña")
+
+    with tab4:
+        st.markdown("#### 🗑️ Eliminar Usuario")
+
+        users = auth.get_all_users()
+        if not users:
+            st.warning("⚠️ No hay usuarios para eliminar.")
+            return
+
+        st.warning("⚠️ **ATENCIÓN**: Esta acción es irreversible. El usuario será eliminado permanentemente del sistema.")
+
+        # Selector de usuario a eliminar
+        user_to_delete = st.selectbox(
+            "👤 Seleccionar Usuario a Eliminar",
+            [""] + list(users.keys()),
+            format_func=lambda x: f"{x} - {users[x]['name']}" if x and x in users else "-- Seleccionar Usuario --"
+        )
+
+        if user_to_delete:
+            current_user = users[user_to_delete]
+            role_info = auth.get_role_info(current_user.get('role', 'invitado'))
+
+            # Mostrar información del usuario a eliminar
+            st.markdown(f"""
+            <div style="background: #fff5f5; padding: 1rem; border-radius: 10px; border: 2px solid #fc8181; margin: 1rem 0;">
+                <h4>🗑️ Usuario a Eliminar</h4>
+                <p><strong>👤 Usuario:</strong> {user_to_delete}</p>
+                <p><strong>📝 Nombre:</strong> {current_user.get('name', 'N/A')}</p>
+                <p><strong>📧 Email:</strong> {current_user.get('email', 'N/A')}</p>
+                <p><strong>👔 Rol:</strong> {role_info['icon']} {role_info['name']}</p>
+                <p><strong>🏢 Organización:</strong> {current_user.get('organization', 'N/A')}</p>
+                <p><strong>📅 Último Acceso:</strong> {current_user.get('last_login', 'Nunca')[:10] if current_user.get('last_login') else 'Nunca'}</p>
+            </div>
+            """, unsafe_allow_html=True)
+
+            # Verificar si es administrador
+            if current_user.get('role') == 'admin':
+                admin_count = sum(1 for user in users.values() if user.get('role') == 'admin' and user.get('active', True))
+                if admin_count <= 1:
+                    st.error("❌ No se puede eliminar el último administrador del sistema")
+                    return
+                else:
+                    st.warning(f"⚠️ Hay {admin_count} administradores. Se puede eliminar este usuario.")
+
+            # Confirmación de eliminación
+            st.markdown("##### ✋ Confirmación de Eliminación")
+            confirmation_text = st.text_input(
+                f"Escribe **{user_to_delete}** para confirmar la eliminación:",
+                placeholder=f"Escribe: {user_to_delete}"
+            )
+
+            col1, col2 = st.columns(2)
+
+            with col1:
+                if st.button("🗑️ ELIMINAR USUARIO", type="primary", disabled=(confirmation_text != user_to_delete)):
+                    if confirmation_text == user_to_delete:
+                        if auth.delete_user(user_to_delete):
+                            st.success(f"✅ Usuario {user_to_delete} eliminado exitosamente")
+                            st.balloons()
+                            st.rerun()
+                        else:
+                            st.error("❌ Error eliminando usuario")
+                    else:
+                        st.error("❌ Confirmación incorrecta")
+
+            with col2:
+                # Opción alternativa: desactivar en lugar de eliminar
+                if st.button("🔒 Solo Desactivar Usuario"):
+                    if auth.deactivate_user(user_to_delete):
+                        st.success(f"✅ Usuario {user_to_delete} desactivado exitosamente")
+                        st.rerun()
+                    else:
+                        st.error("❌ Error desactivando usuario")
 
 def render_user_profile():
     """Renderizar perfil de usuario"""
