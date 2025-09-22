@@ -272,7 +272,7 @@ class RoleDashboards:
             )
         )
 
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="container")
 
         # Panel de alertas administrativas
         st.markdown("#### 🚨 Alertas y Notificaciones Administrativas")
