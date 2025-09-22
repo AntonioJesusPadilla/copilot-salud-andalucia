@@ -2526,7 +2526,7 @@ def render_secure_chat(app):
                                         if chart_data:
                                             # Aplicar correcciones de hover antes de mostrar
                                             chart_data = fix_plotly_hover_issues(chart_data)
-                                            st.plotly_chart(chart_data, use_container_width=True)
+                                            st.plotly_chart(chart_data, width="container")
                                             st.success("📊 Visualización generada automáticamente")
                                         else:
                                             st.info("📈 Visualización sugerida: " + chart_config.get('title', 'Gráfico recomendado'))

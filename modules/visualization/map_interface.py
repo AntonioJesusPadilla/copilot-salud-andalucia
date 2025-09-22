@@ -451,7 +451,7 @@ class MapInterface:
             # Asegurar que no hay rangeslider en xaxis para evitar errores de Streamlit
             fig.update_xaxes(rangeslider=dict(visible=False))
 
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="container")
 
         except Exception as e:
             st.error(f"❌ Error creando gráfico resumen: {str(e)}")
