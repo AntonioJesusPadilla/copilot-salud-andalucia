@@ -2531,7 +2531,7 @@ def render_secure_chat(app):
                                         if chart_data:
                                             # Aplicar correcciones de hover antes de mostrar
                                             chart_data = fix_plotly_hover_issues(chart_data)
-                                            st.plotly_chart(chart_data, width="container")
+                                            st.plotly_chart(chart_data, use_container_width=True)
                                             st.success("📊 Visualización generada automáticamente")
                                         else:
                                             st.info("📈 Visualización sugerida: " + chart_config.get('title', 'Gráfico recomendado'))
@@ -2628,7 +2628,7 @@ def render_secure_dashboard(app):
             )
             fig_tipos.update_traces(textposition='inside', textinfo='percent+label')
             fig_tipos = fix_plotly_hover_issues(fig_tipos)  # Aplicar correcciones
-            st.plotly_chart(fig_tipos, width='stretch')
+            st.plotly_chart(fig_tipos, use_container_width=True)
             
             # Capacidad hospitalaria
             fig_hospitales = px.bar(
@@ -2641,7 +2641,7 @@ def render_secure_dashboard(app):
             )
             fig_hospitales.update_xaxes(tickangle=45)
             fig_hospitales = fix_plotly_hover_issues(fig_hospitales)
-            st.plotly_chart(fig_hospitales, width='stretch')
+            st.plotly_chart(fig_hospitales, use_container_width=True)
         
         with tab2:
             # Top municipios por población
@@ -2656,7 +2656,7 @@ def render_secure_dashboard(app):
             )
             fig_demo.update_xaxes(tickangle=45)
             fig_demo = fix_plotly_hover_issues(fig_demo)
-            st.plotly_chart(fig_demo, width='stretch')
+            st.plotly_chart(fig_demo, use_container_width=True)
             
             # Análisis de densidad vs renta
             fig_scatter = px.scatter(
@@ -2670,7 +2670,7 @@ def render_secure_dashboard(app):
                 color_continuous_scale='Spectral_r'
             )
             fig_scatter = fix_plotly_hover_issues(fig_scatter)
-            st.plotly_chart(fig_scatter, width='stretch')
+            st.plotly_chart(fig_scatter, use_container_width=True)
         
         with tab3:
             # Análisis de servicios
@@ -2690,7 +2690,7 @@ def render_secure_dashboard(app):
                 fig_coverage.add_hline(y=75, line_dash="dash", line_color="red", 
                                      annotation_text="Objetivo mínimo 75%")
                 fig_coverage = fix_plotly_hover_issues(fig_coverage)
-                st.plotly_chart(fig_coverage, width='stretch')
+                st.plotly_chart(fig_coverage, use_container_width=True)
                 
                 # Matriz de servicios
                 services_matrix = servicios_bool.astype(int)
@@ -2704,7 +2704,7 @@ def render_secure_dashboard(app):
                 )
                 fig_heatmap.update_layout(height=400)
                 fig_heatmap = fix_plotly_hover_issues(fig_heatmap)
-                st.plotly_chart(fig_heatmap, width='stretch')
+                st.plotly_chart(fig_heatmap, use_container_width=True)
                     
             else:
                 st.info("📊 Análisis avanzado disponible con permisos de 'analisis_ia'")
@@ -2830,7 +2830,7 @@ def render_infrastructure_report_secure(app):
     }).round(1)
     
     st.markdown("##### 📊 Análisis por Tipo de Centro")
-    st.dataframe(tipo_analysis, width='stretch')
+    st.dataframe(tipo_analysis, use_container_width=True)
 
 def render_demographic_report_secure(app):
     """Reporte demográfico seguro"""
@@ -2876,7 +2876,7 @@ def render_equity_report_secure(app):
                 st.markdown("##### 📊 Índices de Equidad por Distrito")
                 
                 equity_summary = equity_data[['distrito', 'score_equidad', 'ratio_camas_1000hab', 'ratio_personal_1000hab']].round(2)
-                st.dataframe(equity_summary, width='stretch')
+                st.dataframe(equity_summary, use_container_width=True)
                 
                 # Alertas automáticas
                 low_equity = equity_data[equity_data['score_equidad'] < 50]
@@ -2977,7 +2977,7 @@ def render_location_planificacion(app):
         color_continuous_scale='Reds'
     )
     fig_planificacion = fix_plotly_hover_issues(fig_planificacion)
-    st.plotly_chart(fig_planificacion, width='stretch')
+    st.plotly_chart(fig_planificacion, use_container_width=True)
     
     # Top 5 recomendaciones
     st.markdown("##### 🏆 Top 5 Ubicaciones Recomendadas")
@@ -3028,7 +3028,7 @@ def render_demand_projection(app):
         title="📈 Proyección de Población y Demanda Sanitaria 2025-2030"
     )
     fig_projection = fix_plotly_hover_issues(fig_projection)
-    st.plotly_chart(fig_projection, width='stretch')
+    st.plotly_chart(fig_projection, use_container_width=True)
     
     # Métricas de proyección
     col1, col2, col3 = st.columns(3)
@@ -3077,7 +3077,7 @@ def render_resource_redistribution(app):
                     barmode='group'
                 )
                 fig_redistrib = fix_plotly_hover_issues(fig_redistrib)
-                st.plotly_chart(fig_redistrib, width='stretch')
+                st.plotly_chart(fig_redistrib, use_container_width=True)
                 
                 # Recomendaciones de redistribución
                 st.markdown("##### 🎯 Recomendaciones de Redistribución")
@@ -3120,7 +3120,7 @@ def render_route_optimization(app):
             color_continuous_scale='Reds'
         )
         fig_routes = fix_plotly_hover_issues(fig_routes)
-        st.plotly_chart(fig_routes, width='stretch')
+        st.plotly_chart(fig_routes, use_container_width=True)
         
         # Recomendaciones de mejora
         st.markdown("##### 🛣️ Recomendaciones de Mejora")
@@ -3181,7 +3181,7 @@ def render_complete_analysis_secure(app):
         fig_tipos = px.pie(values=tipo_dist.values, names=tipo_dist.index,
                           title="Distribución de Centros por Tipo")
         fig_tipos = fix_plotly_hover_issues(fig_tipos)
-        st.plotly_chart(fig_tipos, width='stretch')
+        st.plotly_chart(fig_tipos, use_container_width=True)
     
     with tab2:
         st.markdown("##### 👥 Análisis Demográfico Detallado")
@@ -3205,7 +3205,7 @@ def render_complete_analysis_secure(app):
                            title="Top 10 Municipios por Crecimiento Poblacional")
         fig_growth.update_xaxes(tickangle=45)
         fig_growth = fix_plotly_hover_issues(fig_growth)
-        st.plotly_chart(fig_growth, width='stretch')
+        st.plotly_chart(fig_growth, use_container_width=True)
     
     with tab3:
         st.markdown("##### ⚖️ Análisis de Equidad Territorial")
@@ -3235,11 +3235,11 @@ def render_complete_analysis_secure(app):
                                        labels={'score_equidad': 'Score de Equidad (0-100)', 'distrito': 'Distrito Sanitario'})
                     fig_equity.update_xaxes(tickangle=45)
                     fig_equity = fix_plotly_hover_issues(fig_equity)
-                    st.plotly_chart(fig_equity, width='stretch')
+                    st.plotly_chart(fig_equity, use_container_width=True)
                     
                     # Tabla detallada de equidad
                     st.markdown("##### 📋 Detalle por Distrito")
-                    st.dataframe(equity_data, width='stretch')
+                    st.dataframe(equity_data, use_container_width=True)
                 else:
                     st.info("No se pudieron calcular los índices de equidad")
             except Exception as e:
@@ -3269,7 +3269,7 @@ def render_complete_analysis_secure(app):
                                      title="Distribución de Tiempos de Acceso",
                                      nbins=20)
             fig_access = fix_plotly_hover_issues(fig_access)
-            st.plotly_chart(fig_access, width='stretch')
+            st.plotly_chart(fig_access, use_container_width=True)
     
     with tab5:
         st.markdown("##### 📊 Resumen Ejecutivo Completo")
