@@ -1679,7 +1679,18 @@ def render_page_navigation(app):
                 st.error("❌ No tienes permisos para acceder a ninguna funcionalidad")
 
 def render_assistant_message_with_css(content):
-    """Renderizar mensaje del asistente con formato CSS adaptado para modo oscuro"""
+    """Renderizar mensaje del asistente con formato CSS adaptado según el tema"""
+
+    # Detectar el tema actual
+    current_theme = st.session_state.get('theme_mode', 'light')
+
+    # Definir colores según el tema
+    if current_theme == 'dark':
+        text_color = '#ffffff'
+        text_var = 'var(--text-color, #ffffff)'
+    else:
+        text_color = '#111827'  # Color oscuro para tema claro
+        text_var = 'var(--text-primary, #111827)'
 
     # Dividir contenido por párrafos
     paragraphs = content.split('\n\n')
@@ -1723,13 +1734,13 @@ def render_assistant_message_with_css(content):
                 st.markdown(f"""
                 <div style="
                     background: rgba(59, 130, 246, 0.1) !important;
-                    color: var(--text-color, #ffffff) !important;
+                    color: {text_color} !important;
                     padding: 8px 12px !important;
                     border-left: 4px solid #3b82f6 !important;
                     margin: 6px 0 !important;
                     border-radius: 0 4px 4px 0 !important;
                 ">
-                    <span style="color: var(--text-color, #ffffff) !important; font-size: 14px !important;">• {list_text}</span>
+                    <span style="color: {text_color} !important; font-size: 14px !important;">• {list_text}</span>
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -1738,13 +1749,13 @@ def render_assistant_message_with_css(content):
                 st.markdown(f"""
                 <div style="
                     background: rgba(99, 102, 241, 0.1) !important;
-                    color: var(--text-color, #ffffff) !important;
+                    color: {text_color} !important;
                     padding: 10px 14px !important;
                     border-radius: 6px !important;
                     margin: 8px 0 !important;
                     border: 1px solid rgba(99, 102, 241, 0.3) !important;
                 ">
-                    <span style="color: var(--text-color, #ffffff) !important; font-size: 14px !important;">{clean_line}</span>
+                    <span style="color: {text_color} !important; font-size: 14px !important;">{clean_line}</span>
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -1758,11 +1769,11 @@ def render_assistant_message_with_css(content):
 
                 st.markdown(f"""
                 <div style="
-                    color: var(--text-color, #ffffff) !important;
+                    color: {text_color} !important;
                     padding: 6px 0 !important;
                     line-height: 1.5 !important;
                 ">
-                    <span style="color: var(--text-color, #ffffff) !important; font-size: 14px !important;">{processed_text}</span>
+                    <span style="color: {text_color} !important; font-size: 14px !important;">{processed_text}</span>
                 </div>
                 """, unsafe_allow_html=True)
 
