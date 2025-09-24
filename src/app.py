@@ -800,8 +800,84 @@ def load_optimized_css():
                 st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
                 return "legacy"
             except Exception as e3:
-                st.warning(f"⚠️ No se pudieron cargar los estilos CSS: {e3}")
-                return "none"
+                # FALLBACK CRÍTICO: CSS Embebido para Streamlit Cloud
+                current_theme = st.session_state.get('theme_mode', 'light')
+
+                if current_theme == 'light':
+                    fallback_css = """
+                    <style>
+                    /* === FALLBACK CSS EMBEBIDO PARA STREAMLIT CLOUD === */
+
+                    /* Sidebar buttons - TEMA CLARO */
+                    .stSidebar .stButton > button {
+                        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+                        color: white !important;
+                        border: none !important;
+                        border-radius: 12px !important;
+                        padding: 0.75rem 1rem !important;
+                        font-weight: 500 !important;
+                        width: 100% !important;
+                        margin-bottom: 0.5rem !important;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+                        transition: all 0.2s ease !important;
+                    }
+
+                    .stSidebar .stButton > button:hover {
+                        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+                        transform: translateY(-1px) !important;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+                    }
+
+                    /* Texto general - FORZAR VISIBLE */
+                    .stMarkdown, .stMarkdown *, .element-container *,
+                    .stChatMessage, .stChatMessage *,
+                    div[data-testid="stMarkdownContainer"] * {
+                        color: #111827 !important;
+                    }
+
+                    /* Mantener blanco en fondos verdes */
+                    [style*="background: linear-gradient(135deg, #22c55e"] *,
+                    [style*="background: linear-gradient(135deg, #4CAF50"] *,
+                    .access-granted * {
+                        color: white !important;
+                    }
+
+                    /* Chat AI específico */
+                    .stChatMessage {
+                        background: #ffffff !important;
+                        border: 1px solid #e5e7eb !important;
+                        border-radius: 8px !important;
+                    }
+                    </style>
+                    """
+                else:
+                    fallback_css = """
+                    <style>
+                    /* === FALLBACK CSS EMBEBIDO PARA STREAMLIT CLOUD - TEMA OSCURO === */
+
+                    .stSidebar .stButton > button {
+                        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+                        color: white !important;
+                        border: none !important;
+                        border-radius: 12px !important;
+                        padding: 0.75rem 1rem !important;
+                        font-weight: 500 !important;
+                        width: 100% !important;
+                        margin-bottom: 0.5rem !important;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+                        transition: all 0.2s ease !important;
+                    }
+
+                    /* Texto para tema oscuro */
+                    .stMarkdown, .stMarkdown *, .element-container *,
+                    .stChatMessage, .stChatMessage * {
+                        color: #ffffff !important;
+                    }
+                    </style>
+                    """
+
+                st.markdown(fallback_css, unsafe_allow_html=True)
+                return "embedded_fallback"
 
 css_loaded = load_optimized_css()
 
@@ -1540,6 +1616,45 @@ def main():
             st.session_state.theme_mode = new_theme
             st.rerun()
 
+    # === CSS EMBEBIDO CRÍTICO PARA STREAMLIT CLOUD ===
+    # Aplicar inmediatamente para garantizar visibilidad
+    current_theme = st.session_state.get('theme_mode', 'light')
+    text_color = '#111827' if current_theme == 'light' else '#ffffff'
+
+    st.markdown(f"""
+    <style>
+    /* CRITICAL CSS - STREAMLIT CLOUD COMPATIBILITY */
+
+    /* Sidebar buttons styling */
+    .stSidebar .stButton > button {{
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 0.75rem 1rem !important;
+        font-weight: 500 !important;
+        width: 100% !important;
+        margin-bottom: 0.5rem !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    }}
+
+    /* Text visibility - CRITICAL FIX */
+    .stMarkdown, .stMarkdown *, .element-container *,
+    .stChatMessage, .stChatMessage *,
+    div[data-testid="stMarkdownContainer"] *,
+    [data-testid="stChatMessage"] * {{
+        color: {text_color} !important;
+    }}
+
+    /* Keep white text on green backgrounds */
+    [style*="background: linear-gradient(135deg, #22c55e"] *,
+    [style*="background: linear-gradient(135deg, #4CAF50"] *,
+    .access-granted, .access-granted * {{
+        color: white !important;
+    }}
+    </style>
+    """, unsafe_allow_html=True)
+
     if not AUTH_AVAILABLE:
         st.error("❌ Sistema de autenticación no disponible. Instala: pip install bcrypt PyJWT")
         return
@@ -1691,6 +1806,29 @@ def render_assistant_message_with_css(content):
     else:
         text_color = '#111827'  # Color oscuro para tema claro
         text_var = 'var(--text-primary, #111827)'
+
+    # CSS EMBEBIDO para garantizar que funcione en Streamlit Cloud
+    st.markdown(f"""
+    <style>
+    /* FORZAR VISIBILIDAD DE TEXTO EN CHAT AI - STREAMLIT CLOUD */
+    .stChatMessage, .stChatMessage * {{
+        color: {text_color} !important;
+    }}
+
+    .stMarkdown, .stMarkdown *, .element-container * {{
+        color: {text_color} !important;
+    }}
+
+    /* Mantener texto blanco SOLO en fondos verdes */
+    [style*="background: linear-gradient(135deg, #22c55e"] * {{
+        color: white !important;
+    }}
+
+    [style*="background: linear-gradient(135deg, #4CAF50"] * {{
+        color: white !important;
+    }}
+    </style>
+    """, unsafe_allow_html=True)
 
     # Dividir contenido por párrafos
     paragraphs = content.split('\n\n')
