@@ -157,21 +157,28 @@ streamlit run src/app.py
 ### 🏠 **Dashboard Principal**
 La aplicación ofrece una experiencia personalizada según el rol del usuario con dashboards adaptativos y métricas específicas.
 ![Dashboard Ejecutivo Administrador - parte 1](docs/capturas/dashboard1.png)
+
 ![Dashboard Ejecutivo Administrador - parte 2](docs/capturas/dashboard2.png)
+
 ![Dashboard Ejecutivo Administrador - parte 3](docs/capturas/dashboard3.png)
 
 ### 🗺️ **Mapas Interactivos**
 Sistema avanzado de mapas geoespaciales con análisis de accesibilidad sanitaria, distribución de recursos y cobertura territorial.
 ![Mapas geoespaciales rol Administrador](docs/capturas/mapas1.png)
+
 ![Mapas geoespaciales rol Administrador](docs/capturas/mapas2.png)
+
 ![Mapas geoespaciales rol Administrador](docs/capturas/mapas3.png)
+
 ![Mapas geoespaciales rol Administrador](docs/capturas/mapas4.png)
 
 ### 🤖 **Asistente IA Especializado**
 Procesamiento inteligente de consultas con análisis predictivos y recomendaciones basadas en datos sociosanitarios de Málaga; cada rol tiene filtrada sus
 posibles consultas al asistente.
 ![Asistente personalizado para el rol Administrador](docs/capturas/chatIA1.png)
+
 ![Asistente personalizado para el rol Gestor](docs/capturas/chatIA2.png)
+
 ![Asistente personalizado para el rol Analista](docs/capturas/chatIA3.png)
 
 ---
