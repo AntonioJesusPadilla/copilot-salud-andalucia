@@ -459,12 +459,31 @@ div[data-testid="column"] {
     border-color: var(--border-color) !important;
 }
 
-/* Forzar visibilidad en todos los elementos de texto */
-* {
-    color: var(--text-primary);
+/* Forzar visibilidad en elementos de texto específicos (no usar selector universal) */
+.stMarkdown p, .stMarkdown div, .stMarkdown span:not(.access-granted *) {
+    color: var(--text-primary) !important;
 }
 
-/* Override específico para elementos con color blanco forzado */
-[style*="color: white"], [style*="color:white"], [style*="color:#ffffff"], [style*="color:#fff"] {
+/* Override específico para elementos con color blanco forzado EXCEPTO en fondos verdes */
+[style*="color: white"]:not(.access-granted *),
+[style*="color:white"]:not(.access-granted *),
+[style*="color:#ffffff"]:not(.access-granted *),
+[style*="color:#fff"]:not(.access-granted *) {
     color: var(--text-primary) !important;
+}
+
+/* Clase access-granted adaptada para tema claro */
+.access-granted {
+    background: linear-gradient(135deg, #4CAF50 0%, #66bb6a 100%) !important;
+    padding: 1rem !important;
+    border-radius: 10px !important;
+    color: white !important;  /* Mantener blanco porque el fondo es verde */
+    margin: 1rem 0 !important;
+}
+
+.access-granted h4,
+.access-granted p,
+.access-granted span,
+.access-granted * {
+    color: white !important;  /* Forzar blanco en fondo verde */
 }
