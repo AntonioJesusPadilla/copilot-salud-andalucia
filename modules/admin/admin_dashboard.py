@@ -448,7 +448,7 @@ class AdminDashboard:
                 xaxis_title="Rol de Usuario",
                 yaxis_title="Número de Entradas"
             )
-            st.plotly_chart(fig, width="container")
+            st.plotly_chart(fig, use_container_width=True)
         
         # Controles de cache
         st.markdown("### 🛠️ Gestión de Cache")
@@ -510,7 +510,7 @@ class AdminDashboard:
                 names=list(action_types.keys()),
                 title="Acciones por Tipo (Últimas 24 horas)"
             )
-            st.plotly_chart(fig, width="container")
+            st.plotly_chart(fig, use_container_width=True)
         
         # Top usuarios más activos
         top_users = security_data.get('top_users', [])
@@ -526,7 +526,7 @@ class AdminDashboard:
                 color_continuous_scale='Blues'
             )
             fig.update_xaxes(tickangle=45)
-            st.plotly_chart(fig, width="container")
+            st.plotly_chart(fig, use_container_width=True)
         
         # Detección de actividad sospechosa
         st.markdown("### 🚨 Actividad Sospechosa")
@@ -584,7 +584,7 @@ class AdminDashboard:
                 color_continuous_scale='Reds'
             )
             fig.update_xaxes(tickangle=45)
-            st.plotly_chart(fig, width="container")
+            st.plotly_chart(fig, use_container_width=True)
         
         # Gestión de bloqueos
         st.markdown("### 🛠️ Gestión de Bloqueos")
@@ -765,7 +765,7 @@ class AdminDashboard:
                 hovermode=False  # Deshabilitar hover para evitar errores
             )
             
-            st.plotly_chart(fig, width="container")
+            st.plotly_chart(fig, use_container_width=True)
             
             # Controles de gestión
             st.markdown("### 🛠️ Gestión del Procesamiento Asíncrono")
@@ -846,7 +846,7 @@ class AdminDashboard:
             yaxis_title="Tiempo de Respuesta (min)",
             height=400
         )
-        st.plotly_chart(fig, width="container")
+        st.plotly_chart(fig, use_container_width=True)
 
         # Controles de optimización
         st.markdown("### 🛠️ Optimización del Sistema")
@@ -901,7 +901,7 @@ class AdminDashboard:
             names=list(access_types.keys()),
             title="Distribución de Accesos por Servicio"
         )
-        st.plotly_chart(fig, width="container")
+        st.plotly_chart(fig, use_container_width=True)
 
         # Panel de alertas de seguridad
         st.markdown("### 🚨 Estado de Seguridad")
@@ -964,7 +964,7 @@ class AdminDashboard:
             yaxis_title="Consultas por minuto",
             height=350
         )
-        st.plotly_chart(fig, width="container")
+        st.plotly_chart(fig, use_container_width=True)
 
         # Controles de tráfico
         st.markdown("### 🛠️ Gestión de Tráfico")
@@ -1080,7 +1080,7 @@ class AdminDashboard:
             xaxis_title="Hora del Día",
             yaxis_title="Usuarios Activos"
         )
-        st.plotly_chart(fig, width="container")
+        st.plotly_chart(fig, use_container_width=True)
         
         # Resumen de rendimiento
         st.markdown("### 📊 Resumen de Rendimiento")

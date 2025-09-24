@@ -143,7 +143,7 @@ class RoleDashboards:
                 color_discrete_sequence=config['colors']
             )
             fig_pie.update_layout(height=300)
-            st.plotly_chart(fig_pie, width="stretch")
+            st.plotly_chart(fig_pie, use_container_width=True)
         
         with col2:
             st.markdown("#### 📈 Crecimiento Poblacional por Municipio")
@@ -157,7 +157,7 @@ class RoleDashboards:
             )
             fig_bar.update_xaxes(tickangle=45)
             fig_bar.update_layout(height=300)
-            st.plotly_chart(fig_bar, width="stretch")
+            st.plotly_chart(fig_bar, use_container_width=True)
         
         # Tabla resumen ejecutivo
         st.markdown("#### 📋 Resumen Ejecutivo por Distrito")
@@ -165,7 +165,7 @@ class RoleDashboards:
             executive_summary = data['indicadores'][['distrito_sanitario', 'poblacion_total_2025',
                                                    'ratio_medico_1000_hab', 'esperanza_vida_2023']].copy()
             executive_summary.columns = ['Distrito', 'Población 2025', 'Ratio Médicos/1000', 'Esperanza de Vida']
-            st.dataframe(executive_summary, width="stretch")
+            st.dataframe(executive_summary, use_container_width=True)
 
         # Sección adicional: KPIs de Rendimiento Administrativo
         st.markdown("---")
@@ -272,7 +272,7 @@ class RoleDashboards:
             )
         )
 
-        st.plotly_chart(fig, width="container")
+        st.plotly_chart(fig, use_container_width=True)
 
         # Panel de alertas administrativas
         st.markdown("#### 🚨 Alertas y Notificaciones Administrativas")
@@ -369,7 +369,7 @@ class RoleDashboards:
             )
             fig_capacity.update_xaxes(tickangle=45)
             fig_capacity.update_layout(height=400)
-            st.plotly_chart(fig_capacity, width="stretch")
+            st.plotly_chart(fig_capacity, use_container_width=True)
         
         with col2:
             if 'accesibilidad' in data:
@@ -381,7 +381,7 @@ class RoleDashboards:
                     color_discrete_sequence=[config['colors'][0]]
                 )
                 fig_hist.update_layout(height=400)
-                st.plotly_chart(fig_hist, width="stretch")
+                st.plotly_chart(fig_hist, use_container_width=True)
     
     def render_analytical_dashboard(self, data: Dict, config: Dict, theme: Dict):
         """Dashboard analítico con foco en datos"""
@@ -421,7 +421,7 @@ class RoleDashboards:
                     aspect='auto'
                 )
                 fig_heatmap.update_layout(height=500)
-                st.plotly_chart(fig_heatmap, width="stretch")
+                st.plotly_chart(fig_heatmap, use_container_width=True)
         
         # Análisis demográfico detallado
         col1, col2 = st.columns(2)
@@ -439,7 +439,7 @@ class RoleDashboards:
                 color_continuous_scale=config['colors']
             )
             fig_scatter.update_layout(height=400)
-            st.plotly_chart(fig_scatter, width="stretch")
+            st.plotly_chart(fig_scatter, use_container_width=True)
         
         with col2:
             st.markdown("#### 📊 Distribución de Indicadores")
@@ -450,7 +450,7 @@ class RoleDashboards:
                     color_discrete_sequence=[config['colors'][0]]
                 )
                 fig_box.update_layout(height=400)
-                st.plotly_chart(fig_box, width="stretch")
+                st.plotly_chart(fig_box, use_container_width=True)
     
     def render_basic_dashboard(self, data: Dict, config: Dict, theme: Dict):
         """Dashboard básico para usuarios invitados"""
@@ -485,7 +485,7 @@ class RoleDashboards:
             yaxis_title="Cantidad",
             height=300
         )
-        st.plotly_chart(fig_simple, width="stretch")
+        st.plotly_chart(fig_simple, use_container_width=True)
         
         # Información adicional
         st.info("ℹ️ Para acceder a análisis más detallados, solicita permisos de analista o superior.")

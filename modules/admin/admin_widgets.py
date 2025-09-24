@@ -111,7 +111,7 @@ class AdminWidgets:
             yaxis2=dict(title="Tiempo Espera (días)", side="right", overlaying="y"),
             height=350
         )
-        st.plotly_chart(fig, width="container")
+        st.plotly_chart(fig, use_container_width=True)
 
     def render_user_activity_heatmap(self, users_data: Dict = None):
         """Mapa de calor de actividad de usuarios"""
@@ -157,7 +157,7 @@ class AdminWidgets:
             yaxis_title="Día de la Semana",
             height=400
         )
-        st.plotly_chart(fig, width="container")
+        st.plotly_chart(fig, use_container_width=True)
 
     def render_advanced_kpi_dashboard(self, data: Dict):
         """Dashboard avanzado de KPIs ejecutivos del sistema sanitario"""
@@ -514,7 +514,7 @@ class AdminWidgets:
             )
 
             fig.update_layout(height=500)
-            st.plotly_chart(fig, width="container")
+            st.plotly_chart(fig, use_container_width=True)
 
             # Ranking de distritos
             st.markdown("##### 🏆 Ranking de Distritos")
@@ -604,7 +604,7 @@ class AdminWidgets:
                     yaxis_title="Población",
                     height=400
                 )
-                st.plotly_chart(fig, width="container")
+                st.plotly_chart(fig, use_container_width=True)
             else:
                 st.warning("⚠️ Datos demográficos no disponibles")
 
@@ -659,7 +659,7 @@ class AdminWidgets:
                 yaxis_title="Ingresos Estimados",
                 height=400
             )
-            st.plotly_chart(fig, width="container")
+            st.plotly_chart(fig, use_container_width=True)
 
     def _calculate_health_kpis(self, data: Dict) -> Dict:
         """Calcular KPIs específicos del sistema sanitario basados en datos reales"""
