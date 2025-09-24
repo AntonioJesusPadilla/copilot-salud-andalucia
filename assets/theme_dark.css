@@ -12,15 +12,15 @@
     --info-color: #60a5fa;
     --danger-color: #fb7185;
 
-    /* Colores modo oscuro */
-    --text-primary: #f8fafc;
-    --text-secondary: #e2e8f0;
-    --text-muted: #94a3b8;
+    /* Colores modo oscuro - Mejorado contraste */
+    --text-primary: #ffffff;
+    --text-secondary: #f1f5f9;
+    --text-muted: #cbd5e1;
     --bg-primary: #0f172a;
     --bg-secondary: #1e293b;
     --bg-tertiary: #334155;
-    --border-color: #475569;
-    --shadow-color: rgba(0, 0, 0, 0.4);
+    --border-color: #64748b;
+    --shadow-color: rgba(0, 0, 0, 0.5);
 
     --border-radius: 12px;
     --shadow: 0 1px 3px var(--shadow-color), 0 1px 2px rgba(0, 0, 0, 0.06);
@@ -422,4 +422,68 @@ body {
 div[data-testid="column"] {
     min-width: 300px !important;
     flex: 1 !important;
+}
+
+/* ========== STREAMLIT SPECIFIC FIXES ========== */
+/* Forzar colores de texto visibles en tema oscuro */
+.stMarkdown, .stText, .stTextArea textarea, .stTextInput input {
+    color: var(--text-primary) !important;
+}
+
+/* Chat AI específico */
+.stChatMessage, .stChat, [data-testid="stChatMessage"] {
+    color: var(--text-primary) !important;
+    background: var(--bg-primary) !important;
+}
+
+/* Mensajes del usuario y assistant */
+.stChatMessage [data-testid="chatAvatarIcon-user"],
+.stChatMessage [data-testid="chatAvatarIcon-assistant"] {
+    color: var(--text-primary) !important;
+}
+
+/* Contenido del chat */
+.stChatMessage .stMarkdown {
+    color: var(--text-primary) !important;
+}
+
+.stChatMessage .stMarkdown p,
+.stChatMessage .stMarkdown div,
+.stChatMessage .stMarkdown span {
+    color: var(--text-primary) !important;
+}
+
+/* Elementos de input del chat */
+.stChatInputContainer {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Forzar visibilidad en elementos de texto específicos */
+.stMarkdown p, .stMarkdown div, .stMarkdown span:not(.access-granted *) {
+    color: var(--text-primary) !important;
+}
+
+/* Override específico para elementos oscuros en tema oscuro */
+[style*="color: black"]:not(.access-granted *),
+[style*="color:black"]:not(.access-granted *),
+[style*="color:#000000"]:not(.access-granted *),
+[style*="color:#000"]:not(.access-granted *) {
+    color: var(--text-primary) !important;
+}
+
+/* Clase access-granted adaptada para tema oscuro */
+.access-granted {
+    background: linear-gradient(135deg, #4CAF50 0%, #66bb6a 100%) !important;
+    padding: 1rem !important;
+    border-radius: 10px !important;
+    color: white !important;
+    margin: 1rem 0 !important;
+}
+
+.access-granted h4,
+.access-granted p,
+.access-granted span,
+.access-granted * {
+    color: white !important;
 }

@@ -732,9 +732,41 @@ except Exception:
 if 'theme_mode' not in st.session_state:
     st.session_state.theme_mode = 'light'
 
+# Cache para CSS - SOLUCIÓN AL ERROR "Too many open files"
+@st.cache_data
+def load_css_file(file_path):
+    """Cargar archivo CSS con cache para evitar múltiples aperturas"""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    except Exception:
+        return None
+
+# Cache para datos grandes - Optimización de memoria
+@st.cache_data(ttl=3600)  # Cache por 1 hora
+def load_large_data():
+    """Cache para datos grandes para reducir uso de memoria"""
+    return {}
+
+# Limpiar cache automáticamente para evitar acumulación
+def clear_cache_if_needed():
+    """Limpiar cache si está usando demasiada memoria"""
+    try:
+        # En Streamlit Cloud, limpiar cache cada 100 interacciones
+        if not hasattr(st.session_state, 'cache_counter'):
+            st.session_state.cache_counter = 0
+
+        st.session_state.cache_counter += 1
+
+        if st.session_state.cache_counter % 100 == 0:
+            st.cache_data.clear()
+            st.session_state.cache_counter = 0
+    except Exception:
+        pass
+
 # Cargar CSS optimizado para el dispositivo
 def load_optimized_css():
-    """Cargar CSS optimizado según el dispositivo"""
+    """Cargar CSS optimizado según el dispositivo con cache"""
     try:
         # Detectar si es móvil de forma básica
         is_mobile = False
@@ -765,40 +797,47 @@ def load_optimized_css():
             st.markdown(mobile_css, unsafe_allow_html=True)
             return "mobile_basic"
 
-        # CSS completo para desktop
+        # CSS completo para desktop - CON CACHE
         theme_file = f'assets/theme_{st.session_state.theme_mode}.css'
-        with open(theme_file, 'r', encoding='utf-8') as f:
-            theme_css = f.read()
+        theme_css = load_css_file(theme_file)
+        if theme_css:
             st.markdown(f"<style>{theme_css}</style>", unsafe_allow_html=True)
-        return f"theme_{st.session_state.theme_mode}"
+            return f"theme_{st.session_state.theme_mode}"
+        else:
+            # Fallback inmediato si no se puede cargar el tema
+            raise Exception("No se pudo cargar el tema principal")
 
     except Exception as e:
-        # Fallback al CSS adaptativo
+        # Fallback con cache
         try:
-            with open('assets/adaptive_theme.css', 'r', encoding='utf-8') as f:
-                adaptive_css = f.read()
+            adaptive_css = load_css_file('assets/adaptive_theme.css')
+            if adaptive_css:
                 st.markdown(f"<style>{adaptive_css}</style>", unsafe_allow_html=True)
-            return "adaptive"
+                return "adaptive"
+            else:
+                raise Exception("No se pudo cargar CSS adaptativo")
         except Exception as e2:
-            # Último fallback al CSS original
+            # Último fallback con cache
             try:
-                with open('assets/style.css', 'r', encoding='utf-8') as f:
-                    css_content = f.read()
-                # Solo cargar desktop_layout.css si no es móvil (redefinir variable local)
-                is_mobile_fallback = False
-                try:
-                    if hasattr(st, 'context') and hasattr(st.context, 'user_agent'):
-                        user_agent = str(st.context.user_agent or "").lower()
-                        is_mobile_fallback = any(mobile in user_agent for mobile in ['mobile', 'android', 'iphone', 'ipad'])
-                except:
-                    pass
+                css_content = load_css_file('assets/style.css')
+                if css_content:
+                    # Solo cargar desktop_layout.css si no es móvil
+                    is_mobile_fallback = False
+                    try:
+                        if hasattr(st, 'context') and hasattr(st.context, 'user_agent'):
+                            user_agent = str(st.context.user_agent or "").lower()
+                            is_mobile_fallback = any(mobile in user_agent for mobile in ['mobile', 'android', 'iphone', 'ipad'])
+                    except:
+                        pass
 
-                if not is_mobile_fallback:
-                    with open('assets/desktop_layout.css', 'r', encoding='utf-8') as f:
-                        desktop_css = f.read()
-                    st.markdown(f"<style>{desktop_css}</style>", unsafe_allow_html=True)
-                st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
-                return "legacy"
+                    if not is_mobile_fallback:
+                        desktop_css = load_css_file('assets/desktop_layout.css')
+                        if desktop_css:
+                            st.markdown(f"<style>{desktop_css}</style>", unsafe_allow_html=True)
+                    st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
+                    return "legacy"
+                else:
+                    raise Exception("No se pudo cargar CSS legacy")
             except Exception as e3:
                 # FALLBACK CRÍTICO: CSS Embebido para Streamlit Cloud
                 current_theme = st.session_state.get('theme_mode', 'light')
@@ -879,17 +918,17 @@ def load_optimized_css():
                 st.markdown(fallback_css, unsafe_allow_html=True)
                 return "embedded_fallback"
 
+# Limpiar cache automáticamente
+clear_cache_if_needed()
+
 css_loaded = load_optimized_css()
 
-# Cargar CSS extra solo en desktop (mantener compatibilidad)
+# Cargar CSS extra solo en desktop - CON CACHE
 extra_css = None
 if css_loaded != "mobile_basic":
-    try:
-        with open('assets/extra_styles.css', 'r', encoding='utf-8') as f:
-            extra_css = f.read()
+    extra_css = load_css_file('assets/extra_styles.css')
+    if extra_css:
         st.markdown(f"<style>{extra_css}</style>", unsafe_allow_html=True)
-    except Exception:
-        pass
 
 # Cargar detector y correcciones SOLO para iPhone iOS 26 (condicional y diferido)
 def load_ios_fixes():
@@ -933,12 +972,14 @@ if (isIPhoneIOS26()) {
 </script>
 """
 
-    # Leer CSS y JS para iOS 26 y reemplazar en el script
+    # Leer CSS y JS para iOS 26 CON CACHE
     try:
-        with open('assets/ios_safari_fixes.css', 'r', encoding='utf-8') as f:
-            ios_fixes_css = f.read().replace('`', '\\`').replace('${', '\\${')
-        with open('assets/safari_detector.js', 'r', encoding='utf-8') as f:
-            safari_js = f.read().replace('`', '\\`').replace('${', '\\${')
+        ios_fixes_css = load_css_file('assets/ios_safari_fixes.css')
+        safari_js = load_css_file('assets/safari_detector.js')
+
+        if ios_fixes_css and safari_js:
+            ios_fixes_css = ios_fixes_css.replace('`', '\\`').replace('${', '\\${')
+            safari_js = safari_js.replace('`', '\\`').replace('${', '\\${')
 
         ios_detection_script = ios_detection_script.replace('PLACEHOLDER_CSS_CONTENT', ios_fixes_css)
         ios_detection_script = ios_detection_script.replace('PLACEHOLDER_JS_CONTENT', safari_js)
