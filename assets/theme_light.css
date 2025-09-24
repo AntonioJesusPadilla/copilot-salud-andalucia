@@ -423,3 +423,48 @@ div[data-testid="column"] {
     min-width: 300px !important;
     flex: 1 !important;
 }
+
+/* ========== STREAMLIT SPECIFIC FIXES ========== */
+/* Forzar colores de texto visibles en tema claro */
+.stMarkdown, .stText, .stTextArea textarea, .stTextInput input {
+    color: var(--text-primary) !important;
+}
+
+/* Chat AI específico */
+.stChatMessage, .stChat, [data-testid="stChatMessage"] {
+    color: var(--text-primary) !important;
+    background: var(--bg-primary) !important;
+}
+
+/* Mensajes del usuario y assistant */
+.stChatMessage [data-testid="chatAvatarIcon-user"],
+.stChatMessage [data-testid="chatAvatarIcon-assistant"] {
+    color: var(--text-primary) !important;
+}
+
+/* Contenido del chat */
+.stChatMessage .stMarkdown {
+    color: var(--text-primary) !important;
+}
+
+.stChatMessage .stMarkdown p,
+.stChatMessage .stMarkdown div,
+.stChatMessage .stMarkdown span {
+    color: var(--text-primary) !important;
+}
+
+/* Elementos de input del chat */
+.stChatInputContainer {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Forzar visibilidad en todos los elementos de texto */
+* {
+    color: var(--text-primary);
+}
+
+/* Override específico para elementos con color blanco forzado */
+[style*="color: white"], [style*="color:white"], [style*="color:#ffffff"], [style*="color:#fff"] {
+    color: var(--text-primary) !important;
+}
