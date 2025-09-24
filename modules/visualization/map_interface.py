@@ -180,12 +180,12 @@ class MapInterface:
                 epic_map = self.epic_maps.create_epic_control_panel(epic_map)
                 return epic_map
             
-            # Crear mapa completo con todos los datos
+            # Crear mapa completo con todos los datos disponibles
             return self.epic_maps.create_epic_complete_map(
                 hospitals_data=data['hospitales'],
                 demographics_data=data['demografia'],
-                services_data=data['servicios'],
-                accessibility_data=data['accesibilidad']
+                services_data=data.get('servicios', pd.DataFrame()),
+                accessibility_data=data.get('accesibilidad', pd.DataFrame())
             )
             
         except Exception as e:
@@ -242,7 +242,8 @@ class MapInterface:
         """Crear heatmap de accesibilidad"""
         
         epic_map = self.epic_maps.create_epic_base_map(zoom_start=zoom_level)
-        epic_map = self.epic_maps.create_accessibility_heatmap(epic_map, data['accesibilidad'])
+        if 'accesibilidad' in data and not data['accesibilidad'].empty:
+            epic_map = self.epic_maps.create_accessibility_heatmap(epic_map, data['accesibilidad'])
         epic_map = self.epic_maps.add_epic_hospitals(epic_map, data['hospitales'])
         
         # Título específico para accesibilidad
@@ -287,7 +288,8 @@ class MapInterface:
         epic_map = self.epic_maps.create_epic_base_map(zoom_start=zoom_level)
         epic_map = self.epic_maps.add_epic_hospitals(epic_map, data['hospitales'])
         epic_map = self.epic_maps.add_epic_municipalities(epic_map, data['demografia'])
-        epic_map = self.epic_maps.add_epic_routes(epic_map, data['accesibilidad'])
+        if 'accesibilidad' in data and not data['accesibilidad'].empty:
+            epic_map = self.epic_maps.add_epic_routes(epic_map, data['accesibilidad'])
         epic_map = self.epic_maps.create_epic_control_panel(epic_map)
         
         # Título específico para rutas
@@ -357,19 +359,29 @@ class MapInterface:
             total_population = data['demografia']['poblacion_2025'].sum()
             st.metric("👥 Población Total", f"{total_population/1000:.0f}K")
             
-            total_beds = data['hospitales']['camas_funcionamiento_2025'].sum()
-            st.metric("🛏️ Camas Totales", f"{total_beds:,}")
+            if 'camas_funcionamiento_2025' in data['hospitales'].columns:
+                total_beds = data['hospitales']['camas_funcionamiento_2025'].sum()
+                st.metric("🛏️ Camas Totales", f"{total_beds:,}")
+            else:
+                st.metric("🛏️ Camas Totales", "N/A")
         
         with col3:
-            avg_access_time = data['accesibilidad']['tiempo_coche_minutos'].mean()
-            st.metric("⏱️ Tiempo Medio Acceso", f"{avg_access_time:.0f} min")
-            
-            max_access_time = data['accesibilidad']['tiempo_coche_minutos'].max()
-            st.metric("⏱️ Tiempo Máximo", f"{max_access_time:.0f} min")
+            if 'accesibilidad' in data and not data['accesibilidad'].empty:
+                avg_access_time = data['accesibilidad']['tiempo_coche_minutos'].mean()
+                st.metric("⏱️ Tiempo Medio Acceso", f"{avg_access_time:.0f} min")
+
+                max_access_time = data['accesibilidad']['tiempo_coche_minutos'].max()
+                st.metric("⏱️ Tiempo Máximo", f"{max_access_time:.0f} min")
+            else:
+                st.metric("⏱️ Tiempo Medio Acceso", "N/A")
+                st.metric("⏱️ Tiempo Máximo", "N/A")
         
         with col4:
-            bed_ratio = (total_beds / total_population) * 1000
-            st.metric("📊 Camas/1000 hab", f"{bed_ratio:.1f}")
+            if 'camas_funcionamiento_2025' in data['hospitales'].columns:
+                bed_ratio = (total_beds / total_population) * 1000
+                st.metric("📊 Camas/1000 hab", f"{bed_ratio:.1f}")
+            else:
+                st.metric("📊 Camas/1000 hab", "N/A")
             
             growing_municipalities = len(data['demografia'][data['demografia']['crecimiento_2024_2025'] > 0])
             st.metric("📈 Municipios en Crecimiento", growing_municipalities)
@@ -384,8 +396,8 @@ class MapInterface:
             import plotly.graph_objects as go
             from plotly.subplots import make_subplots
 
-            # Verificar que tenemos los datos necesarios
-            required_keys = ['hospitales', 'demografia', 'accesibilidad']
+            # Verificar que tenemos los datos mínimos necesarios
+            required_keys = ['hospitales', 'demografia']
             missing_keys = [key for key in required_keys if key not in data or data[key].empty]
 
             if missing_keys:
@@ -423,22 +435,40 @@ class MapInterface:
             )
 
             # Gráfico 3: Histograma de tiempos de acceso
-            fig.add_trace(
-                go.Histogram(x=data['accesibilidad']['tiempo_coche_minutos'],
-                            nbinsx=20, marker_color='orange'),
-                row=2, col=1
-            )
+            if 'accesibilidad' in data and not data['accesibilidad'].empty:
+                fig.add_trace(
+                    go.Histogram(x=data['accesibilidad']['tiempo_coche_minutos'],
+                                nbinsx=20, marker_color='orange'),
+                    row=2, col=1
+                )
+            else:
+                # Gráfico alternativo para demo sin datos de accesibilidad
+                fig.add_trace(
+                    go.Histogram(x=[30, 45, 60], # Datos ficticios
+                                nbinsx=3, marker_color='lightgray'),
+                    row=2, col=1
+                )
 
             # Gráfico 4: Scatter capacidad vs población
-            fig.add_trace(
-                go.Scatter(x=data['hospitales']['poblacion_referencia_2025'],
-                          y=data['hospitales']['camas_funcionamiento_2025'],
-                          mode='markers+text',
-                          text=data['hospitales']['municipio'],
-                          textposition='top center',
-                          marker=dict(size=10, color='red')),
-                row=2, col=2
-            )
+            if 'poblacion_referencia_2025' in data['hospitales'].columns and 'camas_funcionamiento_2025' in data['hospitales'].columns:
+                fig.add_trace(
+                    go.Scatter(x=data['hospitales']['poblacion_referencia_2025'],
+                              y=data['hospitales']['camas_funcionamiento_2025'],
+                              mode='markers+text',
+                              text=data['hospitales']['municipio'],
+                              textposition='top center',
+                              marker=dict(size=10, color='red')),
+                    row=2, col=2
+                )
+            else:
+                # Gráfico alternativo para demo con datos limitados
+                fig.add_trace(
+                    go.Scatter(x=[1, 2, 3], y=[1, 2, 3],
+                              mode='markers',
+                              text=['Datos no disponibles', '', ''],
+                              marker=dict(size=10, color='gray')),
+                    row=2, col=2
+                )
 
             # Actualizar layout
             fig.update_layout(
@@ -677,7 +707,7 @@ class MapInterface:
                     filtered_data['hospitales']['tipo_centro'].isin(['Hospital Regional', 'Hospital Universitario'])
                 ].copy()
                 # Solo columnas básicas
-                basic_columns = ['nombre', 'tipo_centro', 'municipio', 'latitud', 'longitud', 'urgencias_24h']
+                basic_columns = ['nombre', 'tipo_centro', 'municipio', 'distrito_sanitario', 'latitud', 'longitud', 'urgencias_24h']
                 available_columns = [col for col in basic_columns if col in public_hospitals.columns]
                 filtered_data['hospitales'] = public_hospitals[available_columns]
         

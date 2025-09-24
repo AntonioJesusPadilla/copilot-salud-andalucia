@@ -99,10 +99,11 @@ class EpicHealthMaps:
         
         for idx, hospital in hospitals_data.iterrows():
             # Determinar color y tamaño según tipo
-            color = self.hospital_colors.get(hospital['tipo_centro'], '#95a5a6')
+            color = self.hospital_colors.get(hospital.get('tipo_centro', 'Desconocido'), '#95a5a6')
             
             # Tamaño basado en número de camas
-            camas = hospital.get('camas_funcionamiento_2025', 0)
+            camas_raw = hospital.get('camas_funcionamiento_2025', 0)
+            camas = int(camas_raw) if isinstance(camas_raw, (int, float)) and camas_raw is not None else 0
             if camas > 1000:
                 radius = 25
                 icon_size = 'large'
@@ -117,16 +118,16 @@ class EpicHealthMaps:
             popup_html = f"""
             <div style="width: 300px; font-family: Arial;">
                 <div style="background: linear-gradient(135deg, {color}, {color}cc); color: white; padding: 10px; border-radius: 10px 10px 0 0;">
-                    <h3 style="margin: 0; font-size: 16px;">🏥 {hospital['nombre']}</h3>
-                    <p style="margin: 5px 0; opacity: 0.9;">{hospital['tipo_centro']}</p>
+                    <h3 style="margin: 0; font-size: 16px;">🏥 {hospital.get('nombre', 'N/A')}</h3>
+                    <p style="margin: 5px 0; opacity: 0.9;">{hospital.get('tipo_centro', 'N/A')}</p>
                 </div>
                 
                 <div style="background: white; padding: 15px; border-radius: 0 0 10px 10px; border: 2px solid {color};">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div>
                             <strong>📍 Ubicación:</strong><br>
-                            {hospital['municipio']}<br>
-                            <small>{hospital['distrito_sanitario']}</small>
+                            {hospital.get('municipio', 'N/A')}<br>
+                            <small>{hospital.get('distrito_sanitario', 'N/A')}</small>
                         </div>
                         <div>
                             <strong>🛏️ Capacidad:</strong><br>
@@ -139,7 +140,7 @@ class EpicHealthMaps:
                     
                     <div>
                         <strong>👥 Población Referencia:</strong><br>
-                        {hospital.get('poblacion_referencia_2025', 'N/A'):,} habitantes
+                        {f"{hospital.get('poblacion_referencia_2025', 0):,}" if isinstance(hospital.get('poblacion_referencia_2025'), (int, float)) and hospital.get('poblacion_referencia_2025') != 'N/A' else 'N/A'} habitantes
                     </div>
                     
                     <div style="margin-top: 10px;">
@@ -157,20 +158,20 @@ class EpicHealthMaps:
             
             # 🎯 MARCADOR ÉPICO
             folium.CircleMarker(
-                location=[hospital['latitud'], hospital['longitud']],
+                location=[hospital.get('latitud', 0), hospital.get('longitud', 0)],
                 radius=radius,
                 popup=folium.Popup(popup_html, max_width=320),
                 color='white',
                 weight=3,
                 fillColor=color,
                 fillOpacity=0.9,
-                tooltip=f"🏥 {hospital['nombre']} | 🛏️ {hospital.get('camas_funcionamiento_2025', 'N/A')} camas"
+                tooltip=f"🏥 {hospital.get('nombre', 'N/A')} | 🛏️ {hospital.get('camas_funcionamiento_2025', 'N/A')} camas"
             ).add_to(hospital_layer)
             
             # ⭐ ICONO ADICIONAL PARA HOSPITALES GRANDES
             if camas > 800:
                 folium.Marker(
-                    location=[hospital['latitud'], hospital['longitud']],
+                    location=[hospital.get('latitud', 0), hospital.get('longitud', 0)],
                     icon=folium.Icon(color='red', icon='plus-sign', prefix='fa'),
                     tooltip="🏥 Hospital Principal"
                 ).add_to(hospital_layer)
@@ -218,7 +219,7 @@ class EpicHealthMaps:
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div>
                             <strong>👥 Población 2025:</strong><br>
-                            {población:,} habitantes
+                            {f"{población:,}" if isinstance(población, (int, float)) else población} habitantes
                         </div>
                         <div>
                             <strong>📈 Crecimiento:</strong><br>
@@ -325,7 +326,7 @@ class EpicHealthMaps:
                     
                     # Círculo de cobertura (radio de 30km aproximadamente)
                     folium.Circle(
-                        location=[hospital['latitud'], hospital['longitud']],
+                        location=[hospital.get('latitud', 0), hospital.get('longitud', 0)],
                         radius=30000,  # 30km en metros
                         popup=f"💊 Cobertura {specialty.replace('_', ' ').title()}<br>🏥 {service_row['centro_sanitario']}",
                         color=color,
