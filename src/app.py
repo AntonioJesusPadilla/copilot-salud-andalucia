@@ -728,9 +728,9 @@ except Exception:
         initial_sidebar_state="expanded"
     )
 
-# Inicializar tema si no existe - TEMA OSCURO POR DEFECTO
+# Inicializar tema si no existe - TEMA CLARO POR DEFECTO (consistente con config.toml)
 if 'theme_mode' not in st.session_state:
-    st.session_state.theme_mode = 'dark'
+    st.session_state.theme_mode = 'light'
 
 # Cargar CSS optimizado para el dispositivo
 def load_optimized_css():
@@ -1498,9 +1498,9 @@ def main():
     import re
 
     # TOGGLE DE TEMA GLOBAL en esquina superior derecha
-    # Inicializar tema en session_state si no existe - TEMA OSCURO POR DEFECTO
+    # Inicializar tema en session_state si no existe - TEMA CLARO POR DEFECTO (consistente con config.toml)
     if 'theme_mode' not in st.session_state:
-        st.session_state.theme_mode = 'dark'
+        st.session_state.theme_mode = 'light'
 
     # CSS para posicionar el toggle en la esquina superior derecha
     st.markdown("""
@@ -1529,7 +1529,7 @@ def main():
     col1, col2, col3 = st.columns([7, 1, 1])
     with col3:
         # Toggle visual con iconos
-        current_theme = st.session_state.get('theme_mode', 'dark')
+        current_theme = st.session_state.get('theme_mode', 'light')
         if st.button(
             "🌙 Oscuro" if current_theme == 'light' else "☀️ Claro",
             key="theme_toggle_v6_positioned",
