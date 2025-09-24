@@ -1,5 +1,0 @@
-libgeos-dev
-libproj-dev
-libgdal-dev
-build-essential
-libspatialindex-dev
