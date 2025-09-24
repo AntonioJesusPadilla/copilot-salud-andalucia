@@ -7,9 +7,6 @@ import plotly.io as pio
 
 # CONFIGURACIÓN GLOBAL DE PLOTLY: Deshabilitar hover por defecto
 pio.templates.default = "plotly"  # Asegurar template básico
-# Configurar template personalizado sin hover
-custom_template = pio.templates["plotly"]
-custom_template.layout.hovermode = False
 from datetime import datetime
 import os
 import sys
@@ -698,6 +695,14 @@ try:
     if hasattr(st, 'context') and hasattr(st.context, 'user_agent'):
         user_agent = st.context.user_agent or ""
         is_mobile = any(mobile in user_agent.lower() for mobile in ['mobile', 'android', 'iphone', 'ipad'])
+
+    # OVERRIDE: Streamlit Cloud siempre como desktop
+    try:
+        host = str(st.context.headers.get('host', '')) if hasattr(st, 'context') and hasattr(st.context, 'headers') else ''
+        if 'streamlit.app' in host:
+            is_mobile = False
+    except:
+        pass
 
     # Configuración optimizada para móviles
     if is_mobile:

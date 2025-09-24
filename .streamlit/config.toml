@@ -1,0 +1,28 @@
+[global]
+developmentMode = false
+
+[server]
+headless = true
+port = 8501
+enableCORS = true
+enableXsrfProtection = false
+baseUrlPath = ""
+runOnSave = false
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+primaryColor = "#00A86B"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F0F2F6"
+textColor = "#262730"
+font = "Inter"
+
+[logger]
+level = "error"
+
+[runner]
+fastReruns = true
+enforceSerializableSessionState = false
+magicEnabled = false
