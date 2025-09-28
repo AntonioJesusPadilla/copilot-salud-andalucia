@@ -363,10 +363,17 @@ class HealthAuthenticator:
 
 def render_login_page():
     """Renderizar página de login"""
-    
-    # CSS para la página de login
-    st.markdown("""
+
+    # CSS para la página de login con timestamp para evitar cache
+    from datetime import datetime
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+
+    css_content = f"""
     <style>
+    /* CSS ACTUALIZADO - {timestamp} */
+    """
+
+    st.markdown(css_content + """
         .login-container {
             max-width: 420px;
             margin: 0 auto;
@@ -483,9 +490,762 @@ def render_login_page():
             margin-bottom: 1rem;
             text-align: center;
         }
+
+        /* ========== MODO OSCURO ========== */
+        [data-theme="dark"] .login-container,
+        body[data-theme="dark"] .login-container {
+            background: #1f2937 !important;
+            border: 1px solid #374151 !important;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        [data-theme="dark"] .login-header,
+        body[data-theme="dark"] .login-header {
+            background: linear-gradient(135deg, #374151 0%, #1f2937 100%) !important;
+            color: #f9fafb !important;
+        }
+
+        [data-theme="dark"] .login-header h1,
+        body[data-theme="dark"] .login-header h1 {
+            color: #f9fafb !important;
+        }
+
+        [data-theme="dark"] .login-header h3,
+        body[data-theme="dark"] .login-header h3 {
+            color: #d1d5db !important;
+        }
+
+        [data-theme="dark"] .login-header p,
+        body[data-theme="dark"] .login-header p {
+            color: #9ca3af !important;
+        }
+
+        [data-theme="dark"] .login-form-container,
+        body[data-theme="dark"] .login-form-container {
+            background: #1f2937 !important;
+        }
+
+        [data-theme="dark"] .demo-credentials,
+        body[data-theme="dark"] .demo-credentials {
+            background: linear-gradient(135deg, #065f46 0%, #047857 100%) !important;
+            border: 1px solid rgba(52, 211, 153, 0.3) !important;
+            color: #f9fafb !important;
+        }
+
+        [data-theme="dark"] .demo-credentials h4,
+        body[data-theme="dark"] .demo-credentials h4 {
+            color: #34d399 !important;
+        }
+
+        [data-theme="dark"] .demo-credentials p,
+        body[data-theme="dark"] .demo-credentials p {
+            color: #e5e7eb !important;
+        }
+
+        [data-theme="dark"] .roles-section,
+        body[data-theme="dark"] .roles-section {
+            background: #374151 !important;
+        }
+
+        [data-theme="dark"] .roles-section h3,
+        body[data-theme="dark"] .roles-section h3 {
+            color: #f9fafb !important;
+        }
+
+        [data-theme="dark"] .user-role-badge,
+        body[data-theme="dark"] .user-role-badge {
+            background: #1f2937 !important;
+            border: 1px solid #4b5563 !important;
+            color: #e5e7eb !important;
+        }
+
+        /* Estilos para elementos de Streamlit en modo oscuro */
+        [data-theme="dark"] .login-container .stButton > button,
+        body[data-theme="dark"] .login-container .stButton > button {
+            background: #374151 !important;
+            color: #f9fafb !important;
+            border: 1px solid #4b5563 !important;
+        }
+
+        [data-theme="dark"] .login-container .stButton > button:hover,
+        body[data-theme="dark"] .login-container .stButton > button:hover {
+            background: #4b5563 !important;
+            border-color: #6b7280 !important;
+        }
+
+        [data-theme="dark"] .login-container .stTextInput > div > div > input,
+        body[data-theme="dark"] .login-container .stTextInput > div > div > input {
+            background: #374151 !important;
+            color: #f9fafb !important;
+            border: 1px solid #4b5563 !important;
+        }
+
+        [data-theme="dark"] .login-container .stTextInput > div > div > input:focus,
+        body[data-theme="dark"] .login-container .stTextInput > div > div > input:focus {
+            border-color: #6b7280 !important;
+        }
+
+        [data-theme="dark"] .login-container label,
+        body[data-theme="dark"] .login-container label {
+            color: #f9fafb !important;
+        }
+
+        [data-theme="dark"] .login-container .stMarkdown h4,
+        body[data-theme="dark"] .login-container .stMarkdown h4 {
+            color: #f9fafb !important;
+        }
+
+        /* TARJETAS DE ROLES EN MODO OSCURO - MÁS AGRESIVO */
+        [data-theme="dark"] div[style*="background: #ffffff"],
+        [data-theme="dark"] div[style*="background:#ffffff"],
+        [data-theme="dark"] .role-card-login,
+        body[data-theme="dark"] div[style*="background: #ffffff"],
+        body[data-theme="dark"] div[style*="background:#ffffff"],
+        body[data-theme="dark"] .role-card-login {
+            background: #374151 !important;
+            border: 2px solid #6b7280 !important;
+            color: #f9fafb !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+        }
+
+        [data-theme="dark"] div[style*="background: #ffffff"] *,
+        [data-theme="dark"] div[style*="background:#ffffff"] *,
+        [data-theme="dark"] .role-card-login *,
+        body[data-theme="dark"] div[style*="background: #ffffff"] *,
+        body[data-theme="dark"] div[style*="background:#ffffff"] *,
+        body[data-theme="dark"] .role-card-login * {
+            color: #f9fafb !important;
+        }
+
+        [data-theme="dark"] div[style*="background: #ffffff"] strong,
+        [data-theme="dark"] div[style*="background:#ffffff"] strong,
+        body[data-theme="dark"] div[style*="background: #ffffff"] strong,
+        body[data-theme="dark"] div[style*="background:#ffffff"] strong {
+            color: #ffffff !important;
+            font-weight: 700 !important;
+        }
+
+        [data-theme="dark"] div[style*="background: #ffffff"] small,
+        [data-theme="dark"] div[style*="background:#ffffff"] small,
+        body[data-theme="dark"] div[style*="background: #ffffff"] small,
+        body[data-theme="dark"] div[style*="background:#ffffff"] small {
+            color: #e5e7eb !important;
+            opacity: 0.9 !important;
+        }
+
+        /* FORZAR TODOS LOS DIV CON ESTILOS INLINE EN MODO OSCURO */
+        [data-theme="dark"] div[style],
+        body[data-theme="dark"] div[style] {
+            background: #374151 !important;
+            color: #f9fafb !important;
+        }
+
+        /* FORZAR VISIBILIDAD DE ELEMENTOS STREAMLIT EN MODO OSCURO */
+        [data-theme="dark"] .login-container *,
+        body[data-theme="dark"] .login-container * {
+            color: #f9fafb !important;
+        }
+
+        [data-theme="dark"] .login-container input,
+        [data-theme="dark"] .login-container textarea,
+        [data-theme="dark"] .login-container select,
+        body[data-theme="dark"] .login-container input,
+        body[data-theme="dark"] .login-container textarea,
+        body[data-theme="dark"] .login-container select {
+            background: #374151 !important;
+            color: #f9fafb !important;
+            border: 1px solid #6b7280 !important;
+        }
+
+        [data-theme="dark"] .login-container .stTextInput input,
+        [data-theme="dark"] .login-container [data-testid="textInput"] input,
+        body[data-theme="dark"] .login-container .stTextInput input,
+        body[data-theme="dark"] .login-container [data-testid="textInput"] input {
+            background: #374151 !important;
+            color: #f9fafb !important;
+            border: 1px solid #6b7280 !important;
+        }
+
+        /* BOTONES ESPECÍFICOS CON MEJOR CONTRASTE */
+        [data-theme="dark"] .login-container button,
+        [data-theme="dark"] .login-container .stButton > button,
+        body[data-theme="dark"] .login-container button,
+        body[data-theme="dark"] .login-container .stButton > button {
+            background: #374151 !important;
+            color: #ffffff !important;
+            border: 2px solid #6b7280 !important;
+            font-weight: 600 !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
+        }
+
+        [data-theme="dark"] .login-container button:hover,
+        [data-theme="dark"] .login-container .stButton > button:hover,
+        body[data-theme="dark"] .login-container button:hover,
+        body[data-theme="dark"] .login-container .stButton > button:hover {
+            background: #4b5563 !important;
+            border-color: #9ca3af !important;
+            color: #ffffff !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+        }
+
+        /* Forzar placeholder text en modo oscuro */
+        [data-theme="dark"] .login-container input::placeholder,
+        [data-theme="dark"] .login-container textarea::placeholder,
+        body[data-theme="dark"] .login-container input::placeholder,
+        body[data-theme="dark"] .login-container textarea::placeholder {
+            color: #9ca3af !important;
+            opacity: 0.8 !important;
+        }
+
+        /* Específico para elementos de form de Streamlit */
+        [data-theme="dark"] .login-container .stForm,
+        [data-theme="dark"] .login-container [data-testid="stForm"],
+        body[data-theme="dark"] .login-container .stForm,
+        body[data-theme="dark"] .login-container [data-testid="stForm"] {
+            background: transparent !important;
+        }
+
+        [data-theme="dark"] .login-container .stMarkdown,
+        body[data-theme="dark"] .login-container .stMarkdown {
+            color: #f9fafb !important;
+        }
+
+        [data-theme="dark"] .login-container .stMarkdown h1,
+        [data-theme="dark"] .login-container .stMarkdown h2,
+        [data-theme="dark"] .login-container .stMarkdown h3,
+        [data-theme="dark"] .login-container .stMarkdown h4,
+        [data-theme="dark"] .login-container .stMarkdown h5,
+        [data-theme="dark"] .login-container .stMarkdown h6,
+        body[data-theme="dark"] .login-container .stMarkdown h1,
+        body[data-theme="dark"] .login-container .stMarkdown h2,
+        body[data-theme="dark"] .login-container .stMarkdown h3,
+        body[data-theme="dark"] .login-container .stMarkdown h4,
+        body[data-theme="dark"] .login-container .stMarkdown h5,
+        body[data-theme="dark"] .login-container .stMarkdown h6 {
+            color: #f9fafb !important;
+        }
+
+        /* FORZAR TEMA OSCURO GLOBALMENTE CUANDO ESTÁ ACTIVO */
+        body[data-theme="dark"] {
+            background-color: #111827 !important;
+            color: #f9fafb !important;
+        }
+
+        body[data-theme="dark"] .stApp,
+        body[data-theme="dark"] .main {
+            background-color: #111827 !important;
+            color: #f9fafb !important;
+        }
+
+        body[data-theme="dark"] .stButton > button {
+            background: #4b5563 !important;
+            color: #f9fafb !important;
+            border: 1px solid #6b7280 !important;
+        }
+
+        body[data-theme="dark"] .stTextInput > div > div > input {
+            background: #374151 !important;
+            color: #f9fafb !important;
+            border: 1px solid #6b7280 !important;
+        }
+
+        body[data-theme="dark"] label {
+            color: #f9fafb !important;
+        }
+
+        body[data-theme="dark"] .stMarkdown {
+            color: #f9fafb !important;
+        }
+
+        body[data-theme="dark"] .stMarkdown h1,
+        body[data-theme="dark"] .stMarkdown h2,
+        body[data-theme="dark"] .stMarkdown h3,
+        body[data-theme="dark"] .stMarkdown h4 {
+            color: #f9fafb !important;
+        }
+
+        /* TOGGLE BUTTON STYLING EN MODO OSCURO */
+        [data-theme="dark"] button[key="theme_toggle_v6_positioned"],
+        body[data-theme="dark"] button[key="theme_toggle_v6_positioned"] {
+            background: #374151 !important;
+            color: #ffffff !important;
+            border: 2px solid #6b7280 !important;
+            font-weight: 600 !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
+        }
+
+        [data-theme="dark"] button[key="theme_toggle_v6_positioned"]:hover,
+        body[data-theme="dark"] button[key="theme_toggle_v6_positioned"]:hover {
+            background: #4b5563 !important;
+            border-color: #9ca3af !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
+        }
+
+        /* ========== FORZAR MODO CLARO ========== */
+        body[data-theme="light"],
+        body:not([data-theme="dark"]) {
+            background-color: #ffffff !important;
+            color: #1a202c !important;
+        }
+
+        body[data-theme="light"] .stApp,
+        body[data-theme="light"] .main,
+        body:not([data-theme="dark"]) .stApp,
+        body:not([data-theme="dark"]) .main {
+            background-color: #ffffff !important;
+            color: #1a202c !important;
+        }
+
+        body[data-theme="light"] .stButton > button,
+        body:not([data-theme="dark"]) .stButton > button {
+            background: #ffffff !important;
+            color: #1a202c !important;
+            border: 1px solid #d1d5db !important;
+        }
+
+        body[data-theme="light"] .stTextInput > div > div > input,
+        body:not([data-theme="dark"]) .stTextInput > div > div > input {
+            background: #ffffff !important;
+            color: #1a202c !important;
+            border: 1px solid #d1d5db !important;
+        }
+
+        body[data-theme="light"] label,
+        body:not([data-theme="dark"]) label {
+            color: #1a202c !important;
+        }
+
+        body[data-theme="light"] .stMarkdown,
+        body:not([data-theme="dark"]) .stMarkdown {
+            color: #1a202c !important;
+        }
+
+        body[data-theme="light"] .stMarkdown h1,
+        body[data-theme="light"] .stMarkdown h2,
+        body[data-theme="light"] .stMarkdown h3,
+        body[data-theme="light"] .stMarkdown h4,
+        body:not([data-theme="dark"]) .stMarkdown h1,
+        body:not([data-theme="dark"]) .stMarkdown h2,
+        body:not([data-theme="dark"]) .stMarkdown h3,
+        body:not([data-theme="dark"]) .stMarkdown h4 {
+            color: #1a202c !important;
+        }
+
+        /* SIDEBAR EN MODO CLARO */
+        body[data-theme="light"] .stSidebar,
+        body[data-theme="light"] [data-testid="stSidebar"],
+        body:not([data-theme="dark"]) .stSidebar,
+        body:not([data-theme="dark"]) [data-testid="stSidebar"] {
+            background-color: #f8fafc !important;
+            color: #1a202c !important;
+        }
+
+        body[data-theme="light"] .stSidebar *,
+        body[data-theme="light"] [data-testid="stSidebar"] *,
+        body:not([data-theme="dark"]) .stSidebar *,
+        body:not([data-theme="dark"]) [data-testid="stSidebar"] * {
+            color: #1a202c !important;
+        }
+
+        /* FORZAR ELEMENTOS GENERALES EN MODO CLARO */
+        body[data-theme="light"] *,
+        body:not([data-theme="dark"]) * {
+            color: #1a202c !important;
+        }
+
+        body[data-theme="light"] button,
+        body:not([data-theme="dark"]) button {
+            background: #ffffff !important;
+            color: #1a202c !important;
+            border: 1px solid #d1d5db !important;
+        }
+
+        body[data-theme="light"] input,
+        body[data-theme="light"] textarea,
+        body[data-theme="light"] select,
+        body:not([data-theme="dark"]) input,
+        body:not([data-theme="dark"]) textarea,
+        body:not([data-theme="dark"]) select {
+            background: #ffffff !important;
+            color: #1a202c !important;
+            border: 1px solid #d1d5db !important;
+        }
     </style>
     """, unsafe_allow_html=True)
-    
+
+    # Aplicar atributo data-theme para el modo oscuro
+    if 'theme_mode' in st.session_state:
+        current_theme = st.session_state.theme_mode
+
+        # CSS inmediato para modo oscuro si está activo
+        if current_theme == 'dark':
+            dark_css = f"""
+            <style>
+            /* FORZAR MODO OSCURO INMEDIATO - {timestamp} */
+            """
+            st.markdown(dark_css + """
+            html, body, .stApp, .main {
+                background-color: #111827 !important;
+                color: #f9fafb !important;
+            }
+
+            .stButton > button {
+                background: #4b5563 !important;
+                color: #f9fafb !important;
+                border: 1px solid #6b7280 !important;
+            }
+
+            .stTextInput > div > div > input {
+                background: #374151 !important;
+                color: #f9fafb !important;
+                border: 1px solid #6b7280 !important;
+            }
+
+            label, .stMarkdown, .stMarkdown * {
+                color: #f9fafb !important;
+            }
+
+            .login-container {
+                background: #1f2937 !important;
+                border: 1px solid #374151 !important;
+            }
+
+            .login-header {
+                background: linear-gradient(135deg, #374151 0%, #1f2937 100%) !important;
+                color: #f9fafb !important;
+            }
+
+            .demo-credentials {
+                background: linear-gradient(135deg, #065f46 0%, #047857 100%) !important;
+                color: #ffffff !important;
+                border: 2px solid rgba(52, 211, 153, 0.5) !important;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+            }
+
+            .demo-credentials * {
+                color: #ffffff !important;
+            }
+
+            .demo-credentials h4 {
+                color: #4ade80 !important;
+                font-weight: 700 !important;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+
+        st.markdown(f"""
+        <script>
+        document.body.setAttribute('data-theme', '{current_theme}');
+        document.documentElement.setAttribute('data-theme', '{current_theme}');
+
+        // También aplicar a elementos principales de Streamlit
+        setTimeout(function() {{
+            const stApp = document.querySelector('.stApp');
+            if (stApp) {{
+                stApp.setAttribute('data-theme', '{current_theme}');
+            }}
+            const main = document.querySelector('.main');
+            if (main) {{
+                main.setAttribute('data-theme', '{current_theme}');
+            }}
+
+            // APLICAR ESTILOS SEGÚN TEMA
+            if ('{current_theme}' === 'dark') {{
+                // FORZAR ESTILOS DE MODO OSCURO
+                const buttons = document.querySelectorAll('button');
+                buttons.forEach(btn => {{
+                    btn.style.background = '#374151';
+                    btn.style.color = '#ffffff';
+                    btn.style.border = '2px solid #6b7280';
+                    btn.style.fontWeight = '600';
+                }});
+
+                // Forzar divs con estilos inline (tarjetas)
+                const divs = document.querySelectorAll('div[style*="background"]');
+                divs.forEach(div => {{
+                    if (div.style.background && div.style.background.includes('#ffffff')) {{
+                        div.style.background = '#374151';
+                        div.style.color = '#ffffff';
+                        div.style.border = '2px solid #6b7280';
+
+                        // Forzar todos los elementos hijos
+                        const children = div.querySelectorAll('*');
+                        children.forEach(child => {{
+                            child.style.color = '#ffffff';
+                        }});
+                    }}
+                }});
+
+                // Forzar inputs
+                const inputs = document.querySelectorAll('input');
+                inputs.forEach(input => {{
+                    input.style.background = '#374151';
+                    input.style.color = '#ffffff';
+                    input.style.border = '1px solid #6b7280';
+                }});
+
+                // Forzar labels
+                const labels = document.querySelectorAll('label');
+                labels.forEach(label => {{
+                    label.style.color = '#ffffff';
+                }});
+
+                // Forzar toggle button específico
+                const toggleBtn = document.querySelector('button[key="theme_toggle_v6_positioned"]');
+                if (toggleBtn) {{
+                    toggleBtn.style.background = '#374151';
+                    toggleBtn.style.color = '#ffffff';
+                    toggleBtn.style.border = '2px solid #6b7280';
+                }}
+            }} else {{
+                // FORZAR ESTILOS DE MODO CLARO - RESETEAR DARK MODE
+                const buttons = document.querySelectorAll('button');
+                buttons.forEach(btn => {{
+                    btn.style.background = '#ffffff';
+                    btn.style.color = '#1a202c';
+                    btn.style.border = '1px solid #d1d5db';
+                    btn.style.fontWeight = 'normal';
+                }});
+
+                // Resetear divs con estilos inline
+                const divs = document.querySelectorAll('div[style*="background"]');
+                divs.forEach(div => {{
+                    if (div.style.background && div.style.background.includes('#374151')) {{
+                        div.style.background = '#ffffff';
+                        div.style.color = '#1a202c';
+                        div.style.border = '1px solid #e5e7eb';
+
+                        // Resetear todos los elementos hijos
+                        const children = div.querySelectorAll('*');
+                        children.forEach(child => {{
+                            child.style.color = '#1a202c';
+                        }});
+                    }}
+                }});
+
+                // Resetear inputs
+                const inputs = document.querySelectorAll('input');
+                inputs.forEach(input => {{
+                    input.style.background = '#ffffff';
+                    input.style.color = '#1a202c';
+                    input.style.border = '1px solid #d1d5db';
+                }});
+
+                // Resetear labels
+                const labels = document.querySelectorAll('label');
+                labels.forEach(label => {{
+                    label.style.color = '#1a202c';
+                }});
+
+                // Resetear sidebar
+                const sidebar = document.querySelector('.stSidebar, [data-testid="stSidebar"]');
+                if (sidebar) {{
+                    sidebar.style.backgroundColor = '#f8fafc';
+                    const sidebarElements = sidebar.querySelectorAll('*');
+                    sidebarElements.forEach(el => {{
+                        el.style.color = '#1a202c';
+                    }});
+                }}
+
+                // Resetear toggle button específico
+                const toggleBtn = document.querySelector('button[key="theme_toggle_v6_positioned"]');
+                if (toggleBtn) {{
+                    toggleBtn.style.background = '#ffffff';
+                    toggleBtn.style.color = '#1a202c';
+                    toggleBtn.style.border = '1px solid #d1d5db';
+                }}
+            }}
+        }}, 200);
+
+        // Ejecutar nuevamente después de 1 segundo por si hay elementos que se cargan tarde
+        setTimeout(function() {{
+            if ('{current_theme}' === 'dark') {{
+                const buttons = document.querySelectorAll('button');
+                buttons.forEach(btn => {{
+                    if (!btn.style.background || btn.style.background.includes('rgb(255')) {{
+                        btn.style.background = '#374151';
+                        btn.style.color = '#ffffff';
+                        btn.style.border = '2px solid #6b7280';
+                    }}
+                }});
+            }} else {{
+                // Asegurar modo claro
+                const buttons = document.querySelectorAll('button');
+                buttons.forEach(btn => {{
+                    if (btn.style.background && btn.style.background.includes('#374151')) {{
+                        btn.style.background = '#ffffff';
+                        btn.style.color = '#1a202c';
+                        btn.style.border = '1px solid #d1d5db';
+                    }}
+                }});
+
+                // Asegurar sidebar en modo claro
+                const sidebar = document.querySelector('.stSidebar, [data-testid="stSidebar"]');
+                if (sidebar) {{
+                    const sidebarElements = sidebar.querySelectorAll('*');
+                    sidebarElements.forEach(el => {{
+                        if (el.style.color && el.style.color.includes('#f9fafb')) {{
+                            el.style.color = '#1a202c';
+                        }}
+                    }});
+                }}
+            }}
+        }}, 1000);
+        </script>
+        """, unsafe_allow_html=True)
+
+    # CSS FINAL SUPER AGRESIVO para modo oscuro
+    if 'theme_mode' in st.session_state and st.session_state.theme_mode == 'dark':
+        final_timestamp = datetime.now().strftime("%H%M%S%f")
+        st.markdown(f"""
+        <style>
+        /* ULTRA AGGRESSIVE DARK MODE ONLY - {final_timestamp} */
+
+        /* APLICAR SOLO CUANDO data-theme="dark" */
+        [data-theme="dark"] button,
+        body[data-theme="dark"] button,
+        [data-theme="dark"] .stButton > button,
+        body[data-theme="dark"] .stButton > button,
+        [data-theme="dark"] input[type="submit"],
+        body[data-theme="dark"] input[type="submit"] {{
+            background: #374151 !important;
+            color: #ffffff !important;
+            border: 2px solid #6b7280 !important;
+            font-weight: 600 !important;
+        }}
+
+        /* DIVS CON BACKGROUND BLANCO SOLO EN MODO OSCURO */
+        [data-theme="dark"] div[style*="#ffffff"],
+        [data-theme="dark"] div[style*="rgb(255, 255, 255)"],
+        [data-theme="dark"] div[style*="white"],
+        body[data-theme="dark"] div[style*="#ffffff"],
+        body[data-theme="dark"] div[style*="rgb(255, 255, 255)"],
+        body[data-theme="dark"] div[style*="white"] {{
+            background: #374151 !important;
+            color: #ffffff !important;
+            border: 2px solid #6b7280 !important;
+        }}
+
+        /* INPUTS SOLO EN MODO OSCURO */
+        [data-theme="dark"] input,
+        [data-theme="dark"] textarea,
+        [data-theme="dark"] select,
+        body[data-theme="dark"] input,
+        body[data-theme="dark"] textarea,
+        body[data-theme="dark"] select {{
+            background: #374151 !important;
+            color: #ffffff !important;
+            border: 1px solid #6b7280 !important;
+        }}
+
+        /* LABELS SOLO EN MODO OSCURO */
+        [data-theme="dark"] label,
+        body[data-theme="dark"] label {{
+            color: #ffffff !important;
+        }}
+
+        /* MARKDOWN SOLO EN MODO OSCURO */
+        [data-theme="dark"] .stMarkdown,
+        [data-theme="dark"] .stMarkdown *,
+        body[data-theme="dark"] .stMarkdown,
+        body[data-theme="dark"] .stMarkdown * {{
+            color: #ffffff !important;
+        }}
+
+        /* CONTAINERS SOLO EN MODO OSCURO */
+        [data-theme="dark"] .login-container,
+        [data-theme="dark"] .demo-credentials,
+        [data-theme="dark"] .roles-section,
+        body[data-theme="dark"] .login-container,
+        body[data-theme="dark"] .demo-credentials,
+        body[data-theme="dark"] .roles-section {{
+            background: #1f2937 !important;
+            color: #ffffff !important;
+        }}
+
+        /* ELEMENTOS CON ESTILOS INLINE SOLO EN MODO OSCURO */
+        [data-theme="dark"] div[style],
+        body[data-theme="dark"] div[style] {{
+            background: #374151 !important;
+            color: #ffffff !important;
+        }}
+
+        [data-theme="dark"] div[style] *,
+        body[data-theme="dark"] div[style] * {{
+            color: #ffffff !important;
+        }}
+        </style>
+        """, unsafe_allow_html=True)
+
+    # CSS para asegurar modo claro correcto
+    else:
+        # Asegurar que en modo claro el texto sea negro
+        light_timestamp = datetime.now().strftime("%H%M%S%f")
+        st.markdown(f"""
+        <style>
+        /* FORCE LIGHT MODE COLORS - {light_timestamp} */
+
+        /* ASEGURAR TEXTO NEGRO EN MODO CLARO */
+        [data-theme="light"] *,
+        body[data-theme="light"] *,
+        body:not([data-theme="dark"]) *,
+        html:not([data-theme="dark"]) * {{
+            color: #1f2937 !important;
+        }}
+
+        /* BOTONES EN MODO CLARO */
+        [data-theme="light"] button,
+        body[data-theme="light"] button,
+        body:not([data-theme="dark"]) button {{
+            background: #ffffff !important;
+            color: #1f2937 !important;
+            border: 1px solid #d1d5db !important;
+        }}
+
+        /* INPUTS EN MODO CLARO */
+        [data-theme="light"] input,
+        [data-theme="light"] textarea,
+        [data-theme="light"] select,
+        body[data-theme="light"] input,
+        body[data-theme="light"] textarea,
+        body[data-theme="light"] select,
+        body:not([data-theme="dark"]) input,
+        body:not([data-theme="dark"]) textarea,
+        body:not([data-theme="dark"]) select {{
+            background: #ffffff !important;
+            color: #1f2937 !important;
+            border: 1px solid #d1d5db !important;
+        }}
+
+        /* SIDEBAR EN MODO CLARO */
+        [data-theme="light"] .stSidebar,
+        [data-theme="light"] .stSidebar *,
+        body[data-theme="light"] .stSidebar,
+        body[data-theme="light"] .stSidebar *,
+        body:not([data-theme="dark"]) .stSidebar,
+        body:not([data-theme="dark"]) .stSidebar * {{
+            color: #1f2937 !important;
+            background: #ffffff !important;
+        }}
+
+        /* MARKDOWN EN MODO CLARO */
+        [data-theme="light"] .stMarkdown,
+        [data-theme="light"] .stMarkdown *,
+        body[data-theme="light"] .stMarkdown,
+        body[data-theme="light"] .stMarkdown *,
+        body:not([data-theme="dark"]) .stMarkdown,
+        body:not([data-theme="dark"]) .stMarkdown * {{
+            color: #1f2937 !important;
+        }}
+        </style>
+        """, unsafe_allow_html=True)
+
+    # Debug: mostrar tema actual
+    if 'theme_mode' in st.session_state:
+        st.sidebar.info(f"🎨 Tema actual: {st.session_state.theme_mode} | Timestamp: {timestamp[:10]}")
+
     # Centrar la página de login
     col1, col2, col3 = st.columns([1, 2, 1])
     
