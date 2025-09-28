@@ -1540,6 +1540,16 @@ def fix_plotly_hover_issues(fig):
             data = fig.data
             layout_dict = dict(fig.layout)
 
+            # Debug: verificar estructura de data
+            print(f"🔍 Debug - Tipo de data: {type(data)}")
+            print(f"🔍 Debug - Longitud de data: {len(data) if hasattr(data, '__len__') else 'N/A'}")
+            if hasattr(data, '__iter__'):
+                for i, trace in enumerate(data):
+                    print(f"🔍 Debug - Trace {i}: tipo={type(trace)}")
+                    if hasattr(trace, 'keys'):
+                        print(f"🔍 Debug - Trace {i} keys: {list(trace.keys())[:5]}...")  # Primeras 5 keys
+                    break  # Solo mostrar el primero
+
             # Eliminar TODAS las configuraciones de hover del layout
             hover_keys = [
                 'hovermode', 'hoversubplots', 'hoverdistance', 'spikedistance',
@@ -1575,14 +1585,32 @@ def fix_plotly_hover_issues(fig):
                                 del clean_layout[axis][hk]
 
             # Crear nueva figura completamente limpia
-            fig = go.Figure(data=data, layout=clean_layout)
+            # Simplificar: usar add_trace en lugar de pasar data directamente
+            new_fig = go.Figure(layout=clean_layout)
+
+            # Agregar traces uno por uno para evitar problemas de estructura
+            for trace in data:
+                try:
+                    new_fig.add_trace(trace)
+                except Exception as trace_error:
+                    print(f"Error agregando trace: {trace_error}")
+                    continue
+
+            fig = new_fig
 
         except Exception as recreation_error:
             print(f"Error recreando figura: {recreation_error}")
+            print(f"Tipo de error: {type(recreation_error).__name__}")
+            if hasattr(recreation_error, 'args'):
+                print(f"Argumentos del error: {recreation_error.args}")
+
             # Fallback a método original
-            fig.update_layout(
-                hovermode=False
-            )
+            try:
+                fig.update_layout(hovermode=False)
+            except Exception as fallback_error:
+                print(f"Error en fallback: {fallback_error}")
+                # Crear figura básica nueva si todo falla
+                fig = go.Figure()
 
         # PASO 3: Protección para subplots múltiples
         for i in range(1, 11):  # xaxis1 hasta xaxis10
@@ -1679,6 +1707,45 @@ def main():
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
     }}
 
+    /* SIDEBAR TEXT VISIBILITY - CRITICAL FIX */
+    .stSidebar h1, .stSidebar h2, .stSidebar h3, .stSidebar h4, .stSidebar h5, .stSidebar h6,
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3,
+    [data-testid="stSidebar"] h4, [data-testid="stSidebar"] h5, [data-testid="stSidebar"] h6,
+    .stSidebar p:not(.stButton p), .stSidebar span:not(.stButton span),
+    [data-testid="stSidebar"] p:not(.stButton p), [data-testid="stSidebar"] span:not(.stButton span),
+    .stSidebar .stMarkdown p, .stSidebar .stMarkdown h1, .stSidebar .stMarkdown h2, .stSidebar .stMarkdown h3,
+    .stSidebar .stMarkdown h4, .stSidebar .stMarkdown h5, .stSidebar .stMarkdown h6,
+    .stSidebar .stMarkdown strong, .stSidebar .stMarkdown em,
+    [data-testid="stSidebar"] .stMarkdown p, [data-testid="stSidebar"] .stMarkdown h1,
+    [data-testid="stSidebar"] .stMarkdown h2, [data-testid="stSidebar"] .stMarkdown h3,
+    [data-testid="stSidebar"] .stMarkdown h4, [data-testid="stSidebar"] .stMarkdown h5,
+    [data-testid="stSidebar"] .stMarkdown h6,
+    [data-testid="stSidebar"] .stMarkdown strong, [data-testid="stSidebar"] .stMarkdown em,
+    .stSidebar .stMetric label, .stSidebar .stMetric div,
+    [data-testid="stSidebar"] .stMetric label, [data-testid="stSidebar"] .stMetric div,
+    .stSidebar label:not(.stButton label),
+    [data-testid="stSidebar"] label:not(.stButton label) {{
+        color: {text_color} !important;
+    }}
+
+    /* SIDEBAR BUTTONS - Keep green background with white text */
+    .stSidebar .stButton > button,
+    [data-testid="stSidebar"] .stButton > button {{
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        color: white !important;
+    }}
+
+    /* SIDEBAR ALERTS AND OTHER ELEMENTS */
+    .stSidebar .stAlert p, .stSidebar .stAlert span, .stSidebar .stAlert div:not([role="alert"]),
+    [data-testid="stSidebar"] .stAlert p, [data-testid="stSidebar"] .stAlert span,
+    [data-testid="stSidebar"] .stAlert div:not([role="alert"]),
+    .stSidebar [data-testid="stAlertContentInfo"] p,
+    .stSidebar [data-testid="stAlertContentSuccess"] p,
+    [data-testid="stSidebar"] [data-testid="stAlertContentInfo"] p,
+    [data-testid="stSidebar"] [data-testid="stAlertContentSuccess"] p {{
+        color: {text_color} !important;
+    }}
+
     /* Text visibility - CRITICAL FIX */
     .stMarkdown, .stMarkdown *, .element-container *,
     .stChatMessage, .stChatMessage *,
@@ -1692,6 +1759,32 @@ def main():
     [style*="background: linear-gradient(135deg, #4CAF50"] *,
     .access-granted, .access-granted * {{
         color: white !important;
+    }}
+
+    /* Dark mode: Keep black text on light backgrounds for contrast */
+    body[data-theme="dark"] [style*="background: #ffffff"] *,
+    body[data-theme="dark"] [style*="background: white"] *,
+    body[data-theme="dark"] [style*="background: #f8f9fa"] *,
+    body[data-theme="dark"] [style*="background: #f1f3f4"] *,
+    body[data-theme="dark"] [style*="background: #e9ecef"] *,
+    body[data-theme="dark"] .bg-light,
+    body[data-theme="dark"] .bg-light *,
+    body[data-theme="dark"] .card-body,
+    body[data-theme="dark"] .card-body * {{
+        color: #1a202c !important;
+    }}
+
+    /* Dark mode: Keep black text on warning/info backgrounds */
+    body[data-theme="dark"] [style*="background: #fff3cd"] *,
+    body[data-theme="dark"] [style*="background: #d1ecf1"] *,
+    body[data-theme="dark"] [style*="background: #d4edda"] *,
+    body[data-theme="dark"] .alert-warning,
+    body[data-theme="dark"] .alert-warning *,
+    body[data-theme="dark"] .alert-info,
+    body[data-theme="dark"] .alert-info *,
+    body[data-theme="dark"] .alert-success,
+    body[data-theme="dark"] .alert-success * {{
+        color: #1a202c !important;
     }}
     </style>
     """, unsafe_allow_html=True)
