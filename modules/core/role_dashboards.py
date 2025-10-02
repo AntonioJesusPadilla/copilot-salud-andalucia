@@ -75,8 +75,7 @@ class RoleDashboards:
 
             # Mostrar botón para acceder al dashboard administrativo completo
             if st.button("🛠️ Acceder a Dashboard Administrativo Completo",
-                        type="primary",
-                        help="Panel de control completo con widgets administrativos avanzados"):
+                        type="primary"):
                 st.session_state.show_admin_dashboard = True
 
             # Si se solicita mostrar el dashboard administrativo
@@ -293,41 +292,13 @@ class RoleDashboards:
             }.get(alert["type"], "#6b7280")
 
             st.markdown(f"""
-            <div style="
-                background: white;
-                padding: 1.2rem;
-                border-radius: 8px;
-                border-left: 5px solid {alert_color};
-                margin: 0.8rem 0;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-                border: 1px solid #e2e8f0;
-            ">
-                <div style="display: flex; align-items: flex-start; gap: 0.8rem;">
-                    <span style="
-                        font-size: 1.4rem;
-                        margin-top: 0.1rem;
-                        flex-shrink: 0;
-                    ">{alert['icon']}</span>
-                    <div style="flex-grow: 1;">
-                        <div style="
-                            color: #1a202c;
-                            font-weight: 600;
-                            font-size: 1rem;
-                            margin-bottom: 0.4rem;
-                            line-height: 1.4;
-                        ">{alert['message']}</div>
+            <div class="alert-card alert-{alert['type']}" style="border-left-color: {alert_color};">
+                <div class="alert-content">
+                    <span class="alert-icon">{alert['icon']}</span>
+                    <div class="alert-message-container">
+                        <div class="alert-message">{alert['message']}</div>
                     </div>
-                    <span style="
-                        background: {alert_color};
-                        color: white;
-                        padding: 0.3rem 0.8rem;
-                        border-radius: 16px;
-                        font-size: 0.85rem;
-                        font-weight: 600;
-                        flex-shrink: 0;
-                        text-transform: uppercase;
-                        letter-spacing: 0.5px;
-                    ">{alert['priority']}</span>
+                    <span class="alert-priority" style="background: {alert_color};">{alert['priority']}</span>
                 </div>
             </div>
             """, unsafe_allow_html=True)

@@ -1,82 +1,890 @@
-/* Styles for improved analysis presentation */
+/* ========== ESTILOS PROFESIONALES PARA ANÁLISIS - SAS ANDALUCÍA ========== */
+
+/* Tarjetas de análisis adaptativas al tema */
 .analysis-card {
-  background: linear-gradient(180deg, #ffffff, #f7fbff);
-  border: 1px solid rgba(14, 165, 233, 0.15);
+  background: var(--bg-surface, #f8fafc);
+  border: 1px solid var(--border-default, rgba(14, 165, 233, 0.15));
   border-radius: 12px;
   padding: 24px;
-  box-shadow: 0 8px 24px rgba(14, 165, 233, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   margin: 12px 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.analysis-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
 
 .analysis-title {
-  color: #0f172a;
+  color: var(--text-primary, #0f172a);
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 2px solid var(--border-subtle, #e2e8f0);
   padding-bottom: 0.5rem;
 }
 
 .analysis-subtitle {
-  color: #475569;
+  color: var(--text-secondary, #334155);
   font-size: 1rem;
   margin: 0.75rem 0;
 }
 
 .analysis-highlight {
-  background: linear-gradient(120deg, #dbeafe 0%, #e0f2fe 100%);
+  background: var(--interactive-primary, #0ea5e9);
   border-radius: 6px;
-  padding: 0.25rem 0.5rem;
-  color: #1e40af;
+  padding: 0.35rem 0.75rem;
+  color: var(--text-inverse, #ffffff);
   font-weight: 500;
   display: inline-block;
+  transition: all 0.2s ease;
 }
 
-/* Estilos para tablas en el análisis */
+.analysis-highlight:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+/* Tablas profesionales adaptativas */
 .analysis-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   margin: 1rem 0;
-  background: white;
+  background: var(--bg-base, white);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border-subtle, #e2e8f0);
 }
 
 .analysis-table th {
-  background: #f1f5f9;
+  background: var(--bg-elevated, #f1f5f9);
   padding: 12px;
   text-align: left;
   font-weight: 600;
-  color: #334155;
-  border-bottom: 2px solid #e2e8f0;
+  color: var(--text-primary, #0f172a);
+  border-bottom: 2px solid var(--border-default, #cbd5e1);
 }
 
 .analysis-table td {
   padding: 12px;
-  border-bottom: 1px solid #e2e8f0;
-  color: #475569;
+  border-bottom: 1px solid var(--border-subtle, #e2e8f0);
+  color: var(--text-secondary, #334155);
+}
+
+.analysis-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.analysis-table tbody tr:hover {
+  background: var(--bg-elevated, #f8fafc);
 }
 
 .kpi-row {
   display: flex;
   gap: 1rem;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .kpi-metric {
-  background: rgba(249,250,251,0.8);
+  background: var(--bg-elevated, rgba(249,250,251,0.8));
   border-radius: 8px;
-  padding: 12px;
+  padding: 12px 16px;
   min-width: 140px;
   text-align: center;
+  border: 1px solid var(--border-subtle, #e2e8f0);
+  transition: all 0.2s ease;
+}
+
+.kpi-metric:hover {
+  border-color: var(--interactive-primary, #0ea5e9);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
 }
 
 .export-button {
-  background: linear-gradient(90deg,#0ea5e9,#06b6d4);
-  color: white !important;
-  padding: 8px 14px;
+  background: linear-gradient(90deg, var(--interactive-primary, #0ea5e9), var(--interactive-hover, #0284c7));
+  color: var(--text-inverse, white) !important;
+  padding: 10px 18px;
   border-radius: 8px;
   border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
+
+.export-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+}
+
+/* ========== SISTEMA DE TEMAS PROFESIONAL - SAS ANDALUCÍA ========== */
+
+/* Transiciones suaves para todos los cambios de tema */
+* {
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Variables CSS que se adaptan al tema */
+[data-theme="light"] {
+    /* Jerarquía de textos profesional */
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --text-inverse: #ffffff;
+
+    /* Fondos en capas */
+    --bg-base: #ffffff;
+    --bg-surface: #f8fafc;
+    --bg-elevated: #f1f5f9;
+
+    /* Bordes profesionales */
+    --border-subtle: #e2e8f0;
+    --border-default: #cbd5e1;
+
+    /* Interacciones estilo SAS */
+    --interactive-primary: #0284c7;
+    --interactive-hover: #0369a1;
+}
+
+[data-theme="dark"] {
+    /* Jerarquía de textos profesional oscuro */
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --text-inverse: #0f172a;
+
+    /* Fondos oscuros profesionales */
+    --bg-base: #0f172a;
+    --bg-surface: #1e293b;
+    --bg-elevated: #334155;
+
+    /* Bordes sutiles */
+    --border-subtle: #334155;
+    --border-default: #475569;
+
+    /* Interacciones más brillantes */
+    --interactive-primary: #38bdf8;
+    --interactive-hover: #7dd3fc;
+}
+
+/* Aplicar colores de texto con jerarquía - SIN !important */
+[data-theme="light"] .analysis-card,
+[data-theme="dark"] .analysis-card {
+    background: var(--bg-surface);
+    border-color: var(--border-default);
+}
+
+[data-theme="light"] .analysis-title,
+[data-theme="dark"] .analysis-title {
+    color: var(--text-primary);
+    border-bottom-color: var(--border-subtle);
+}
+
+[data-theme="light"] .analysis-subtitle,
+[data-theme="dark"] .analysis-subtitle {
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .analysis-table,
+[data-theme="dark"] .analysis-table {
+    background: var(--bg-base);
+}
+
+[data-theme="light"] .analysis-table th,
+[data-theme="dark"] .analysis-table th {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border-bottom-color: var(--border-default);
+}
+
+[data-theme="light"] .analysis-table td,
+[data-theme="dark"] .analysis-table td {
+    color: var(--text-secondary);
+    border-bottom-color: var(--border-subtle);
+}
+
+/* INPUTS profesionales con transiciones suaves */
+[data-theme="light"] input,
+[data-theme="light"] textarea,
+[data-theme="light"] select {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    border: 1px solid var(--border-default);
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+    background: #334155 !important;
+    color: #f8fafc !important;
+    border: 1px solid #6b7280 !important;
+}
+
+/* Inputs de texto específicos en modo oscuro */
+[data-theme="dark"] .stTextInput input,
+[data-theme="dark"] [data-testid="stTextInput"] input,
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] input[type="password"] {
+    background: #334155 !important;
+    color: #f8fafc !important;
+    border: 1px solid #6b7280 !important;
+    font-size: 1rem !important;
+}
+
+/* Placeholders en inputs modo oscuro */
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+    color: #9ca3af !important;
+    opacity: 1 !important;
+}
+
+[data-theme="light"] input:focus,
+[data-theme="light"] textarea:focus,
+[data-theme="light"] select:focus,
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus,
+[data-theme="dark"] select:focus {
+    border-color: var(--interactive-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+/* Focus en inputs de texto modo oscuro */
+[data-theme="dark"] .stTextInput input:focus,
+[data-theme="dark"] [data-testid="stTextInput"] input:focus,
+[data-theme="dark"] input[type="text"]:focus,
+[data-theme="dark"] input[type="password"]:focus {
+    border-color: #60a5fa !important;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2) !important;
+}
+
+/* ========== FORZAR COLORES DE TEXTO EN MODO OSCURO ========== */
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6,
+[data-theme="dark"] p,
+[data-theme="dark"] span,
+[data-theme="dark"] div,
+[data-theme="dark"] label {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .stMarkdown h1,
+[data-theme="dark"] .stMarkdown h2,
+[data-theme="dark"] .stMarkdown h3,
+[data-theme="dark"] .stMarkdown h4,
+[data-theme="dark"] .stMarkdown h5,
+[data-theme="dark"] .stMarkdown h6 {
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .stMarkdown p {
+    color: #cbd5e1 !important;
+}
+
+/* Asegurar que todos los labels sean visibles en modo oscuro */
+[data-theme="dark"] label {
+    color: #f8fafc !important;
+    font-weight: 600 !important;
+}
+
+/* Labels de inputs de texto en modo oscuro */
+[data-theme="dark"] .stTextInput label,
+[data-theme="dark"] [data-testid="stTextInput"] label {
+    color: #f8fafc !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* ========== CHAT INPUT EN MODO OSCURO ========== */
+[data-theme="dark"] .stChatInput textarea,
+[data-theme="dark"] .stChatInput input,
+[data-theme="dark"] [data-testid="stChatInput"] textarea,
+[data-theme="dark"] [data-testid="stChatInput"] input {
+    background: #334155 !important;
+    color: #f8fafc !important;
+    border: 1px solid #6b7280 !important;
+}
+
+[data-theme="dark"] .stChatInput textarea::placeholder,
+[data-theme="dark"] .stChatInput input::placeholder,
+[data-theme="dark"] [data-testid="stChatInput"] textarea::placeholder,
+[data-theme="dark"] [data-testid="stChatInput"] input::placeholder {
+    color: #9ca3af !important;
+    opacity: 1 !important;
+}
+
+/* ========== ALERTAS ADMINISTRATIVAS ========== */
+.alert-card {
+    background: white;
+    padding: 1.2rem;
+    border-radius: 8px;
+    border-left-width: 5px;
+    border-left-style: solid;
+    margin: 0.8rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.alert-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+}
+
+.alert-icon {
+    font-size: 1.4rem;
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+}
+
+.alert-message-container {
+    flex-grow: 1;
+}
+
+.alert-message {
+    color: #1a202c;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.4rem;
+    line-height: 1.4;
+}
+
+.alert-priority {
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Alertas en modo oscuro */
+[data-theme="dark"] .alert-card {
+    background: #1e293b !important;
+    border-color: #475569 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+}
+
+[data-theme="dark"] .alert-message {
+    color: #f8fafc !important;
+}
+
+/* ========== SELECTBOX Y DROPDOWNS EN MODO OSCURO ========== */
+[data-theme="dark"] .stSelectbox,
+[data-theme="dark"] [data-baseweb="select"],
+[data-theme="dark"] [data-testid="stSelectbox"] {
+    background: #334155 !important;
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .stSelectbox > div,
+[data-theme="dark"] [data-baseweb="select"] > div {
+    background: #334155 !important;
+    color: #f8fafc !important;
+    border-color: #6b7280 !important;
+}
+
+/* Opciones del dropdown cuando se despliega */
+[data-theme="dark"] [role="listbox"],
+[data-theme="dark"] [data-baseweb="menu"],
+[data-theme="dark"] ul[role="listbox"] {
+    background: #1e293b !important;
+    border: 1px solid #6b7280 !important;
+}
+
+[data-theme="dark"] [role="option"],
+[data-theme="dark"] li[role="option"] {
+    background: #1e293b !important;
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] [role="option"]:hover,
+[data-theme="dark"] li[role="option"]:hover {
+    background: #334155 !important;
+    color: #ffffff !important;
+}
+
+/* Texto seleccionado en el selectbox */
+[data-theme="dark"] .stSelectbox input,
+[data-theme="dark"] [data-baseweb="select"] input,
+[data-theme="dark"] .stSelectbox div[data-baseweb="select"] > div {
+    color: #f8fafc !important;
+    background: #334155 !important;
+}
+
+/* ========== BOTONES GENERALES EN MODO OSCURO ========== */
+[data-theme="dark"] .stButton > button,
+[data-theme="dark"] button[kind="primary"],
+[data-theme="dark"] button[kind="secondary"] {
+    background: #334155 !important;
+    color: #f8fafc !important;
+    border: 1px solid #6b7280 !important;
+}
+
+[data-theme="dark"] .stButton > button:hover,
+[data-theme="dark"] button[kind="primary"]:hover,
+[data-theme="dark"] button[kind="secondary"]:hover {
+    background: #475569 !important;
+    color: #ffffff !important;
+    border-color: #9ca3af !important;
+}
+
+/* ========== INSIGHTS ESTRATÉGICOS Y PANEL EJECUTIVO ========== */
+.insight-card {
+    background: white;
+    padding: 1.8rem;
+    border-radius: 12px;
+    margin: 1.2rem 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    border: 1px solid #e2e8f0;
+}
+
+.insight-title {
+    color: #1a202c;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.insight-description {
+    color: #2d3748;
+    margin: 0 0 1.2rem 0;
+    line-height: 1.6;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.insight-action-box {
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    padding: 1.2rem;
+    border-radius: 10px;
+}
+
+.insight-action-title {
+    color: #1a202c;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.6rem;
+}
+
+.insight-action-text {
+    color: #2d3748;
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-weight: 600;
+}
+
+/* Modo oscuro para Insights */
+[data-theme="dark"] .insight-card {
+    background: #1e293b !important;
+    border-color: #475569 !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
+}
+
+[data-theme="dark"] .insight-title {
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .insight-description {
+    color: #cbd5e1 !important;
+}
+
+[data-theme="dark"] .insight-action-box {
+    background: linear-gradient(135deg, #334155 0%, #475569 100%) !important;
+}
+
+[data-theme="dark"] .insight-action-title {
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .insight-action-text {
+    color: #e5e7eb !important;
+}
+
+/* ========== TOOLTIPS EN BOTONES ========== */
+/* Tooltips con fondo claro y texto negro en TODOS los temas */
+.stTooltipIcon,
+[data-testid="stTooltipHoverTarget"],
+[role="tooltip"],
+.stTooltipContent {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Contenido del tooltip */
+[role="tooltip"] > div,
+.stTooltipContent > div {
+    color: #0f172a !important;
+    background: #ffffff !important;
+}
+
+/* Modo claro - mantener fondo claro y texto negro */
+[data-theme="light"] .stTooltipIcon,
+[data-theme="light"] [data-testid="stTooltipHoverTarget"],
+[data-theme="light"] [role="tooltip"],
+[data-theme="light"] .stTooltipContent {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+/* Modo oscuro - TAMBIÉN fondo claro y texto negro */
+[data-theme="dark"] .stTooltipIcon,
+[data-theme="dark"] [data-testid="stTooltipHoverTarget"],
+[data-theme="dark"] [role="tooltip"],
+[data-theme="dark"] .stTooltipContent {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+/* Texto dentro de tooltips siempre negro */
+[role="tooltip"] *,
+.stTooltipContent * {
+    color: #0f172a !important;
+}
+
+/* ========== TARJETAS DE ESTADO OPERATIVO ========== */
+.status-card {
+    text-align: center;
+    padding: 1.3rem;
+    border-radius: 12px;
+    border-width: 3px;
+    border-style: solid;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.status-card-title {
+    font-weight: 700;
+    color: #1a202c;
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+}
+
+.status-card-subtitle {
+    font-size: 1rem;
+    color: #2d3748;
+    font-weight: 600;
+}
+
+/* Modo oscuro para tarjetas de estado */
+[data-theme="dark"] .status-card {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+[data-theme="dark"] .status-card-title {
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] .status-card-subtitle {
+    color: #cbd5e1 !important;
+}
+
+/* Fondos y bordes específicos por tipo en modo oscuro */
+[data-theme="dark"] .status-card-success {
+    background: #064e3b !important;
+    border-color: #10b981 !important;
+}
+
+[data-theme="dark"] .status-card-warning {
+    background: #78350f !important;
+    border-color: #fbbf24 !important;
+}
+
+[data-theme="dark"] .status-card-info {
+    background: #1e3a8a !important;
+    border-color: #60a5fa !important;
+}
+
+[data-theme="dark"] .status-card-predictive {
+    background: #581c87 !important;
+    border-color: #c084fc !important;
+}
+
+/* ========== REDIMENSIONAMIENTO DINÁMICO DEL ÁREA PRINCIPAL ========== */
+/* Transición suave para el contenedor principal y sidebar */
+section[data-testid="stSidebar"],
+section[data-testid="stMain"],
+.main,
+.main .block-container {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Cuando el sidebar está colapsado (tiene atributo aria-expanded="false") */
+body:has(section[data-testid="stSidebar"][aria-expanded="false"]) section[data-testid="stMain"],
+body:has(section[data-testid="stSidebar"][aria-expanded="false"]) .main,
+body:has(section[data-testid="stSidebar"][aria-expanded="false"]) .main .block-container {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* Cuando el sidebar está expandido */
+body:has(section[data-testid="stSidebar"][aria-expanded="true"]) section[data-testid="stMain"],
+body:has(section[data-testid="stSidebar"][aria-expanded="true"]) .main {
+    margin-left: auto !important;
+}
+
+/* Detección alternativa usando clases de Streamlit */
+body:has(section[data-testid="stSidebar"].collapsed) section[data-testid="stMain"],
+body:has(section[data-testid="stSidebar"].collapsed) .main,
+body:has(section[data-testid="stSidebar"].collapsed) .main .block-container {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+/* ========== TARJETA DE USUARIO EN SIDEBAR ========== */
+/* Asegurar que siempre sea legible - MÁXIMA PRIORIDAD */
+.sidebar-user-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+/* TODOS los elementos dentro de la tarjeta deben ser blancos - FORZAR */
+.sidebar-user-card,
+.sidebar-user-card *,
+.sidebar-user-card strong,
+.sidebar-user-card small,
+.sidebar-user-card div,
+.sidebar-user-card span,
+.sidebar-user-card p,
+.sidebar-user-card br + *,
+section[data-testid="stSidebar"] .sidebar-user-card * {
+    color: #ffffff !important;
+}
+
+/* Selector específico para el nombre (strong) */
+.sidebar-user-card > strong,
+.sidebar-user-card strong.sidebar-user-name,
+.sidebar-user-card > div > strong,
+strong.sidebar-user-name {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+    display: inline-block !important;
+}
+
+/* Selector específico para el rol (small) */
+.sidebar-user-card > small,
+.sidebar-user-card small.sidebar-user-role,
+.sidebar-user-card > div > small,
+small.sidebar-user-role {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+    display: inline-block !important;
+}
+
+/* Botón de organización */
+.sidebar-user-org,
+.sidebar-user-card .sidebar-user-org,
+div.sidebar-user-org {
+    background: rgba(255, 255, 255, 0.25) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.sidebar-user-org *,
+.sidebar-user-org small,
+.sidebar-user-card .sidebar-user-org *,
+.sidebar-user-card .sidebar-user-org small {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* En modo oscuro, asegurar máximo contraste */
+[data-theme="dark"] .sidebar-user-card {
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme="dark"] .sidebar-user-card * {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .sidebar-user-card strong,
+[data-theme="dark"] .sidebar-user-name {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7) !important;
+}
+
+[data-theme="dark"] .sidebar-user-card small,
+[data-theme="dark"] .sidebar-user-role {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-theme="dark"] .sidebar-user-org {
+    background: rgba(255, 255, 255, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+[data-theme="dark"] .sidebar-user-org *,
+[data-theme="dark"] .sidebar-user-org small {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* En modo claro también mejorar contraste */
+[data-theme="light"] .sidebar-user-card * {
+    color: #ffffff !important;
+}
+
+[data-theme="light"] .sidebar-user-card strong,
+[data-theme="light"] .sidebar-user-name {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="light"] .sidebar-user-card small,
+[data-theme="light"] .sidebar-user-role {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="light"] .sidebar-user-org {
+    background: rgba(255, 255, 255, 0.25) !important;
+}
+
+[data-theme="light"] .sidebar-user-org * {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+/* ========== TOASTS Y NOTIFICACIONES ========== */
+/* Fondo claro y texto oscuro en TODOS los temas */
+
+/* Toasts de Streamlit */
+.stToast,
+[data-testid="stToast"],
+[data-testid="toastContainer"] > div,
+div[data-baseweb="toast"] {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Contenido del toast */
+.stToast *,
+[data-testid="stToast"] *,
+div[data-baseweb="toast"] * {
+    color: #0f172a !important;
+}
+
+/* Success messages */
+.stSuccess,
+[data-testid="stSuccess"],
+div[data-baseweb="notification"][kind="positive"] {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-left: 4px solid #10b981 !important;
+}
+
+.stSuccess *,
+[data-testid="stSuccess"] * {
+    color: #0f172a !important;
+}
+
+/* Info messages */
+.stInfo,
+[data-testid="stInfo"],
+div[data-baseweb="notification"][kind="info"] {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-left: 4px solid #3b82f6 !important;
+}
+
+.stInfo *,
+[data-testid="stInfo"] * {
+    color: #0f172a !important;
+}
+
+/* Warning messages */
+.stWarning,
+[data-testid="stWarning"],
+div[data-baseweb="notification"][kind="warning"] {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-left: 4px solid #f59e0b !important;
+}
+
+.stWarning *,
+[data-testid="stWarning"] * {
+    color: #0f172a !important;
+}
+
+/* Error messages */
+.stError,
+[data-testid="stError"],
+div[data-baseweb="notification"][kind="negative"] {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-left: 4px solid #ef4444 !important;
+}
+
+.stError *,
+[data-testid="stError"] * {
+    color: #0f172a !important;
+}
+
+/* Alert component */
+.stAlert,
+div[data-testid="stAlert"] {
+    background: #ffffff !important;
+    color: #0f172a !important;
+}
+
+.stAlert *,
+div[data-testid="stAlert"] * {
+    color: #0f172a !important;
+}
+
+/* Modo oscuro - forzar mismo estilo */
+[data-theme="dark"] .stToast,
+[data-theme="dark"] [data-testid="stToast"],
+[data-theme="dark"] div[data-baseweb="toast"],
+[data-theme="dark"] .stSuccess,
+[data-theme="dark"] .stInfo,
+[data-theme="dark"] .stWarning,
+[data-theme="dark"] .stError,
+[data-theme="dark"] .stAlert {
+    background: #ffffff !important;
+    color: #0f172a !important;
+}
+
+[data-theme="dark"] .stToast *,
+[data-theme="dark"] [data-testid="stToast"] *,
+[data-theme="dark"] div[data-baseweb="toast"] *,
+[data-theme="dark"] .stSuccess *,
+[data-theme="dark"] .stInfo *,
+[data-theme="dark"] .stWarning *,
+[data-theme="dark"] .stError *,
+[data-theme="dark"] .stAlert * {
+    color: #0f172a !important;
+}
+
+/* CACHE INVALIDATION - FORCE RELOAD 2025-10-02-14:30:00-v2 */

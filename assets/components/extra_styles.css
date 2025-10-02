@@ -1,0 +1,921 @@
+/* ========== STYLES FOR IMPROVED ANALYSIS PRESENTATION ========== */
+
+/* LIGHT MODE STYLES */
+[data-theme="light"] .analysis-card,
+body[data-theme="light"] .analysis-card,
+.analysis-card {
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  border: 1px solid rgba(5, 150, 105, 0.15);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.08);
+  margin: 12px 0;
+}
+
+[data-theme="light"] .analysis-title,
+body[data-theme="light"] .analysis-title,
+.analysis-title {
+  color: #0f172a;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0.5rem;
+}
+
+[data-theme="light"] .analysis-subtitle,
+body[data-theme="light"] .analysis-subtitle,
+.analysis-subtitle {
+  color: #475569;
+  font-size: 1rem;
+  margin: 0.75rem 0;
+}
+
+[data-theme="light"] .analysis-highlight,
+body[data-theme="light"] .analysis-highlight,
+.analysis-highlight {
+  background: linear-gradient(120deg, rgba(5, 150, 105, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+  border: 1px solid rgba(5, 150, 105, 0.2);
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  color: #059669;
+  font-weight: 500;
+  display: inline-block;
+}
+
+/* DARK MODE STYLES */
+[data-theme="dark"] .analysis-card,
+body[data-theme="dark"] .analysis-card {
+  background: linear-gradient(180deg, #1e293b, #0f172a) !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+  margin: 12px 0;
+}
+
+[data-theme="dark"] .analysis-title,
+body[data-theme="dark"] .analysis-title {
+  color: #ffffff !important;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #64748b !important;
+  padding-bottom: 0.5rem;
+}
+
+[data-theme="dark"] .analysis-subtitle,
+body[data-theme="dark"] .analysis-subtitle {
+  color: #f1f5f9 !important;
+  font-size: 1rem;
+  margin: 0.75rem 0;
+}
+
+[data-theme="dark"] .analysis-highlight,
+body[data-theme="dark"] .analysis-highlight {
+  background: linear-gradient(120deg, rgba(59, 130, 246, 0.2) 0%, rgba(30, 64, 175, 0.2) 100%) !important;
+  border: 1px solid rgba(59, 130, 246, 0.4) !important;
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  color: #3b82f6 !important;
+  font-weight: 500;
+  display: inline-block;
+}
+
+/* ========== TABLAS DE ANÁLISIS ========== */
+
+/* LIGHT MODE TABLE STYLES */
+[data-theme="light"] .analysis-table,
+body[data-theme="light"] .analysis-table,
+.analysis-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1rem 0;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+[data-theme="light"] .analysis-table th,
+body[data-theme="light"] .analysis-table th,
+.analysis-table th {
+  background: #f1f5f9;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #334155;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+[data-theme="light"] .analysis-table td,
+body[data-theme="light"] .analysis-table td,
+.analysis-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+/* DARK MODE TABLE STYLES */
+[data-theme="dark"] .analysis-table,
+body[data-theme="dark"] .analysis-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1rem 0;
+  background: #1e293b !important;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
+  border: 1px solid #64748b !important;
+}
+
+[data-theme="dark"] .analysis-table th,
+body[data-theme="dark"] .analysis-table th {
+  background: #334155 !important;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #ffffff !important;
+  border-bottom: 2px solid #64748b !important;
+}
+
+[data-theme="dark"] .analysis-table td,
+body[data-theme="dark"] .analysis-table td {
+  padding: 12px;
+  border-bottom: 1px solid #64748b !important;
+  color: #f1f5f9 !important;
+  background: transparent !important;
+}
+
+/* ========== KPI COMPONENTS ========== */
+
+.kpi-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* LIGHT MODE KPI */
+[data-theme="light"] .kpi-metric,
+body[data-theme="light"] .kpi-metric,
+.kpi-metric {
+  background: rgba(249,250,251,0.8);
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 140px;
+  text-align: center;
+  color: #334155;
+}
+
+/* DARK MODE KPI */
+[data-theme="dark"] .kpi-metric,
+body[data-theme="dark"] .kpi-metric {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border: 1px solid #64748b !important;
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 140px;
+  text-align: center;
+  color: #f1f5f9 !important;
+}
+
+/* ========== UNIVERSAL BUTTON AND TOOLTIP FIXES ========== */
+
+/* Fix all button sizes to be consistent */
+.stButton > button,
+button[kind="primary"],
+button[kind="secondary"],
+button[data-testid*="stBaseButton"] {
+    min-height: 40px !important;
+    padding: 8px 16px !important;
+    font-size: 14px !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    line-height: 1.4 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+}
+
+/* SIMPLE TOOLTIP FIX - Override problematic Streamlit styles */
+.stTooltipIcon {
+    display: inline-block !important;
+    position: relative !important;
+}
+
+[data-testid="stTooltipHoverTarget"] {
+    display: inline-block !important;
+    position: relative !important;
+}
+
+/* Reset problematic inline styles */
+[data-testid="stTooltipHoverTarget"][style] {
+    width: auto !important;
+    justify-content: center !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+/* Better tooltip positioning */
+div[data-baseweb="tooltip"] {
+    z-index: 9999 !important;
+    margin-top: 4px !important;
+    position: absolute !important;
+}
+
+/* Universal login page and general app fixes */
+.stApp [data-testid="stTooltipHoverTarget"],
+.main [data-testid="stTooltipHoverTarget"],
+body [data-testid="stTooltipHoverTarget"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+}
+
+/* ========== SPECIFIC TOGGLE BUTTON FIX ========== */
+/* Target the exact toggle button by key */
+.st-key-theme_toggle_v6_positioned {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.st-key-theme_toggle_v6_positioned .stTooltipIcon {
+    display: inline-block !important;
+    width: auto !important;
+}
+
+.st-key-theme_toggle_v6_positioned [data-testid="stTooltipHoverTarget"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    flex-direction: row !important;
+}
+
+/* Override problematic inline styles specifically for toggle */
+.st-key-theme_toggle_v6_positioned [data-testid="stTooltipHoverTarget"][style*="justify-content: flex-end"] {
+    justify-content: center !important;
+}
+
+.st-key-theme_toggle_v6_positioned [data-testid="stTooltipHoverTarget"][style*="width: 100%"] {
+    width: auto !important;
+}
+
+/* Fix column layout affecting toggle */
+div[data-testid="column"]:last-child .st-key-theme_toggle_v6_positioned {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+div[data-testid="column"]:last-child .st-key-theme_toggle_v6_positioned .stButton {
+    width: auto !important;
+    min-width: 100px !important;
+}
+
+/* CRITICAL: Prevent text wrapping in toggle button */
+.st-key-theme_toggle_v6_positioned button,
+.st-key-theme_toggle_v6_positioned .stButton > button {
+    white-space: nowrap !important;
+    overflow: visible !important;
+    min-width: 100px !important;
+    width: auto !important;
+    max-width: none !important;
+    padding: 8px 20px !important;
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+    text-overflow: clip !important;
+    word-break: keep-all !important;
+    hyphens: none !important;
+    flex-shrink: 0 !important;
+}
+
+/* Override any CSS that might restrict button width */
+div[data-testid="column"]:last-child .st-key-theme_toggle_v6_positioned,
+div[data-testid="column"]:last-child .st-key-theme_toggle_v6_positioned .stButton,
+div[data-testid="column"]:last-child .st-key-theme_toggle_v6_positioned button {
+    width: auto !important;
+    max-width: none !important;
+    min-width: 100px !important;
+    flex-shrink: 0 !important;
+}
+
+.st-key-theme_toggle_v6_positioned [data-testid="stMarkdownContainer"],
+.st-key-theme_toggle_v6_positioned [data-testid="stMarkdownContainer"] p {
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    width: auto !important;
+    min-width: auto !important;
+}
+
+/* Ensure consistent button styling across all pages */
+.stApp .stButton > button,
+.main .stButton > button,
+body .stButton > button {
+    min-height: 40px !important;
+    padding: 8px 16px !important;
+    font-size: 14px !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    line-height: 1.4 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+}
+
+/* ========== LOGIN PAGE LAYOUT FIXES ========== */
+
+/* Ensure login container consistency */
+.login-container {
+    width: 100% !important;
+    max-width: 420px !important;
+    min-width: 380px !important;
+    box-sizing: border-box !important;
+}
+
+/* Fix login header layout issues */
+.login-header {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    min-height: 120px !important;
+}
+
+.login-header h1,
+.login-header h3,
+.login-header p {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 95% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* CRITICAL: DARK MODE LOGIN HEADER TEXT CONTRAST */
+[data-theme="dark"] .login-header,
+body[data-theme="dark"] .login-header {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 120px !important;
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%) !important;
+}
+
+[data-theme="dark"] .login-header h1,
+[data-theme="dark"] .login-header h3,
+[data-theme="dark"] .login-header p,
+body[data-theme="dark"] .login-header h1,
+body[data-theme="dark"] .login-header h3,
+body[data-theme="dark"] .login-header p {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 95% !important;
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* SUPER AGGRESSIVE DARK MODE TEXT VISIBILITY */
+[data-theme="dark"] .stHeadingWithActionElements h1,
+[data-theme="dark"] .stHeadingWithActionElements h3,
+body[data-theme="dark"] .stHeadingWithActionElements h1,
+body[data-theme="dark"] .stHeadingWithActionElements h3 {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Target specific Streamlit heading elements in dark mode */
+[data-theme="dark"] div[data-testid="stHeadingWithActionElements"] h1,
+[data-theme="dark"] div[data-testid="stHeadingWithActionElements"] h3,
+[data-theme="dark"] div[data-testid="stHeadingWithActionElements"] p,
+body[data-theme="dark"] div[data-testid="stHeadingWithActionElements"] h1,
+body[data-theme="dark"] div[data-testid="stHeadingWithActionElements"] h3,
+body[data-theme="dark"] div[data-testid="stHeadingWithActionElements"] p {
+    color: #ffffff !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
+    font-weight: 600 !important;
+}
+
+/* Ensure all login header content is visible in dark mode */
+[data-theme="dark"] .login-header *,
+body[data-theme="dark"] .login-header * {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* ========== HEADER CONSISTENCY FIX ========== */
+
+/* Universal header dimensions for both themes */
+.main-header,
+.main-header-secure {
+    min-height: 140px !important;
+    max-height: 200px !important;
+    padding: 2rem 2.5rem !important;
+    margin-bottom: 2rem !important;
+    border-radius: 16px !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+
+.main-header h1,
+.main-header-secure h1 {
+    font-size: 2.2rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 0.5rem !important;
+    line-height: 1.2 !important;
+}
+
+.main-header h3,
+.main-header-secure h3 {
+    font-size: 1.1rem !important;
+    font-weight: 400 !important;
+    margin-bottom: 0.75rem !important;
+    opacity: 0.8 !important;
+}
+
+.main-header p,
+.main-header-secure p {
+    font-size: 0.95rem !important;
+    margin: 0.25rem 0 !important;
+}
+
+/* Ensure consistent border and spacing */
+.main-header::after,
+.main-header-secure::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 4px !important;
+    height: 100% !important;
+    border-radius: 0 2px 2px 0 !important;
+}
+
+/* Force consistent dimensions in both themes */
+[data-theme="light"] .main-header,
+[data-theme="dark"] .main-header,
+body[data-theme="light"] .main-header,
+body[data-theme="dark"] .main-header,
+[data-theme="light"] .main-header-secure,
+[data-theme="dark"] .main-header-secure,
+body[data-theme="light"] .main-header-secure,
+body[data-theme="dark"] .main-header-secure {
+    min-height: 140px !important;
+    max-height: 200px !important;
+    padding: 2rem 2.5rem !important;
+    margin-bottom: 2rem !important;
+    box-sizing: border-box !important;
+}
+
+/* Fix any responsive overrides that might cause size differences */
+@media (min-width: 769px) {
+    .main-header,
+    .main-header-secure {
+        padding: 2rem 2.5rem !important;
+        min-height: 140px !important;
+        max-height: 200px !important;
+    }
+}
+
+/* Ensure badges and content don't affect header size */
+.main-header .executive-badge,
+.main-header .user-badge,
+.main-header-secure .executive-badge,
+.main-header-secure .user-badge {
+    margin: 0.5rem 0 !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.85rem !important;
+}
+
+/* Fix any layout shifts caused by content */
+.main-header *,
+.main-header-secure * {
+    box-sizing: border-box !important;
+}
+
+/* Prevent box-shadow differences from affecting layout */
+[data-theme="light"] .main-header,
+body[data-theme="light"] .main-header {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+[data-theme="dark"] .main-header,
+body[data-theme="dark"] .main-header {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ========== COLUMN SPACING CONSISTENCY ========== */
+
+/* Fix column spacing and alignment for header buttons */
+div[data-testid="column"] {
+    padding: 0 !important;
+    gap: 0 !important;
+}
+
+/* Ensure consistent spacing between columns in header layout */
+div[data-testid="column"]:nth-child(1) {
+    flex: 7 !important;
+    padding-right: 0.5rem !important;
+}
+
+div[data-testid="column"]:nth-child(2) {
+    flex: 1 !important;
+    padding: 0 0.25rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+div[data-testid="column"]:nth-child(3) {
+    flex: 1 !important;
+    padding-left: 0.25rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Force consistent column behavior across themes */
+[data-theme="light"] div[data-testid="column"],
+[data-theme="dark"] div[data-testid="column"],
+body[data-theme="light"] div[data-testid="column"],
+body[data-theme="dark"] div[data-testid="column"] {
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* Fix spacing for toggle button container specifically */
+div[data-testid="column"]:last-child {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding-left: 0.25rem !important;
+}
+
+/* Ensure no margin differences between themes */
+[data-theme="light"] div[data-testid="column"]:last-child,
+[data-theme="dark"] div[data-testid="column"]:last-child,
+body[data-theme="light"] div[data-testid="column"]:last-child,
+body[data-theme="dark"] div[data-testid="column"]:last-child {
+    padding-left: 0.25rem !important;
+    margin: 0 !important;
+}
+
+/* ========== EXPORT BUTTON ========== */
+
+/* LIGHT MODE EXPORT BUTTON */
+[data-theme="light"] .export-button,
+body[data-theme="light"] .export-button,
+.export-button {
+  background: linear-gradient(90deg, #059669, #10b981);
+  color: white !important;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+[data-theme="light"] .export-button:hover,
+body[data-theme="light"] .export-button:hover,
+.export-button:hover {
+  background: linear-gradient(90deg, #047857, #059669);
+  transform: translateY(-1px);
+}
+
+/* DARK MODE EXPORT BUTTON */
+[data-theme="dark"] .export-button,
+body[data-theme="dark"] .export-button {
+  background: linear-gradient(90deg, #3b82f6, #1e40af) !important;
+  color: white !important;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .export-button:hover,
+body[data-theme="dark"] .export-button:hover {
+  background: linear-gradient(90deg, #1e40af, #3b82f6) !important;
+  transform: translateY(-1px);
+}
+
+/* ========== UNIVERSAL DARK MODE HEADING FIXES ========== */
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6,
+body[data-theme="dark"] h1,
+body[data-theme="dark"] h2,
+body[data-theme="dark"] h3,
+body[data-theme="dark"] h4,
+body[data-theme="dark"] h5,
+body[data-theme="dark"] h6 {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Streamlit specific heading elements */
+[data-theme="dark"] div[data-testid="stHeadingWithActionElements"],
+[data-theme="dark"] div[data-testid="stHeadingWithActionElements"] *,
+body[data-theme="dark"] div[data-testid="stHeadingWithActionElements"],
+body[data-theme="dark"] div[data-testid="stHeadingWithActionElements"] * {
+    color: #ffffff !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* All paragraphs in dark mode */
+[data-theme="dark"] p,
+body[data-theme="dark"] p {
+    color: #f3f4f6 !important;
+}
+
+/* ========== SUPER AGGRESSIVE LOGIN DARK MODE FIXES ========== */
+
+/* FORCE ALL LOGIN CONTAINER ELEMENTS TO BE WHITE IN DARK MODE */
+[data-theme="dark"] .login-container,
+[data-theme="dark"] .login-container *,
+body[data-theme="dark"] .login-container,
+body[data-theme="dark"] .login-container * {
+    color: #ffffff !important;
+}
+
+/* SPECIFIC LOGIN HEADER ELEMENTS */
+[data-theme="dark"] .login-header,
+[data-theme="dark"] .login-header *,
+body[data-theme="dark"] .login-header,
+body[data-theme="dark"] .login-header * {
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* STREAMLIT MARKDOWN ELEMENTS IN LOGIN */
+[data-theme="dark"] .login-container .stMarkdown,
+[data-theme="dark"] .login-container .stMarkdown *,
+[data-theme="dark"] .login-container [data-testid="stMarkdown"],
+[data-theme="dark"] .login-container [data-testid="stMarkdown"] *,
+body[data-theme="dark"] .login-container .stMarkdown,
+body[data-theme="dark"] .login-container .stMarkdown *,
+body[data-theme="dark"] .login-container [data-testid="stMarkdown"],
+body[data-theme="dark"] .login-container [data-testid="stMarkdown"] * {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* ALL HEADING ELEMENTS IN LOGIN PAGE */
+[data-theme="dark"] .login-container h1,
+[data-theme="dark"] .login-container h2,
+[data-theme="dark"] .login-container h3,
+[data-theme="dark"] .login-container h4,
+[data-theme="dark"] .login-container h5,
+[data-theme="dark"] .login-container h6,
+body[data-theme="dark"] .login-container h1,
+body[data-theme="dark"] .login-container h2,
+body[data-theme="dark"] .login-container h3,
+body[data-theme="dark"] .login-container h4,
+body[data-theme="dark"] .login-container h5,
+body[data-theme="dark"] .login-container h6 {
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+    font-weight: 600 !important;
+}
+
+/* FORM LABELS AND TEXT */
+[data-theme="dark"] .login-container label,
+[data-theme="dark"] .login-container .stLabel,
+[data-theme="dark"] .login-container [data-testid="stLabel"],
+body[data-theme="dark"] .login-container label,
+body[data-theme="dark"] .login-container .stLabel,
+body[data-theme="dark"] .login-container [data-testid="stLabel"] {
+    color: #ffffff !important;
+    font-weight: 500 !important;
+}
+
+/* DEMO CREDENTIALS SECTION */
+[data-theme="dark"] .demo-credentials,
+[data-theme="dark"] .demo-credentials *,
+body[data-theme="dark"] .demo-credentials,
+body[data-theme="dark"] .demo-credentials * {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* ROLES SECTION */
+[data-theme="dark"] .roles-section,
+[data-theme="dark"] .roles-section *,
+body[data-theme="dark"] .roles-section,
+body[data-theme="dark"] .roles-section * {
+    color: #ffffff !important;
+}
+
+/* ROLE CARDS - SUPER AGGRESSIVE */
+[data-theme="dark"] div[style*="background: #ffffff"],
+[data-theme="dark"] div[style*="background:#ffffff"],
+[data-theme="dark"] div[style*="background: white"],
+[data-theme="dark"] div[style*="background:white"],
+body[data-theme="dark"] div[style*="background: #ffffff"],
+body[data-theme="dark"] div[style*="background:#ffffff"],
+body[data-theme="dark"] div[style*="background: white"],
+body[data-theme="dark"] div[style*="background:white"] {
+    background: #374151 !important;
+    color: #ffffff !important;
+    border: 2px solid #6b7280 !important;
+}
+
+[data-theme="dark"] div[style*="background: #ffffff"] *,
+[data-theme="dark"] div[style*="background:#ffffff"] *,
+[data-theme="dark"] div[style*="background: white"] *,
+[data-theme="dark"] div[style*="background:white"] *,
+body[data-theme="dark"] div[style*="background: #ffffff"] *,
+body[data-theme="dark"] div[style*="background:#ffffff"] *,
+body[data-theme="dark"] div[style*="background: white"] *,
+body[data-theme="dark"] div[style*="background:white"] * {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* FORCE ALL DIV ELEMENTS WITH INLINE STYLES */
+[data-theme="dark"] div[style],
+body[data-theme="dark"] div[style] {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] div[style] *,
+body[data-theme="dark"] div[style] * {
+    color: #ffffff !important;
+}
+
+/* SUPER FORCE ALL TEXT ELEMENTS */
+[data-theme="dark"] span,
+[data-theme="dark"] div,
+[data-theme="dark"] p,
+[data-theme="dark"] strong,
+[data-theme="dark"] small,
+[data-theme="dark"] em,
+[data-theme="dark"] i,
+[data-theme="dark"] b,
+body[data-theme="dark"] span,
+body[data-theme="dark"] div,
+body[data-theme="dark"] p,
+body[data-theme="dark"] strong,
+body[data-theme="dark"] small,
+body[data-theme="dark"] em,
+body[data-theme="dark"] i,
+body[data-theme="dark"] b {
+    color: #ffffff !important;
+}
+
+/* STREAMLIT SPECIFIC ELEMENTS */
+[data-theme="dark"] [data-testid="stHeadingWithActionElements"],
+[data-theme="dark"] [data-testid="stHeadingWithActionElements"] *,
+body[data-theme="dark"] [data-testid="stHeadingWithActionElements"],
+body[data-theme="dark"] [data-testid="stHeadingWithActionElements"] * {
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* ENSURE BUTTONS HAVE GOOD CONTRAST */
+[data-theme="dark"] button,
+[data-theme="dark"] .stButton > button,
+body[data-theme="dark"] button,
+body[data-theme="dark"] .stButton > button {
+    background: #374151 !important;
+    color: #ffffff !important;
+    border: 2px solid #6b7280 !important;
+    font-weight: 600 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* INPUTS WITH GOOD CONTRAST */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select,
+body[data-theme="dark"] input,
+body[data-theme="dark"] textarea,
+body[data-theme="dark"] select {
+    background: #374151 !important;
+    color: #ffffff !important;
+    border: 1px solid #6b7280 !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder,
+body[data-theme="dark"] input::placeholder,
+body[data-theme="dark"] textarea::placeholder {
+    color: #9ca3af !important;
+    opacity: 0.8 !important;
+}
+
+/* ========== EXTREME SPECIFICITY FOR PROBLEMATIC ELEMENTS ========== */
+
+/* Target any element that might have black text */
+[data-theme="dark"] *[style*="color: #000"],
+[data-theme="dark"] *[style*="color:#000"],
+[data-theme="dark"] *[style*="color: black"],
+[data-theme="dark"] *[style*="color:black"],
+[data-theme="dark"] *[style*="color: rgb(0, 0, 0)"],
+[data-theme="dark"] *[style*="color:rgb(0, 0, 0)"],
+body[data-theme="dark"] *[style*="color: #000"],
+body[data-theme="dark"] *[style*="color:#000"],
+body[data-theme="dark"] *[style*="color: black"],
+body[data-theme="dark"] *[style*="color:black"],
+body[data-theme="dark"] *[style*="color: rgb(0, 0, 0)"],
+body[data-theme="dark"] *[style*="color:rgb(0, 0, 0)"] {
+    color: #ffffff !important;
+}
+
+/* Target any element with dark text colors */
+[data-theme="dark"] *[style*="color: #1a202c"],
+[data-theme="dark"] *[style*="color:#1a202c"],
+[data-theme="dark"] *[style*="color: #2d3748"],
+[data-theme="dark"] *[style*="color:#2d3748"],
+[data-theme="dark"] *[style*="color: #4a5568"],
+[data-theme="dark"] *[style*="color:#4a5568"],
+body[data-theme="dark"] *[style*="color: #1a202c"],
+body[data-theme="dark"] *[style*="color:#1a202c"],
+body[data-theme="dark"] *[style*="color: #2d3748"],
+body[data-theme="dark"] *[style*="color:#2d3748"],
+body[data-theme="dark"] *[style*="color: #4a5568"],
+body[data-theme="dark"] *[style*="color:#4a5568"] {
+    color: #ffffff !important;
+}
+
+/* Override any potential CSS from Streamlit */
+[data-theme="dark"] .st-emotion-cache-1r6slb0,
+[data-theme="dark"] .st-emotion-cache-gf1xsr,
+[data-theme="dark"] .st-emotion-cache-gi0tri,
+[data-theme="dark"] .st-emotion-cache-cg44g1,
+body[data-theme="dark"] .st-emotion-cache-1r6slb0,
+body[data-theme="dark"] .st-emotion-cache-gf1xsr,
+body[data-theme="dark"] .st-emotion-cache-gi0tri,
+body[data-theme="dark"] .st-emotion-cache-cg44g1 {
+    color: #ffffff !important;
+}
+
+/* Target the exact HTML structure from your example */
+[data-theme="dark"] div[data-testid="stHeadingWithActionElements"] h1#copilot-salud,
+[data-theme="dark"] div[data-testid="stHeadingWithActionElements"] h3#sistema-de-analisis-sociosanitario,
+body[data-theme="dark"] div[data-testid="stHeadingWithActionElements"] h1#copilot-salud,
+body[data-theme="dark"] div[data-testid="stHeadingWithActionElements"] h3#sistema-de-analisis-sociosanitario {
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9) !important;
+    font-weight: 700 !important;
+}
+
+/* Ensure any nested spans or elements are also white */
+[data-theme="dark"] div[data-testid="stHeadingWithActionElements"] span,
+[data-theme="dark"] div[data-testid="stHeadingWithActionElements"] a,
+body[data-theme="dark"] div[data-testid="stHeadingWithActionElements"] span,
+body[data-theme="dark"] div[data-testid="stHeadingWithActionElements"] a {
+    color: #ffffff !important;
+}
+
+/* Force any SVG icons to be visible */
+[data-theme="dark"] svg,
+body[data-theme="dark"] svg {
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+/* Ultra-specific for the login header structure */
+[data-theme="dark"] .login-header h1,
+[data-theme="dark"] .login-header h3,
+[data-theme="dark"] .login-header p,
+body[data-theme="dark"] .login-header h1,
+body[data-theme="dark"] .login-header h3,
+body[data-theme="dark"] .login-header p {
+    color: #ffffff !important;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9) !important;
+    font-weight: 600 !important;
+}
+
+/* Force any remaining dark text */
+[data-theme="dark"] *:not(input):not(textarea):not(select),
+body[data-theme="dark"] *:not(input):not(textarea):not(select) {
+    color: #ffffff !important;
+}
+
+/* Special handling for Streamlit's emotion cache classes */
+[data-theme="dark"] [class*="st-emotion-cache"],
+[data-theme="dark"] [class*="st-emotion-cache"] *,
+body[data-theme="dark"] [class*="st-emotion-cache"],
+body[data-theme="dark"] [class*="st-emotion-cache"] * {
+    color: #ffffff !important;
+}

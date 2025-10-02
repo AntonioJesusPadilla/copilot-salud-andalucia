@@ -305,27 +305,19 @@ class AdminDashboard:
                 }.get(action['priority'], '#6b7280')
 
                 st.markdown(f"""
-                <div style="
-                    background: white;
+                <div class="insight-card" style="
                     padding: 1.2rem;
-                    border-radius: 10px;
                     border-left: 5px solid {priority_color};
                     margin: 0.8rem 0;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-                    border: 1px solid #e2e8f0;
                 ">
-                    <div style="
-                        color: #000000;
-                        font-weight: 700;
+                    <div class="insight-title" style="
                         font-size: 1.1rem;
                         margin-bottom: 0.6rem;
-                        line-height: 1.4;
                     ">{action['action']}</div>
                     <div style="display: flex; align-items: center; gap: 1rem;">
-                        <span style="
-                            color: #000000;
+                        <span class="insight-description" style="
                             font-size: 0.95rem;
-                            font-weight: 600;
+                            margin: 0;
                         ">📅 {action['deadline']}</span>
                         <span style="
                             background: {priority_color};
@@ -354,30 +346,21 @@ class AdminDashboard:
 
             for metric, data in exec_metrics.items():
                 st.markdown(f"""
-                <div style="
-                    background: white;
+                <div class="insight-card" style="
                     padding: 1.3rem;
-                    border-radius: 10px;
                     margin: 0.8rem 0;
-                    border: 2px solid #e2e8f0;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
                 ">
-                    <div style="
-                        font-weight: 700;
-                        color: #000000;
+                    <div class="insight-title" style="
                         font-size: 1.05rem;
                         margin-bottom: 0.6rem;
                     ">{metric}</div>
-                    <div style="
+                    <div class="insight-title" style="
                         font-size: 1.6rem;
-                        font-weight: 700;
-                        color: #000000;
                         margin: 0.5rem 0;
                     ">{data['value']}</div>
-                    <div style="
+                    <div class="insight-description" style="
                         font-size: 1rem;
-                        color: #000000;
-                        font-weight: 600;
+                        margin: 0;
                     ">{data['trend']}</div>
                 </div>
                 """, unsafe_allow_html=True)

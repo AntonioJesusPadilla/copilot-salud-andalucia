@@ -353,15 +353,7 @@ class AdminWidgets:
             }.get(insight['priority'], '#6b7280')
 
             st.markdown(f"""
-            <div style="
-                background: white;
-                padding: 1.8rem;
-                border-radius: 12px;
-                border-left: 6px solid {priority_color};
-                margin: 1.2rem 0;
-                box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-                border: 1px solid #e2e8f0;
-            ">
+            <div class="insight-card" style="border-left: 6px solid {priority_color};">
                 <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem;">
                     <span style="
                         font-size: 2rem;
@@ -370,14 +362,7 @@ class AdminWidgets:
                     ">{insight['icon']}</span>
                     <div style="flex-grow: 1;">
                         <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.8rem;">
-                            <h3 style="
-                                color: #000000;
-                                font-size: 1.3rem;
-                                font-weight: 700;
-                                margin: 0;
-                                flex-grow: 1;
-                                line-height: 1.3;
-                            ">{insight['title']}</h3>
+                            <h3 class="insight-title" style="flex-grow: 1;">{insight['title']}</h3>
                             <span style="
                                 background: {priority_color};
                                 color: white;
@@ -390,38 +375,13 @@ class AdminWidgets:
                                 flex-shrink: 0;
                             ">{insight['priority']}</span>
                         </div>
-                        <p style="
-                            color: #000000;
-                            margin: 0 0 1.2rem 0;
-                            line-height: 1.6;
-                            font-size: 1rem;
-                            font-weight: 500;
-                        ">{insight['description']}</p>
-                        <div style="
-                            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
-                            padding: 1.2rem;
-                            border-radius: 10px;
-                            border-left: 4px solid {priority_color};
-                        ">
-                            <div style="
-                                color: #000000;
-                                font-weight: 700;
-                                font-size: 1rem;
-                                margin-bottom: 0.6rem;
-                                display: flex;
-                                align-items: center;
-                                gap: 0.5rem;
-                            ">
+                        <p class="insight-description">{insight['description']}</p>
+                        <div class="insight-action-box" style="border-left: 4px solid {priority_color};">
+                            <div class="insight-action-title" style="display: flex; align-items: center; gap: 0.5rem;">
                                 <span>💼</span>
                                 <span>Acción Recomendada:</span>
                             </div>
-                            <p style="
-                                color: #000000;
-                                margin: 0;
-                                font-size: 1rem;
-                                line-height: 1.5;
-                                font-weight: 600;
-                            ">{insight['action']}</p>
+                            <p class="insight-action-text">{insight['action']}</p>
                         </div>
                     </div>
                 </div>
@@ -762,14 +722,10 @@ class AdminWidgets:
             colors = alert_colors.get(alert['level'], alert_colors['info'])
 
             st.markdown(f"""
-            <div style="
-                background: white;
+            <div class="insight-card" style="
                 border-left: 6px solid {colors['border']};
                 padding: 1.5rem;
                 margin: 1rem 0;
-                border-radius: 8px;
-                box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-                border: 1px solid #e2e8f0;
             ">
                 <div style="display: flex; align-items: flex-start; gap: 1rem;">
                     <span style="
@@ -779,10 +735,8 @@ class AdminWidgets:
                     ">{alert['icon']}</span>
                     <div style="flex: 1;">
                         <div style="display: flex; align-items: center; margin-bottom: 0.8rem; gap: 1rem;">
-                            <h4 style="
-                                color: #000000;
+                            <h4 class="insight-title" style="
                                 font-size: 1.1rem;
-                                font-weight: 700;
                                 margin: 0;
                                 flex-grow: 1;
                             ">{alert['title']}</h4>
@@ -796,29 +750,21 @@ class AdminWidgets:
                                 white-space: nowrap;
                             ">{alert['time']}</span>
                         </div>
-                        <p style="
-                            color: #000000;
+                        <p class="insight-description" style="
                             margin: 0 0 1rem 0;
                             font-size: 1rem;
-                            line-height: 1.5;
-                            font-weight: 500;
                         ">{alert['message']}</p>
-                        <div style="
+                        <div class="insight-action-box" style="
                             background: {colors['bg']};
                             padding: 0.8rem 1rem;
-                            border-radius: 6px;
                             border-left: 3px solid {colors['border']};
                         ">
-                            <strong style="
-                                color: #000000;
+                            <strong class="insight-action-title" style="
                                 font-size: 0.95rem;
-                                font-weight: 700;
                             ">📋 Acción requerida:</strong>
-                            <span style="
-                                color: #000000;
+                            <span class="insight-action-text" style="
                                 margin-left: 0.5rem;
                                 font-size: 0.95rem;
-                                font-weight: 600;
                             ">{alert['action']}</span>
                         </div>
                     </div>
@@ -828,43 +774,43 @@ class AdminWidgets:
 
         # Indicadores de estado del sistema
         st.markdown("---")
-        st.markdown("##### 📊 Estado Operativo en Tiempo Real")
+        st.markdown('<h5 style="color: #f8fafc;">📊 Estado Operativo en Tiempo Real</h5>', unsafe_allow_html=True)
 
         col1, col2, col3, col4 = st.columns(4)
 
         with col1:
             st.markdown("""
-            <div style="text-align: center; padding: 1.3rem; background: #f0fdf4; border-radius: 12px; border: 3px solid #22c55e; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <div class="status-card status-card-success" style="background: #f0fdf4; border-color: #22c55e;">
                 <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🟢</div>
-                <div style="font-weight: 700; color: #000000; font-size: 1.1rem; margin-bottom: 0.3rem;">OPERATIVO</div>
-                <div style="font-size: 1rem; color: #000000; font-weight: 600;">Sistema estable</div>
+                <div class="status-card-title" style="font-weight: 700; color: #065f46; font-size: 1.1rem; margin-bottom: 0.3rem;">OPERATIVO</div>
+                <div class="status-card-subtitle" style="font-size: 1rem; color: #047857; font-weight: 600;">Sistema estable</div>
             </div>
             """, unsafe_allow_html=True)
 
         with col2:
             st.markdown("""
-            <div style="text-align: center; padding: 1.3rem; background: #fefce8; border-radius: 12px; border: 3px solid #eab308; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <div class="status-card status-card-warning" style="background: #fefce8; border-color: #eab308;">
                 <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🟡</div>
-                <div style="font-weight: 700; color: #000000; font-size: 1.1rem; margin-bottom: 0.3rem;">ALERTA</div>
-                <div style="font-size: 1rem; color: #000000; font-weight: 600;">Capacidad alta</div>
+                <div class="status-card-title" style="font-weight: 700; color: #78350f; font-size: 1.1rem; margin-bottom: 0.3rem;">ALERTA</div>
+                <div class="status-card-subtitle" style="font-size: 1rem; color: #92400e; font-weight: 600;">Capacidad alta</div>
             </div>
             """, unsafe_allow_html=True)
 
         with col3:
             st.markdown("""
-            <div style="text-align: center; padding: 1.3rem; background: #eff6ff; border-radius: 12px; border: 3px solid #3b82f6; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <div class="status-card status-card-info" style="background: #eff6ff; border-color: #3b82f6;">
                 <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🔵</div>
-                <div style="font-weight: 700; color: #000000; font-size: 1.1rem; margin-bottom: 0.3rem;">MONITOREO</div>
-                <div style="font-size: 1rem; color: #000000; font-weight: 600;">Supervisión activa</div>
+                <div class="status-card-title" style="font-weight: 700; color: #1e3a8a; font-size: 1.1rem; margin-bottom: 0.3rem;">MONITOREO</div>
+                <div class="status-card-subtitle" style="font-size: 1rem; color: #1e40af; font-weight: 600;">Supervisión activa</div>
             </div>
             """, unsafe_allow_html=True)
 
         with col4:
             st.markdown("""
-            <div style="text-align: center; padding: 1.3rem; background: #f3e8ff; border-radius: 12px; border: 3px solid #a855f7; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <div class="status-card status-card-predictive" style="background: #f3e8ff; border-color: #a855f7;">
                 <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🔮</div>
-                <div style="font-weight: 700; color: #000000; font-size: 1.1rem; margin-bottom: 0.3rem;">PREDICTIVO</div>
-                <div style="font-size: 1rem; color: #000000; font-weight: 600;">IA analítica</div>
+                <div class="status-card-title" style="font-weight: 700; color: #581c87; font-size: 1.1rem; margin-bottom: 0.3rem;">PREDICTIVO</div>
+                <div class="status-card-subtitle" style="font-size: 1rem; color: #6b21a8; font-weight: 600;">IA analítica</div>
             </div>
             """, unsafe_allow_html=True)
 

@@ -1,0 +1,1676 @@
+/* ===========================================
+   COPILOT SALUD ANDALUCÍA - TEMA CLARO PROFESIONAL
+   =========================================== */
+
+/* Importar sistema de colores */
+@import url('./color-system.css');
+
+/* ========== VARIABLES CSS MODO CLARO - SISTEMA PROFESIONAL ========== */
+:root {
+    /* Colores principales usando el sistema profesional */
+    --primary-color: var(--health-primary);
+    --secondary-color: var(--health-secondary);
+    --accent-color: var(--health-accent);
+    --warning-color: var(--warning);
+    --success-color: var(--success);
+    --info-color: var(--info);
+    --danger-color: var(--error);
+
+    /* Variables de tema - aplicadas por defecto */
+    --text-primary: var(--neutral-900);
+    --text-secondary: var(--neutral-700);
+    --text-muted: var(--neutral-600);
+    --bg-primary: #ffffff;
+    --bg-secondary: var(--neutral-50);
+    --bg-tertiary: var(--neutral-100);
+    --border-color: var(--neutral-200);
+    --shadow-color: rgba(0, 0, 0, 0.1);
+
+    --border-radius: var(--radius-md);
+    --shadow: var(--shadow-sm);
+    --shadow-hover: var(--shadow-md);
+    --transition: var(--transition-normal);
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ========== BASE STYLES ========== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-primary);
+    background: linear-gradient(135deg, #fafbfc 0%, #ffffff 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: var(--transition);
+}
+
+/* ========== HEADER ========== */
+.main-header {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    padding: 2rem 2.5rem;
+    border-radius: 16px;
+    color: var(--text-primary);
+    text-align: left;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(20px);
+}
+
+.main-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    border-radius: 0 2px 2px 0;
+}
+
+.main-header h1 {
+    font-family: var(--font-primary);
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+    position: relative;
+    z-index: 2;
+    line-height: 1.2;
+}
+
+.main-header h3 {
+    font-size: 1.1rem;
+    opacity: 0.8;
+    font-weight: 400;
+    margin-bottom: 0.75rem;
+    position: relative;
+    z-index: 2;
+    color: var(--primary-color);
+}
+
+.main-header p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin: 0.25rem 0;
+    position: relative;
+    z-index: 2;
+    font-weight: 400;
+}
+
+/* ========== SIDEBAR ========== */
+.sidebar-content {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(20px);
+    position: sticky;
+    top: 1rem;
+}
+
+.sidebar-content h3 {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ========== METRICS CARDS ========== */
+.metric-card {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 16px;
+    border-left: 4px solid var(--primary-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+    margin-bottom: 1rem;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.06);
+    border-left-color: var(--secondary-color);
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* ========== CHAT CONTAINER ========== */
+.chat-container {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+    min-height: 550px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+    position: relative;
+    backdrop-filter: blur(20px);
+}
+
+.chat-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ========== CHART CONTAINERS ========== */
+.chart-container {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-container:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.06);
+    transform: translateY(-1px);
+}
+
+.chart-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+}
+
+/* ========== BUTTONS ========== */
+.stButton > button {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white !important;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(5, 150, 105, 0.15);
+    font-family: var(--font-primary);
+    letter-spacing: 0.01em;
+    outline: none;
+}
+
+.stButton > button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+    background: linear-gradient(135deg, #047857, #10b981);
+    border: 1px solid transparent;
+}
+
+/* ========== TABLES ========== */
+.stDataFrame {
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+}
+
+.stDataFrame tbody tr:nth-child(even) {
+    background: var(--bg-secondary);
+}
+
+.stDataFrame tbody tr:hover {
+    background: rgba(5, 150, 105, 0.1);
+    transition: background 0.2s ease;
+}
+
+.stDataFrame td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+/* ========== GLIDE DATA EDITOR - LIGHT MODE ========== */
+[data-theme="light"] .stDataFrameGlideDataEditor,
+body[data-theme="light"] .stDataFrameGlideDataEditor {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+}
+
+[data-theme="light"] .dvn-scroller,
+body[data-theme="light"] .dvn-scroller {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="light"] .dvn-scroll-inner,
+body[data-theme="light"] .dvn-scroll-inner {
+    background: var(--bg-primary) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+[data-theme="light"] .dvn-stack,
+body[data-theme="light"] .dvn-stack {
+    background: var(--bg-primary) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Grid cells y contenido - modo claro */
+[data-theme="light"] .gdg-cell,
+body[data-theme="light"] .gdg-cell {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="light"] .gdg-header-cell,
+body[data-theme="light"] .gdg-header-cell {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* ========== INPUTS - COMPREHENSIVE FIX ========== */
+.stSelectbox > div > div,
+.stTextInput > div > div,
+.stTextInput input,
+.stTextArea textarea,
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+textarea,
+[role="textbox"] {
+    border-radius: var(--border-radius) !important;
+    border: 2px solid var(--border-color) !important;
+    transition: var(--transition) !important;
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.stSelectbox > div > div:hover,
+.stTextInput > div > div:hover,
+.stTextInput input:hover,
+.stTextArea textarea:hover,
+input[type="text"]:hover,
+input[type="password"]:hover,
+input[type="email"]:hover,
+input[type="number"]:hover,
+textarea:hover {
+    border-color: var(--primary-color) !important;
+}
+
+.stSelectbox > div > div:focus-within,
+.stTextInput > div > div:focus-within,
+.stTextInput input:focus,
+.stTextArea textarea:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+[role="textbox"]:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1) !important;
+    outline: none !important;
+}
+
+/* Input placeholders */
+input::placeholder,
+textarea::placeholder,
+.stTextInput input::placeholder,
+.stTextArea textarea::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 0.7 !important;
+}
+
+/* ========== STATUS MESSAGES ========== */
+.success-box {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: var(--success-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+}
+
+.info-box {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    color: var(--info-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+}
+
+.warning-box {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    color: var(--warning-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+}
+
+/* ========== TABS ========== */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 0;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    padding: 0.5rem;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.stTabs [data-baseweb="tab"] {
+    background: transparent;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.stTabs [data-baseweb="tab"]:hover {
+    background: rgba(5, 150, 105, 0.1);
+}
+
+.stTabs [data-baseweb="tab"][aria-selected="true"] {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.2);
+}
+
+/* ========== SCROLLBARS ========== */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 3px;
+    transition: background 0.3s ease;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
+/* ========== TOOLTIPS - PROFESSIONAL LIGHT MODE DESIGN - OVERRIDE INLINE STYLES ========== */
+html[data-theme="light"] body .stTooltipIcon,
+html[data-theme="light"] body .stTooltip,
+html[data-theme="light"] body div[data-baseweb="tooltip"],
+html[data-theme="light"] body div[data-baseweb="tooltip"] > div,
+html[data-theme="light"] body .stTooltipContent,
+html body[data-theme="light"] .stTooltipIcon,
+html body[data-theme="light"] .stTooltip,
+html body[data-theme="light"] div[data-baseweb="tooltip"],
+html body[data-theme="light"] div[data-baseweb="tooltip"] > div,
+html body[data-theme="light"] .stTooltipContent {
+    background: #ffffff !important;
+    color: #1f2937 !important;
+    border: 1px solid #059669 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(5, 150, 105, 0.1) !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    padding: 10px 14px !important;
+    z-index: 10000 !important;
+    max-width: 300px !important;
+    line-height: 1.4 !important;
+    backdrop-filter: blur(20px) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* MEGA SPECIFIC OVERRIDE FOR INLINE STYLES FROM APP.PY */
+html[data-theme="light"] body div[data-baseweb="tooltip"][style],
+html body[data-theme="light"] div[data-baseweb="tooltip"][style] {
+    background: #ffffff !important;
+    color: #1f2937 !important;
+    border: 1px solid #059669 !important;
+}
+
+html[data-theme="light"] body div[data-baseweb="tooltip"] > div[style],
+html body[data-theme="light"] div[data-baseweb="tooltip"] > div[style] {
+    background: #ffffff !important;
+    color: #1f2937 !important;
+    padding: 10px 14px !important;
+}
+
+/* Tooltip arrow/pointer styling */
+body[data-theme="light"] div[data-baseweb="tooltip"]::before,
+[data-theme="light"] div[data-baseweb="tooltip"]::before {
+    border-color: #059669 transparent transparent transparent !important;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)) !important;
+}
+
+body[data-theme="light"] div[data-baseweb="tooltip"]::after,
+[data-theme="light"] div[data-baseweb="tooltip"]::after {
+    border-color: #ffffff transparent transparent transparent !important;
+}
+
+/* ========== TOOLTIP HOVER BUTTONS - LIGHT MODE SIMPLE FIX ========== */
+[data-theme="light"] [data-testid="stTooltipHoverTarget"],
+body[data-theme="light"] [data-testid="stTooltipHoverTarget"] {
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border-radius: 6px !important;
+    padding: 4px !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+}
+
+/* ========== LIGHT MODE TOGGLE SPECIFIC FIX ========== */
+[data-theme="light"] .st-key-theme_toggle_v6_positioned [data-testid="stTooltipHoverTarget"],
+body[data-theme="light"] .st-key-theme_toggle_v6_positioned [data-testid="stTooltipHoverTarget"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    flex-direction: row !important;
+}
+
+[data-theme="light"] .st-key-theme_toggle_v6_positioned .stTooltipIcon,
+body[data-theme="light"] .st-key-theme_toggle_v6_positioned .stTooltipIcon {
+    display: inline-block !important;
+    width: auto !important;
+}
+
+/* LIGHT MODE - Prevent text wrapping in toggle */
+[data-theme="light"] .st-key-theme_toggle_v6_positioned button,
+[data-theme="light"] .st-key-theme_toggle_v6_positioned .stButton > button,
+body[data-theme="light"] .st-key-theme_toggle_v6_positioned button,
+body[data-theme="light"] .st-key-theme_toggle_v6_positioned .stButton > button {
+    white-space: nowrap !important;
+    overflow: visible !important;
+    min-width: 90px !important;
+    width: auto !important;
+    text-overflow: clip !important;
+}
+
+[data-theme="light"] .st-key-theme_toggle_v6_positioned [data-testid="stMarkdownContainer"],
+[data-theme="light"] .st-key-theme_toggle_v6_positioned [data-testid="stMarkdownContainer"] p,
+body[data-theme="light"] .st-key-theme_toggle_v6_positioned [data-testid="stMarkdownContainer"],
+body[data-theme="light"] .st-key-theme_toggle_v6_positioned [data-testid="stMarkdownContainer"] p {
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+}
+
+body[data-theme="light"] [data-testid="stTooltipHoverTarget"]:hover,
+[data-theme="light"] [data-testid="stTooltipHoverTarget"]:hover {
+    background: rgba(5, 150, 105, 0.1) !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    transform: scale(1.05) !important;
+}
+
+body[data-theme="light"] [data-testid="stTooltipHoverTarget"] svg,
+[data-theme="light"] [data-testid="stTooltipHoverTarget"] svg {
+    color: #64748b !important;
+    fill: #64748b !important;
+}
+
+body[data-theme="light"] [data-testid="stTooltipHoverTarget"]:hover svg,
+[data-theme="light"] [data-testid="stTooltipHoverTarget"]:hover svg {
+    color: #059669 !important;
+    fill: #059669 !important;
+}
+
+/* ========== THEME TOGGLE BUTTON - NO DOUBLE BORDERS ========== */
+/* Contenedor principal del botón de toggle */
+[data-theme="light"] .stButton:has(.stTooltipIcon),
+body[data-theme="light"] .stButton:has(.stTooltipIcon) {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* Contenedor del tooltip icon */
+[data-theme="light"] .stTooltipIcon,
+body[data-theme="light"] .stTooltipIcon {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* Botón interno del toggle - limpio y legible - ICON ABOVE TEXT */
+[data-theme="light"] .stTooltipHoverTarget button,
+body[data-theme="light"] .stTooltipHoverTarget button {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+    color: white !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: 0 2px 4px rgba(5, 150, 105, 0.15) !important;
+    border-radius: 8px !important;
+    padding: 0.7rem 1rem !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+    transition: all 0.2s ease !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.4rem !important;
+    min-width: 85px !important;
+    max-width: 110px !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 65px !important;
+}
+
+/* Contenido del botón - texto legible centrado debajo del icono */
+[data-theme="light"] .stTooltipHoverTarget button .stMarkdownContainer,
+[data-theme="light"] .stTooltipHoverTarget button .stMarkdownContainer p,
+body[data-theme="light"] .stTooltipHoverTarget button .stMarkdownContainer,
+body[data-theme="light"] .stTooltipHoverTarget button .stMarkdownContainer p {
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap !important;
+    display: block !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    font-size: 0.8rem !important;
+    color: white !important;
+    max-width: 100px !important;
+    overflow: visible !important;
+}
+
+[data-theme="light"] .stTooltipHoverTarget button:hover,
+body[data-theme="light"] .stTooltipHoverTarget button:hover {
+    background: linear-gradient(135deg, #047857, #10b981) !important;
+    color: white !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Botón secundario dentro del toggle - OCULTAR DUPLICADO */
+[data-theme="light"] .stButton .st-emotion-cache-1cyexbd,
+body[data-theme="light"] .stButton .st-emotion-cache-1cyexbd {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+[data-theme="light"] .stButton .st-emotion-cache-1cyexbd button,
+body[data-theme="light"] .stButton .st-emotion-cache-1cyexbd button {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Eliminar cualquier contenedor que agregue marcos - EXCEPTO FORM BUTTONS */
+[data-theme="light"] .st-emotion-cache-6dnr6u:not(.stFormSubmitButton *),
+[data-theme="light"] .st-emotion-cache-1cyexbd:not(.stFormSubmitButton *),
+body[data-theme="light"] .st-emotion-cache-6dnr6u:not(.stFormSubmitButton *),
+body[data-theme="light"] .st-emotion-cache-1cyexbd:not(.stFormSubmitButton *) {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* ========== FORM SUBMIT BUTTONS - AGGRESSIVE STYLING WITH BORDERS ========== */
+/* Ultra specific selectors for form submit buttons */
+html[data-theme="light"] body .stFormSubmitButton button[kind="secondaryFormSubmit"],
+html body[data-theme="light"] .stFormSubmitButton button[kind="secondaryFormSubmit"],
+html .stFormSubmitButton button[kind="secondaryFormSubmit"],
+[data-theme="light"] .stFormSubmitButton button[kind="secondaryFormSubmit"],
+body[data-theme="light"] .stFormSubmitButton button[kind="secondaryFormSubmit"],
+.stFormSubmitButton button[kind="secondaryFormSubmit"],
+[data-theme="light"] .stFormSubmitButton button,
+body[data-theme="light"] .stFormSubmitButton button {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+    color: white !important;
+    border: 3px solid #059669 !important;
+    outline: none !important;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    border-radius: 12px !important;
+    padding: 0.875rem 2rem !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 48px !important;
+    position: relative !important;
+    cursor: pointer !important;
+}
+
+html[data-theme="light"] body .stFormSubmitButton button[kind="secondaryFormSubmit"]:hover,
+html body[data-theme="light"] .stFormSubmitButton button[kind="secondaryFormSubmit"]:hover,
+html .stFormSubmitButton button[kind="secondaryFormSubmit"]:hover,
+[data-theme="light"] .stFormSubmitButton button[kind="secondaryFormSubmit"]:hover,
+body[data-theme="light"] .stFormSubmitButton button[kind="secondaryFormSubmit"]:hover,
+.stFormSubmitButton button[kind="secondaryFormSubmit"]:hover,
+[data-theme="light"] .stFormSubmitButton button:hover,
+body[data-theme="light"] .stFormSubmitButton button:hover {
+    background: linear-gradient(135deg, #047857, #10b981) !important;
+    color: white !important;
+    border: 3px solid #047857 !important;
+    box-shadow: 0 8px 25px rgba(5, 150, 105, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    transform: translateY(-2px) !important;
+}
+
+html[data-theme="light"] body .stFormSubmitButton button[kind="secondaryFormSubmit"]:active,
+html body[data-theme="light"] .stFormSubmitButton button[kind="secondaryFormSubmit"]:active,
+html .stFormSubmitButton button[kind="secondaryFormSubmit"]:active,
+[data-theme="light"] .stFormSubmitButton button[kind="secondaryFormSubmit"]:active,
+body[data-theme="light"] .stFormSubmitButton button[kind="secondaryFormSubmit"]:active,
+.stFormSubmitButton button[kind="secondaryFormSubmit"]:active,
+[data-theme="light"] .stFormSubmitButton button:active,
+body[data-theme="light"] .stFormSubmitButton button:active {
+    transform: translateY(0px) !important;
+    border: 3px solid #059669 !important;
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Form button text container */
+[data-theme="light"] .stFormSubmitButton button .stMarkdownContainer,
+[data-theme="light"] .stFormSubmitButton button .stMarkdownContainer p,
+body[data-theme="light"] .stFormSubmitButton button .stMarkdownContainer,
+body[data-theme="light"] .stFormSubmitButton button .stMarkdownContainer p {
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap !important;
+    display: inline !important;
+    line-height: 1.2 !important;
+    font-weight: 600 !important;
+}
+
+/* ========== SVG ICONS - PROFESSIONAL LIGHT MODE STYLING ========== */
+[data-theme="light"] svg.icon,
+body[data-theme="light"] svg.icon {
+    color: #64748b !important;
+    stroke: #64748b !important;
+    fill: none !important;
+    width: 16px !important;
+    height: 16px !important;
+    stroke-width: 2 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+    transition: all 0.2s ease !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+[data-theme="light"] svg.icon:hover,
+body[data-theme="light"] svg.icon:hover {
+    color: #059669 !important;
+    stroke: #059669 !important;
+    transform: scale(1.1) !important;
+}
+
+/* SVG icons dentro de botones y contenedores - modo claro */
+[data-theme="light"] button svg,
+[data-theme="light"] [role="button"] svg,
+[data-theme="light"] .stButton svg,
+[data-theme="light"] div[data-testid] svg,
+body[data-theme="light"] button svg,
+body[data-theme="light"] [role="button"] svg,
+body[data-theme="light"] .stButton svg,
+body[data-theme="light"] div[data-testid] svg {
+    color: #64748b !important;
+    stroke: #64748b !important;
+    fill: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: all 0.2s ease !important;
+}
+
+[data-theme="light"] button:hover svg,
+[data-theme="light"] [role="button"]:hover svg,
+[data-theme="light"] .stButton:hover svg,
+[data-theme="light"] div[data-testid]:hover svg,
+body[data-theme="light"] button:hover svg,
+body[data-theme="light"] [role="button"]:hover svg,
+body[data-theme="light"] .stButton:hover svg,
+body[data-theme="light"] div[data-testid]:hover svg {
+    color: #059669 !important;
+    stroke: #059669 !important;
+}
+
+/* Fix específico para iconos de información/ayuda - modo claro */
+[data-theme="light"] svg[viewBox="0 0 24 24"],
+body[data-theme="light"] svg[viewBox="0 0 24 24"] {
+    width: 16px !important;
+    height: 16px !important;
+    color: #64748b !important;
+    stroke: #64748b !important;
+    fill: none !important;
+    stroke-width: 2 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Eliminar cualquier marco/borde feo de los iconos - modo claro */
+[data-theme="light"] svg,
+body[data-theme="light"] svg {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: none !important;
+}
+
+/* Contenedores de iconos - sin marcos - modo claro */
+[data-theme="light"] button:has(svg),
+[data-theme="light"] div:has(svg),
+[data-theme="light"] span:has(svg),
+body[data-theme="light"] button:has(svg),
+body[data-theme="light"] div:has(svg),
+body[data-theme="light"] span:has(svg) {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 2px !important;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .main-header {
+        padding: 1.5rem 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .main-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .chart-container {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .stButton > button {
+        min-height: 44px;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        width: 100%;
+        touch-action: manipulation;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-header {
+        padding: 1rem 0.5rem;
+    }
+
+    .main-header h1 {
+        font-size: 1.6rem;
+    }
+
+    .metric-card {
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .stButton > button {
+        min-height: 48px;
+        padding: 0.875rem 1rem;
+        font-size: 0.9rem;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+}
+
+/* ========== LAYOUT DESKTOP - RESPONSIVE SIDEBAR ========== */
+.main .block-container {
+    max-width: none !important;
+    min-width: 1200px !important;
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Sidebar expandido */
+.stSidebar:not([data-state="collapsed"]) {
+    width: 21rem !important;
+    min-width: 21rem !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Sidebar colapsado - múltiples selectores para compatibilidad */
+.stSidebar[data-state="collapsed"],
+.stSidebar:has(.stSidebarCollapsedControl),
+.stSidebar[aria-expanded="false"],
+.stSidebar.collapsed,
+section[data-testid="stSidebar"][style*="width: 0"],
+section[data-testid="stSidebar"][style*="width:0"],
+section[data-testid="stSidebar"]:not([style*="width"]):has(+ div[style*="margin-left: 0"]) {
+    width: 3rem !important;
+    min-width: 3rem !important;
+    max-width: 3rem !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    overflow: hidden !important;
+}
+
+/* Ajustar contenido principal cuando sidebar está colapsado - múltiples casos */
+body:has(.stSidebar[data-state="collapsed"]) .main .block-container,
+body:has(.stSidebar:has(.stSidebarCollapsedControl)) .main .block-container,
+body:has(.stSidebar[aria-expanded="false"]) .main .block-container,
+body:has(.stSidebar.collapsed) .main .block-container,
+body:has(section[data-testid="stSidebar"][style*="width: 0"]) .main .block-container,
+body:has(section[data-testid="stSidebar"][style*="width:0"]) .main .block-container {
+    margin-left: 0 !important;
+    max-width: calc(100vw - 4rem) !important;
+    width: calc(100vw - 4rem) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* CSS más universal - detectar sidebar colapsado por el contenedor principal */
+div[data-testid="stAppViewContainer"] > .main .block-container {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Forzar redimensionado responsive */
+@media screen and (min-width: 640px) {
+    .main {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .main .block-container {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+}
+
+/* Contenido del sidebar cuando está colapsado - ocultar texto */
+.stSidebar[data-state="collapsed"] .stSidebarUserContent,
+.stSidebar:has(.stSidebarCollapsedControl) .stSidebarUserContent,
+.stSidebar[aria-expanded="false"] .stSidebarUserContent,
+.stSidebar.collapsed .stSidebarUserContent,
+section[data-testid="stSidebar"][style*="width: 0"] .stSidebarUserContent,
+section[data-testid="stSidebar"][style*="width:0"] .stSidebarUserContent {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Botón de colapso siempre visible */
+.stSidebarCollapsedControl {
+    display: block !important;
+    position: sticky !important;
+    top: 1rem !important;
+    z-index: 1000 !important;
+}
+
+div[data-testid="column"] {
+    min-width: 300px !important;
+    flex: 1 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 1400px) {
+    .main .block-container {
+        min-width: 1000px !important;
+    }
+}
+
+@media (max-width: 1200px) {
+    .main .block-container {
+        min-width: 800px !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    .stSidebar:not([data-state="collapsed"]) {
+        width: 18rem !important;
+        min-width: 18rem !important;
+    }
+}
+
+/* ========== STREAMLIT SPECIFIC FIXES ========== */
+/* REGLAS GLOBALES - FORZAR TEXTO OSCURO EN TEMA CLARO */
+
+/* Texto principal - FORZAR OSCURO */
+.stMarkdown, .stMarkdown *,
+.stText, .stText *,
+.stTextArea textarea,
+.stTextInput input,
+.element-container,
+.element-container *,
+div[data-testid="stMarkdownContainer"],
+div[data-testid="stMarkdownContainer"] *,
+[data-testid="stMarkdown"],
+[data-testid="stMarkdown"] * {
+    color: var(--text-primary) !important;
+}
+
+/* ========== CHAT MESSAGES - AGGRESSIVE LIGHT MODE FIX ========== */
+.stChatMessage,
+.stChatMessage *,
+.stChat,
+.stChat *,
+[data-testid="stChatMessage"],
+[data-testid="stChatMessage"] *,
+[data-testid="stChatMessageContent"],
+[data-testid="stChatMessageContent"] *,
+.stChatMessage .stMarkdown,
+.stChatMessage .stMarkdown *,
+.stChatMessage .element-container,
+.stChatMessage .element-container *,
+.stChatMessage p,
+.stChatMessage div,
+.stChatMessage span,
+.stChatMessage h1,
+.stChatMessage h2,
+.stChatMessage h3,
+.stChatMessage h4,
+.stChatMessage h5,
+.stChatMessage h6,
+.stChatMessage li,
+.stChatMessage ul,
+.stChatMessage ol {
+    color: var(--text-primary) !important;
+    background: var(--bg-primary) !important;
+}
+
+/* Force dark text in light mode for any white text */
+[data-theme="light"] .stChatMessage [style*="color: white"],
+[data-theme="light"] .stChatMessage [style*="color:#ffffff"],
+[data-theme="light"] .stChatMessage [style*="color:#fff"],
+[data-theme="light"] .stChatMessage [style*="color: #ffffff"],
+[data-theme="light"] .stChatMessage [style*="color: #fff"],
+body[data-theme="light"] .stChatMessage [style*="color: white"],
+body[data-theme="light"] .stChatMessage [style*="color:#ffffff"],
+body[data-theme="light"] .stChatMessage [style*="color:#fff"],
+body[data-theme="light"] .stChatMessage [style*="color: #ffffff"],
+body[data-theme="light"] .stChatMessage [style*="color: #fff"] {
+    color: var(--text-primary) !important;
+}
+
+/* ========== CHAT INPUT - COMPREHENSIVE FIX ========== */
+.stChatInputContainer,
+.stChatInputContainer *,
+.stChatInputContainer input,
+.stChatInputContainer textarea,
+[data-testid="stChatInputContainer"],
+[data-testid="stChatInputContainer"] *,
+[data-testid="stChatInputContainer"] input,
+[data-testid="stChatInputContainer"] textarea,
+[data-testid="chatInputTextArea"],
+[data-testid="textArea"] textarea {
+    background: var(--bg-primary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Chat input placeholder */
+.stChatInputContainer input::placeholder,
+.stChatInputContainer textarea::placeholder,
+[data-testid="stChatInputContainer"] input::placeholder,
+[data-testid="stChatInputContainer"] textarea::placeholder,
+[data-testid="chatInputTextArea"]::placeholder,
+[data-testid="textArea"] textarea::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 0.7 !important;
+}
+
+/* Override MÁS ESPECÍFICO para elementos con color blanco inline */
+[style*="color: white"]:not(.access-granted):not(.access-granted *):not(.stSidebar .stButton > button),
+[style*="color:white"]:not(.access-granted):not(.access-granted *):not(.stSidebar .stButton > button),
+[style*="color:#ffffff"]:not(.access-granted):not(.access-granted *):not(.stSidebar .stButton > button),
+[style*="color:#fff"]:not(.access-granted):not(.access-granted *):not(.stSidebar .stButton > button),
+[style*="color: #ffffff"]:not(.access-granted):not(.access-granted *):not(.stSidebar .stButton > button),
+[style*="color: #fff"]:not(.access-granted):not(.access-granted *):not(.stSidebar .stButton > button) {
+    color: var(--text-primary) !important;
+}
+
+/* Tabs y navegación */
+.stTabs [data-baseweb="tab"],
+.stTabs [data-baseweb="tab"] * {
+    color: var(--text-primary) !important;
+}
+
+/* Selectbox y otros inputs */
+.stSelectbox, .stSelectbox *,
+.stMultiSelect, .stMultiSelect *,
+.stNumberInput, .stNumberInput * {
+    color: var(--text-primary) !important;
+}
+
+/* Métricas */
+.metric-value {
+    color: var(--primary-color) !important;
+}
+
+.metric-label {
+    color: var(--text-secondary) !important;
+}
+
+/* Headers y títulos */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary) !important;
+}
+
+/* Clase access-granted - EXCEPCIÓN para mantener blanco en fondo verde */
+.access-granted {
+    background: linear-gradient(135deg, #4CAF50 0%, #66bb6a 100%) !important;
+    padding: 1rem !important;
+    border-radius: 10px !important;
+    color: white !important;
+    margin: 1rem 0 !important;
+}
+
+.access-granted h4,
+.access-granted p,
+.access-granted span,
+.access-granted * {
+    color: white !important;
+}
+
+/* ========== SIDEBAR BUTTONS - PROFESSIONAL LIGHT MODE ========== */
+.stSidebar .stButton > button {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    color: #1f2937 !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 12px !important;
+    padding: 0.875rem 1rem !important;
+    font-weight: 500 !important;
+    font-size: 0.9rem !important;
+    text-decoration: none !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    text-align: left !important;
+    width: 100% !important;
+}
+
+.stSidebar .stButton > button:hover {
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%) !important;
+    color: #111827 !important;
+    border-color: #9ca3af !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    text-decoration: none !important;
+}
+
+.stSidebar .stButton > button:active {
+    transform: translateY(0px) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Remove any underlines from sidebar links */
+.stSidebar a,
+.stSidebar a:hover,
+.stSidebar a:visited,
+.stSidebar a:focus,
+.stSidebar .stButton > button a,
+.stSidebar .stButton > button a:hover,
+.stSidebar .stButton > button a:visited,
+.stSidebar .stButton > button a:focus {
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+/* ========== ROLE CARDS LOGIN - MODO CLARO ========== */
+.role-card-login {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 1px 3px var(--shadow-color) !important;
+}
+
+.role-card-login small {
+    color: var(--text-secondary) !important;
+}
+
+/* Forzar modo claro para role cards */
+[data-theme="light"] .role-card-login,
+body[data-theme="light"] .role-card-login,
+.stApp[data-theme="light"] .role-card-login {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 1px 3px var(--shadow-color) !important;
+}
+
+[data-theme="light"] .role-card-login small,
+body[data-theme="light"] .role-card-login small,
+.stApp[data-theme="light"] .role-card-login small {
+    color: var(--text-secondary) !important;
+}
+
+/* ========== EXECUTIVE BADGES - MODO CLARO ========== */
+.executive-badge {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.executive-badge strong {
+    color: var(--text-primary) !important;
+}
+
+.executive-badge small {
+    color: var(--text-secondary) !important;
+}
+
+.user-badge {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Header seguro con fondo claro */
+.main-header-secure:not([style*="background: linear-gradient"]) {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.main-header-secure:not([style*="background: linear-gradient"]) h1,
+.main-header-secure:not([style*="background: linear-gradient"]) h2,
+.main-header-secure:not([style*="background: linear-gradient"]) p {
+    color: var(--text-primary) !important;
+}
+
+/* Header seguro con fondo azul - MANTENER TEXTO BLANCO */
+.main-header-secure[style*="background: linear-gradient"] {
+    color: white !important;
+}
+
+.main-header-secure[style*="background: linear-gradient"] h1,
+.main-header-secure[style*="background: linear-gradient"] h2,
+.main-header-secure[style*="background: linear-gradient"] p,
+.main-header-secure[style*="background: linear-gradient"] strong,
+.main-header-secure[style*="background: linear-gradient"] small {
+    color: white !important;
+}
+
+/* Forzar modo claro para executive/user badges - SOLO cuando NO están en header azul */
+[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]) .executive-badge,
+[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]) .user-badge,
+body[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]) .executive-badge,
+body[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]) .user-badge,
+.stApp[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]) .executive-badge,
+.stApp[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]) .user-badge {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Badges fuera de headers - aplicar tema claro */
+[data-theme="light"] .executive-badge:not(.main-header-secure .executive-badge),
+[data-theme="light"] .user-badge:not(.main-header-secure .user-badge),
+body[data-theme="light"] .executive-badge:not(.main-header-secure .executive-badge),
+body[data-theme="light"] .user-badge:not(.main-header-secure .user-badge),
+.stApp[data-theme="light"] .executive-badge:not(.main-header-secure .executive-badge),
+.stApp[data-theme="light"] .user-badge:not(.main-header-secure .user-badge) {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Badges DENTRO de header azul - MANTENER TEXTO BLANCO */
+[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] .executive-badge,
+[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] .user-badge,
+[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] .executive-badge *,
+[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] .user-badge *,
+body[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] .executive-badge,
+body[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] .user-badge,
+body[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] .executive-badge *,
+body[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] .user-badge *,
+.stApp[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] .executive-badge,
+.stApp[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] .user-badge,
+.stApp[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] .executive-badge *,
+.stApp[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] .user-badge * {
+    color: white !important;
+}
+
+/* Headers seguros con tema light - SIN fondo azul */
+[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]),
+body[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]),
+.stApp[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]) {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]) h1,
+[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]) h2,
+[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]) p,
+body[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]) h1,
+body[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]) h2,
+body[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]) p,
+.stApp[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]) h1,
+.stApp[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]) h2,
+.stApp[data-theme="light"] .main-header-secure:not([style*="background: linear-gradient"]) p {
+    color: var(--text-primary) !important;
+}
+
+/* Headers seguros con tema light - CON fondo azul - MANTENER TEXTO BLANCO */
+[data-theme="light"] .main-header-secure[style*="background: linear-gradient"],
+body[data-theme="light"] .main-header-secure[style*="background: linear-gradient"],
+.stApp[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] {
+    color: white !important;
+}
+
+[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] h1,
+[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] h2,
+[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] p,
+[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] strong,
+[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] small,
+body[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] h1,
+body[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] h2,
+body[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] p,
+body[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] strong,
+body[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] small,
+.stApp[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] h1,
+.stApp[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] h2,
+.stApp[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] p,
+.stApp[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] strong,
+.stApp[data-theme="light"] .main-header-secure[style*="background: linear-gradient"] small {
+    color: white !important;
+}
+
+/* ========== FORZAR FONDOS CLAROS EN MODO CLARO ========== */
+
+/* ELEMENTOS PRINCIPALES - FORZAR FONDOS CLAROS */
+.stApp,
+body[data-theme="light"] .stApp,
+html[data-theme="light"] .stApp,
+.main .block-container,
+body[data-theme="light"] .main .block-container {
+    background: var(--bg-primary) !important;
+}
+
+/* BOTONES - UNIFIED LIGHT MODE STYLES - NO DOUBLE BORDERS */
+.stButton > button:not(.stSidebar .stButton > button),
+body[data-theme="light"] .stButton > button:not(.stSidebar .stButton > button),
+button:not(.stSidebar button),
+body[data-theme="light"] button:not(.stSidebar button) {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+    color: white !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border-radius: 12px !important;
+    padding: 0.75rem 1.5rem !important;
+    font-weight: 500 !important;
+    font-size: 0.9rem !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    cursor: pointer !important;
+    position: relative !important;
+}
+
+.stButton > button:hover:not(.stSidebar .stButton > button),
+body[data-theme="light"] .stButton > button:hover:not(.stSidebar .stButton > button),
+button:hover:not(.stSidebar button),
+body[data-theme="light"] button:hover:not(.stSidebar button) {
+    background: linear-gradient(135deg, #047857, #10b981) !important;
+    color: white !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25) !important;
+    transform: translateY(-1px) !important;
+}
+
+.stButton > button:focus:not(.stSidebar .stButton > button),
+body[data-theme="light"] .stButton > button:focus:not(.stSidebar .stButton > button),
+button:focus:not(.stSidebar button),
+body[data-theme="light"] button:focus:not(.stSidebar button) {
+    border: none !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.3) !important;
+}
+
+.stButton > button:active:not(.stSidebar .stButton > button),
+body[data-theme="light"] .stButton > button:active:not(.stSidebar .stButton > button),
+button:active:not(.stSidebar button),
+body[data-theme="light"] button:active:not(.stSidebar button) {
+    transform: translateY(0px) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+/* CONTAINERS Y TARJETAS - FONDOS CLAROS */
+.stContainer,
+body[data-theme="light"] .stContainer,
+.element-container,
+body[data-theme="light"] .element-container,
+div[data-testid="stHorizontalBlock"],
+body[data-theme="light"] div[data-testid="stHorizontalBlock"],
+div[data-testid="stVerticalBlock"],
+body[data-theme="light"] div[data-testid="stVerticalBlock"],
+div[data-testid="column"],
+body[data-theme="light"] div[data-testid="column"] {
+    background: var(--bg-primary) !important;
+}
+
+/* MÉTRICAS Y CARDS - FONDOS CLAROS */
+div[data-testid="metric-container"],
+body[data-theme="light"] div[data-testid="metric-container"],
+.metric-container,
+body[data-theme="light"] .metric-container {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* OVERRIDE PARA ELEMENTOS CON FONDOS OSCUROS INLINE */
+[style*="background-color: #0f172a"],
+[style*="background-color:#0f172a"],
+[style*="background-color: #1e293b"],
+[style*="background-color:#1e293b"],
+[style*="background-color: #334155"],
+[style*="background-color:#334155"],
+[style*="background: #0f172a"],
+[style*="background:#0f172a"],
+[style*="background: #1e293b"],
+[style*="background:#1e293b"],
+[style*="background: #334155"],
+[style*="background:#334155"],
+[style*="background: linear-gradient"][style*="#0f172a"],
+[style*="background: linear-gradient"][style*="#1e293b"] {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* PANELES ESPECÍFICOS - PANEL EJECUTIVO */
+.main-header,
+body[data-theme="light"] .main-header,
+.chart-container,
+body[data-theme="light"] .chart-container,
+.sidebar-content,
+body[data-theme="light"] .sidebar-content {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* CUALQUIER ELEMENTO CON GRADIENTE OSCURO */
+[style*="linear-gradient"][style*="#0f172a"]:not(.access-granted),
+[style*="linear-gradient"][style*="#1e293b"]:not(.access-granted),
+[style*="linear-gradient"][style*="#334155"]:not(.access-granted) {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%) !important;
+    color: var(--text-primary) !important;
+}
+
+/* ========== ULTIMATE FORM SUBMIT BUTTON OVERRIDE - LIGHT MODE ========== */
+/* Nuclear option - maximum specificity override for login buttons */
+html * div.stFormSubmitButton button,
+html * .stFormSubmitButton button,
+html * button[kind="secondaryFormSubmit"],
+html * form button,
+html body * .stFormSubmitButton button,
+html body * div.stFormSubmitButton button,
+html body * button[kind="secondaryFormSubmit"],
+html body div.stFormSubmitButton button[kind="secondaryFormSubmit"],
+html body .stFormSubmitButton button[kind="secondaryFormSubmit"],
+html .stFormSubmitButton button[kind="secondaryFormSubmit"],
+.stApp * .stFormSubmitButton button,
+.stApp * button[kind="secondaryFormSubmit"],
+* div.stFormSubmitButton button,
+* .stFormSubmitButton button,
+* button[kind="secondaryFormSubmit"] {
+    background: linear-gradient(135deg, #059669, #0284c7) !important;
+    color: #ffffff !important;
+    border: 5px solid #059669 !important;
+    border-style: solid !important;
+    border-width: 5px !important;
+    border-color: #059669 !important;
+    outline: 3px solid #0284c7 !important;
+    outline-offset: 2px !important;
+    border-radius: 12px !important;
+    padding: 14px 28px !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+    min-height: 50px !important;
+    min-width: 140px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 0 0 5px #059669, 0 4px 20px rgba(5, 150, 105, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Hover state for ultimate form buttons */
+html * div.stFormSubmitButton button:hover,
+html * .stFormSubmitButton button:hover,
+html * button[kind="secondaryFormSubmit"]:hover,
+html * form button:hover,
+html body * .stFormSubmitButton button:hover,
+html body * div.stFormSubmitButton button:hover,
+html body * button[kind="secondaryFormSubmit"]:hover,
+* div.stFormSubmitButton button:hover,
+* .stFormSubmitButton button:hover,
+* button[kind="secondaryFormSubmit"]:hover {
+    background: linear-gradient(135deg, #0284c7, #059669) !important;
+    border: 5px solid #0284c7 !important;
+    border-color: #0284c7 !important;
+    outline: 3px solid #059669 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 0 0 5px #0284c7, 0 6px 25px rgba(2, 132, 199, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ========== FIX NESTED BUTTON BORDERS - REMOVE OUTER CONTAINERS ========== */
+/* Remove borders from button containers and tooltip wrappers to avoid double/triple borders */
+[data-theme="light"] .stButton .st-emotion-cache-6dnr6u,
+[data-theme="light"] .stButton .st-emotion-cache-1cyexbd,
+[data-theme="light"] .stTooltipIcon .st-emotion-cache-6dnr6u,
+[data-theme="light"] .stTooltipIcon .st-emotion-cache-1cyexbd,
+[data-theme="light"] .stElementContainer .st-emotion-cache-6dnr6u,
+[data-theme="light"] .stElementContainer .st-emotion-cache-1cyexbd,
+body[data-theme="light"] .stButton .st-emotion-cache-6dnr6u,
+body[data-theme="light"] .stButton .st-emotion-cache-1cyexbd,
+body[data-theme="light"] .stTooltipIcon .st-emotion-cache-6dnr6u,
+body[data-theme="light"] .stTooltipIcon .st-emotion-cache-1cyexbd,
+body[data-theme="light"] .stElementContainer .st-emotion-cache-6dnr6u,
+body[data-theme="light"] .stElementContainer .st-emotion-cache-1cyexbd,
+.stButton .st-emotion-cache-6dnr6u,
+.stButton .st-emotion-cache-1cyexbd,
+.stTooltipIcon .st-emotion-cache-6dnr6u,
+.stTooltipIcon .st-emotion-cache-1cyexbd,
+.stElementContainer .st-emotion-cache-6dnr6u,
+.stElementContainer .st-emotion-cache-1cyexbd {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* Remove borders from tooltip hover targets */
+[data-theme="light"] .stTooltipHoverTarget,
+body[data-theme="light"] .stTooltipHoverTarget,
+.stTooltipHoverTarget {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* Remove borders from button element containers */
+[data-theme="light"] .stButton,
+[data-theme="light"] .stTooltipIcon,
+body[data-theme="light"] .stButton,
+body[data-theme="light"] .stTooltipIcon,
+.stButton,
+.stTooltipIcon {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* Ensure only the actual button element has styling - not containers */
+[data-theme="light"] .stElementContainer,
+body[data-theme="light"] .stElementContainer,
+.stElementContainer {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* ========== UNIVERSAL TOGGLE ICON POSITION FIX - ICON ABOVE TEXT ALWAYS ========== */
+/* Force ALL theme toggle buttons to use readable vertical layout regardless of theme */
+html .stTooltipIcon,
+html .stTooltipHoverTarget,
+html .stTooltipHoverTarget button,
+html .stButton:has(.stTooltipIcon),
+body .stTooltipIcon,
+body .stTooltipHoverTarget,
+body .stTooltipHoverTarget button,
+body .stButton:has(.stTooltipIcon),
+* .stTooltipIcon,
+* .stTooltipHoverTarget,
+* .stTooltipHoverTarget button,
+* .stButton:has(.stTooltipIcon) {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.4rem !important;
+    min-width: 85px !important;
+    max-width: 110px !important;
+    min-height: 65px !important;
+}
+
+/* Universal text container for toggle buttons - READABLE */
+html .stTooltipHoverTarget button .stMarkdownContainer,
+html .stTooltipHoverTarget button .stMarkdownContainer p,
+body .stTooltipHoverTarget button .stMarkdownContainer,
+body .stTooltipHoverTarget button .stMarkdownContainer p,
+* .stTooltipHoverTarget button .stMarkdownContainer,
+* .stTooltipHoverTarget button .stMarkdownContainer p {
+    display: block !important;
+    text-align: center !important;
+    line-height: 1.2 !important;
+    font-size: 0.8rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100px !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+}
+
+/* ========== ULTIMATE BUTTON CONTAINER FIX - REMOVE ALL UGLY BORDERS ========== */
+/* Force remove ALL borders from ALL button containers and wrappers */
+* .st-emotion-cache-6dnr6u,
+* .st-emotion-cache-1cyexbd,
+* .st-emotion-cache-8atqhb,
+* .st-emotion-cache-1teq1nb,
+* .st-emotion-cache-zh2fnc,
+html * .st-emotion-cache-6dnr6u,
+html * .st-emotion-cache-1cyexbd,
+html * .st-emotion-cache-8atqhb,
+html * .st-emotion-cache-1teq1nb,
+html * .st-emotion-cache-zh2fnc,
+div.st-emotion-cache-6dnr6u,
+div.st-emotion-cache-1cyexbd,
+div.st-emotion-cache-8atqhb,
+div.st-emotion-cache-1teq1nb,
+div.st-emotion-cache-zh2fnc {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* Fix button text display and prevent truncation */
+[data-theme="light"] button[kind="primary"] .stMarkdownContainer,
+[data-theme="light"] button[kind="primary"] .stMarkdownContainer p,
+body[data-theme="light"] button[kind="primary"] .stMarkdownContainer,
+body[data-theme="light"] button[kind="primary"] .stMarkdownContainer p,
+button[kind="primary"] .stMarkdownContainer,
+button[kind="primary"] .stMarkdownContainer p {
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    max-width: none !important;
+    width: auto !important;
+    display: inline !important;
+    margin: 0 !important;
+    padding: 0 4px !important;
+}
+
+/* Ensure primary buttons have proper dimensions for full text */
+[data-theme="light"] button[kind="primary"],
+body[data-theme="light"] button[kind="primary"],
+button[kind="primary"] {
+    min-width: fit-content !important;
+    width: auto !important;
+    max-width: none !important;
+    padding: 12px 20px !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Style primary buttons that aren't form submit buttons */
+[data-theme="light"] button[kind="primary"]:not(.stFormSubmitButton button),
+body[data-theme="light"] button[kind="primary"]:not(.stFormSubmitButton button),
+button[kind="primary"]:not(.stFormSubmitButton button) {
+    border: 2px solid var(--primary-color) !important;
+    background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary)) !important;
+    color: var(--text-primary) !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Hover state for primary buttons */
+[data-theme="light"] button[kind="primary"]:hover:not(.stFormSubmitButton button),
+body[data-theme="light"] button[kind="primary"]:hover:not(.stFormSubmitButton button),
+button[kind="primary"]:hover:not(.stFormSubmitButton button) {
+    border: 2px solid var(--accent-color) !important;
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-primary)) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2) !important;
+}

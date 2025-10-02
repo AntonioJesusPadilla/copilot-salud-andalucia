@@ -728,12 +728,78 @@ except Exception:
         initial_sidebar_state="expanded"
     )
 
+# ===== ESTILOS CRÍTICOS - APLICAR INMEDIATAMENTE =====
+st.markdown("""
+<style>
+/* CRÍTICO 1: Texto blanco en tarjeta de sidebar - FORZAR */
+.sidebar-user-card,
+.sidebar-user-card *,
+.sidebar-user-card strong,
+.sidebar-user-card small,
+.sidebar-user-card div,
+section[data-testid="stSidebar"] .sidebar-user-card *,
+section[data-testid="stSidebar"] .sidebar-user-card strong,
+section[data-testid="stSidebar"] .sidebar-user-card small {
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.7) !important;
+}
+
+/* CRÍTICO 2: Tooltips/Help con fondo blanco y texto negro */
+.stTooltipIcon,
+[data-testid="stTooltipHoverTarget"],
+[role="tooltip"],
+.stTooltipContent,
+div[data-baseweb="tooltip"] {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+[role="tooltip"] *,
+.stTooltipContent *,
+div[data-baseweb="tooltip"] * {
+    color: #0f172a !important;
+}
+
+/* CRÍTICO 3: Expansión del sidebar cuando se colapsa - SOLO CSS */
+/* Cuando aria-expanded="false" el sidebar está COLAPSADO */
+section[data-testid="stSidebar"][aria-expanded="false"] ~ section[data-testid="stMain"] {
+    margin-left: 0 !important;
+}
+
+section[data-testid="stSidebar"][aria-expanded="false"] ~ section[data-testid="stMain"] .main .block-container {
+    max-width: calc(100vw - 6rem) !important;
+    width: calc(100vw - 6rem) !important;
+    margin-left: 0 !important;
+    padding-left: 3rem !important;
+    padding-right: 3rem !important;
+    background: rgba(0, 255, 0, 0.05) !important; /* Indicador visual temporal */
+}
+
+/* Cuando aria-expanded="true" el sidebar está EXPANDIDO */
+section[data-testid="stSidebar"][aria-expanded="true"] ~ section[data-testid="stMain"] .main .block-container {
+    max-width: calc(100vw - 21rem - 6rem) !important;
+    width: calc(100vw - 21rem - 6rem) !important;
+    background: rgba(0, 0, 255, 0.05) !important; /* Indicador visual temporal */
+}
+
+/* Transiciones suaves */
+section[data-testid="stSidebar"],
+section[data-testid="stMain"],
+.main,
+.main .block-container {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # Inicializar tema si no existe - TEMA CLARO POR DEFECTO (consistente con config.toml)
 if 'theme_mode' not in st.session_state:
     st.session_state.theme_mode = 'light'
 
 # Cache para CSS - SOLUCIÓN AL ERROR "Too many open files"
-@st.cache_data
+@st.cache_data  # HABILITADO DE NUEVO
 def load_css_file(file_path):
     """Cargar archivo CSS con cache para evitar múltiples aperturas"""
     try:
@@ -929,6 +995,33 @@ if css_loaded != "mobile_basic":
     extra_css = load_css_file('assets/extra_styles.css')
     if extra_css:
         st.markdown(f"<style>{extra_css}</style>", unsafe_allow_html=True)
+
+    # CSS crítico inline para tarjeta de sidebar (sin cache)
+    critical_css = """
+    <style>
+    /* CRÍTICO: Texto blanco en tarjeta de sidebar */
+    .sidebar-user-card,
+    .sidebar-user-card *,
+    .sidebar-user-card strong,
+    .sidebar-user-card small,
+    section[data-testid="stSidebar"] .sidebar-user-card *,
+    section[data-testid="stSidebar"] strong,
+    section[data-testid="stSidebar"] small {
+        color: #ffffff !important;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.6) !important;
+    }
+
+    /* CRÍTICO: Expansión del sidebar */
+    section[data-testid="stSidebar"][aria-expanded="false"] ~ section[data-testid="stMain"] .main .block-container {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        padding-left: 3rem !important;
+        padding-right: 3rem !important;
+    }
+    </style>
+    """
+    st.markdown(critical_css, unsafe_allow_html=True)
 
 # Cargar detector y correcciones SOLO para iPhone iOS 26 (condicional y diferido)
 def load_ios_fixes():
@@ -1398,21 +1491,17 @@ class SecureHealthAnalyticsApp:
             
             # Información del usuario personalizada por rol
             st.markdown(f"""
-            <div style="background: {theme.get('primary_gradient', 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)')}; 
-                        padding: 1.5rem; border-radius: 12px; text-align: center; margin-bottom: 1rem; color: white;">
+            <div class="sidebar-user-card" style="background: {theme.get('primary_gradient', 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)')};
+                        padding: 1.5rem; border-radius: 12px; text-align: center; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.2);">
                 <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">{self.role_info['icon']}</div>
-                <strong style="font-size: 1.1rem;">{self.user['name']}</strong><br>
-                <small style="color: rgba(255,255,255,0.8); font-size: 0.9rem;">{self.role_info['name']}</small>
-                <div style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(255,255,255,0.1); border-radius: 8px;">
-                    <small style="color: rgba(255,255,255,0.9);">{self.user['organization']}</small>
+                <strong class="sidebar-user-name" style="font-size: 1.1rem; color: #ffffff !important; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.6); display: block;">{self.user['name']}</strong><br>
+                <small class="sidebar-user-role" style="color: #ffffff !important; font-size: 0.9rem; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.6); display: block;">{self.role_info['name']}</small>
+                <div class="sidebar-user-org" style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(255,255,255,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
+                    <small style="color: #ffffff !important; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.6);">{self.user['organization']}</small>
                 </div>
             </div>
             """, unsafe_allow_html=True)
 
-            # Botón de logout
-            if st.button("🚪 Cerrar Sesión", key="logout_sidebar"):
-                logout()
-            
             # Enlaces rápidos personalizados por rol
             if sidebar_style == 'expanded':
                 st.markdown("### 🚀 Panel de Control")
@@ -1670,29 +1759,407 @@ def main():
     </style>
     """, unsafe_allow_html=True)
 
-    # Toggle en columnas para posicionamiento
-    col1, col2, col3 = st.columns([7, 1, 1])
+    # Toggle en columnas para posicionamiento (agregado botón logout)
+    col1, col2, col3, col4 = st.columns([6, 1, 1, 1])
+
     with col3:
-        # Toggle visual con iconos
+        # Toggle visual con iconos mejorado
         current_theme = st.session_state.get('theme_mode', 'light')
+        theme_icon = "🌙" if current_theme == 'light' else "☀️"
+        theme_text = "Oscuro" if current_theme == 'light' else "Claro"
+
         if st.button(
-            "🌙 Oscuro" if current_theme == 'light' else "☀️ Claro",
-            key="theme_toggle_v6_positioned",
-            help="Cambiar entre tema claro y oscuro"
+            f"{theme_icon} {theme_text}",
+            key="theme_toggle_v7_professional",
+            type="primary"
         ):
             # Cambiar tema
             new_theme = 'dark' if current_theme == 'light' else 'light'
             st.session_state.theme_mode = new_theme
+
+            # Feedback visual con toast
+            toast_icon = "🌙" if new_theme == 'dark' else "☀️"
+            toast_msg = "Modo oscuro activado" if new_theme == 'dark' else "Modo claro activado"
+            st.toast(f"{toast_icon} {toast_msg}", icon="✨")
+
+            # Forzar recarga para aplicar estilos
             st.rerun()
+
+    with col4:
+        # Botón de logout en la esquina superior derecha
+        if st.button("🚪 Salir", key="logout_header", type="secondary"):
+            logout()
+
+    # === APLICAR data-theme INMEDIATAMENTE CON HTML COMPONENT ===
+    current_theme = st.session_state.get('theme_mode', 'light')
+
+    # Usar components.html para ejecutar JavaScript de forma más confiable
+    import streamlit.components.v1 as components
+    components.html(f"""
+    <script>
+    (function() {{
+        const theme = '{current_theme}';
+        const doc = parent.document;
+
+        // Variable global para estado del sidebar (fuera de la función)
+        if (!window.sidebarLastState) {{
+            window.sidebarLastState = null;
+        }}
+
+        const applyTheme = function() {{
+            try {{
+                // Aplicar data-theme a html y body del padre
+                if (doc.documentElement) {{
+                    doc.documentElement.setAttribute('data-theme', theme);
+                }}
+                if (doc.body) {{
+                    doc.body.setAttribute('data-theme', theme);
+                }}
+
+                // Aplicar a elementos específicos de Streamlit
+                const stApp = doc.querySelector('.stApp');
+                if (stApp) stApp.setAttribute('data-theme', theme);
+
+                const main = doc.querySelector('.main');
+                if (main) main.setAttribute('data-theme', theme);
+
+                console.log('✅ THEME APPLIED VIA COMPONENT:', theme);
+            }} catch(e) {{
+                console.error('❌ Error applying theme:', e);
+            }}
+        }};
+
+        // Función para detectar y forzar redimensionamiento cuando cambia el sidebar
+        const handleSidebarResize = function() {{
+            try {{
+                let intervalId = null;
+
+                const applyResize = function(isCollapsed) {{
+                    const mainContainer = doc.querySelector('.main .block-container');
+                    const main = doc.querySelector('section[data-testid="stMain"]');
+
+                    if (!mainContainer) return false;
+
+                    if (isCollapsed) {{
+                        // Sidebar colapsado - expandir área principal al máximo
+                        mainContainer.style.setProperty('max-width', 'calc(100vw - 4rem)', 'important');
+                        mainContainer.style.setProperty('width', 'calc(100vw - 4rem)', 'important');
+                        mainContainer.style.setProperty('margin-left', '0', 'important');
+                        mainContainer.style.setProperty('padding-left', '3rem', 'important');
+                        mainContainer.style.setProperty('padding-right', '3rem', 'important');
+
+                        if (main) {{
+                            main.style.setProperty('margin-left', '0', 'important');
+                            main.style.setProperty('width', '100%', 'important');
+                        }}
+
+                        console.log('✅ Sidebar COLLAPSED - Main area EXPANDED');
+                    }} else {{
+                        // Sidebar expandido - dejar espacio para el sidebar
+                        mainContainer.style.removeProperty('max-width');
+                        mainContainer.style.removeProperty('width');
+                        mainContainer.style.removeProperty('margin-left');
+                        mainContainer.style.setProperty('padding-left', '2rem', 'important');
+                        mainContainer.style.setProperty('padding-right', '2rem', 'important');
+
+                        if (main) {{
+                            main.style.removeProperty('margin-left');
+                            main.style.removeProperty('width');
+                        }}
+
+                        console.log('✅ Sidebar EXPANDED - Main area adjusted');
+                    }}
+
+                    return true;
+                }};
+
+                const checkAndResize = function() {{
+                    const sidebar = doc.querySelector('section[data-testid="stSidebar"]');
+                    if (!sidebar) {{
+                        return;
+                    }}
+
+                    // Obtener el ancho computado del sidebar
+                    const computedStyle = parent.window.getComputedStyle(sidebar);
+                    const sidebarWidth = parseFloat(computedStyle.width);
+                    const ariaExpanded = sidebar.getAttribute('aria-expanded');
+
+                    // Streamlit usa aria-expanded="true" cuando está VISIBLE/EXPANDIDO
+                    // y aria-expanded="false" cuando está COLAPSADO/OCULTO
+                    const isCollapsed = ariaExpanded === 'false';
+                    const currentState = isCollapsed ? 'collapsed' : 'expanded';
+
+                    // Aplicar si el estado cambió (usar variable global)
+                    if (window.sidebarLastState !== currentState) {{
+                        console.log('🔄 Sidebar state changed to:', currentState);
+                        console.log('  - width:', sidebarWidth, 'px');
+                        console.log('  - aria-expanded:', ariaExpanded);
+
+                        if (applyResize(isCollapsed)) {{
+                            window.sidebarLastState = currentState;
+                        }}
+                    }}
+                }};
+
+                // Esperar a que el sidebar exista antes de iniciar
+                const waitForSidebar = function() {{
+                    const sidebar = doc.querySelector('section[data-testid="stSidebar"]');
+                    if (sidebar) {{
+                        console.log('✅ Sidebar found, initializing resize handler');
+
+                        // Debug: mostrar estado inicial
+                        const initialWidth = parent.window.getComputedStyle(sidebar).width;
+                        const initialAria = sidebar.getAttribute('aria-expanded');
+                        console.log('📊 Initial sidebar state:');
+                        console.log('  - width:', initialWidth);
+                        console.log('  - aria-expanded:', initialAria);
+                        console.log('  - classes:', sidebar.className);
+
+                        // Usar MutationObserver para detectar CUALQUIER cambio
+                        const observer = new MutationObserver(function(mutations) {{
+                            mutations.forEach(function(mutation) {{
+                                console.log('🔍 Mutation detected:', mutation.type, mutation.attributeName);
+                            }});
+                            setTimeout(checkAndResize, 50);
+                        }});
+
+                        observer.observe(sidebar, {{
+                            attributes: true,
+                            attributeFilter: ['style', 'aria-expanded', 'class', 'data-state']
+                        }});
+
+                        // Polling cada 500ms (solo cuando sidebar existe)
+                        intervalId = setInterval(checkAndResize, 500);
+
+                        // Verificación inicial
+                        checkAndResize();
+
+                        return true;
+                    }}
+                    return false;
+                }};
+
+                // Intentar encontrar el sidebar con reintentos
+                let attempts = 0;
+                const maxAttempts = 20;
+                const tryInit = setInterval(function() {{
+                    attempts++;
+                    if (waitForSidebar() || attempts >= maxAttempts) {{
+                        clearInterval(tryInit);
+                        if (attempts >= maxAttempts) {{
+                            console.warn('⚠️ Sidebar not found after', maxAttempts, 'attempts');
+                        }}
+                    }}
+                }}, 200);
+
+            }} catch(e) {{
+                console.error('❌ Error setting up sidebar observer:', e);
+            }}
+        }};
+
+        // Inyectar CSS adicional para sidebar + Debug
+        const injectSidebarCSS = function() {{
+            try {{
+                const doc = parent.document;
+                let styleEl = doc.getElementById('sidebar-resize-css');
+
+                if (!styleEl) {{
+                    styleEl = doc.createElement('style');
+                    styleEl.id = 'sidebar-resize-css';
+                    styleEl.textContent = `
+                        /* Forzar expansión cuando sidebar colapsa - VERSIÓN MEJORADA */
+                        section[data-testid="stSidebar"][aria-expanded="false"] ~ section[data-testid="stMain"] .main .block-container,
+                        section[data-testid="stSidebar"].collapsed ~ section[data-testid="stMain"] .main .block-container {{
+                            max-width: calc(100vw - 4rem) !important;
+                            width: calc(100vw - 4rem) !important;
+                            margin-left: 0 !important;
+                            padding-left: 3rem !important;
+                            padding-right: 3rem !important;
+                        }}
+
+                        /* Transiciones suaves */
+                        section[data-testid="stMain"],
+                        .main,
+                        .main .block-container {{
+                            transition: all 0.3s ease !important;
+                        }}
+                    `;
+                    doc.head.appendChild(styleEl);
+                    console.log('✅ Sidebar resize CSS injected');
+
+                    // Debug: mostrar atributos del sidebar
+                    const sidebar = doc.querySelector('section[data-testid="stSidebar"]');
+                    if (sidebar) {{
+                        console.log('📊 Sidebar initial state:');
+                        console.log('  - aria-expanded:', sidebar.getAttribute('aria-expanded'));
+                        console.log('  - width:', parent.window.getComputedStyle(sidebar).width);
+                        console.log('  - classes:', sidebar.className);
+                    }}
+                }}
+            }} catch(e) {{
+                console.error('❌ Error injecting CSS:', e);
+            }}
+        }};
+
+        // Aplicar inmediatamente
+        applyTheme();
+        injectSidebarCSS();
+
+        // Aplicar después de un pequeño delay por si acaso
+        setTimeout(applyTheme, 100);
+        setTimeout(applyTheme, 500);
+        setTimeout(applyTheme, 1000);
+
+        // DESHABILITADO: Manejado por CSS puro
+        // setTimeout(handleSidebarResize, 500);
+    }})();
+    </script>
+    """, height=0)
 
     # === CSS EMBEBIDO CRÍTICO PARA STREAMLIT CLOUD ===
     # Aplicar inmediatamente para garantizar visibilidad
-    current_theme = st.session_state.get('theme_mode', 'light')
-    text_color = '#111827' if current_theme == 'light' else '#ffffff'
+
+    # Colores de texto principales según tema
+    if current_theme == 'light':
+        text_color = '#0f172a'  # Texto muy oscuro para modo claro
+        secondary_text = '#334155'  # Texto secundario
+        muted_text = '#64748b'  # Texto tenue
+    else:
+        text_color = '#f8fafc'  # Texto muy claro para modo oscuro
+        secondary_text = '#cbd5e1'  # Texto secundario
+        muted_text = '#94a3b8'  # Texto tenue
+
+    # FORZAR sidebar text color - SIEMPRE NEGRO
+    sidebar_text_color = '#0f172a'
+
+    # ========== ESTILOS ESPECÍFICOS PARA BADGES SEGÚN TEMA ==========
+    if current_theme == 'dark':
+        badge_css = """
+        /* MODO OSCURO: Badges con fondos BRILLANTES y texto oscuro */
+
+        /* Success badges - Verde esmeralda brillante */
+        div[data-testid="stAlert"],
+        div[data-baseweb="notification"],
+        .stAlert {
+            background-color: #10b981 !important;
+            background: #10b981 !important;
+            border-left: 4px solid #059669 !important;
+        }
+
+        /* FORZAR texto oscuro en todos los badges */
+        div[data-testid="stAlert"],
+        div[data-testid="stAlert"] *,
+        div[data-testid="stAlert"] p,
+        div[data-testid="stAlert"] div,
+        div[data-testid="stAlert"] span,
+        div[data-baseweb="notification"],
+        div[data-baseweb="notification"] *,
+        div[data-baseweb="notification"] p,
+        div[data-baseweb="notification"] div,
+        div[data-baseweb="notification"] span,
+        .stAlert,
+        .stAlert * {
+            color: #0f172a !important;
+            background-color: transparent !important;
+        }
+
+        /* Restaurar fondo de contenedores principales */
+        div[data-testid="stAlert"],
+        div[data-baseweb="notification"],
+        .stAlert {
+            background-color: #10b981 !important;
+        }
+
+        /* Warning badges - Amarillo oro brillante */
+        div[data-baseweb="notification"][kind="warning"],
+        div[data-testid="stAlert"][kind="warning"] {
+            background-color: #fbbf24 !important;
+            background: #fbbf24 !important;
+            border-left: 4px solid #f59e0b !important;
+        }
+
+        /* Error badges - Rojo coral brillante */
+        div[data-baseweb="notification"][kind="error"],
+        div[data-testid="stAlert"][kind="error"] {
+            background-color: #fca5a5 !important;
+            background: #fca5a5 !important;
+            border-left: 4px solid #f87171 !important;
+        }
+
+        /* Info badges - Azul cielo brillante */
+        div[data-baseweb="notification"][kind="info"],
+        div[data-testid="stAlert"][kind="info"] {
+            background-color: #7dd3fc !important;
+            background: #7dd3fc !important;
+            border-left: 4px solid #38bdf8 !important;
+        }
+        """
+    else:
+        badge_css = """
+        /* MODO CLARO: Texto oscuro en badges para contraste */
+        div[data-testid="stAlert"],
+        div[data-testid="stAlert"] *,
+        div[data-baseweb="notification"],
+        div[data-baseweb="notification"] *,
+        .stAlert,
+        .stAlert * {
+            color: #0f172a !important;
+        }
+        """
+
+    # Generar timestamp único para forzar recarga de CSS
+    import time
+    css_timestamp = int(time.time())
+
+    # Aplicar colores de fondo según tema
+    if current_theme == 'dark':
+        bg_color = '#0f172a'
+        bg_secondary = '#1e293b'
+    else:
+        bg_color = '#ffffff'
+        bg_secondary = '#f8f9fa'
 
     st.markdown(f"""
-    <style>
-    /* CRITICAL CSS - STREAMLIT CLOUD COMPATIBILITY */
+    <style data-timestamp="{css_timestamp}">
+    /* CRITICAL CSS v10-BACKGROUND - TIMESTAMP: {css_timestamp} */
+    /* TEMA: {current_theme} - TEXT: {text_color} - BG: {bg_color} */
+
+    /* ========== CAMBIAR FONDO DE LA APLICACIÓN ========== */
+    .stApp {{
+        background-color: {bg_color} !important;
+    }}
+
+    .main, .main > div, [data-testid="stAppViewContainer"] {{
+        background-color: {bg_color} !important;
+    }}
+
+    /* ========== REDIMENSIONAMIENTO DINÁMICO DEL SIDEBAR ========== */
+    /* Transición suave para todos los cambios */
+    .main,
+    .main .block-container,
+    section[data-testid="stMain"],
+    div[data-testid="stMainBlockContainer"],
+    [data-testid="stAppViewContainer"] > section.main {{
+        transition: margin-left 0.3s ease, max-width 0.3s ease, width 0.3s ease !important;
+    }}
+
+    /* Estado por defecto del contenedor principal */
+    .main .block-container {{
+        transition: all 0.3s ease !important;
+    }}
+
+    /* ========== FORZAR COLOR DE TEXTO GLOBAL (EXCEPTO LOGIN Y SIDEBAR) ========== */
+    /* NO aplicar a elementos dentro de login-container */
+    .main:not(:has(.login-container)) {{
+        color: {text_color} !important;
+    }}
+
+    .main > div:not(.login-container) *:not(.stButton *):not([data-testid="stAlert"] *):not([data-baseweb="notification"] *):not(.main-header-secure *) {{
+        color: {text_color} !important;
+    }}
+
+    /* ========== LOGIN: FORZAR TEXTO CLARO EN MODO OSCURO ========== */
+    /* Aplicar después de todas las reglas con máxima prioridad */
 
     /* Sidebar buttons styling */
     .stSidebar .stButton > button {{
@@ -1707,7 +2174,7 @@ def main():
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
     }}
 
-    /* SIDEBAR TEXT VISIBILITY - CRITICAL FIX */
+    /* SIDEBAR TEXT VISIBILITY - SIEMPRE NEGRO */
     .stSidebar h1, .stSidebar h2, .stSidebar h3, .stSidebar h4, .stSidebar h5, .stSidebar h6,
     [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3,
     [data-testid="stSidebar"] h4, [data-testid="stSidebar"] h5, [data-testid="stSidebar"] h6,
@@ -1725,7 +2192,7 @@ def main():
     [data-testid="stSidebar"] .stMetric label, [data-testid="stSidebar"] .stMetric div,
     .stSidebar label:not(.stButton label),
     [data-testid="stSidebar"] label:not(.stButton label) {{
-        color: {text_color} !important;
+        color: {sidebar_text_color} !important;
     }}
 
     /* SIDEBAR BUTTONS - Keep green background with white text */
@@ -1735,7 +2202,7 @@ def main():
         color: white !important;
     }}
 
-    /* SIDEBAR ALERTS AND OTHER ELEMENTS */
+    /* SIDEBAR ALERTS - SIEMPRE NEGRO */
     .stSidebar .stAlert p, .stSidebar .stAlert span, .stSidebar .stAlert div:not([role="alert"]),
     [data-testid="stSidebar"] .stAlert p, [data-testid="stSidebar"] .stAlert span,
     [data-testid="stSidebar"] .stAlert div:not([role="alert"]),
@@ -1743,50 +2210,206 @@ def main():
     .stSidebar [data-testid="stAlertContentSuccess"] p,
     [data-testid="stSidebar"] [data-testid="stAlertContentInfo"] p,
     [data-testid="stSidebar"] [data-testid="stAlertContentSuccess"] p {{
+        color: {sidebar_text_color} !important;
+    }}
+
+    /* ========== CONTRASTE DASHBOARD (NO TOCAR LOGIN) ========== */
+
+    /* Texto principal de la app */
+    .main .block-container div[data-testid="stVerticalBlock"] > div,
+    .stMarkdown:not(.login-container .stMarkdown),
+    .element-container:not(.login-container .element-container),
+    [data-testid="stMarkdownContainer"]:not(.login-container [data-testid="stMarkdownContainer"]) {{
         color: {text_color} !important;
     }}
 
-    /* Text visibility - CRITICAL FIX */
-    .stMarkdown, .stMarkdown *, .element-container *,
-    .stChatMessage, .stChatMessage *,
-    div[data-testid="stMarkdownContainer"] *,
-    [data-testid="stChatMessage"] * {{
+    /* Métricas - FORZAR contraste fuerte con máxima especificidad */
+    div[data-testid="stMetric"],
+    div[data-testid="stMetric"] div,
+    div[data-testid="stMetric"] label,
+    div[data-testid="stMetric"] span,
+    div[data-testid="stMetric"] p,
+    div[data-testid="stMetric"] *,
+    [data-testid="stMetricLabel"],
+    [data-testid="stMetricLabel"] *,
+    [data-testid="stMetricValue"],
+    [data-testid="stMetricValue"] *,
+    [data-testid="stMetricDelta"],
+    [data-testid="stMetricDelta"] *,
+    .stMetric,
+    .stMetric * {{
         color: {text_color} !important;
     }}
 
-    /* Keep white text on green backgrounds */
+    /* Labels y texto general */
+    label:not(.stButton label) {{
+        color: {text_color} !important;
+    }}
+
+    /* ========== Texto blanco en fondos oscuros/verdes ========== */
+    .stButton > button,
+    .stButton > button *,
+    .main-header-secure,
+    .main-header-secure *,
     [style*="background: linear-gradient(135deg, #22c55e"] *,
     [style*="background: linear-gradient(135deg, #4CAF50"] *,
-    .access-granted, .access-granted * {{
+    [style*="background: linear-gradient(135deg, #10b981"] *,
+    [style*="background: linear-gradient(135deg, #1e3a8a"] *,
+    [style*="background: linear-gradient(135deg, #1e40af"] * {{
         color: white !important;
     }}
 
-    /* Dark mode: Keep black text on light backgrounds for contrast */
-    body[data-theme="dark"] [style*="background: #ffffff"] *,
-    body[data-theme="dark"] [style*="background: white"] *,
-    body[data-theme="dark"] [style*="background: #f8f9fa"] *,
-    body[data-theme="dark"] [style*="background: #f1f3f4"] *,
-    body[data-theme="dark"] [style*="background: #e9ecef"] *,
-    body[data-theme="dark"] .bg-light,
-    body[data-theme="dark"] .bg-light *,
-    body[data-theme="dark"] .card-body,
-    body[data-theme="dark"] .card-body * {{
-        color: #1a202c !important;
+    /* ========== EXPANDERS - CONTRASTE FORZADO CON MÁXIMA PRIORIDAD ========== */
+    /* Expanders: texto visible en modo oscuro */
+    div[data-testid="stExpander"],
+    div[data-testid="stExpander"] *,
+    div[data-testid="stExpander"] summary,
+    div[data-testid="stExpander"] summary *,
+    div[data-testid="stExpander"] details,
+    div[data-testid="stExpander"] details *,
+    div[data-testid="stExpander"] p,
+    div[data-testid="stExpander"] span,
+    div[data-testid="stExpander"] div,
+    div[data-testid="stExpander"] label,
+    .streamlit-expanderHeader,
+    .streamlit-expanderHeader *,
+    details[data-testid="stExpander"],
+    details[data-testid="stExpander"] * {{
+        color: {text_color} !important;
+        background-color: transparent !important;
     }}
 
-    /* Dark mode: Keep black text on warning/info backgrounds */
-    body[data-theme="dark"] [style*="background: #fff3cd"] *,
-    body[data-theme="dark"] [style*="background: #d1ecf1"] *,
-    body[data-theme="dark"] [style*="background: #d4edda"] *,
-    body[data-theme="dark"] .alert-warning,
-    body[data-theme="dark"] .alert-warning *,
-    body[data-theme="dark"] .alert-info,
-    body[data-theme="dark"] .alert-info *,
-    body[data-theme="dark"] .alert-success,
-    body[data-theme="dark"] .alert-success * {{
-        color: #1a202c !important;
+    /* Asegurar fondo del expander */
+    div[data-testid="stExpander"] {{
+        background-color: var(--bg-surface, transparent) !important;
     }}
+
+    /* ========== BADGES DINÁMICOS SEGÚN TEMA ACTIVO ========== */
+    {badge_css}
+
+    /* ========== DEBUG INFO ========== */
+    /* TEMA ACTUAL: {current_theme} */
+    /* TEXT COLOR: {text_color} */
+    /* SIDEBAR COLOR: {sidebar_text_color} */
+
+    /* ========== LOGIN FINAL OVERRIDE - MÁXIMA ESPECIFICIDAD ========== */
+    html body .stApp .main .login-container,
+    html body .stApp .main .login-header,
+    html body .stApp .main .login-container h1,
+    html body .stApp .main .login-container h2,
+    html body .stApp .main .login-container h3,
+    html body .stApp .main .login-container p,
+    html body .stApp .main .login-header h1,
+    html body .stApp .main .login-header h2,
+    html body .stApp .main .login-header h3,
+    html body .stApp .main .login-header p {{
+        color: {'#f9fafb' if current_theme == 'dark' else '#1a202c'} !important;
+    }}
+
     </style>
+
+    <script>
+    // APLICAR data-theme INMEDIATAMENTE - SIN DELAYS
+    (function() {{
+        const theme = '{current_theme}';
+        const textColor = '{text_color}';
+
+        // Aplicar atributo data-theme a TODOS los elementos principales
+        document.documentElement.setAttribute('data-theme', theme);
+        document.body.setAttribute('data-theme', theme);
+
+        // Intentar aplicar a stApp también
+        const stApp = document.querySelector('.stApp');
+        if (stApp) {{
+            stApp.setAttribute('data-theme', theme);
+        }}
+
+        const main = document.querySelector('.main');
+        if (main) {{
+            main.setAttribute('data-theme', theme);
+        }}
+
+        console.log('✅ Theme aplicado a HTML/BODY/stApp/main:', theme);
+        console.log('✅ Text color:', textColor);
+
+        // FORZAR estilos con JavaScript después de que Streamlit cargue
+        setTimeout(function() {{
+            const isLoginPage = document.querySelector('.login-container') !== null;
+
+            if (!isLoginPage) {{
+                // Aplicar color de texto a elementos del dashboard
+                const mainElements = document.querySelectorAll('.main *, [data-testid="stMetric"] *, [data-testid="stExpander"] *');
+                mainElements.forEach(function(el) {{
+                    if (!el.closest('.stButton') &&
+                        !el.closest('[data-testid="stAlert"]') &&
+                        !el.closest('[data-baseweb="notification"]') &&
+                        !el.closest('.main-header-secure')) {{
+                        el.style.color = textColor;
+                    }}
+                }});
+                console.log('✅ Estilos dashboard aplicados:', mainElements.length, 'elementos');
+            }} else {{
+                // FORZAR texto claro en login con inline styles
+                console.log('✅ Login detectado - aplicando estilos de login');
+
+                // Forzar texto claro en login-header
+                const loginHeaderElements = document.querySelectorAll('.login-header, .login-header *, .login-header h1, .login-header h2, .login-header h3, .login-header p');
+                loginHeaderElements.forEach(function(el) {{
+                    el.style.setProperty('color', '#f9fafb', 'important');
+                }});
+
+                // Forzar texto claro en login-container (excepto inputs)
+                const loginElements = document.querySelectorAll('.login-container h4, .login-container p:not(input *), .login-container span:not(input *)');
+                loginElements.forEach(function(el) {{
+                    if (!el.closest('input') && !el.closest('.stTextInput')) {{
+                        el.style.setProperty('color', '#f9fafb', 'important');
+                    }}
+                }});
+
+                console.log('✅ Login text forced to white:', loginHeaderElements.length + loginElements.length, 'elementos');
+            }}
+        }}, 1000);  // Aumentar delay a 1 segundo
+
+        // Repetir después de 2 segundos por si acaso
+        setTimeout(function() {{
+            const isLoginPage = document.querySelector('.login-container') !== null;
+            if (isLoginPage && theme === 'dark') {{
+                const loginAllText = document.querySelectorAll('.login-header *, .login-container *:not(input):not(.stTextInput *)');
+                loginAllText.forEach(function(el) {{
+                    if (!el.closest('input') && !el.closest('.stTextInput') && !el.closest('button')) {{
+                        el.style.setProperty('color', '#f9fafb', 'important');
+                    }}
+                }});
+                console.log('✅ Login reapplied (2s):', loginAllText.length, 'elementos');
+            }}
+        }}, 2000);
+
+        // Observar cambios del DOM para aplicar estilos a nuevos elementos
+        const observer = new MutationObserver(function(mutations) {{
+            const isLoginPage = document.querySelector('.login-container') !== null;
+            if (isLoginPage) return; // No aplicar estilos en login
+
+            mutations.forEach(function(mutation) {{
+                mutation.addedNodes.forEach(function(node) {{
+                    if (node.nodeType === 1) {{ // Element node
+                        const elements = node.querySelectorAll('.main *, [data-testid="stMetric"] *');
+                        elements.forEach(function(el) {{
+                            if (!el.closest('.stButton') &&
+                                !el.closest('[data-testid="stAlert"]') &&
+                                !el.closest('[data-baseweb="notification"]') &&
+                                !el.closest('.main-header-secure') &&
+                                !el.closest('.login-container')) {{
+                                el.style.color = textColor;
+                            }}
+                        }});
+                    }}
+                }});
+            }});
+        }});
+
+        observer.observe(document.body, {{ childList: true, subtree: true }});
+    }})();
+    </script>
     """, unsafe_allow_html=True)
 
     if not AUTH_AVAILABLE:
@@ -2419,7 +3042,7 @@ def render_secure_chat(app):
                             st.markdown("---")
 
                             # Función para procesar y mostrar contenido con formato profesional
-                            def render_professional_analysis(text):
+                            def render_professional_analysis(text, theme):
                                 lines = text.split('\n')
 
                                 for line in lines:
@@ -2505,11 +3128,13 @@ def render_secure_chat(app):
                                     elif clean_line.startswith('- '):
                                         list_text = clean_line[2:].strip()
                                         if list_text:  # Solo mostrar si hay contenido
+                                            # Determinar color según tema actual
+                                            bullet_text_color = '#0f172a' if theme == 'light' else '#f8fafc'
                                             st.markdown(f"""
                                             <div style="
                                                 margin: 4px 0 !important;
                                                 padding: 8px 20px !important;
-                                                color: var(--text-color, #ffffff) !important;
+                                                color: {bullet_text_color} !important;
                                                 background: rgba(59, 130, 246, 0.1) !important;
                                                 border-radius: 4px !important;
                                                 border-left: 3px solid #3b82f6 !important;
@@ -2520,8 +3145,9 @@ def render_secure_chat(app):
 
                                     # Listas numeradas
                                     elif any(clean_line.startswith(f'{i}. ') for i in range(1, 10)):
+                                        numbered_text_color = '#0f172a' if theme == 'light' else '#f8fafc'
                                         st.markdown(f"""
-                                        <div style="margin: 4px 0 !important; padding: 8px 12px !important; background: rgba(100, 116, 139, 0.1) !important; border-radius: 4px !important; color: var(--text-color, #ffffff) !important; border-left: 3px solid #64748b !important;">
+                                        <div style="margin: 4px 0 !important; padding: 8px 12px !important; background: rgba(100, 116, 139, 0.1) !important; border-radius: 4px !important; color: {numbered_text_color} !important; border-left: 3px solid #64748b !important;">
                                             {clean_line}
                                         </div>
                                         """, unsafe_allow_html=True)
@@ -2577,11 +3203,12 @@ def render_secure_chat(app):
                                     else:
                                         # Solo mostrar si tiene contenido significativo
                                         if clean_line and len(clean_line.strip()) > 2:
+                                            default_text_color = '#0f172a' if theme == 'light' else '#f8fafc'
                                             st.markdown(f"""
                                             <div style="
                                                 margin: 6px 0 !important;
                                                 line-height: 1.6 !important;
-                                                color: var(--text-color, #ffffff) !important;
+                                                color: {default_text_color} !important;
                                                 padding: 8px 12px !important;
                                                 background: rgba(255, 255, 255, 0.05) !important;
                                                 border-radius: 4px !important;
@@ -2593,7 +3220,9 @@ def render_secure_chat(app):
                                             """, unsafe_allow_html=True)
 
                             # Renderizar el análisis con formato profesional
-                            render_professional_analysis(processed_text)
+                            # Obtener tema actual desde session_state
+                            chat_theme = st.session_state.get('theme_mode', 'light')
+                            render_professional_analysis(processed_text, chat_theme)
 
                             # Información sobre la exportación PDF
                             st.info("📋 **Exportación PDF**: Se genera un documento profesional con cabecera corporativa, estilos mejorados y formato optimizado para presentaciones.")
