@@ -1,0 +1,2235 @@
+/* ===========================================
+   COPILOT SALUD ANDALUCÍA - TEMA OSCURO PROFESIONAL
+   =========================================== */
+
+/* Importar sistema de colores */
+@import url('./color-system.css');
+
+/* ========== VARIABLES CSS MODO OSCURO - SISTEMA PROFESIONAL ========== */
+:root {
+    /* Colores principales usando el sistema profesional - versiones elegantes para modo oscuro */
+    --primary-color: #3b82f6;
+    --secondary-color: #1e40af;
+    --accent-color: #06b6d4;
+    --warning-color: #f59e0b;
+    --success-color: #10b981;
+    --info-color: #60a5fa;
+    --danger-color: #ef4444;
+
+    /* Variables de tema - aplicadas por defecto con MÁXIMO CONTRASTE */
+    --text-primary: #ffffff;
+    --text-secondary: #f1f5f9;
+    --text-muted: #cbd5e1;
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --border-color: #64748b;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+
+    --border-radius: var(--radius-md);
+    --shadow: var(--shadow-sm);
+    --shadow-hover: var(--shadow-lg);
+    --transition: var(--transition-normal);
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ========== BASE STYLES ========== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-primary);
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: var(--transition);
+}
+
+/* ========== HEADER ========== */
+.main-header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    padding: 2rem 2.5rem;
+    border-radius: 16px;
+    color: var(--text-primary);
+    text-align: left;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(20px);
+}
+
+.main-header::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    border-radius: 0 2px 2px 0;
+}
+
+.main-header h1 {
+    font-family: var(--font-primary);
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+    position: relative;
+    z-index: 2;
+    line-height: 1.2;
+}
+
+.main-header h3 {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    font-weight: 400;
+    margin-bottom: 0.75rem;
+    position: relative;
+    z-index: 2;
+    color: var(--primary-color);
+}
+
+.main-header p {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin: 0.25rem 0;
+    position: relative;
+    z-index: 2;
+    font-weight: 400;
+}
+
+/* ========== SIDEBAR ========== */
+.sidebar-content {
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(20px);
+    position: sticky;
+    top: 1rem;
+}
+
+.sidebar-content h3 {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ========== METRICS CARDS ========== */
+.metric-card {
+    background: #0f172a;
+    padding: 1.5rem;
+    border-radius: 16px;
+    border-left: 4px solid var(--primary-color);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2);
+    margin-bottom: 1rem;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
+    border-left-color: var(--secondary-color);
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* ========== CHAT CONTAINER ========== */
+.chat-container {
+    background: #0f172a;
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+    min-height: 550px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2);
+    position: relative;
+    backdrop-filter: blur(20px);
+}
+
+.chat-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ========== CHART CONTAINERS ========== */
+.chart-container {
+    background: #0f172a;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2);
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-container:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.chart-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+}
+
+/* ========== PLOTLY CHARTS DARK MODE FIX - AGGRESSIVE ========== */
+[data-theme="dark"] .stPlotlyChart,
+body[data-theme="dark"] .stPlotlyChart,
+.stPlotlyChart {
+    background: transparent !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .stPlotlyChart > div,
+body[data-theme="dark"] .stPlotlyChart > div,
+.stPlotlyChart > div {
+    background: transparent !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .plotly,
+body[data-theme="dark"] .plotly,
+.plotly {
+    background: transparent !important;
+}
+
+[data-theme="dark"] .plotly .main-svg,
+body[data-theme="dark"] .plotly .main-svg,
+.plotly .main-svg {
+    background: transparent !important;
+}
+
+/* Forzar visibilidad AGRESIVA de elementos Plotly en modo oscuro */
+[data-theme="dark"] .plotly .bg,
+body[data-theme="dark"] .plotly .bg,
+.plotly .bg {
+    fill: transparent !important;
+}
+
+[data-theme="dark"] .plotly .gridlayer .x,
+[data-theme="dark"] .plotly .gridlayer .y,
+body[data-theme="dark"] .plotly .gridlayer .x,
+body[data-theme="dark"] .plotly .gridlayer .y,
+.plotly .gridlayer .x,
+.plotly .gridlayer .y {
+    stroke: #64748b !important;
+    opacity: 1 !important;
+}
+
+[data-theme="dark"] .plotly .xtick text,
+[data-theme="dark"] .plotly .ytick text,
+[data-theme="dark"] .plotly .gtitle text,
+[data-theme="dark"] .plotly .g-xtitle text,
+[data-theme="dark"] .plotly .g-ytitle text,
+body[data-theme="dark"] .plotly .xtick text,
+body[data-theme="dark"] .plotly .ytick text,
+body[data-theme="dark"] .plotly .gtitle text,
+body[data-theme="dark"] .plotly .g-xtitle text,
+body[data-theme="dark"] .plotly .g-ytitle text,
+.plotly .xtick text,
+.plotly .ytick text,
+.plotly .gtitle text,
+.plotly .g-xtitle text,
+.plotly .g-ytitle text {
+    fill: #ffffff !important;
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+[data-theme="dark"] .plotly .xaxislayer-above path,
+[data-theme="dark"] .plotly .yaxislayer-above path,
+body[data-theme="dark"] .plotly .xaxislayer-above path,
+body[data-theme="dark"] .plotly .yaxislayer-above path,
+.plotly .xaxislayer-above path,
+.plotly .yaxislayer-above path {
+    stroke: #ffffff !important;
+    opacity: 1 !important;
+}
+
+/* Forzar elementos de datos visibles */
+[data-theme="dark"] .plotly .trace,
+body[data-theme="dark"] .plotly .trace,
+.plotly .trace {
+    opacity: 1 !important;
+}
+
+[data-theme="dark"] .plotly .bars path,
+body[data-theme="dark"] .plotly .bars path,
+.plotly .bars path {
+    opacity: 1 !important;
+    stroke-width: 1 !important;
+}
+
+[data-theme="dark"] .plotly .scatter .points path,
+body[data-theme="dark"] .plotly .scatter .points path,
+.plotly .scatter .points path {
+    opacity: 1 !important;
+}
+
+[data-theme="dark"] .plotly .scatterlayer .trace,
+body[data-theme="dark"] .plotly .scatterlayer .trace,
+.plotly .scatterlayer .trace {
+    opacity: 1 !important;
+}
+
+/* Agressive override for any hidden elements */
+[data-theme="dark"] .plotly * {
+    opacity: 1 !important;
+}
+
+/* Matplotlib charts dark mode fix */
+[data-theme="dark"] .stPyplot,
+body[data-theme="dark"] .stPyplot,
+.stPyplot {
+    background: transparent !important;
+}
+
+[data-theme="dark"] .stPyplot img,
+body[data-theme="dark"] .stPyplot img,
+.stPyplot img {
+    background: transparent !important;
+    filter: brightness(1.2) contrast(1.2) !important;
+    opacity: 1 !important;
+}
+
+/* Any chart container with data should be visible */
+[data-theme="dark"] div[data-testid="stPlotlyChart"],
+body[data-theme="dark"] div[data-testid="stPlotlyChart"],
+div[data-testid="stPlotlyChart"] {
+    background: transparent !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* ========== BUTTONS ========== */
+.stButton > button {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white !important;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 8px;
+    padding: 0.75rem 1.2rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: visible;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-family: var(--font-primary);
+    letter-spacing: 0.01em;
+    outline: none;
+    min-width: 180px;
+    width: auto;
+    max-width: 350px;
+    min-height: 42px;
+    height: auto;
+    white-space: normal;
+    text-align: center;
+}
+
+.stButton > button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    border: 1px solid rgba(59, 130, 246, 0.5);
+}
+
+/* ========== TABLES ========== */
+.stDataFrame {
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+}
+
+.stDataFrame tbody tr:nth-child(even) {
+    background: var(--bg-secondary);
+}
+
+.stDataFrame tbody tr:hover {
+    background: rgba(59, 130, 246, 0.1);
+    transition: background 0.2s ease;
+}
+
+.stDataFrame td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+/* ========== INPUTS - COMPREHENSIVE FIX ========== */
+.stSelectbox > div > div,
+.stTextInput > div > div,
+.stTextInput input,
+.stTextArea textarea,
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+textarea,
+[role="textbox"] {
+    border-radius: var(--border-radius) !important;
+    border: 2px solid var(--border-color) !important;
+    transition: var(--transition) !important;
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.stSelectbox > div > div:hover,
+.stTextInput > div > div:hover,
+.stTextInput input:hover,
+.stTextArea textarea:hover,
+input[type="text"]:hover,
+input[type="password"]:hover,
+input[type="email"]:hover,
+input[type="number"]:hover,
+textarea:hover {
+    border-color: var(--primary-color) !important;
+}
+
+.stSelectbox > div > div:focus-within,
+.stTextInput > div > div:focus-within,
+.stTextInput input:focus,
+.stTextArea textarea:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+[role="textbox"]:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1) !important;
+    outline: none !important;
+}
+
+/* Input placeholders */
+input::placeholder,
+textarea::placeholder,
+.stTextInput input::placeholder,
+.stTextArea textarea::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 0.7 !important;
+}
+
+/* ========== STATUS MESSAGES ========== */
+.success-box {
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.1), rgba(74, 222, 128, 0.05));
+    border: 1px solid rgba(52, 211, 153, 0.2);
+    color: var(--success-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+}
+
+.info-box {
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(96, 165, 250, 0.05));
+    border: 1px solid rgba(96, 165, 250, 0.2);
+    color: var(--info-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+}
+
+.warning-box {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05));
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    color: var(--warning-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+}
+
+/* ========== TABS ========== */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 0;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    padding: 0.5rem;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.stTabs [data-baseweb="tab"] {
+    background: transparent;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.stTabs [data-baseweb="tab"]:hover {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.stTabs [data-baseweb="tab"][aria-selected="true"] {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+/* ========== SCROLLBARS ========== */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 3px;
+    transition: background 0.3s ease;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .main-header {
+        padding: 1.5rem 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .main-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .chart-container {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .stButton > button {
+        min-height: 44px;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        width: 100%;
+        touch-action: manipulation;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-header {
+        padding: 1rem 0.5rem;
+    }
+
+    .main-header h1 {
+        font-size: 1.6rem;
+    }
+
+    .metric-card {
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .stButton > button {
+        min-height: 48px;
+        padding: 0.875rem 1rem;
+        font-size: 0.9rem;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+}
+
+/* ========== LAYOUT DESKTOP - RESPONSIVE SIDEBAR ========== */
+.main .block-container {
+    max-width: none !important;
+    min-width: 1200px !important;
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Sidebar expandido */
+.stSidebar:not([data-state="collapsed"]) {
+    width: 21rem !important;
+    min-width: 21rem !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Sidebar colapsado - múltiples selectores para compatibilidad */
+.stSidebar[data-state="collapsed"],
+.stSidebar:has(.stSidebarCollapsedControl),
+.stSidebar[aria-expanded="false"],
+.stSidebar.collapsed,
+section[data-testid="stSidebar"][style*="width: 0"],
+section[data-testid="stSidebar"][style*="width:0"],
+section[data-testid="stSidebar"]:not([style*="width"]):has(+ div[style*="margin-left: 0"]) {
+    width: 3rem !important;
+    min-width: 3rem !important;
+    max-width: 3rem !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    overflow: hidden !important;
+}
+
+/* Ajustar contenido principal cuando sidebar está colapsado - múltiples casos */
+body:has(.stSidebar[data-state="collapsed"]) .main .block-container,
+body:has(.stSidebar:has(.stSidebarCollapsedControl)) .main .block-container,
+body:has(.stSidebar[aria-expanded="false"]) .main .block-container,
+body:has(.stSidebar.collapsed) .main .block-container,
+body:has(section[data-testid="stSidebar"][style*="width: 0"]) .main .block-container,
+body:has(section[data-testid="stSidebar"][style*="width:0"]) .main .block-container {
+    margin-left: 0 !important;
+    max-width: calc(100vw - 4rem) !important;
+    width: calc(100vw - 4rem) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* CSS más universal - detectar sidebar colapsado por el contenedor principal */
+div[data-testid="stAppViewContainer"] > .main .block-container {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Forzar redimensionado responsive */
+@media screen and (min-width: 640px) {
+    .main {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .main .block-container {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+}
+
+/* Contenido del sidebar cuando está colapsado - ocultar texto */
+.stSidebar[data-state="collapsed"] .stSidebarUserContent,
+.stSidebar:has(.stSidebarCollapsedControl) .stSidebarUserContent {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Botón de colapso siempre visible */
+.stSidebarCollapsedControl {
+    display: block !important;
+    position: sticky !important;
+    top: 1rem !important;
+    z-index: 1000 !important;
+}
+
+div[data-testid="column"] {
+    min-width: 300px !important;
+    flex: 1 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 1400px) {
+    .main .block-container {
+        min-width: 1000px !important;
+    }
+}
+
+@media (max-width: 1200px) {
+    .main .block-container {
+        min-width: 800px !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    .stSidebar:not([data-state="collapsed"]) {
+        width: 18rem !important;
+        min-width: 18rem !important;
+    }
+}
+
+/* ========== STREAMLIT SPECIFIC FIXES - MODO OSCURO CON MÁXIMO CONTRASTE ========== */
+
+/* FORZADO GLOBAL DE COLORES PARA MODO OSCURO - TEXTO BLANCO PURO */
+body[data-theme="dark"],
+body[data-theme="dark"] *:not(.access-granted):not(.access-granted *),
+html[data-theme="dark"],
+html[data-theme="dark"] *:not(.access-granted):not(.access-granted *),
+.stApp[data-theme="dark"],
+.stApp[data-theme="dark"] *:not(.access-granted):not(.access-granted *),
+[data-theme="dark"],
+[data-theme="dark"] *:not(.access-granted):not(.access-granted *) {
+    color: #ffffff !important;
+    background-color: var(--bg-primary) !important;
+}
+
+/* FORZAR TEXTO BLANCO PURO EN TODOS LOS ELEMENTOS DE STREAMLIT */
+body[data-theme="dark"] .stApp,
+body[data-theme="dark"] .stApp *,
+html[data-theme="dark"] .stApp,
+html[data-theme="dark"] .stApp *,
+.stApp[data-theme="dark"],
+.stApp[data-theme="dark"] * {
+    color: #ffffff !important;
+}
+
+/* Elementos de texto principales - BLANCO PURO */
+.stMarkdown, .stMarkdown *:not(.access-granted *),
+.stText, .stText *:not(.access-granted *),
+.stTextArea, .stTextArea *,
+.stTextInput, .stTextInput *,
+.element-container, .element-container *:not(.access-granted *),
+div[data-testid="stMarkdownContainer"], div[data-testid="stMarkdownContainer"] *:not(.access-granted *),
+[data-testid="stMarkdown"], [data-testid="stMarkdown"] *:not(.access-granted *),
+[data-testid="element-container"], [data-testid="element-container"] *:not(.access-granted *),
+/* Con selector de atributo */
+body[data-theme="dark"] .stMarkdown, body[data-theme="dark"] .stMarkdown *:not(.access-granted *),
+body[data-theme="dark"] .stText, body[data-theme="dark"] .stText *:not(.access-granted *),
+body[data-theme="dark"] .stTextArea, body[data-theme="dark"] .stTextArea *,
+body[data-theme="dark"] .stTextInput, body[data-theme="dark"] .stTextInput *,
+body[data-theme="dark"] .element-container, body[data-theme="dark"] .element-container *:not(.access-granted *) {
+    color: #ffffff !important;
+}
+
+/* ========== CHAT MESSAGES - MÁXIMO CONTRASTE BLANCO PURO ========== */
+.stChatMessage,
+.stChatMessage *:not(.access-granted *),
+.stChat,
+.stChat *:not(.access-granted *),
+[data-testid="stChatMessage"],
+[data-testid="stChatMessage"] *:not(.access-granted *),
+[data-testid="stChatMessageContent"],
+[data-testid="stChatMessageContent"] *:not(.access-granted *),
+.stChatMessage .stMarkdown:not(.access-granted),
+.stChatMessage .stMarkdown *:not(.access-granted *),
+.stChatMessage .element-container:not(.access-granted),
+.stChatMessage .element-container *:not(.access-granted *),
+.stChatMessage p:not(.access-granted),
+.stChatMessage div:not(.access-granted),
+.stChatMessage span:not(.access-granted),
+.stChatMessage h1:not(.access-granted),
+.stChatMessage h2:not(.access-granted),
+.stChatMessage h3:not(.access-granted),
+.stChatMessage h4:not(.access-granted),
+.stChatMessage h5:not(.access-granted),
+.stChatMessage h6:not(.access-granted),
+.stChatMessage li:not(.access-granted),
+.stChatMessage ul:not(.access-granted),
+.stChatMessage ol:not(.access-granted),
+/* Con selector de atributo */
+body[data-theme="dark"] .stChatMessage,
+body[data-theme="dark"] .stChatMessage *:not(.access-granted *),
+body[data-theme="dark"] .stChat,
+body[data-theme="dark"] .stChat *:not(.access-granted *),
+body[data-theme="dark"] [data-testid="stChatMessage"],
+body[data-theme="dark"] [data-testid="stChatMessage"] *:not(.access-granted *),
+body[data-theme="dark"] [data-testid="stChatMessageContent"],
+body[data-theme="dark"] [data-testid="stChatMessageContent"] *:not(.access-granted *) {
+    color: #ffffff !important;
+    background: var(--bg-primary) !important;
+}
+
+/* ========== CHAT INPUT - COMPREHENSIVE FIX ========== */
+.stChatInputContainer,
+.stChatInputContainer *,
+.stChatInputContainer input,
+.stChatInputContainer textarea,
+[data-testid="stChatInputContainer"],
+[data-testid="stChatInputContainer"] *,
+[data-testid="stChatInputContainer"] input,
+[data-testid="stChatInputContainer"] textarea,
+[data-testid="chatInputTextArea"],
+[data-testid="textArea"] textarea {
+    background: var(--bg-secondary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Chat input placeholder */
+.stChatInputContainer input::placeholder,
+.stChatInputContainer textarea::placeholder,
+[data-testid="stChatInputContainer"] input::placeholder,
+[data-testid="stChatInputContainer"] textarea::placeholder,
+[data-testid="chatInputTextArea"]::placeholder,
+[data-testid="textArea"] textarea::placeholder {
+    color: var(--text-muted) !important;
+    opacity: 0.7 !important;
+}
+
+/* Selectbox y otros inputs */
+.stSelectbox, .stSelectbox *,
+.stMultiSelect, .stMultiSelect *,
+.stNumberInput, .stNumberInput *,
+.stDateInput, .stDateInput *,
+.stTimeInput, .stTimeInput *,
+.stFileUploader, .stFileUploader * {
+    color: var(--text-primary) !important;
+    background: var(--bg-primary) !important;
+}
+
+/* Tabs específico */
+.stTabs [data-baseweb="tab"]:not([aria-selected="true"]),
+.stTabs [data-baseweb="tab"]:not([aria-selected="true"]) * {
+    color: var(--text-primary) !important;
+}
+
+/* Métricas */
+.metric-value {
+    color: var(--primary-color) !important;
+}
+
+.metric-label {
+    color: var(--text-secondary) !important;
+}
+
+/* Headers y títulos - BLANCO PURO */
+h1, h2, h3, h4, h5, h6,
+.stMarkdown h1, .stMarkdown h2, .stMarkdown h3,
+.stMarkdown h4, .stMarkdown h5, .stMarkdown h6 {
+    color: #ffffff !important;
+}
+
+/* REGLA GLOBAL AGRESIVA - FORZAR BLANCO PURO EN MODO OSCURO */
+body[data-theme="dark"],
+body[data-theme="dark"] *,
+html[data-theme="dark"],
+html[data-theme="dark"] *,
+.stApp[data-theme="dark"],
+.stApp[data-theme="dark"] *,
+[data-theme="dark"],
+[data-theme="dark"] * {
+    color: #ffffff !important;
+}
+
+/* ========== TOOLTIPS - PROFESSIONAL DARK MODE DESIGN - OVERRIDE INLINE STYLES ========== */
+html[data-theme="dark"] body .stTooltipIcon,
+html[data-theme="dark"] body .stTooltip,
+html[data-theme="dark"] body div[data-baseweb="tooltip"],
+html[data-theme="dark"] body div[data-baseweb="tooltip"] > div,
+html[data-theme="dark"] body .stTooltipContent,
+html body[data-theme="dark"] .stTooltipIcon,
+html body[data-theme="dark"] .stTooltip,
+html body[data-theme="dark"] div[data-baseweb="tooltip"],
+html body[data-theme="dark"] div[data-baseweb="tooltip"] > div,
+html body[data-theme="dark"] .stTooltipContent,
+html .stTooltipIcon,
+html .stTooltip,
+html div[data-baseweb="tooltip"],
+html div[data-baseweb="tooltip"] > div,
+html .stTooltipContent {
+    background: #1e293b !important;
+    color: #ffffff !important;
+    border: 1px solid #4ade80 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(74, 222, 128, 0.2) !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    padding: 10px 14px !important;
+    z-index: 10000 !important;
+    max-width: 300px !important;
+    line-height: 1.4 !important;
+    backdrop-filter: blur(20px) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* MEGA SPECIFIC OVERRIDE FOR INLINE STYLES FROM APP.PY */
+html[data-theme="dark"] body div[data-baseweb="tooltip"][style],
+html body[data-theme="dark"] div[data-baseweb="tooltip"][style],
+html div[data-baseweb="tooltip"][style] {
+    background: #1e293b !important;
+    color: #ffffff !important;
+    border: 1px solid #4ade80 !important;
+}
+
+html[data-theme="dark"] body div[data-baseweb="tooltip"] > div[style],
+html body[data-theme="dark"] div[data-baseweb="tooltip"] > div[style],
+html div[data-baseweb="tooltip"] > div[style] {
+    background: #1e293b !important;
+    color: #ffffff !important;
+    padding: 10px 14px !important;
+}
+
+/* Tooltip arrow/pointer styling */
+body[data-theme="dark"] div[data-baseweb="tooltip"]::before,
+[data-theme="dark"] div[data-baseweb="tooltip"]::before,
+div[data-baseweb="tooltip"]::before {
+    border-color: #4ade80 transparent transparent transparent !important;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)) !important;
+}
+
+body[data-theme="dark"] div[data-baseweb="tooltip"]::after,
+[data-theme="dark"] div[data-baseweb="tooltip"]::after,
+div[data-baseweb="tooltip"]::after {
+    border-color: #1e293b transparent transparent transparent !important;
+}
+
+/* ========== TOOLTIP HOVER BUTTONS - DARK MODE SIMPLE FIX ========== */
+[data-theme="dark"] [data-testid="stTooltipHoverTarget"],
+body[data-theme="dark"] [data-testid="stTooltipHoverTarget"] {
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border-radius: 6px !important;
+    padding: 4px !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+}
+
+/* ========== DARK MODE TOGGLE SPECIFIC FIX ========== */
+[data-theme="dark"] .st-key-theme_toggle_v6_positioned [data-testid="stTooltipHoverTarget"],
+body[data-theme="dark"] .st-key-theme_toggle_v6_positioned [data-testid="stTooltipHoverTarget"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    flex-direction: row !important;
+}
+
+[data-theme="dark"] .st-key-theme_toggle_v6_positioned .stTooltipIcon,
+body[data-theme="dark"] .st-key-theme_toggle_v6_positioned .stTooltipIcon {
+    display: inline-block !important;
+    width: auto !important;
+}
+
+/* DARK MODE - Prevent text wrapping in toggle (CRITICAL FIX) */
+[data-theme="dark"] .st-key-theme_toggle_v6_positioned button,
+[data-theme="dark"] .st-key-theme_toggle_v6_positioned .stButton > button,
+body[data-theme="dark"] .st-key-theme_toggle_v6_positioned button,
+body[data-theme="dark"] .st-key-theme_toggle_v6_positioned .stButton > button {
+    white-space: nowrap !important;
+    overflow: visible !important;
+    min-width: 90px !important;
+    width: auto !important;
+    text-overflow: clip !important;
+    word-break: keep-all !important;
+    hyphens: none !important;
+}
+
+[data-theme="dark"] .st-key-theme_toggle_v6_positioned [data-testid="stMarkdownContainer"],
+[data-theme="dark"] .st-key-theme_toggle_v6_positioned [data-testid="stMarkdownContainer"] p,
+body[data-theme="dark"] .st-key-theme_toggle_v6_positioned [data-testid="stMarkdownContainer"],
+body[data-theme="dark"] .st-key-theme_toggle_v6_positioned [data-testid="stMarkdownContainer"] p {
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    word-break: keep-all !important;
+    hyphens: none !important;
+}
+
+body[data-theme="dark"] [data-testid="stTooltipHoverTarget"]:hover,
+[data-theme="dark"] [data-testid="stTooltipHoverTarget"]:hover {
+    background: rgba(74, 222, 128, 0.1) !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    transform: scale(1.05) !important;
+}
+
+body[data-theme="dark"] [data-testid="stTooltipHoverTarget"] svg,
+[data-theme="dark"] [data-testid="stTooltipHoverTarget"] svg {
+    color: #94a3b8 !important;
+    fill: #94a3b8 !important;
+}
+
+body[data-theme="dark"] [data-testid="stTooltipHoverTarget"]:hover svg,
+[data-theme="dark"] [data-testid="stTooltipHoverTarget"]:hover svg {
+    color: #4ade80 !important;
+    fill: #4ade80 !important;
+}
+
+/* ========== THEME TOGGLE BUTTON - NO DOUBLE BORDERS ========== */
+/* Contenedor principal del botón de toggle */
+[data-theme="dark"] .stButton:has(.stTooltipIcon),
+body[data-theme="dark"] .stButton:has(.stTooltipIcon),
+.stButton:has(.stTooltipIcon) {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* Contenedor del tooltip icon */
+[data-theme="dark"] .stTooltipIcon,
+body[data-theme="dark"] .stTooltipIcon,
+.stTooltipIcon {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* Botón interno del toggle - diseño elegante y legible - ICON ABOVE TEXT */
+[data-theme="dark"] .stTooltipHoverTarget button,
+body[data-theme="dark"] .stTooltipHoverTarget button,
+.stTooltipHoverTarget button {
+    background: linear-gradient(135deg, #374151, #4b5563) !important;
+    color: white !important;
+    border: 1px solid #6b7280 !important;
+    outline: none !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+    border-radius: 8px !important;
+    padding: 0.7rem 1rem !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+    transition: all 0.2s ease !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.4rem !important;
+    min-width: 85px !important;
+    max-width: 110px !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 65px !important;
+}
+
+/* Contenido del botón - texto legible centrado debajo del icono */
+[data-theme="dark"] .stTooltipHoverTarget button .stMarkdownContainer,
+[data-theme="dark"] .stTooltipHoverTarget button .stMarkdownContainer p,
+body[data-theme="dark"] .stTooltipHoverTarget button .stMarkdownContainer,
+body[data-theme="dark"] .stTooltipHoverTarget button .stMarkdownContainer p,
+.stTooltipHoverTarget button .stMarkdownContainer,
+.stTooltipHoverTarget button .stMarkdownContainer p {
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap !important;
+    display: block !important;
+    line-height: 1.2 !important;
+    color: white !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    text-align: center !important;
+    font-size: 0.8rem !important;
+    max-width: 100px !important;
+    overflow: visible !important;
+}
+
+[data-theme="dark"] .stTooltipHoverTarget button:hover,
+body[data-theme="dark"] .stTooltipHoverTarget button:hover,
+.stTooltipHoverTarget button:hover {
+    background: linear-gradient(135deg, #4b5563, #6b7280) !important;
+    color: white !important;
+    border: 1px solid #9ca3af !important;
+    outline: none !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Botón secundario dentro del toggle - OCULTAR DUPLICADO */
+[data-theme="dark"] .stButton .st-emotion-cache-1cyexbd,
+body[data-theme="dark"] .stButton .st-emotion-cache-1cyexbd,
+.stButton .st-emotion-cache-1cyexbd {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+[data-theme="dark"] .stButton .st-emotion-cache-1cyexbd button,
+body[data-theme="dark"] .stButton .st-emotion-cache-1cyexbd button,
+.stButton .st-emotion-cache-1cyexbd button {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Hide nested/duplicate buttons that create ugly layering - BUT EXCLUDE TOOLTIP BUTTONS */
+[data-theme="dark"] .stButton:not(:has(.stTooltipIcon)) > div > div > button,
+[data-theme="dark"] .stButton:not(:has(.stTooltipIcon)) > div > div > div > button,
+body[data-theme="dark"] .stButton:not(:has(.stTooltipIcon)) > div > div > button,
+body[data-theme="dark"] .stButton:not(:has(.stTooltipIcon)) > div > div > div > button,
+.stButton:not(:has(.stTooltipIcon)) > div > div > button,
+.stButton:not(:has(.stTooltipIcon)) > div > div > div > button {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Show only the direct child button - BUT ENSURE TOOLTIP BUTTONS ARE VISIBLE */
+[data-theme="dark"] .stButton > button,
+body[data-theme="dark"] .stButton > button,
+.stButton > button {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Ensure tooltip hover target buttons remain visible - FORCE VERTICAL LAYOUT */
+[data-theme="dark"] .stTooltipHoverTarget,
+body[data-theme="dark"] .stTooltipHoverTarget,
+.stTooltipHoverTarget {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.3rem !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+[data-theme="dark"] .stTooltipHoverTarget button,
+body[data-theme="dark"] .stTooltipHoverTarget button,
+.stTooltipHoverTarget button {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.3rem !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Force all tooltip content to be visible - CRITICAL FOR THEME TOGGLE */
+[data-theme="dark"] .stTooltipIcon,
+[data-theme="dark"] .stTooltipIcon *,
+body[data-theme="dark"] .stTooltipIcon,
+body[data-theme="dark"] .stTooltipIcon *,
+.stTooltipIcon,
+.stTooltipIcon * {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Ensure tooltip icon itself uses column layout */
+[data-theme="dark"] .stTooltipIcon,
+body[data-theme="dark"] .stTooltipIcon,
+.stTooltipIcon {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.3rem !important;
+}
+
+/* Specifically target the theme toggle button elements - VERTICAL LAYOUT */
+[data-theme="dark"] .stButton:has(.stTooltipIcon),
+body[data-theme="dark"] .stButton:has(.stTooltipIcon),
+.stButton:has(.stTooltipIcon) {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.3rem !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Ensure all children are visible but don't override layout */
+[data-theme="dark"] .stButton:has(.stTooltipIcon) *,
+body[data-theme="dark"] .stButton:has(.stTooltipIcon) *,
+.stButton:has(.stTooltipIcon) * {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Eliminar cualquier contenedor que agregue marcos - EXCEPTO FORM BUTTONS */
+[data-theme="dark"] .st-emotion-cache-6dnr6u:not(.stFormSubmitButton *),
+[data-theme="dark"] .st-emotion-cache-1cyexbd:not(.stFormSubmitButton *),
+body[data-theme="dark"] .st-emotion-cache-6dnr6u:not(.stFormSubmitButton *),
+body[data-theme="dark"] .st-emotion-cache-1cyexbd:not(.stFormSubmitButton *),
+.st-emotion-cache-6dnr6u:not(.stFormSubmitButton *),
+.st-emotion-cache-1cyexbd:not(.stFormSubmitButton *) {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* ========== FORM SUBMIT BUTTONS - AGGRESSIVE STYLING WITH BORDERS ========== */
+/* Ultra specific selectors for form submit buttons */
+html[data-theme="dark"] body .stFormSubmitButton button[kind="secondaryFormSubmit"],
+html body[data-theme="dark"] .stFormSubmitButton button[kind="secondaryFormSubmit"],
+html .stFormSubmitButton button[kind="secondaryFormSubmit"],
+[data-theme="dark"] .stFormSubmitButton button[kind="secondaryFormSubmit"],
+body[data-theme="dark"] .stFormSubmitButton button[kind="secondaryFormSubmit"],
+.stFormSubmitButton button[kind="secondaryFormSubmit"],
+[data-theme="dark"] .stFormSubmitButton button,
+body[data-theme="dark"] .stFormSubmitButton button,
+.stFormSubmitButton button {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+    color: #0f172a !important;
+    border: 3px solid #4ade80 !important;
+    outline: none !important;
+    box-shadow: 0 4px 12px rgba(74, 222, 128, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 0.875rem 2rem !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 48px !important;
+    position: relative !important;
+    cursor: pointer !important;
+}
+
+html[data-theme="dark"] body .stFormSubmitButton button[kind="secondaryFormSubmit"]:hover,
+html body[data-theme="dark"] .stFormSubmitButton button[kind="secondaryFormSubmit"]:hover,
+html .stFormSubmitButton button[kind="secondaryFormSubmit"]:hover,
+[data-theme="dark"] .stFormSubmitButton button[kind="secondaryFormSubmit"]:hover,
+body[data-theme="dark"] .stFormSubmitButton button[kind="secondaryFormSubmit"]:hover,
+.stFormSubmitButton button[kind="secondaryFormSubmit"]:hover,
+[data-theme="dark"] .stFormSubmitButton button:hover,
+body[data-theme="dark"] .stFormSubmitButton button:hover,
+.stFormSubmitButton button:hover {
+    background: linear-gradient(135deg, #22d3ee, #34d399) !important;
+    color: #0f172a !important;
+    border: 3px solid #22d3ee !important;
+    box-shadow: 0 8px 25px rgba(74, 222, 128, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-2px) !important;
+}
+
+html[data-theme="dark"] body .stFormSubmitButton button[kind="secondaryFormSubmit"]:active,
+html body[data-theme="dark"] .stFormSubmitButton button[kind="secondaryFormSubmit"]:active,
+html .stFormSubmitButton button[kind="secondaryFormSubmit"]:active,
+[data-theme="dark"] .stFormSubmitButton button[kind="secondaryFormSubmit"]:active,
+body[data-theme="dark"] .stFormSubmitButton button[kind="secondaryFormSubmit"]:active,
+.stFormSubmitButton button[kind="secondaryFormSubmit"]:active,
+[data-theme="dark"] .stFormSubmitButton button:active,
+body[data-theme="dark"] .stFormSubmitButton button:active,
+.stFormSubmitButton button:active {
+    transform: translateY(0px) !important;
+    border: 3px solid #4ade80 !important;
+    box-shadow: 0 2px 8px rgba(74, 222, 128, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Form button text container */
+[data-theme="dark"] .stFormSubmitButton button .stMarkdownContainer,
+[data-theme="dark"] .stFormSubmitButton button .stMarkdownContainer p,
+body[data-theme="dark"] .stFormSubmitButton button .stMarkdownContainer,
+body[data-theme="dark"] .stFormSubmitButton button .stMarkdownContainer p,
+.stFormSubmitButton button .stMarkdownContainer,
+.stFormSubmitButton button .stMarkdownContainer p {
+    margin: 0 !important;
+    padding: 0 !important;
+    white-space: nowrap !important;
+    display: inline !important;
+    line-height: 1.2 !important;
+    font-weight: 600 !important;
+}
+
+/* ========== SVG ICONS - PROFESSIONAL DARK MODE STYLING ========== */
+[data-theme="dark"] svg.icon,
+body[data-theme="dark"] svg.icon,
+svg.icon {
+    color: #94a3b8 !important;
+    stroke: #94a3b8 !important;
+    fill: none !important;
+    width: 16px !important;
+    height: 16px !important;
+    stroke-width: 2 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
+    transition: all 0.2s ease !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+[data-theme="dark"] svg.icon:hover,
+body[data-theme="dark"] svg.icon:hover,
+svg.icon:hover {
+    color: #4ade80 !important;
+    stroke: #4ade80 !important;
+    transform: scale(1.1) !important;
+}
+
+/* SVG icons dentro de botones y contenedores */
+[data-theme="dark"] button svg,
+[data-theme="dark"] [role="button"] svg,
+[data-theme="dark"] .stButton svg,
+[data-theme="dark"] div[data-testid] svg,
+body[data-theme="dark"] button svg,
+body[data-theme="dark"] [role="button"] svg,
+body[data-theme="dark"] .stButton svg,
+body[data-theme="dark"] div[data-testid] svg,
+button svg,
+[role="button"] svg,
+.stButton svg,
+div[data-testid] svg {
+    color: #94a3b8 !important;
+    stroke: #94a3b8 !important;
+    fill: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: all 0.2s ease !important;
+}
+
+[data-theme="dark"] button:hover svg,
+[data-theme="dark"] [role="button"]:hover svg,
+[data-theme="dark"] .stButton:hover svg,
+[data-theme="dark"] div[data-testid]:hover svg,
+body[data-theme="dark"] button:hover svg,
+body[data-theme="dark"] [role="button"]:hover svg,
+body[data-theme="dark"] .stButton:hover svg,
+body[data-theme="dark"] div[data-testid]:hover svg,
+button:hover svg,
+[role="button"]:hover svg,
+.stButton:hover svg,
+div[data-testid]:hover svg {
+    color: #4ade80 !important;
+    stroke: #4ade80 !important;
+}
+
+/* Fix específico para iconos de información/ayuda */
+[data-theme="dark"] svg[viewBox="0 0 24 24"],
+body[data-theme="dark"] svg[viewBox="0 0 24 24"],
+svg[viewBox="0 0 24 24"] {
+    width: 16px !important;
+    height: 16px !important;
+    color: #94a3b8 !important;
+    stroke: #94a3b8 !important;
+    fill: none !important;
+    stroke-width: 2 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Eliminar cualquier marco/borde feo de los iconos */
+[data-theme="dark"] svg,
+body[data-theme="dark"] svg,
+svg {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: none !important;
+}
+
+/* Contenedores de iconos - sin marcos */
+[data-theme="dark"] button:has(svg),
+[data-theme="dark"] div:has(svg),
+[data-theme="dark"] span:has(svg),
+body[data-theme="dark"] button:has(svg),
+body[data-theme="dark"] div:has(svg),
+body[data-theme="dark"] span:has(svg),
+button:has(svg),
+div:has(svg),
+span:has(svg) {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 2px !important;
+}
+
+/* Override específico para elementos con colores inline problemáticos */
+[style*="color: black"]:not(.access-granted *),
+[style*="color:black"]:not(.access-granted *),
+[style*="color:#000000"]:not(.access-granted *),
+[style*="color:#000"]:not(.access-granted *),
+[style*="color: #000000"]:not(.access-granted *),
+[style*="color: #000"]:not(.access-granted *) {
+    color: var(--text-primary) !important;
+}
+
+/* ========== DATAFRAMES Y TABLAS - INCLUYE GLIDE DATA EDITOR ========== */
+.stDataFrame, .stDataFrame *,
+.dataframe, .dataframe * {
+    color: var(--text-primary) !important;
+    background: var(--bg-primary) !important;
+}
+
+/* ========== GLIDE DATA EDITOR - DARK MODE FIX ========== */
+[data-theme="dark"] .stDataFrameGlideDataEditor,
+body[data-theme="dark"] .stDataFrameGlideDataEditor,
+.stDataFrameGlideDataEditor {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+}
+
+[data-theme="dark"] .dvn-scroller,
+body[data-theme="dark"] .dvn-scroller,
+.dvn-scroller {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .dvn-scroll-inner,
+body[data-theme="dark"] .dvn-scroll-inner,
+.dvn-scroll-inner {
+    background: var(--bg-primary) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+[data-theme="dark"] .dvn-stack,
+body[data-theme="dark"] .dvn-stack,
+.dvn-stack {
+    background: var(--bg-primary) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Forzar visibilidad de todos los elementos Glide */
+[data-theme="dark"] .dvn-scroller *,
+body[data-theme="dark"] .dvn-scroller *,
+.dvn-scroller * {
+    opacity: 1 !important;
+    visibility: visible !important;
+    color: var(--text-primary) !important;
+}
+
+/* Grid cells y contenido */
+[data-theme="dark"] .gdg-cell,
+body[data-theme="dark"] .gdg-cell,
+.gdg-cell {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .gdg-header-cell,
+body[data-theme="dark"] .gdg-header-cell,
+.gdg-header-cell {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Override cualquier estilo que oculte el contenido - AGRESIVO */
+[data-theme="dark"] .stDataFrameGlideDataEditor .dvn-hidden,
+body[data-theme="dark"] .stDataFrameGlideDataEditor .dvn-hidden,
+.stDataFrameGlideDataEditor .dvn-hidden,
+[data-theme="dark"] .dvn-hidden,
+body[data-theme="dark"] .dvn-hidden,
+.dvn-hidden {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: inherit !important;
+    min-height: inherit !important;
+}
+
+/* Forzar dimensiones mínimas para elementos con height/width 0 */
+[data-theme="dark"] .dvn-stack > div[style*="height: 0px"],
+body[data-theme="dark"] .dvn-stack > div[style*="height: 0px"],
+.dvn-stack > div[style*="height: 0px"] {
+    height: auto !important;
+    min-height: 200px !important;
+}
+
+[data-theme="dark"] .dvn-stack > div[style*="width: 0px"],
+body[data-theme="dark"] .dvn-stack > div[style*="width: 0px"],
+.dvn-stack > div[style*="width: 0px"] {
+    width: auto !important;
+    min-width: 400px !important;
+}
+
+/* Forzar el contenedor principal a mostrar contenido */
+[data-theme="dark"] .dvn-stack,
+body[data-theme="dark"] .dvn-stack,
+.dvn-stack {
+    background: var(--bg-primary) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 200px !important;
+    min-width: 400px !important;
+}
+
+/* Canvas elements dentro del grid */
+[data-theme="dark"] .dvn-scroller canvas,
+body[data-theme="dark"] .dvn-scroller canvas,
+.dvn-scroller canvas {
+    opacity: 1 !important;
+    visibility: visible !important;
+    background: var(--bg-primary) !important;
+    min-width: 400px !important;
+    min-height: 200px !important;
+}
+
+/* Cualquier elemento SVG dentro del grid */
+[data-theme="dark"] .dvn-scroller svg,
+body[data-theme="dark"] .dvn-scroller svg,
+.dvn-scroller svg {
+    opacity: 1 !important;
+    visibility: visible !important;
+    background: transparent !important;
+}
+
+/* WebGL canvas si existe */
+[data-theme="dark"] .dvn-scroller canvas[style*="position: absolute"],
+body[data-theme="dark"] .dvn-scroller canvas[style*="position: absolute"],
+.dvn-scroller canvas[style*="position: absolute"] {
+    position: relative !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* ULTRA AGRESSIVE FIX - Forzar todo el Glide Data Grid */
+[data-theme="dark"] .stDataFrameGlideDataEditor *,
+body[data-theme="dark"] .stDataFrameGlideDataEditor *,
+.stDataFrameGlideDataEditor * {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Forzar el renderizado del grid interno */
+[data-theme="dark"] [class*="glide-data-grid"],
+body[data-theme="dark"] [class*="glide-data-grid"],
+[class*="glide-data-grid"] {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Si usa shadow DOM o iframes */
+[data-theme="dark"] .dvn-scroller iframe,
+body[data-theme="dark"] .dvn-scroller iframe,
+.dvn-scroller iframe {
+    opacity: 1 !important;
+    visibility: visible !important;
+    background: var(--bg-primary) !important;
+}
+
+/* Elementos de data grid específicos */
+[data-theme="dark"] [data-testid*="grid"],
+[data-theme="dark"] [class*="grid"],
+body[data-theme="dark"] [data-testid*="grid"],
+body[data-theme="dark"] [class*="grid"],
+[data-testid*="grid"],
+[class*="grid"] {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Sidebar específico */
+.stSidebar, .stSidebar *:not(.stButton > button) {
+    color: var(--text-primary) !important;
+    background: var(--bg-secondary) !important;
+}
+
+/* ========== SIDEBAR BUTTONS - PROFESSIONAL DARK MODE ========== */
+.stSidebar .stButton > button {
+    background: linear-gradient(135deg, #374151 0%, #4b5563 100%) !important;
+    color: #f9fafb !important;
+    border: 1px solid #6b7280 !important;
+    border-radius: 12px !important;
+    padding: 0.875rem 1rem !important;
+    font-weight: 500 !important;
+    font-size: 0.9rem !important;
+    text-decoration: none !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    text-align: left !important;
+    width: 100% !important;
+}
+
+.stSidebar .stButton > button:hover {
+    background: linear-gradient(135deg, #4b5563 0%, #6b7280 100%) !important;
+    color: #ffffff !important;
+    border-color: #9ca3af !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.15) !important;
+    text-decoration: none !important;
+}
+
+.stSidebar .stButton > button:active {
+    transform: translateY(0px) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Remove any underlines from sidebar links */
+.stSidebar a,
+.stSidebar a:hover,
+.stSidebar a:visited,
+.stSidebar a:focus,
+.stSidebar .stButton > button a,
+.stSidebar .stButton > button a:hover,
+.stSidebar .stButton > button a:visited,
+.stSidebar .stButton > button a:focus {
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+/* FORZAR FONDOS OSCUROS EN TODOS LOS ELEMENTOS PRINCIPALES */
+.stApp,
+body[data-theme="dark"] .stApp,
+html[data-theme="dark"] .stApp {
+    background: var(--bg-primary) !important;
+}
+
+.main .block-container,
+body[data-theme="dark"] .main .block-container {
+    background: var(--bg-primary) !important;
+}
+
+/* BOTONES - UNIFIED DARK MODE STYLES - ELEGANTE Y PROFESIONAL */
+.stButton > button,
+body[data-theme="dark"] .stButton > button,
+button:not(.stSidebar button),
+body[data-theme="dark"] button:not(.stSidebar button) {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+    color: white !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+    outline: none !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+    border-radius: 8px !important;
+    padding: 0.75rem 1.5rem !important;
+    font-weight: 500 !important;
+    font-size: 0.9rem !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+    position: relative !important;
+}
+
+.stButton > button:hover,
+body[data-theme="dark"] .stButton > button:hover,
+button:hover:not(.stSidebar button),
+body[data-theme="dark"] button:hover:not(.stSidebar button) {
+    background: linear-gradient(135deg, #1e40af, #3b82f6) !important;
+    color: white !important;
+    border: 1px solid rgba(59, 130, 246, 0.5) !important;
+    outline: none !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+    transform: translateY(-1px) !important;
+}
+
+.stButton > button:focus,
+body[data-theme="dark"] .stButton > button:focus,
+button:focus:not(.stSidebar button),
+body[data-theme="dark"] button:focus:not(.stSidebar button) {
+    border: 1px solid rgba(59, 130, 246, 0.5) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+}
+
+.stButton > button:active,
+body[data-theme="dark"] .stButton > button:active,
+button:active:not(.stSidebar button),
+body[data-theme="dark"] button:active:not(.stSidebar button) {
+    transform: translateY(0px) !important;
+    border: none !important;
+    outline: none !important;
+}
+
+/* TARJETAS Y CONTAINERS - FORZAR FONDOS OSCUROS */
+.stContainer,
+body[data-theme="dark"] .stContainer,
+.element-container,
+body[data-theme="dark"] .element-container,
+div[data-testid="stHorizontalBlock"],
+body[data-theme="dark"] div[data-testid="stHorizontalBlock"],
+div[data-testid="stVerticalBlock"],
+body[data-theme="dark"] div[data-testid="stVerticalBlock"],
+div[data-testid="column"],
+body[data-theme="dark"] div[data-testid="column"] {
+    background: var(--bg-primary) !important;
+}
+
+/* MÉTRICAS Y CARDS */
+div[data-testid="metric-container"],
+body[data-theme="dark"] div[data-testid="metric-container"],
+.metric-container,
+body[data-theme="dark"] .metric-container {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* CUALQUIER ELEMENTO CON FONDO BLANCO INLINE - MUY AGRESIVO */
+[style*="background-color: white"]:not(.access-granted),
+[style*="background-color:white"]:not(.access-granted),
+[style*="background-color: #ffffff"]:not(.access-granted),
+[style*="background-color:#ffffff"]:not(.access-granted),
+[style*="background-color: #fff"]:not(.access-granted),
+[style*="background-color:#fff"]:not(.access-granted),
+[style*="background: white"]:not(.access-granted),
+[style*="background:white"]:not(.access-granted),
+[style*="background: #ffffff"]:not(.access-granted),
+[style*="background:#ffffff"]:not(.access-granted),
+[style*="background: #fff"]:not(.access-granted),
+[style*="background:#fff"]:not(.access-granted) {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* ELEMENTOS CON TEXTO BLANCO PERO SIN FONDO OSCURO */
+[style*="color: white"]:not(.access-granted):not(.stButton > button),
+[style*="color:white"]:not(.access-granted):not(.stButton > button),
+[style*="color: #ffffff"]:not(.access-granted):not(.stButton > button),
+[style*="color:#ffffff"]:not(.access-granted):not(.stButton > button),
+[style*="color: #fff"]:not(.access-granted):not(.stButton > button),
+[style*="color:#fff"]:not(.access-granted):not(.stButton > button) {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* DIVS GENÉRICOS PROBLEMÁTICOS - MÁS SELECTIVO */
+div.stColumn:not(.access-granted),
+div.stContainer:not(.access-granted),
+.main > div:not(.access-granted) {
+    background-color: var(--bg-primary) !important;
+}
+
+/* REGLAS ESPECÍFICAS PARA STREAMLIT METRICS */
+div[data-testid="metric-container"] div,
+div[data-testid="metric-container"] span,
+.metric-container div,
+.metric-container span {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+}
+
+/* FORZAR FONDO OSCURO EN ELEMENTOS CON CLASE ESPECÍFICA */
+.stExpander,
+body[data-theme="dark"] .stExpander,
+.stForm,
+body[data-theme="dark"] .stForm,
+.stColumns,
+body[data-theme="dark"] .stColumns {
+    background: var(--bg-primary) !important;
+}
+
+/* Alertas y mensajes */
+.stAlert, .stAlert *,
+.stSuccess, .stSuccess *,
+.stInfo, .stInfo *,
+.stWarning, .stWarning *,
+.stError, .stError * {
+    color: var(--text-primary) !important;
+}
+
+/* Clase access-granted - EXCEPCIÓN para mantener blanco en fondo verde */
+.access-granted {
+    background: linear-gradient(135deg, #4CAF50 0%, #66bb6a 100%) !important;
+    padding: 1rem !important;
+    border-radius: 10px !important;
+    color: white !important;
+    margin: 1rem 0 !important;
+}
+
+.access-granted h4,
+.access-granted p,
+.access-granted span,
+.access-granted * {
+    color: white !important;
+}
+
+/* ========== ROLE CARDS LOGIN - MODO OSCURO ========== */
+.role-card-login {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+    box-shadow: 0 1px 3px var(--shadow-color) !important;
+}
+
+.role-card-login small {
+    color: var(--text-secondary) !important;
+}
+
+/* Forzar modo oscuro para role cards */
+[data-theme="dark"] .role-card-login,
+body[data-theme="dark"] .role-card-login,
+.stApp[data-theme="dark"] .role-card-login,
+@media (prefers-color-scheme: dark) {
+    .role-card-login {
+        background: var(--bg-secondary) !important;
+        color: var(--text-primary) !important;
+        border-color: var(--border-color) !important;
+        box-shadow: 0 1px 3px var(--shadow-color) !important;
+    }
+
+    .role-card-login small {
+        color: var(--text-secondary) !important;
+    }
+}
+
+/* ========== EXECUTIVE BADGES - MODO OSCURO ========== */
+.executive-badge {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.executive-badge strong {
+    color: var(--text-primary) !important;
+}
+
+.executive-badge small {
+    color: var(--text-secondary) !important;
+}
+
+.user-badge {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.main-header-secure {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.main-header-secure h1,
+.main-header-secure h2,
+.main-header-secure p {
+    color: var(--text-primary) !important;
+}
+
+/* Forzar modo oscuro para executive/user badges */
+[data-theme="dark"] .executive-badge,
+body[data-theme="dark"] .executive-badge,
+.stApp[data-theme="dark"] .executive-badge,
+@media (prefers-color-scheme: dark) {
+    .executive-badge {
+        background: var(--bg-secondary) !important;
+        color: var(--text-primary) !important;
+        border: 1px solid var(--border-color) !important;
+    }
+
+    .executive-badge strong {
+        color: var(--text-primary) !important;
+    }
+
+    .executive-badge small {
+        color: var(--text-secondary) !important;
+    }
+}
+
+[data-theme="dark"] .user-badge,
+body[data-theme="dark"] .user-badge,
+.stApp[data-theme="dark"] .user-badge,
+@media (prefers-color-scheme: dark) {
+    .user-badge {
+        background: var(--bg-secondary) !important;
+        color: var(--text-primary) !important;
+        border: 1px solid var(--border-color) !important;
+    }
+}
+
+[data-theme="dark"] .main-header-secure,
+body[data-theme="dark"] .main-header-secure,
+.stApp[data-theme="dark"] .main-header-secure,
+@media (prefers-color-scheme: dark) {
+    .main-header-secure {
+        background: var(--bg-primary) !important;
+        color: var(--text-primary) !important;
+    }
+
+    .main-header-secure h1,
+    .main-header-secure h2,
+    .main-header-secure p {
+        color: var(--text-primary) !important;
+    }
+}
+
+/* ========== ULTIMATE FORM SUBMIT BUTTON OVERRIDE - DARK MODE ========== */
+/* Nuclear option - maximum specificity override for login buttons */
+html * div.stFormSubmitButton button,
+html * .stFormSubmitButton button,
+html * button[kind="secondaryFormSubmit"],
+html * form button,
+html body * .stFormSubmitButton button,
+html body * div.stFormSubmitButton button,
+html body * button[kind="secondaryFormSubmit"],
+html body div.stFormSubmitButton button[kind="secondaryFormSubmit"],
+html body .stFormSubmitButton button[kind="secondaryFormSubmit"],
+html .stFormSubmitButton button[kind="secondaryFormSubmit"],
+.stApp * .stFormSubmitButton button,
+.stApp * button[kind="secondaryFormSubmit"],
+* div.stFormSubmitButton button,
+* .stFormSubmitButton button,
+* button[kind="secondaryFormSubmit"] {
+    background: linear-gradient(135deg, #4ade80, #22d3ee) !important;
+    color: #0f172a !important;
+    border: 5px solid #4ade80 !important;
+    border-style: solid !important;
+    border-width: 5px !important;
+    border-color: #4ade80 !important;
+    outline: 3px solid #22d3ee !important;
+    outline-offset: 2px !important;
+    border-radius: 12px !important;
+    padding: 14px 28px !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+    min-height: 50px !important;
+    min-width: 140px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 0 0 5px #4ade80, 0 4px 20px rgba(74, 222, 128, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Hover state for ultimate form buttons */
+html * div.stFormSubmitButton button:hover,
+html * .stFormSubmitButton button:hover,
+html * button[kind="secondaryFormSubmit"]:hover,
+html * form button:hover,
+html body * .stFormSubmitButton button:hover,
+html body * div.stFormSubmitButton button:hover,
+html body * button[kind="secondaryFormSubmit"]:hover,
+* div.stFormSubmitButton button:hover,
+* .stFormSubmitButton button:hover,
+* button[kind="secondaryFormSubmit"]:hover {
+    background: linear-gradient(135deg, #22d3ee, #4ade80) !important;
+    border: 5px solid #22d3ee !important;
+    border-color: #22d3ee !important;
+    outline: 3px solid #4ade80 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 0 0 5px #22d3ee, 0 6px 25px rgba(34, 211, 238, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+/* ========== DATAFRAME GLIDE DATA EDITOR - NUCLEAR VISIBILITY FIX ========== */
+/* Force visibility and dimensions for all Glide Data Editor components */
+[data-theme="dark"] .dvn-scroller.stDataFrameGlideDataEditor,
+body[data-theme="dark"] .dvn-scroller.stDataFrameGlideDataEditor,
+.stApp[data-theme="dark"] .dvn-scroller.stDataFrameGlideDataEditor,
+* .dvn-scroller.stDataFrameGlideDataEditor {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    min-height: 300px !important;
+    height: auto !important;
+    min-width: 400px !important;
+    width: auto !important;
+    background: var(--bg-secondary) !important;
+    border: 2px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    overflow: visible !important;
+}
+
+/* Force inner scroll container visibility */
+[data-theme="dark"] .dvn-scroll-inner,
+body[data-theme="dark"] .dvn-scroll-inner,
+.stApp[data-theme="dark"] .dvn-scroll-inner,
+* .dvn-scroll-inner {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    min-height: 250px !important;
+    height: auto !important;
+    min-width: 350px !important;
+    width: auto !important;
+    background: var(--bg-primary) !important;
+    border-radius: 6px !important;
+    padding: 8px !important;
+    overflow: visible !important;
+}
+
+/* Override hidden class completely */
+[data-theme="dark"] .dvn-hidden,
+body[data-theme="dark"] .dvn-hidden,
+.stApp[data-theme="dark"] .dvn-hidden,
+* .dvn-hidden {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    width: auto !important;
+    min-height: 200px !important;
+    min-width: 300px !important;
+}
+
+/* Force stack container visibility */
+[data-theme="dark"] .dvn-stack,
+body[data-theme="dark"] .dvn-stack,
+.stApp[data-theme="dark"] .dvn-stack,
+* .dvn-stack {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    min-height: 200px !important;
+    height: auto !important;
+    min-width: 300px !important;
+    width: auto !important;
+    background: var(--bg-tertiary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 4px !important;
+    padding: 4px !important;
+}
+
+/* Force all div children to have proper dimensions */
+[data-theme="dark"] .dvn-stack > div,
+body[data-theme="dark"] .dvn-stack > div,
+.stApp[data-theme="dark"] .dvn-stack > div,
+* .dvn-stack > div {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    min-height: 50px !important;
+    height: auto !important;
+    min-width: 150px !important;
+    width: auto !important;
+    background: rgba(100, 116, 139, 0.1) !important;
+    border: 1px dashed var(--border-color) !important;
+    margin: 2px !important;
+    padding: 2px !important;
+}
+
+/* Force DataFrameGlideDataEditor to be visible regardless of any style attribute */
+.stDataFrameGlideDataEditor[style*="height: 0"],
+.stDataFrameGlideDataEditor[style*="width: 0"],
+div[style*="height: 0px"][style*="width: 608px"],
+div[style*="width: 0px"][style*="height: 245px"] {
+    height: auto !important;
+    width: auto !important;
+    min-height: 100px !important;
+    min-width: 200px !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--accent-color) !important;
+}
+
+/* ========== FIX NESTED BUTTON BORDERS - REMOVE OUTER CONTAINERS ========== */
+/* Remove borders from button containers and tooltip wrappers to avoid double/triple borders */
+[data-theme="dark"] .stButton .st-emotion-cache-6dnr6u,
+[data-theme="dark"] .stButton .st-emotion-cache-1cyexbd,
+[data-theme="dark"] .stTooltipIcon .st-emotion-cache-6dnr6u,
+[data-theme="dark"] .stTooltipIcon .st-emotion-cache-1cyexbd,
+[data-theme="dark"] .stElementContainer .st-emotion-cache-6dnr6u,
+[data-theme="dark"] .stElementContainer .st-emotion-cache-1cyexbd,
+body[data-theme="dark"] .stButton .st-emotion-cache-6dnr6u,
+body[data-theme="dark"] .stButton .st-emotion-cache-1cyexbd,
+body[data-theme="dark"] .stTooltipIcon .st-emotion-cache-6dnr6u,
+body[data-theme="dark"] .stTooltipIcon .st-emotion-cache-1cyexbd,
+body[data-theme="dark"] .stElementContainer .st-emotion-cache-6dnr6u,
+body[data-theme="dark"] .stElementContainer .st-emotion-cache-1cyexbd,
+.stButton .st-emotion-cache-6dnr6u,
+.stButton .st-emotion-cache-1cyexbd,
+.stTooltipIcon .st-emotion-cache-6dnr6u,
+.stTooltipIcon .st-emotion-cache-1cyexbd,
+.stElementContainer .st-emotion-cache-6dnr6u,
+.stElementContainer .st-emotion-cache-1cyexbd {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* Remove borders from tooltip hover targets */
+[data-theme="dark"] .stTooltipHoverTarget,
+body[data-theme="dark"] .stTooltipHoverTarget,
+.stTooltipHoverTarget {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* Remove borders from button element containers */
+[data-theme="dark"] .stButton,
+[data-theme="dark"] .stTooltipIcon,
+body[data-theme="dark"] .stButton,
+body[data-theme="dark"] .stTooltipIcon,
+.stButton,
+.stTooltipIcon {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* Ensure only the actual button element has styling - not containers */
+[data-theme="dark"] .stElementContainer,
+body[data-theme="dark"] .stElementContainer,
+.stElementContainer {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* ========== UNIVERSAL TOGGLE ICON POSITION FIX - ICON ABOVE TEXT ALWAYS ========== */
+/* Force ALL theme toggle buttons to use readable vertical layout regardless of theme */
+html .stTooltipIcon,
+html .stTooltipHoverTarget,
+html .stTooltipHoverTarget button,
+html .stButton:has(.stTooltipIcon),
+body .stTooltipIcon,
+body .stTooltipHoverTarget,
+body .stTooltipHoverTarget button,
+body .stButton:has(.stTooltipIcon),
+* .stTooltipIcon,
+* .stTooltipHoverTarget,
+* .stTooltipHoverTarget button,
+* .stButton:has(.stTooltipIcon) {
+    display: inline-flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.4rem !important;
+    min-width: 85px !important;
+    max-width: 110px !important;
+    min-height: 65px !important;
+}
+
+/* Universal text container for toggle buttons - READABLE */
+html .stTooltipHoverTarget button .stMarkdownContainer,
+html .stTooltipHoverTarget button .stMarkdownContainer p,
+body .stTooltipHoverTarget button .stMarkdownContainer,
+body .stTooltipHoverTarget button .stMarkdownContainer p,
+* .stTooltipHoverTarget button .stMarkdownContainer,
+* .stTooltipHoverTarget button .stMarkdownContainer p {
+    display: block !important;
+    text-align: center !important;
+    line-height: 1.2 !important;
+    font-size: 0.8rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100px !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+}
+
+/* ========== ULTIMATE BUTTON CONTAINER FIX - REMOVE ALL UGLY BORDERS ========== */
+/* Force remove ALL borders from ALL button containers and wrappers */
+* .st-emotion-cache-6dnr6u,
+* .st-emotion-cache-1cyexbd,
+* .st-emotion-cache-8atqhb,
+* .st-emotion-cache-1teq1nb,
+* .st-emotion-cache-zh2fnc,
+html * .st-emotion-cache-6dnr6u,
+html * .st-emotion-cache-1cyexbd,
+html * .st-emotion-cache-8atqhb,
+html * .st-emotion-cache-1teq1nb,
+html * .st-emotion-cache-zh2fnc,
+div.st-emotion-cache-6dnr6u,
+div.st-emotion-cache-1cyexbd,
+div.st-emotion-cache-8atqhb,
+div.st-emotion-cache-1teq1nb,
+div.st-emotion-cache-zh2fnc {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* ========== BUTTON TEXT OVERFLOW FIX - DARK MODE ========== */
+/* Fix for long button text that overflows */
+[data-theme="dark"] .stButton > button .stMarkdownContainer,
+[data-theme="dark"] .stButton > button .stMarkdownContainer p,
+body[data-theme="dark"] .stButton > button .stMarkdownContainer,
+body[data-theme="dark"] .stButton > button .stMarkdownContainer p,
+.stButton > button .stMarkdownContainer,
+.stButton > button .stMarkdownContainer p {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    max-width: none !important;
+    width: auto !important;
+    display: inline-block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.3 !important;
+    word-wrap: break-word !important;
+    text-align: center !important;
+}
+
+/* Ensure button containers don't constrain text width */
+[data-theme="dark"] .stButton,
+body[data-theme="dark"] .stButton,
+.stButton {
+    width: auto !important;
+    min-width: 180px !important;
+    max-width: 400px !important;
+}
+
+/* Fix button text display and prevent truncation - DARK MODE */
+[data-theme="dark"] button[kind="primary"] .stMarkdownContainer,
+[data-theme="dark"] button[kind="primary"] .stMarkdownContainer p,
+body[data-theme="dark"] button[kind="primary"] .stMarkdownContainer,
+body[data-theme="dark"] button[kind="primary"] .stMarkdownContainer p,
+button[kind="primary"] .stMarkdownContainer,
+button[kind="primary"] .stMarkdownContainer p {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    max-width: none !important;
+    width: auto !important;
+    display: inline-block !important;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    line-height: 1.3 !important;
+    word-wrap: break-word !important;
+}
+
+/* Ensure primary buttons have proper dimensions for full text - DARK MODE */
+[data-theme="dark"] button[kind="primary"],
+body[data-theme="dark"] button[kind="primary"],
+button[kind="primary"] {
+    min-width: 200px !important;
+    width: auto !important;
+    max-width: 400px !important;
+    padding: 12px 16px !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    height: auto !important;
+    min-height: 44px !important;
+}
+
+/* Remove borders from primary buttons that aren't form submit buttons */
+[data-theme="dark"] button[kind="primary"]:not(.stFormSubmitButton button),
+body[data-theme="dark"] button[kind="primary"]:not(.stFormSubmitButton button),
+button[kind="primary"]:not(.stFormSubmitButton button) {
+    border: 2px solid var(--primary-color) !important;
+    background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)) !important;
+    color: var(--text-primary) !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Hover state for primary buttons */
+[data-theme="dark"] button[kind="primary"]:hover:not(.stFormSubmitButton button),
+body[data-theme="dark"] button[kind="primary"]:hover:not(.stFormSubmitButton button),
+button[kind="primary"]:hover:not(.stFormSubmitButton button) {
+    border: 2px solid var(--accent-color) !important;
+    background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary)) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(74, 222, 128, 0.2) !important;
+}

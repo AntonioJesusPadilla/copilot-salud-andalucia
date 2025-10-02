@@ -1,0 +1,245 @@
+/* ===========================================
+   SISTEMA DE COLORES PROFESIONAL - COPILOT SALUD ANDALUCÍA
+   Paleta unificada para roles y temas
+   =========================================== */
+
+/* ========== COLORES BASE - SISTEMA SANITARIO PROFESIONAL ========== */
+:root {
+    /* --- COLORES PRINCIPALES SANITARIOS --- */
+    --health-primary: #2563eb;        /* Azul médico profesional */
+    --health-secondary: #0ea5e9;      /* Azul cielo sanitario */
+    --health-accent: #059669;         /* Verde sanitario (cruz roja) */
+
+    /* --- COLORES POR ROL --- */
+    --executive-primary: #1e40af;     /* Azul ejecutivo profundo */
+    --executive-secondary: #3b82f6;   /* Azul ejecutivo claro */
+
+    --admin-primary: #7c3aed;         /* Púrpura administrativo */
+    --admin-secondary: #a855f7;       /* Púrpura administrativo claro */
+
+    --analyst-primary: #dc2626;       /* Rojo analítico */
+    --analyst-secondary: #ef4444;     /* Rojo analítico claro */
+
+    --public-primary: #059669;        /* Verde público */
+    --public-secondary: #10b981;      /* Verde público claro */
+
+    /* --- COLORES DE ESTADO --- */
+    --success: #059669;
+    --warning: #d97706;
+    --error: #dc2626;
+    --info: #2563eb;
+
+    /* --- COLORES NEUTROS PROFESIONALES --- */
+    --neutral-50: #f8fafc;
+    --neutral-100: #f1f5f9;
+    --neutral-200: #e2e8f0;
+    --neutral-300: #cbd5e1;
+    --neutral-400: #94a3b8;
+    --neutral-500: #64748b;
+    --neutral-600: #475569;
+    --neutral-700: #334155;
+    --neutral-800: #1e293b;
+    --neutral-900: #0f172a;
+}
+
+/* ========== MODO CLARO - VARIABLES DINÁMICAS CON CONTRASTE WCAG AA ========== */
+[data-theme="light"] {
+    /* Textos - Contraste optimizado (>7:1 ratio) */
+    --text-primary: #0f172a;        /* Ratio 15.8:1 sobre blanco */
+    --text-secondary: #334155;      /* Ratio 9.2:1 sobre blanco */
+    --text-muted: #64748b;          /* Ratio 4.6:1 sobre blanco */
+    --text-inverse: #ffffff;
+
+    /* Fondos - Sistema de capas profesional */
+    --bg-base: #ffffff;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8fafc;        /* Superficie elevada */
+    --bg-tertiary: #f1f5f9;         /* Superficie más elevada */
+    --bg-surface: #f8fafc;
+    --bg-elevated: #f1f5f9;
+
+    /* Bordes - Jerarquía sutil */
+    --border-subtle: #e2e8f0;
+    --border-color: #cbd5e1;
+    --border-default: #cbd5e1;
+    --border-emphasis: #94a3b8;
+
+    /* Sombras profesionales */
+    --shadow-color: rgba(15, 23, 42, 0.08);
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+    --shadow-md: 0 4px 6px rgba(15, 23, 42, 0.07);
+    --shadow-lg: 0 10px 15px rgba(15, 23, 42, 0.1);
+
+    /* Colores interactivos - Estilo SAS Andalucía */
+    --primary: #0284c7;
+    --secondary: #0369a1;
+    --accent: #059669;
+    --interactive-primary: #0284c7;
+    --interactive-hover: #0369a1;
+    --interactive-active: #075985;
+}
+
+/* ========== MODO OSCURO - VARIABLES DINÁMICAS CON CONTRASTE WCAG AA ========== */
+[data-theme="dark"] {
+    /* Textos - Contraste alto optimizado (>7:1 ratio) */
+    --text-primary: #f8fafc;        /* Ratio 14.2:1 sobre #0f172a */
+    --text-secondary: #cbd5e1;      /* Ratio 8.9:1 sobre #0f172a */
+    --text-muted: #94a3b8;          /* Ratio 5.2:1 sobre #0f172a */
+    --text-inverse: #0f172a;
+
+    /* Fondos - Sistema de capas oscuro profesional */
+    --bg-base: #0f172a;
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;        /* Superficie elevada */
+    --bg-tertiary: #334155;         /* Superficie más elevada */
+    --bg-surface: #1e293b;
+    --bg-elevated: #334155;
+
+    /* Bordes - Jerarquía visible en oscuro */
+    --border-subtle: #334155;
+    --border-color: #475569;
+    --border-default: #475569;
+    --border-emphasis: #64748b;
+
+    /* Sombras intensas para profundidad */
+    --shadow-color: rgba(0, 0, 0, 0.4);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+
+    /* Colores interactivos - Más brillantes y vibrantes */
+    --primary: #38bdf8;
+    --secondary: #7dd3fc;
+    --accent: #10b981;
+    --interactive-primary: #38bdf8;
+    --interactive-hover: #7dd3fc;
+    --interactive-active: #0ea5e9;
+}
+
+/* ========== PALETA DE GRÁFICOS PROFESIONAL - ESTILO SAS ANDALUCÍA ========== */
+/* Colores optimizados para accesibilidad WCAG AA y estética profesional sanitaria */
+
+/* Paleta para modo claro - Colores saturados con contraste >4.5:1 */
+[data-theme="light"] {
+    --chart-1: #0369a1;    /* Azul sanitario profundo - Principal SAS */
+    --chart-2: #047857;    /* Verde salud oscuro */
+    --chart-3: #b91c1c;    /* Rojo médico intenso */
+    --chart-4: #6d28d9;    /* Púrpura datos oscuro */
+    --chart-5: #c2410c;    /* Naranja terracota */
+    --chart-6: #0e7490;    /* Cyan profesional */
+    --chart-7: #be123c;    /* Rosa sanitario */
+    --chart-8: #475569;    /* Gris corporativo */
+
+    /* Variantes para datos secundarios */
+    --chart-accent-1: #0ea5e9;  /* Azul cielo SAS */
+    --chart-accent-2: #059669;  /* Verde esmeralda */
+}
+
+/* Paleta para modo oscuro - Colores vibrantes luminosos >7:1 */
+[data-theme="dark"] {
+    --chart-1: #7dd3fc;    /* Azul cielo brillante */
+    --chart-2: #6ee7b7;    /* Verde menta luminoso */
+    --chart-3: #fca5a5;    /* Rojo coral suave */
+    --chart-4: #c4b5fd;    /* Púrpura lavanda */
+    --chart-5: #fdba74;    /* Naranja melocotón */
+    --chart-6: #67e8f9;    /* Cyan aguamarina */
+    --chart-7: #f9a8d4;    /* Rosa pastel */
+    --chart-8: #cbd5e1;    /* Gris plata */
+
+    /* Variantes luminosas para resaltar */
+    --chart-accent-1: #38bdf8;  /* Azul eléctrico */
+    --chart-accent-2: #34d399;  /* Verde neón suave */
+}
+
+/* ========== UTILIDADES DE COLORES POR ROL ========== */
+
+/* Ejecutivo */
+.role-executive {
+    --role-primary: var(--executive-primary);
+    --role-secondary: var(--executive-secondary);
+}
+
+/* Administrador */
+.role-admin {
+    --role-primary: var(--admin-primary);
+    --role-secondary: var(--admin-secondary);
+}
+
+/* Analista */
+.role-analyst {
+    --role-primary: var(--analyst-primary);
+    --role-secondary: var(--analyst-secondary);
+}
+
+/* Público */
+.role-public {
+    --role-primary: var(--public-primary);
+    --role-secondary: var(--public-secondary);
+}
+
+/* ========== TRANSICIONES Y EFECTOS PROFESIONALES ========== */
+:root {
+    /* Curvas de animación profesionales */
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+    /* Sombras adaptativas según tema */
+    --shadow-sm: 0 1px 2px 0 var(--shadow-color);
+    --shadow-md: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    /* Bordes redondeados profesionales */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+
+    /* Espaciados consistentes */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+}
+
+/* ========== TRANSICIONES GLOBALES SUAVES ========== */
+/* Aplicar transiciones a todos los elementos que cambien con el tema */
+body,
+body *:not(svg):not(path):not(circle):not(rect):not(line):not(polyline):not(polygon) {
+    transition: background-color var(--transition-smooth),
+                color var(--transition-smooth),
+                border-color var(--transition-smooth),
+                box-shadow var(--transition-normal),
+                opacity var(--transition-fast);
+}
+
+/* Transiciones específicas para elementos interactivos */
+button,
+a,
+input,
+textarea,
+select,
+.stButton > button,
+.analysis-card,
+.kpi-metric {
+    transition: all var(--transition-normal);
+}
+
+/* Animación de fade-in para cambios de tema */
+@keyframes fadeIn {
+    from {
+        opacity: 0.7;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+[data-theme="light"],
+[data-theme="dark"] {
+    animation: fadeIn var(--transition-smooth);
+}

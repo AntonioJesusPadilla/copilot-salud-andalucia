@@ -1,0 +1,415 @@
+/* ===========================================
+   CORRECCIONES ESPECÍFICAS PARA SAFARI 26.0 (iOS 18+)
+   WEBKIT FEATURES SAFARI 26.0 COMPATIBILITY
+   =========================================== */
+
+/* SAFARI 26.0: Auto Web App Mode - Todos los sitios abren como web app por defecto */
+/* Esto requiere CSS específico para modo web app automático */
+@media (display-mode: standalone) {
+    /* Modo web app automático en Safari 26.0 */
+    .stApp {
+        padding-top: max(env(safe-area-inset-top), 20px) !important;
+        padding-bottom: max(env(safe-area-inset-bottom), 20px) !important;
+        padding-left: max(env(safe-area-inset-left), 16px) !important;
+        padding-right: max(env(safe-area-inset-right), 16px) !important;
+        min-height: 100vh !important;
+        min-height: 100dvh !important;
+    }
+
+    /* Navbar adjustments for web app mode */
+    .main-header {
+        position: sticky !important;
+        top: env(safe-area-inset-top) !important;
+        z-index: 1000 !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+    }
+}
+
+/* Safari 26.0: Fallback para browsers sin Web App automático */
+@media not (display-mode: standalone) {
+    /* Modo browser normal - mantener comportamiento existente */
+    .stApp {
+        padding-top: 0 !important;
+    }
+}
+
+/* Safari 26.0: Dynamic Viewport Units Support */
+@supports (height: 100dvh) {
+    body, html {
+        min-height: 100dvh !important;
+        height: 100dvh !important;
+    }
+
+    .stApp {
+        min-height: 100dvh !important;
+        /* Safari 26.0: Web app mode height adjustment */
+        height: auto !important;
+    }
+
+    /* Safari 26.0: Container queries for responsive behavior */
+    @container (max-width: 430px) {
+        .main .block-container {
+            padding: 0.5rem !important;
+        }
+    }
+}
+
+/* Safari 26.0: Enhanced Safe Area Support */
+@supports (padding: max(0px)) {
+    .main .block-container {
+        padding-left: max(1rem, env(safe-area-inset-left)) !important;
+        padding-right: max(1rem, env(safe-area-inset-right)) !important;
+        /* Safari 26.0: Auto web app adjustments */
+        padding-top: max(0.5rem, env(safe-area-inset-top)) !important;
+    }
+
+    .stSidebar {
+        padding-top: max(1rem, env(safe-area-inset-top)) !important;
+        padding-bottom: max(1rem, env(safe-area-inset-bottom)) !important;
+        padding-left: max(0.5rem, env(safe-area-inset-left)) !important;
+        padding-right: max(0.5rem, env(safe-area-inset-right)) !important;
+    }
+
+    /* Safari 26.0: Button safe area adjustments */
+    .stButton > button {
+        margin-left: max(0px, env(safe-area-inset-left)) !important;
+        margin-right: max(0px, env(safe-area-inset-right)) !important;
+    }
+}
+
+/* Fix para backdrop-filter en Safari iOS 18+ */
+/* Safari iOS 18+ requiere prefijo webkit y fallback */
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    .main-header,
+    .sidebar-content,
+    .chat-container,
+    .role-indicator {
+        -webkit-backdrop-filter: blur(20px) !important;
+        backdrop-filter: blur(20px) !important;
+        /* Fallback para iOS 18+ si backdrop-filter falla */
+        background-color: rgba(255, 255, 255, 0.95) !important;
+    }
+}
+
+/* Fallback para browsers sin soporte backdrop-filter */
+@supports not (backdrop-filter: blur(1px)) and not (-webkit-backdrop-filter: blur(1px)) {
+    .main-header,
+    .sidebar-content,
+    .chat-container,
+    .role-indicator {
+        background-color: rgba(255, 255, 255, 0.98) !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    }
+}
+
+/* Prevenir zoom accidental en inputs - iOS 18+ */
+/* iOS 18+ cambió el comportamiento de zoom automático */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+    font-size: 16px !important;
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+}
+
+/* Fix para touch events específico de iOS 18+ */
+/* iOS 18+ requiere touch-action: manipulation para mejor responsividad */
+.stButton > button,
+.sidebar-content button,
+.stSelectbox,
+.stTextInput {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    touch-action: manipulation !important;
+    /* Prevenir comportamientos táctiles no deseados */
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+}
+
+/* Fix para scroll y viewport en iOS 18+ */
+/* iOS 18+ mejoró el manejo de viewport units */
+html {
+    -webkit-text-size-adjust: 100% !important;
+    text-size-adjust: 100% !important;
+}
+
+body {
+    -webkit-overflow-scrolling: touch !important;
+    overflow-scrolling: touch !important;
+    /* Fix para viewport en Safari iOS 26 */
+    position: relative !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+}
+
+/* Fix para elementos fijos en iOS 18+ */
+/* iOS 18+ cambió el comportamiento de position: sticky */
+.role-indicator,
+.logout-button {
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+    position: -webkit-sticky !important;
+    position: sticky !important;
+}
+
+/* Corrección para gradientes en Safari iOS 18+ */
+/* iOS 18+ mejoró el rendering de gradientes pero requiere fallbacks */
+.main-header,
+.stButton > button {
+    background-image: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    /* Fallback sólido para Safari iOS 26 */
+    background-color: #ffffff !important;
+}
+
+.stButton > button {
+    background-image: linear-gradient(135deg, #059669, #10b981) !important;
+    background-color: #059669 !important;
+}
+
+/* Fix para animaciones en iOS 18+ */
+/* iOS 18+ requiere will-change para animaciones suaves */
+* {
+    -webkit-animation-fill-mode: both !important;
+    animation-fill-mode: both !important;
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+    /* iOS 18+ optimización de rendering */
+    will-change: auto !important;
+}
+
+/* Prevenir bounce scroll en iOS 18+ */
+/* iOS 18+ cambió overscroll-behavior por defecto */
+html, body {
+    overscroll-behavior: none !important;
+    -webkit-overflow-scrolling: auto !important;
+}
+
+/* Fix para flex layouts en Safari iOS 18+ */
+/* iOS 18+ mejoró flexbox pero aún requiere prefijos webkit */
+.main .block-container,
+div[data-testid="column"] {
+    -webkit-flex-shrink: 0 !important;
+    flex-shrink: 0 !important;
+    -webkit-flex-grow: 1 !important;
+    flex-grow: 1 !important;
+}
+
+/* Corrección específica para Streamlit components en iOS 18+ */
+/* iOS 18+ cambió el manejo de scroll en containers */
+div[data-testid="stSidebar"] {
+    -webkit-overflow-scrolling: touch !important;
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+}
+
+/* Fix para inputs de Streamlit en Safari iOS 26 */
+.stTextInput > div > div > input,
+.stSelectbox > div > div {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    border-radius: 12px !important;
+    -webkit-border-radius: 12px !important;
+}
+
+/* Prevenir problemas de rendering en iOS 26 */
+.stApp {
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+}
+
+/* Fix para charts y gráficos en iOS 26 */
+.js-plotly-plot,
+.plotly {
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+}
+
+@media only screen and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1.5) {
+    /* Específico para dispositivos iOS con alta densidad de píxeles */
+    .stButton > button {
+        min-height: 44px !important;
+        min-width: 44px !important;
+    }
+
+    /* Mejorar legibilidad en pantallas Retina de iOS 26 */
+    * {
+        -webkit-font-smoothing: antialiased !important;
+        -moz-osx-font-smoothing: grayscale !important;
+    }
+}
+
+/* Fix para modales y overlays en iOS 26 */
+.stModal,
+.stPopover {
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+    position: fixed !important;
+}
+
+/* Corrección para z-index en Safari iOS 26 */
+.stSidebar {
+    z-index: 999 !important;
+}
+
+.role-indicator {
+    z-index: 9999 !important;
+}
+
+/* =============================================
+   CORRECCIONES ADICIONALES PARA SAFARI 26.0
+   WEBKIT NEW FEATURES COMPATIBILITY
+   ============================================= */
+
+/* Safari 26.0: Scroll-driven animations support */
+@supports (animation-timeline: view()) {
+    .element-container {
+        animation: fadeInOnScroll linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 30%;
+    }
+
+    @keyframes fadeInOnScroll {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+}
+
+/* Safari 26.0: Anchor positioning for tooltips y menus */
+@supports (position-anchor: --anchor) {
+    .stTooltip {
+        position: absolute;
+        position-anchor: --tooltip-anchor;
+        position-area: top;
+        margin-block-end: 10px;
+    }
+}
+
+/* Safari 26.0: Overflow logical properties */
+@supports (overflow-block: auto) {
+    .main .block-container {
+        overflow-block: auto !important;
+        overflow-inline: hidden !important;
+    }
+}
+
+/* Safari 26.0: iPhone 16 Pro Max y Dynamic Island support */
+@media screen and (max-width: 430px) {
+    .stApp {
+        /* Safari 26.0: Auto web app mode padding */
+        padding-top: max(env(safe-area-inset-top), 20px) !important;
+        /* Específico para iPhone 16 con Dynamic Island */
+        padding-top: max(env(safe-area-inset-top, 44px), 20px) !important;
+    }
+
+    .main-header {
+        margin-top: env(safe-area-inset-top) !important;
+        /* Safari 26.0: Sticky positioning for web app */
+        position: sticky !important;
+        top: env(safe-area-inset-top) !important;
+    }
+
+    /* Safari 26.0: iPhone 16 específico - viewport 393x852 */
+    .element-container {
+        max-width: 393px !important;
+        margin: 0 auto !important;
+    }
+}
+
+/* Safari 26.0: Interacción táctil mejorada para web apps automáticas */
+.stButton > button:active,
+.stSelectbox:active,
+.stTextInput input:active {
+    transform: scale(0.98) !important;
+    transition: transform 0.1s ease !important;
+    /* Safari 26.0: Better touch feedback */
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Safari 26.0: Contrast color function support */
+@supports (color: contrast-color(white vs black)) {
+    .stButton > button {
+        color: contrast-color(var(--button-bg-color) vs white, black) !important;
+    }
+}
+
+/* Safari 26.0: Text wrap pretty support */
+@supports (text-wrap: pretty) {
+    .main .block-container h1,
+    .main .block-container h2,
+    .main .block-container p {
+        text-wrap: pretty !important;
+    }
+}
+
+/* Safari 26.0: Enhanced Web App mode - AUTO ACTIVADO por defecto */
+@media (display-mode: standalone) {
+    .stApp {
+        padding-top: env(safe-area-inset-top) !important;
+        padding-bottom: env(safe-area-inset-bottom) !important;
+        /* Safari 26.0: Full screen web app behavior */
+        width: 100vw !important;
+        width: 100dvw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+    }
+
+    /* Safari 26.0: Navigation adjustments for auto web app */
+    .stSidebar {
+        padding-top: max(env(safe-area-inset-top), 10px) !important;
+    }
+
+    /* Safari 26.0: Content area for auto web app */
+    .main .block-container {
+        max-width: none !important;
+        padding-left: max(1rem, env(safe-area-inset-left)) !important;
+        padding-right: max(1rem, env(safe-area-inset-right)) !important;
+    }
+}
+
+/* iOS 18+ corrección para keyboard overlay */
+@media (max-height: 500px) {
+    .main .block-container {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+    }
+
+    .stSidebar {
+        min-height: auto !important;
+    }
+}
+
+/* iOS 18+ performance optimizations */
+.stApp * {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-text-size-adjust: 100% !important;
+    text-size-adjust: 100% !important;
+}
+
+/* iOS 18+ contenedores responsivos */
+@media (orientation: portrait) and (max-width: 430px) {
+    .element-container {
+        width: 100% !important;
+        padding: 0.25rem !important;
+    }
+
+    .stButton > button {
+        width: 100% !important;
+        min-height: 48px !important;
+        font-size: 16px !important;
+    }
+}
+
+/* iOS 18+ fix para scrolling suave */
+.main .block-container,
+.stSidebar .sidebar-content {
+    scroll-behavior: smooth !important;
+    -webkit-overflow-scrolling: touch !important;
+}

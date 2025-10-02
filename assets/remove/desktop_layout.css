@@ -1,0 +1,110 @@
+/* FORZAR LAYOUT DESKTOP - EVITAR MODO MÓVIL */
+/* Este archivo CSS fuerza el layout de escritorio en todos los dispositivos */
+
+/* Viewport meta tag override */
+@-moz-document url-prefix() {
+    html {
+        min-width: 1200px !important;
+    }
+}
+
+/* Contenedor principal siempre en desktop */
+.main .block-container {
+    max-width: none !important;
+    min-width: 1200px !important;
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+}
+
+/* Forzar sidebar desktop en TODOS los tamaños */
+.stSidebar {
+    width: 21rem !important;
+    min-width: 21rem !important;
+    display: block !important;
+}
+
+.stSidebar > div {
+    width: 21rem !important;
+    min-width: 21rem !important;
+}
+
+/* Forzar columnas desktop */
+div[data-testid="column"] {
+    min-width: 300px !important;
+    flex: 1 !important;
+}
+
+/* Gráficos siempre en tamaño desktop */
+.js-plotly-plot, .stPlotlyChart {
+    min-width: 800px !important;
+    width: 100% !important;
+}
+
+/* Tablas desktop */
+.stDataFrame {
+    min-width: 600px !important;
+}
+
+/* Elementos de formulario desktop */
+.stSelectbox, .stTextInput, .stButton {
+    min-width: 200px !important;
+}
+
+/* MEDIA QUERIES PARA FORZAR DESKTOP EN MÓVILES */
+@media screen and (max-width: 768px) {
+    body {
+        min-width: 1200px !important;
+        overflow-x: auto !important;
+    }
+    
+    .main .block-container {
+        min-width: 1200px !important;
+        overflow-x: auto !important;
+    }
+    
+    .stSidebar {
+        width: 21rem !important;
+        min-width: 21rem !important;
+        display: block !important;
+        position: relative !important;
+    }
+    
+    /* Evitar colapso de elementos */
+    .stColumn > div, .stContainer {
+        width: 100% !important;
+        min-width: 300px !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    body {
+        min-width: 1200px !important;
+        overflow-x: auto !important;
+    }
+    
+    .main .block-container {
+        min-width: 1200px !important;
+        overflow-x: auto !important;
+    }
+}
+
+/* Forzar ancho en contenedores específicos */
+.element-container {
+    min-width: 0 !important;
+    width: 100% !important;
+}
+
+/* Evitar que se oculten elementos en móvil */
+.stMarkdown, .stText, .stTitle {
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Asegurar que los botones sean visibles */
+.stButton > button {
+    display: inline-block !important;
+    visibility: visible !important;
+    min-width: 120px !important;
+}
