@@ -909,9 +909,14 @@ if 'theme_mode' not in st.session_state:
 def load_css_file(file_path):
     """Cargar archivo CSS con cache para evitar múltiples aperturas"""
     try:
+        # Usar ruta absoluta basada en project_root para compatibilidad con Streamlit Cloud
+        if not os.path.isabs(file_path):
+            file_path = os.path.join(project_root, file_path)
+
         with open(file_path, 'r', encoding='utf-8') as f:
             return f.read()
-    except Exception:
+    except Exception as e:
+        print(f"⚠️ Error cargando CSS {file_path}: {e}")
         return None
 
 # Cache para datos grandes - Optimización de memoria
