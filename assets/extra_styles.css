@@ -401,20 +401,39 @@
 /* Opciones del dropdown cuando se despliega */
 [data-theme="dark"] [role="listbox"],
 [data-theme="dark"] [data-baseweb="menu"],
-[data-theme="dark"] ul[role="listbox"] {
+[data-theme="dark"] ul[role="listbox"],
+[data-theme="dark"] [data-baseweb="popover"] {
     background: #1e293b !important;
     border: 1px solid #6b7280 !important;
 }
 
 [data-theme="dark"] [role="option"],
-[data-theme="dark"] li[role="option"] {
+[data-theme="dark"] li[role="option"],
+[data-theme="dark"] [data-baseweb="menu"] li,
+[data-theme="dark"] ul[role="listbox"] li {
     background: #1e293b !important;
     color: #f8fafc !important;
 }
 
+[data-theme="dark"] [role="option"] *,
+[data-theme="dark"] li[role="option"] *,
+[data-theme="dark"] [data-baseweb="menu"] li *,
+[data-theme="dark"] ul[role="listbox"] li * {
+    color: #f8fafc !important;
+}
+
 [data-theme="dark"] [role="option"]:hover,
-[data-theme="dark"] li[role="option"]:hover {
-    background: #334155 !important;
+[data-theme="dark"] li[role="option"]:hover,
+[data-theme="dark"] [data-baseweb="menu"] li:hover,
+[data-theme="dark"] ul[role="listbox"] li:hover {
+    background: #3b82f6 !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] [role="option"]:hover *,
+[data-theme="dark"] li[role="option"]:hover *,
+[data-theme="dark"] [data-baseweb="menu"] li:hover *,
+[data-theme="dark"] ul[role="listbox"] li:hover * {
     color: #ffffff !important;
 }
 
@@ -802,6 +821,10 @@ div[data-baseweb="notification"][kind="positive"] {
     background: #ffffff !important;
     color: #0f172a !important;
     border-left: 4px solid #10b981 !important;
+    border-top-left-radius: 8px !important;
+    border-bottom-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
 }
 
 .stSuccess *,
@@ -816,6 +839,10 @@ div[data-baseweb="notification"][kind="info"] {
     background: #ffffff !important;
     color: #0f172a !important;
     border-left: 4px solid #3b82f6 !important;
+    border-top-left-radius: 8px !important;
+    border-bottom-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
 }
 
 .stInfo *,
@@ -830,6 +857,10 @@ div[data-baseweb="notification"][kind="warning"] {
     background: #ffffff !important;
     color: #0f172a !important;
     border-left: 4px solid #f59e0b !important;
+    border-top-left-radius: 8px !important;
+    border-bottom-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
 }
 
 .stWarning *,
@@ -844,6 +875,10 @@ div[data-baseweb="notification"][kind="negative"] {
     background: #ffffff !important;
     color: #0f172a !important;
     border-left: 4px solid #ef4444 !important;
+    border-top-left-radius: 8px !important;
+    border-bottom-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
 }
 
 .stError *,
@@ -887,4 +922,142 @@ div[data-testid="stAlert"] * {
     color: #0f172a !important;
 }
 
-/* CACHE INVALIDATION - FORCE RELOAD 2025-10-02-14:30:00-v2 */
+/* ========== REDUCIR ESPACIO SUPERIOR DEL CONTENIDO PRINCIPAL ========== */
+/* Reducir padding superior del bloque principal - MÁS AGRESIVO */
+.main .block-container {
+    padding-top: 0rem !important;
+    padding-bottom: 1rem !important;
+    margin-top: 0rem !important;
+}
+
+/* Reducir padding del área principal */
+section[data-testid="stMain"] > div:first-child {
+    padding-top: 0rem !important;
+    margin-top: 0rem !important;
+}
+
+/* Reducir espacio del header de Streamlit */
+header[data-testid="stHeader"] {
+    height: 2.5rem !important;
+    min-height: 2.5rem !important;
+}
+
+/* Ajustar margen superior del contenedor principal */
+.main {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* Reducir espacio entre header y contenido */
+section.main > div {
+    padding-top: 0rem !important;
+    margin-top: 0rem !important;
+}
+
+/* Reducir márgenes de títulos y textos superiores */
+.main .block-container > div:first-child {
+    padding-top: 0rem !important;
+    margin-top: 0rem !important;
+}
+
+/* Eliminar margen superior de elementos markdown iniciales */
+.main .element-container:first-child,
+.main .stMarkdown:first-child {
+    margin-top: 0rem !important;
+    padding-top: 0rem !important;
+}
+
+/* Reducir espacio de todos los headers y títulos al inicio */
+.main h1:first-child,
+.main h2:first-child,
+.main h3:first-child,
+.main .stMarkdown:first-child h1,
+.main .stMarkdown:first-child h2,
+.main .stMarkdown:first-child h3 {
+    margin-top: 0rem !important;
+    padding-top: 0.5rem !important;
+}
+
+/* Reducir gap vertical general en el área principal */
+section[data-testid="stMain"] {
+    padding-top: 0rem !important;
+}
+
+/* Eliminar espacio extra del toolbar */
+.main > div:first-child {
+    padding-top: 0rem !important;
+}
+
+/* ========== MEJORAR CONTRASTE EN SECCIONES DEL CHAT IA ========== */
+/* Encabezados de sección con mejor contraste */
+[data-theme="light"] .stMarkdown h4,
+[data-theme="light"] .stMarkdown h5 {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+    color: #ffffff !important;
+    padding: 0.75rem 1rem !important;
+    border-radius: 8px !important;
+    margin: 1rem 0 0.5rem 0 !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+}
+
+[data-theme="dark"] .stMarkdown h4,
+[data-theme="dark"] .stMarkdown h5 {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
+    color: #ffffff !important;
+    padding: 0.75rem 1rem !important;
+    border-radius: 8px !important;
+    margin: 1rem 0 0.5rem 0 !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4) !important;
+}
+
+/* Asegurar que el texto en títulos siempre sea blanco */
+.stMarkdown h4 *,
+.stMarkdown h5 * {
+    color: #ffffff !important;
+}
+
+/* ========== SOBRESCRIBIR FONDOS PASTEL EN MODO OSCURO ========== */
+/* Usar JavaScript para detectar y cambiar estilos inline - más potente que CSS */
+/* Cambiar el enfoque: en lugar de sobrescribir, usar filtros y ajustes de color */
+
+/* Todos los divs en el chat con fondos claros en modo oscuro */
+[data-theme="dark"] .stChatMessage div[style],
+[data-theme="dark"] .stMarkdown div[style] {
+    filter: contrast(1.2) brightness(0.85);
+}
+
+/* Asegurar contraste en texto blanco sobre fondos claros */
+[data-theme="dark"] div[style*="background"][style*="padding"] {
+    background-color: #1e3a8a !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] div[style*="background"][style*="padding"] * {
+    color: #ffffff !important;
+}
+
+/* Específicamente para divs con border-radius y padding (cajas de info) */
+[data-theme="dark"] div[style*="border-radius"][style*="padding: 12px"] {
+    background: #1e3a8a !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] div[style*="border-radius"][style*="padding: 12px"] * {
+    color: #ffffff !important;
+}
+
+/* Forzar fondos oscuros en mensajes del asistente */
+[data-theme="dark"] .stChatMessage[data-testid="assistant"] div[style*="background"],
+[data-theme="dark"] .stChatMessage div[style*="background: #"] {
+    background: #1e40af !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .stChatMessage[data-testid="assistant"] div[style*="background"] *,
+[data-theme="dark"] .stChatMessage div[style*="background: #"] * {
+    color: #ffffff !important;
+}
+
+/* CACHE INVALIDATION - FORCE RELOAD 2025-10-03-00:40:00-v10 */
