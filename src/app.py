@@ -744,12 +744,16 @@ section[data-testid="stSidebar"] .sidebar-user-card small {
     text-shadow: 0 2px 4px rgba(0,0,0,0.7) !important;
 }
 
-/* CRÍTICO 2: Tooltips/Help con fondo blanco y texto negro */
+/* CRÍTICO 2: Tooltips/Help con fondo blanco y texto negro - SIEMPRE */
 .stTooltipIcon,
 [data-testid="stTooltipHoverTarget"],
 [role="tooltip"],
 .stTooltipContent,
-div[data-baseweb="tooltip"] {
+div[data-baseweb="tooltip"],
+[data-theme="light"] [role="tooltip"],
+[data-theme="light"] div[data-baseweb="tooltip"],
+[data-theme="dark"] [role="tooltip"],
+[data-theme="dark"] div[data-baseweb="tooltip"] {
     background: #ffffff !important;
     color: #0f172a !important;
     border: 1px solid #cbd5e1 !important;
@@ -758,30 +762,63 @@ div[data-baseweb="tooltip"] {
 
 [role="tooltip"] *,
 .stTooltipContent *,
-div[data-baseweb="tooltip"] * {
+div[data-baseweb="tooltip"] *,
+[data-theme="light"] [role="tooltip"] *,
+[data-theme="light"] div[data-baseweb="tooltip"] *,
+[data-theme="dark"] [role="tooltip"] *,
+[data-theme="dark"] div[data-baseweb="tooltip"] *,
+[data-theme="dark"] [role="tooltip"] span,
+[data-theme="dark"] div[data-baseweb="tooltip"] span,
+[data-theme="dark"] [role="tooltip"] p,
+[data-theme="dark"] div[data-baseweb="tooltip"] p,
+[data-theme="dark"] [role="tooltip"] div,
+[data-theme="dark"] div[data-baseweb="tooltip"] div {
     color: #0f172a !important;
+    background: transparent !important;
 }
 
 /* CRÍTICO 3: Expansión del sidebar cuando se colapsa - SOLO CSS */
+/* Forzar el sidebar a colapsarse completamente */
+section[data-testid="stSidebar"][aria-expanded="false"] {
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+section[data-testid="stSidebar"][aria-expanded="false"] > div {
+    width: 0 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+}
+
 /* Cuando aria-expanded="false" el sidebar está COLAPSADO */
 section[data-testid="stSidebar"][aria-expanded="false"] ~ section[data-testid="stMain"] {
     margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
 }
 
 section[data-testid="stSidebar"][aria-expanded="false"] ~ section[data-testid="stMain"] .main .block-container {
-    max-width: calc(100vw - 6rem) !important;
-    width: calc(100vw - 6rem) !important;
+    max-width: calc(100vw - 4rem) !important;
+    width: calc(100vw - 4rem) !important;
     margin-left: 0 !important;
-    padding-left: 3rem !important;
-    padding-right: 3rem !important;
-    background: rgba(0, 255, 0, 0.05) !important; /* Indicador visual temporal */
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
 }
 
 /* Cuando aria-expanded="true" el sidebar está EXPANDIDO */
+section[data-testid="stSidebar"][aria-expanded="true"] {
+    width: 21rem !important;
+    min-width: 21rem !important;
+    max-width: 21rem !important;
+}
+
 section[data-testid="stSidebar"][aria-expanded="true"] ~ section[data-testid="stMain"] .main .block-container {
-    max-width: calc(100vw - 21rem - 6rem) !important;
-    width: calc(100vw - 21rem - 6rem) !important;
-    background: rgba(0, 0, 255, 0.05) !important; /* Indicador visual temporal */
+    max-width: calc(100vw - 21rem - 4rem) !important;
+    width: calc(100vw - 21rem - 4rem) !important;
 }
 
 /* Transiciones suaves */
@@ -790,6 +827,75 @@ section[data-testid="stMain"],
 .main,
 .main .block-container {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* CRÍTICO 4: Fix Streamlit toolbar/header buttons in dark mode */
+[data-theme="dark"] header[data-testid="stHeader"],
+[data-theme="dark"] div[data-testid="stToolbar"],
+[data-theme="dark"] header[data-testid="stHeader"] button,
+[data-theme="dark"] div[data-testid="stToolbar"] button {
+    background: #1e293b !important;
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] header[data-testid="stHeader"] button:hover,
+[data-theme="dark"] div[data-testid="stToolbar"] button:hover {
+    background: #334155 !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] header[data-testid="stHeader"] svg,
+[data-theme="dark"] div[data-testid="stToolbar"] svg {
+    fill: #f8fafc !important;
+    stroke: #f8fafc !important;
+}
+
+/* CRÍTICO 5: Fix selectbox dropdown visibility in dark mode */
+[data-theme="dark"] [role="listbox"],
+[data-theme="dark"] [data-baseweb="menu"],
+[data-theme="dark"] [data-baseweb="popover"],
+[data-theme="dark"] ul[role="listbox"] {
+    background: #1e293b !important;
+    border: 1px solid #6b7280 !important;
+}
+
+[data-theme="dark"] [role="option"],
+[data-theme="dark"] li[role="option"],
+[data-theme="dark"] [data-baseweb="menu"] li,
+[data-theme="dark"] [data-baseweb="menu"] > ul > li,
+[data-theme="dark"] ul[role="listbox"] li {
+    background: #1e293b !important;
+    color: #f8fafc !important;
+}
+
+[data-theme="dark"] [role="option"] span,
+[data-theme="dark"] li[role="option"] span,
+[data-theme="dark"] [data-baseweb="menu"] li span,
+[data-theme="dark"] ul[role="listbox"] li span,
+[data-theme="dark"] [role="option"] div,
+[data-theme="dark"] li[role="option"] div,
+[data-theme="dark"] [data-baseweb="menu"] li div,
+[data-theme="dark"] ul[role="listbox"] li div,
+[data-theme="dark"] [role="option"] *,
+[data-theme="dark"] li[role="option"] *,
+[data-theme="dark"] [data-baseweb="menu"] li *,
+[data-theme="dark"] ul[role="listbox"] li * {
+    color: #f8fafc !important;
+    background: transparent !important;
+}
+
+[data-theme="dark"] [role="option"]:hover,
+[data-theme="dark"] li[role="option"]:hover,
+[data-theme="dark"] [data-baseweb="menu"] li:hover,
+[data-theme="dark"] ul[role="listbox"] li:hover {
+    background: #3b82f6 !important;
+}
+
+[data-theme="dark"] [role="option"]:hover *,
+[data-theme="dark"] li[role="option"]:hover *,
+[data-theme="dark"] [data-baseweb="menu"] li:hover *,
+[data-theme="dark"] ul[role="listbox"] li:hover * {
+    color: #ffffff !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -1490,17 +1596,43 @@ class SecureHealthAnalyticsApp:
             focus_areas = theme.get('focus_areas', ['Información General'])
             
             # Información del usuario personalizada por rol
+            current_theme = st.session_state.get('theme_mode', 'light')
+            # Eliminar border en modo oscuro para evitar filo verde
+            border_style = 'border: none;' if current_theme == 'dark' else 'border: 1px solid rgba(255,255,255,0.2);'
+            org_border = 'border: none;' if current_theme == 'dark' else 'border: 1px solid rgba(255,255,255,0.2);'
+
             st.markdown(f"""
             <div class="sidebar-user-card" style="background: {theme.get('primary_gradient', 'linear-gradient(135deg, #6b7280 0%, #9ca3af 100%)')};
-                        padding: 1.5rem; border-radius: 12px; text-align: center; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.2);">
+                        padding: 1.5rem; border-radius: 12px; text-align: center; margin-bottom: 1rem; {border_style}">
                 <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">{self.role_info['icon']}</div>
                 <strong class="sidebar-user-name" style="font-size: 1.1rem; color: #ffffff !important; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.6); display: block;">{self.user['name']}</strong><br>
                 <small class="sidebar-user-role" style="color: #ffffff !important; font-size: 0.9rem; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.6); display: block;">{self.role_info['name']}</small>
-                <div class="sidebar-user-org" style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(255,255,255,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
+                <div class="sidebar-user-org" style="margin-top: 0.5rem; padding: 0.5rem; background: rgba(255,255,255,0.3); border-radius: 8px; {org_border}">
                     <small style="color: #ffffff !important; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.6);">{self.user['organization']}</small>
                 </div>
             </div>
             """, unsafe_allow_html=True)
+
+            # Botones de tema y salir
+            st.markdown("---")
+
+            col1, col2 = st.columns(2)
+            with col1:
+                current_theme = st.session_state.get('theme_mode', 'light')
+                theme_icon = "🌙" if current_theme == 'light' else "☀️"
+                theme_text = "Oscuro" if current_theme == 'light' else "Claro"
+
+                if st.button(f"{theme_icon} {theme_text}", key="sidebar_theme_toggle", use_container_width=True):
+                    new_theme = 'dark' if current_theme == 'light' else 'light'
+                    st.session_state.theme_mode = new_theme
+                    st.rerun()
+
+            with col2:
+                if st.button("🚪 Salir", key="sidebar_logout", use_container_width=True, type="secondary"):
+                    logout()
+                    st.rerun()
+
+            st.markdown("---")
 
             # Enlaces rápidos personalizados por rol
             if sidebar_style == 'expanded':
@@ -1731,12 +1863,22 @@ def main():
     # Importar re localmente para evitar problemas de ámbito en funciones anidadas
     import re
 
-    # TOGGLE DE TEMA GLOBAL en esquina superior derecha
-    # Inicializar tema en session_state si no existe - TEMA CLARO POR DEFECTO (consistente con config.toml)
+    if not AUTH_AVAILABLE:
+        st.error("❌ Sistema de autenticación no disponible. Instala: pip install bcrypt PyJWT")
+        return
+
+    # Verificar autenticación PRIMERO
+    if not check_authentication():
+        render_login_page()
+        return
+
+    # === A PARTIR DE AQUÍ: USUARIO AUTENTICADO ===
+
+    # Inicializar tema
     if 'theme_mode' not in st.session_state:
         st.session_state.theme_mode = 'light'
 
-    # CSS para posicionar el toggle en la esquina superior derecha
+    # CSS para reducir padding superior
     st.markdown("""
     <style>
     /* Reducir padding superior del contenedor principal */
@@ -1744,51 +1886,16 @@ def main():
         padding-top: 1rem !important;
     }
 
-    /* Estilos para el toggle */
-    div[data-testid="column"]:last-child .stButton > button {
-        position: fixed !important;
-        top: 20px !important;
-        right: 30px !important;
-        z-index: 9999 !important;
-        min-width: 80px !important;
-        padding: 8px 16px !important;
-        border-radius: 25px !important;
-        font-size: 14px !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+    /* Reducir espacio del primer elemento */
+    .main .block-container > div:first-child {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-    # Toggle en columnas para posicionamiento (agregado botón logout)
-    col1, col2, col3, col4 = st.columns([6, 1, 1, 1])
-
-    with col3:
-        # Toggle visual con iconos mejorado
-        current_theme = st.session_state.get('theme_mode', 'light')
-        theme_icon = "🌙" if current_theme == 'light' else "☀️"
-        theme_text = "Oscuro" if current_theme == 'light' else "Claro"
-
-        if st.button(
-            f"{theme_icon} {theme_text}",
-            key="theme_toggle_v7_professional",
-            type="primary"
-        ):
-            # Cambiar tema
-            new_theme = 'dark' if current_theme == 'light' else 'light'
-            st.session_state.theme_mode = new_theme
-
-            # Feedback visual con toast
-            toast_icon = "🌙" if new_theme == 'dark' else "☀️"
-            toast_msg = "Modo oscuro activado" if new_theme == 'dark' else "Modo claro activado"
-            st.toast(f"{toast_icon} {toast_msg}", icon="✨")
-
-            # Forzar recarga para aplicar estilos
-            st.rerun()
-
-    with col4:
-        # Botón de logout en la esquina superior derecha
-        if st.button("🚪 Salir", key="logout_header", type="secondary"):
-            logout()
+    # === OPCIÓN 1: Botones en Sidebar (Implementación Simple) ===
+    # Los botones se agregarán en render_secure_sidebar() más abajo
 
     # === APLICAR data-theme INMEDIATAMENTE CON HTML COMPONENT ===
     current_theme = st.session_state.get('theme_mode', 'light')
@@ -1967,6 +2074,17 @@ def main():
                     styleEl = doc.createElement('style');
                     styleEl.id = 'sidebar-resize-css';
                     styleEl.textContent = `
+                        /* MANTENER ESPACIO SUPERIOR ELIMINADO */
+                        .main .block-container {{
+                            padding-top: 0rem !important;
+                            margin-top: 0rem !important;
+                        }}
+
+                        div[data-testid="stHorizontalBlock"]:first-of-type {{
+                            margin-top: 0rem !important;
+                            padding-top: 0rem !important;
+                        }}
+
                         /* Forzar expansión cuando sidebar colapsa - VERSIÓN MEJORADA */
                         section[data-testid="stSidebar"][aria-expanded="false"] ~ section[data-testid="stMain"] .main .block-container,
                         section[data-testid="stSidebar"].collapsed ~ section[data-testid="stMain"] .main .block-container {{
@@ -1975,6 +2093,7 @@ def main():
                             margin-left: 0 !important;
                             padding-left: 3rem !important;
                             padding-right: 3rem !important;
+                            padding-top: 0rem !important;
                         }}
 
                         /* Transiciones suaves */
@@ -1983,9 +2102,103 @@ def main():
                         .main .block-container {{
                             transition: all 0.3s ease !important;
                         }}
+
+                        /* BOTONES PEGADOS A LA BARRA SUPERIOR */
+                        div[data-testid="column"] .stButton > button {{
+                            position: fixed !important;
+                            top: 0px !important;
+                            z-index: 9999 !important;
+                            min-width: 80px !important;
+                            padding: 8px 16px !important;
+                            border-radius: 0px !important;
+                            font-size: 14px !important;
+                            box-shadow: none !important;
+                            margin: 0 !important;
+                        }}
                     `;
                     doc.head.appendChild(styleEl);
                     console.log('✅ Sidebar resize CSS injected');
+
+                    // Función para posicionar botones
+                    const positionButtons = function() {{
+                        // No ejecutar en página de login
+                        const isLoginPage = doc.querySelector('.login-container') !== null;
+                        if (isLoginPage) {{
+                            console.log('⏭️ Skipping button positioning - Login page detected');
+                            return;
+                        }}
+
+                        // Buscar botones en la primera fila de columnas específicamente
+                        const firstRow = doc.querySelector('div[data-testid="stHorizontalBlock"]');
+                        if (!firstRow) {{
+                            console.log('⏭️ No horizontal block found');
+                            return;
+                        }}
+
+                        const columns = firstRow.querySelectorAll('div[data-testid="column"]');
+                        if (columns.length < 4) {{
+                            console.log('⏭️ Not enough columns found:', columns.length);
+                            return;
+                        }}
+
+                        const col3 = columns[2]; // índice 2 = columna 3
+                        const col4 = columns[3]; // índice 3 = columna 4
+
+                        const toggleBtn = col3.querySelector('button');
+                        const salirBtn = col4.querySelector('button');
+
+                        console.log('🔍 Toggle button:', toggleBtn ? toggleBtn.innerText : 'not found');
+                        console.log('🔍 Salir button:', salirBtn ? salirBtn.innerText : 'not found');
+
+                        if (toggleBtn && salirBtn) {{
+
+                            // Aplicar estilos directamente con cssText para forzar !important
+                            const toggleStyles = `
+                                position: fixed !important;
+                                top: 4rem !important;
+                                right: 110px !important;
+                                z-index: 9999 !important;
+                                border-radius: 8px !important;
+                                margin: 0px !important;
+                                box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+                                padding: 8px 16px !important;
+                                display: block !important;
+                                visibility: visible !important;
+                                opacity: 1 !important;
+                            `;
+
+                            const salirStyles = `
+                                position: fixed !important;
+                                top: 4rem !important;
+                                right: 20px !important;
+                                z-index: 9999 !important;
+                                border-radius: 8px !important;
+                                margin: 0px !important;
+                                box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+                                padding: 8px 16px !important;
+                                display: block !important;
+                                visibility: visible !important;
+                                opacity: 1 !important;
+                            `;
+
+                            // Aplicar estilos con setAttribute para máxima prioridad
+                            toggleBtn.setAttribute('style', toggleStyles);
+                            salirBtn.setAttribute('style', salirStyles);
+
+                            console.log('✅ Buttons positioned at top - Toggle:', toggleBtn.innerText, 'Salir:', salirBtn.innerText);
+                        }} else {{
+                            console.warn('⚠️ Buttons not found - Toggle:', !!toggleBtn, 'Salir:', !!salirBtn);
+                        }}
+                    }};
+
+                    // Ejecutar múltiples veces para asegurar que se aplique
+                    setTimeout(positionButtons, 100);
+                    setTimeout(positionButtons, 500);
+                    setTimeout(positionButtons, 1000);
+                    setTimeout(positionButtons, 2000);
+
+                    // También ejecutar periódicamente por si Streamlit re-renderiza
+                    setInterval(positionButtons, 3000);
 
                     // Debug: mostrar atributos del sidebar
                     const sidebar = doc.querySelector('section[data-testid="stSidebar"]');
@@ -2412,16 +2625,7 @@ def main():
     </script>
     """, unsafe_allow_html=True)
 
-    if not AUTH_AVAILABLE:
-        st.error("❌ Sistema de autenticación no disponible. Instala: pip install bcrypt PyJWT")
-        return
-
-    # Verificar autenticación
-    if not check_authentication():
-        render_login_page()
-        return
-    
-    # Usuario autenticado - inicializar aplicación segura
+    # Usuario autenticado - inicializar aplicación segura (ya validado arriba)
     app = SecureHealthAnalyticsApp()
     
     if not app.authenticated:
@@ -2506,7 +2710,7 @@ def render_page_navigation(app):
             tab_functions.append(lambda: render_secure_reportes(app))
         
         if app.has_permission('planificacion'):
-            tabs_available.append("🗺️ Planificación")
+            tabs_available.append("📍 Planificación")
             tab_functions.append(lambda: render_secure_planificacion(app))
         
         # Tab de mapas épicos disponible para usuarios con permisos de ver_datos o superior
@@ -2518,32 +2722,13 @@ def render_page_navigation(app):
         if len(tabs_available) == 1:
             tab_functions[0]()
         elif len(tabs_available) > 1:
-            # Verificar si hay un tab específico seleccionado desde el sidebar
-            selected_tab = st.session_state.get('selected_tab', None)
-            
             # Crear tabs siempre
             tabs = st.tabs(tabs_available)
-            
+
             # Mostrar todos los tabs normalmente
             for i, tab_function in enumerate(tab_functions):
                 with tabs[i]:
                     tab_function()
-            
-            # Si hay un tab específico seleccionado, mostrar un mensaje informativo
-            if selected_tab:
-                if selected_tab == "dashboard":
-                    st.info("💡 **Vista Ejecutiva**: Haz clic en el tab 'Dashboard' para acceder a la vista ejecutiva")
-                elif selected_tab == "chat_ia":
-                    st.info("💡 **Análisis Estratégico**: Haz clic en el tab 'Chat IA' para realizar análisis con IA")
-                elif selected_tab == "reportes":
-                    st.info("💡 **Reportes**: Haz clic en el tab 'Reportes' para acceder a los reportes")
-                elif selected_tab == "planificacion":
-                    st.info("💡 **Planificación**: Haz clic en el tab 'Planificación' para acceder a las herramientas de planificación")
-                elif selected_tab == "mapas":
-                    st.info("💡 **Mapas**: Haz clic en el tab 'Mapas Épicos' para acceder a los mapas interactivos")
-                
-                # Limpiar la selección
-                st.session_state.selected_tab = None
         else:
             if app.user['role'] == 'invitado':
                 st.info("ℹ️ **Usuario Invitado**: Solo tienes acceso al Dashboard básico. Para más funcionalidades, contacta al administrador.")
@@ -3110,15 +3295,19 @@ def render_secure_chat(app):
                                     elif clean_line.startswith('**') and clean_line.endswith('**'):
                                         bold_text = clean_line[2:-2].strip()
                                         if bold_text:  # Solo mostrar si hay contenido
+                                            # Colores según tema
+                                            bg_color = '#dbeafe' if theme == 'light' else '#1e40af'
+                                            text_color = '#1e40af' if theme == 'light' else '#ffffff'
+                                            border_color = '#3b82f6' if theme == 'light' else '#60a5fa'
                                             st.markdown(f"""
                                             <div style="
-                                                background: #dbeafe;
-                                                border: 1px solid #3b82f6;
+                                                background: {bg_color};
+                                                border: 1px solid {border_color};
                                                 padding: 12px;
                                                 margin: 8px 0;
                                                 border-radius: 6px;
                                                 font-weight: 600;
-                                                color: #1e40af;
+                                                color: {text_color};
                                             ">
                                                 <strong>{bold_text}</strong>
                                             </div>
@@ -3154,42 +3343,54 @@ def render_secure_chat(app):
 
                                     # Resaltado de contenido importante
                                     elif any(word in clean_line.lower() for word in ['importante', 'clave', 'crítico', 'esencial', 'alerta']):
+                                        # Colores según tema
+                                        bg_color = '#fef3c7' if theme == 'light' else '#92400e'
+                                        text_color = '#92400e' if theme == 'light' else '#ffffff'
+                                        border_color = '#f59e0b' if theme == 'light' else '#fbbf24'
                                         st.markdown(f"""
                                         <div style="
-                                            background: #fef3c7;
-                                            border: 1px solid #f59e0b;
+                                            background: {bg_color};
+                                            border: 1px solid {border_color};
                                             padding: 12px;
                                             border-radius: 6px;
                                             margin: 8px 0;
-                                            color: #92400e;
+                                            color: {text_color};
                                         ">
                                             ⚠️ {clean_line}
                                         </div>
                                         """, unsafe_allow_html=True)
 
                                     elif any(word in clean_line.lower() for word in ['recomendación', 'sugerencia', 'mejora', 'optimización']):
+                                        # Colores según tema
+                                        bg_color = '#dcfce7' if theme == 'light' else '#065f46'
+                                        text_color = '#166534' if theme == 'light' else '#ffffff'
+                                        border_color = '#16a34a' if theme == 'light' else '#34d399'
                                         st.markdown(f"""
                                         <div style="
-                                            background: #dcfce7;
-                                            border: 1px solid #16a34a;
+                                            background: {bg_color};
+                                            border: 1px solid {border_color};
                                             padding: 12px;
                                             border-radius: 6px;
                                             margin: 8px 0;
-                                            color: #166534;
+                                            color: {text_color};
                                         ">
                                             💡 {clean_line}
                                         </div>
                                         """, unsafe_allow_html=True)
 
                                     elif any(word in clean_line.lower() for word in ['conclusión', 'resultado', 'hallazgo', 'resumen']):
+                                        # Colores según tema
+                                        bg_color = '#eff6ff' if theme == 'light' else '#1e3a8a'
+                                        text_color = '#1e40af' if theme == 'light' else '#ffffff'
+                                        border_color = '#3b82f6' if theme == 'light' else '#60a5fa'
                                         st.markdown(f"""
                                         <div style="
-                                            background: #eff6ff;
-                                            border: 1px solid #3b82f6;
+                                            background: {bg_color};
+                                            border: 1px solid {border_color};
                                             padding: 12px;
                                             border-radius: 6px;
                                             margin: 8px 0;
-                                            color: #1e40af;
+                                            color: {text_color};
                                         ">
                                             📋 {clean_line}
                                         </div>
@@ -3801,7 +4002,7 @@ def render_equity_report_secure(app):
 
 def render_secure_planificacion(app):
     """Módulo de planificación con permisos"""
-    st.markdown("### 🗺️ Planificación Estratégica Segura")
+    st.markdown("### 📍 Planificación Estratégica Segura")
     
     if not app.require_permission('planificacion'):
         # Mensaje específico para cada rol sin permisos

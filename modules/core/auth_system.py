@@ -364,16 +364,31 @@ class HealthAuthenticator:
 def render_login_page():
     """Renderizar página de login"""
 
-    # CSS para la página de login con timestamp para evitar cache
+    # Inicializar tema si no existe
+    if 'theme_mode' not in st.session_state:
+        st.session_state.theme_mode = 'light'
+
+    current_theme = st.session_state.get('theme_mode', 'light')
+
+    # Botón de tema en login - parte superior derecha
+    theme_icon = "🌙" if current_theme == 'light' else "☀️"
+    theme_text = "Oscuro" if current_theme == 'light' else "Claro"
+
+    col1, col2, col3 = st.columns([1, 4, 1])
+    with col3:
+        if st.button(f"{theme_icon} {theme_text}", key="login_theme_btn", use_container_width=True):
+            new_theme = 'dark' if current_theme == 'light' else 'light'
+            st.session_state.theme_mode = new_theme
+            st.rerun()
+
+    # CSS para la página de login
     from datetime import datetime
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
 
-    css_content = f"""
+    # Aplicar CSS básico primero
+    st.markdown("""
     <style>
     /* CSS ACTUALIZADO - {timestamp} */
-    """
-
-    st.markdown(css_content + """
         /* ========== OCULTAR SIDEBAR EN LOGIN ========== */
         [data-testid="stSidebar"],
         .stSidebar,
@@ -894,14 +909,14 @@ def render_login_page():
     # Aplicar atributo data-theme para el modo oscuro
     if 'theme_mode' in st.session_state:
         current_theme = st.session_state.theme_mode
+    else:
+        current_theme = 'light'  # Valor por defecto
 
-        # CSS inmediato para modo oscuro si está activo
-        if current_theme == 'dark':
-            dark_css = f"""
-            <style>
-            /* FORZAR MODO OSCURO INMEDIATO - {timestamp} */
-            """
-            st.markdown(dark_css + """
+    # CSS inmediato para modo oscuro si está activo
+    if current_theme == 'dark':
+        st.markdown("""
+        <style>
+        /* FORZAR MODO OSCURO INMEDIATO */
             html, body, .stApp, .main {
                 background-color: #0f172a !important;
                 color: #f9fafb !important;
