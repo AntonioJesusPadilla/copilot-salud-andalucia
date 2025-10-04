@@ -1119,7 +1119,13 @@ css_loaded = load_optimized_css()
 # Cargar CSS extra solo en desktop - CON CACHE
 extra_css = None
 if css_loaded != "mobile_basic":
-    extra_css = load_css_file('assets/extra_styles.css')
+    # Detectar si estamos en Cloud
+    is_cloud = os.getenv('STREAMLIT_RUNTIME_ENVIRONMENT') == 'cloud' or \
+               'streamlit.app' in os.getenv('STREAMLIT_SERVER_HEADLESS', '')
+
+    # Usar versión Cloud si está en Cloud
+    extra_css_file = 'assets/extra_styles_cloud.css' if is_cloud else 'assets/extra_styles.css'
+    extra_css = load_css_file(extra_css_file)
     if extra_css:
         st.markdown(f"<style>{extra_css}</style>", unsafe_allow_html=True)
 
