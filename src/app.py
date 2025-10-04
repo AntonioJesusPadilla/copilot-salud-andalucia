@@ -1025,16 +1025,17 @@ def load_optimized_css():
         print(f"📂 Ruta absoluta: {os.path.join(project_root, theme_file)}")
         print(f"✅ Existe archivo: {os.path.exists(os.path.join(project_root, theme_file))}")
 
-        # DEBUG: Mostrar en pantalla qué CSS se está cargando
+        # DEBUG: Logging a consola del navegador (abre DevTools con F12)
         st.markdown(f"""
-        <div style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white;
-                    padding: 10px; border-radius: 8px; font-size: 12px; z-index: 9999; max-width: 300px;">
-            <strong>🎨 CSS Debug:</strong><br>
-            Tema: <code>{st.session_state.theme_mode}</code><br>
-            Cloud: <code>{is_cloud}</code><br>
-            Archivo: <code>{theme_file}</code><br>
-            Env: <code>{os.getenv('STREAMLIT_RUNTIME_ENVIRONMENT', 'local')}</code>
-        </div>
+        <script>
+        console.log('🎨 CSS DEBUG INFO:');
+        console.log('  Tema:', '{st.session_state.theme_mode}');
+        console.log('  Cloud detectado:', {str(is_cloud).lower()});
+        console.log('  Archivo CSS:', '{theme_file}');
+        console.log('  USER env:', '{os.getenv("USER", "N/A")}');
+        console.log('  HOSTNAME env:', '{os.getenv("HOSTNAME", "N/A")}');
+        console.log('  Path /home/appuser existe:', {str(os.path.exists('/home/appuser/.streamlit/')).lower()});
+        </script>
         """, unsafe_allow_html=True)
 
         theme_css = load_css_file(theme_file)
@@ -1180,12 +1181,11 @@ if css_loaded != "mobile_basic":
     if extra_css:
         st.markdown(f"<style>{extra_css}</style>", unsafe_allow_html=True)
 
-        # DEBUG: Confirmar carga de extra styles
+        # DEBUG: Logging extra styles a consola
         st.markdown(f"""
-        <div style="position: fixed; bottom: 50px; right: 10px; background: rgba(0,128,0,0.8); color: white;
-                    padding: 8px; border-radius: 8px; font-size: 11px; z-index: 9999; max-width: 250px;">
-            ✅ Extra CSS: <code>{extra_css_file}</code> ({len(extra_css)} chars)
-        </div>
+        <script>
+        console.log('✅ Extra CSS cargado:', '{extra_css_file}', '({len(extra_css)} caracteres)');
+        </script>
         """, unsafe_allow_html=True)
 
     # CSS crítico inline para tarjeta de sidebar (sin cache)
