@@ -2000,4 +2000,6 @@ def logout():
     for key in ['authenticated', 'user', 'auth_token']:
         if key in st.session_state:
             del st.session_state[key]
+    # Resetear tema a claro al cerrar sesión
+    st.session_state.theme_mode = 'light'
     st.rerun()
