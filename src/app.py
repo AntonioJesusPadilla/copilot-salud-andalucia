@@ -976,13 +976,20 @@ def load_optimized_css():
 
         # CSS completo para desktop - CON CACHE
         theme_file = f'assets/theme_{st.session_state.theme_mode}.css'
+        print(f"🔍 Intentando cargar: {theme_file}")
+        print(f"📁 Project root: {project_root}")
+        print(f"📂 Ruta absoluta: {os.path.join(project_root, theme_file)}")
+        print(f"✅ Existe archivo: {os.path.exists(os.path.join(project_root, theme_file))}")
+
         theme_css = load_css_file(theme_file)
         if theme_css:
+            print(f"✅ CSS cargado exitosamente: {len(theme_css)} caracteres")
             st.markdown(f"<style>{theme_css}</style>", unsafe_allow_html=True)
             return f"theme_{st.session_state.theme_mode}"
         else:
             # Fallback inmediato si no se puede cargar el tema
-            raise Exception("No se pudo cargar el tema principal")
+            print(f"❌ No se pudo cargar {theme_file}")
+            raise Exception(f"No se pudo cargar el tema principal: {theme_file}")
 
     except Exception as e:
         # Fallback con cache
