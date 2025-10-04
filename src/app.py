@@ -1025,18 +1025,15 @@ def load_optimized_css():
         print(f"📂 Ruta absoluta: {os.path.join(project_root, theme_file)}")
         print(f"✅ Existe archivo: {os.path.exists(os.path.join(project_root, theme_file))}")
 
-        # DEBUG: Logging a consola del navegador (abre DevTools con F12)
-        st.markdown(f"""
-        <script>
-        console.log('🎨 CSS DEBUG INFO:');
-        console.log('  Tema:', '{st.session_state.theme_mode}');
-        console.log('  Cloud detectado:', {str(is_cloud).lower()});
-        console.log('  Archivo CSS:', '{theme_file}');
-        console.log('  USER env:', '{os.getenv("USER", "N/A")}');
-        console.log('  HOSTNAME env:', '{os.getenv("HOSTNAME", "N/A")}');
-        console.log('  Path /home/appuser existe:', {str(os.path.exists('/home/appuser/.streamlit/')).lower()});
-        </script>
-        """, unsafe_allow_html=True)
+        # Guardar info de debug en session_state para mostrarla después
+        st.session_state['css_debug_info'] = {
+            'tema': st.session_state.theme_mode,
+            'is_cloud': is_cloud,
+            'theme_file': theme_file,
+            'user_env': os.getenv("USER", "N/A"),
+            'hostname_env': os.getenv("HOSTNAME", "N/A"),
+            'appuser_path_exists': os.path.exists('/home/appuser/.streamlit/')
+        }
 
         theme_css = load_css_file(theme_file)
         if theme_css:
@@ -1181,12 +1178,10 @@ if css_loaded != "mobile_basic":
     if extra_css:
         st.markdown(f"<style>{extra_css}</style>", unsafe_allow_html=True)
 
-        # DEBUG: Logging extra styles a consola
-        st.markdown(f"""
-        <script>
-        console.log('✅ Extra CSS cargado:', '{extra_css_file}', '({len(extra_css)} caracteres)');
-        </script>
-        """, unsafe_allow_html=True)
+        # Guardar info de extra CSS en debug
+        if 'css_debug_info' in st.session_state:
+            st.session_state['css_debug_info']['extra_css_file'] = extra_css_file
+            st.session_state['css_debug_info']['extra_css_size'] = len(extra_css)
 
     # CSS crítico inline para tarjeta de sidebar (sin cache)
     critical_css = """
@@ -1738,6 +1733,20 @@ class SecureHealthAnalyticsApp:
                 if st.button("🚪 Salir", key="sidebar_logout", use_container_width=True, type="secondary"):
                     logout()
                     st.rerun()
+
+            st.markdown("---")
+
+            # DEBUG INFO en expander
+            if 'css_debug_info' in st.session_state:
+                with st.expander("🔧 Info Debug CSS", expanded=False):
+                    info = st.session_state['css_debug_info']
+                    st.write(f"**Tema:** `{info.get('tema', 'N/A')}`")
+                    st.write(f"**Cloud detectado:** `{info.get('is_cloud', 'N/A')}`")
+                    st.write(f"**Archivo tema:** `{info.get('theme_file', 'N/A')}`")
+                    st.write(f"**Archivo extra:** `{info.get('extra_css_file', 'N/A')}`")
+                    st.write(f"**USER env:** `{info.get('user_env', 'N/A')}`")
+                    st.write(f"**HOSTNAME:** `{info.get('hostname_env', 'N/A')}`")
+                    st.write(f"**Path /home/appuser:** `{info.get('appuser_path_exists', 'N/A')}`")
 
             st.markdown("---")
 
