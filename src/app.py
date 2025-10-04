@@ -900,9 +900,40 @@ section[data-testid="stMain"],
 </style>
 """, unsafe_allow_html=True)
 
-# Inicializar tema si no existe - TEMA CLARO POR DEFECTO (consistente con config.toml)
+# Inicializar tema con persistencia en localStorage
 if 'theme_mode' not in st.session_state:
-    st.session_state.theme_mode = 'light'
+    # Intentar leer tema guardado desde localStorage (inyectado via JavaScript)
+    st.session_state.theme_mode = 'dark'  # DARK por defecto para mejor UX
+
+    # Inyectar script para leer/escribir tema en localStorage
+    st.markdown("""
+    <script>
+    // Leer tema guardado del localStorage al cargar la página
+    (function() {
+        const savedTheme = localStorage.getItem('copilot_theme_mode');
+        if (savedTheme) {
+            // Comunicar al backend via query params (Streamlit limitation)
+            const url = new URL(window.location);
+            url.searchParams.set('theme', savedTheme);
+            if (url.searchParams.get('theme') !== savedTheme) {
+                window.history.replaceState({}, '', url);
+            }
+        }
+    })();
+    </script>
+    """, unsafe_allow_html=True)
+
+# Leer tema desde query params si existe (comunicación JavaScript -> Python)
+try:
+    from streamlit.web import cli as stcli
+    import sys
+    query_params = st.query_params
+    if 'theme' in query_params:
+        saved_theme = query_params['theme']
+        if saved_theme in ['light', 'dark']:
+            st.session_state.theme_mode = saved_theme
+except:
+    pass
 
 # Cache para CSS - SOLUCIÓN AL ERROR "Too many open files"
 @st.cache_data  # HABILITADO DE NUEVO
@@ -1665,6 +1696,14 @@ class SecureHealthAnalyticsApp:
                 if st.button(f"{theme_icon} {theme_text}", key="sidebar_theme_toggle", use_container_width=True):
                     new_theme = 'dark' if current_theme == 'light' else 'light'
                     st.session_state.theme_mode = new_theme
+
+                    # Guardar tema en localStorage para persistencia
+                    st.markdown(f"""
+                    <script>
+                    localStorage.setItem('copilot_theme_mode', '{new_theme}');
+                    </script>
+                    """, unsafe_allow_html=True)
+
                     st.rerun()
 
             with col2:
