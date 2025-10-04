@@ -435,9 +435,14 @@ header[data-testid="stHeader"] {
     padding-top: 0.5rem !important;
 }
 
-/* ========== ENCABEZADOS DE SECCIÓN CON CONTRASTE ========== */
+/* ========== ENCABEZADOS DE SECCIÓN CON CONTRASTE - CRÍTICO ========== */
+/* Headers h4 y h5 con fondos azules vibrantes - ESENCIAL para UX */
 .stMarkdown h4,
-.stMarkdown h5 {
+.stMarkdown h5,
+div.stMarkdown h4,
+div.stMarkdown h5,
+[data-testid="stMarkdownContainer"] h4,
+[data-testid="stMarkdownContainer"] h5 {
     background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
     color: #ffffff !important;
     padding: 0.75rem 1rem !important;
@@ -448,8 +453,26 @@ header[data-testid="stHeader"] {
 }
 
 .stMarkdown h4 *,
-.stMarkdown h5 * {
+.stMarkdown h5 *,
+div.stMarkdown h4 *,
+div.stMarkdown h5 * {
     color: #ffffff !important;
 }
 
-/* CACHE INVALIDATION - FORCE RELOAD 2025-10-04-09:15:00-cloud-v1 */
+/* Headers h3 también con fondo azul (menos común pero importante) */
+.stMarkdown h3,
+div.stMarkdown h3 {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%) !important;
+    color: #ffffff !important;
+    padding: 1rem 1.5rem !important;
+    border-radius: 12px !important;
+    margin: 1.5rem 0 0.75rem 0 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
+}
+
+.stMarkdown h3 * {
+    color: #ffffff !important;
+}
+
+/* CACHE INVALIDATION - FORCE RELOAD 2025-10-04-10:00:00-cloud-v2 */
