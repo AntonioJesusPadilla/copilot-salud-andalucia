@@ -975,8 +975,17 @@ def load_optimized_css():
             return "mobile_basic"
 
         # CSS completo para desktop - CON CACHE
-        theme_file = f'assets/theme_{st.session_state.theme_mode}.css'
-        print(f"🔍 Intentando cargar: {theme_file}")
+        # Detectar si estamos en Streamlit Cloud
+        is_cloud = os.getenv('STREAMLIT_RUNTIME_ENVIRONMENT') == 'cloud' or \
+                   'streamlit.app' in os.getenv('STREAMLIT_SERVER_HEADLESS', '')
+
+        # Usar versión optimizada para Cloud
+        if is_cloud and st.session_state.theme_mode == 'dark':
+            theme_file = 'assets/theme_dark_cloud.css'
+        else:
+            theme_file = f'assets/theme_{st.session_state.theme_mode}.css'
+
+        print(f"🔍 Intentando cargar: {theme_file} (Cloud: {is_cloud})")
         print(f"📁 Project root: {project_root}")
         print(f"📂 Ruta absoluta: {os.path.join(project_root, theme_file)}")
         print(f"✅ Existe archivo: {os.path.exists(os.path.join(project_root, theme_file))}")
@@ -985,7 +994,7 @@ def load_optimized_css():
         if theme_css:
             print(f"✅ CSS cargado exitosamente: {len(theme_css)} caracteres")
             st.markdown(f"<style>{theme_css}</style>", unsafe_allow_html=True)
-            return f"theme_{st.session_state.theme_mode}"
+            return f"theme_{st.session_state.theme_mode}_{'cloud' if is_cloud else 'local'}"
         else:
             # Fallback inmediato si no se puede cargar el tema
             print(f"❌ No se pudo cargar {theme_file}")
