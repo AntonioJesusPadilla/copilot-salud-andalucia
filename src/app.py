@@ -1156,73 +1156,86 @@ if css_loaded != "mobile_basic":
     """
     st.markdown(critical_css, unsafe_allow_html=True)
 
-# Cargar detector y correcciones SOLO para iPhone iOS 26 (condicional y diferido)
+# Cargar detector y correcciones para iOS Safari (compatible con todas las versiones)
 def load_ios_fixes():
-    """Cargar fixes de iOS solo cuando sea necesario"""
+    """Cargar fixes de iOS solo cuando sea necesario - SIN EVAL para evitar CSP"""
     ios_detection_script = """
     <script>
-function isIPhoneIOS26() {
-    const userAgent = navigator.userAgent;
-    const isIPhone = /iPhone/.test(userAgent);
-    const isSafari = /Safari/.test(userAgent) && !/Chrome|CriOS|FxiOS/.test(userAgent);
-    const iosVersion = userAgent.match(/OS (\\d+)_/);
-    const isIOS26 = iosVersion && parseInt(iosVersion[1]) >= 26;
-    return isIPhone && isSafari && isIOS26;
-}
+(function() {
+    'use strict';
 
-// Solo aplicar correcciones si es iPhone iOS 26
-if (isIPhoneIOS26()) {
-    console.log('iPhone iOS 26 detectado - Aplicando correcciones específicas...');
+    try {
+        // Detectar iOS Safari (cualquier versión)
+        function isIOSSafari() {
+            const userAgent = navigator.userAgent;
+            const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+            const isSafari = /Safari/.test(userAgent) && !/Chrome|CriOS|FxiOS/.test(userAgent);
+            return isIOS && isSafari;
+        }
 
-    // Inyectar CSS específico para iOS 26
-    const iosCSS = `PLACEHOLDER_CSS_CONTENT`;
-    const style = document.createElement('style');
-    style.textContent = iosCSS;
-    document.head.appendChild(style);
+        // Solo aplicar correcciones si es iOS Safari
+        if (isIOSSafari()) {
+            console.log('iOS Safari detectado - Aplicando correcciones específicas...');
 
-    // Inyectar JavaScript específico para iOS 26
-    const iosJS = `PLACEHOLDER_JS_CONTENT`;
-    eval(iosJS);
+            // Inyectar CSS específico para iOS (SIN eval)
+            const iosCSS = `PLACEHOLDER_CSS_CONTENT`;
+            const style = document.createElement('style');
+            style.textContent = iosCSS;
+            document.head.appendChild(style);
 
-    // Meta tags específicos para iOS 26
-    const viewport = document.querySelector('meta[name="viewport"]') || document.createElement('meta');
-    viewport.setAttribute('name', 'viewport');
-    viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
-    if (!document.querySelector('meta[name="viewport"]')) document.head.appendChild(viewport);
+            // Aplicar fixes JavaScript directamente (SIN eval)
+            PLACEHOLDER_JS_DIRECT
 
-    const webAppCapable = document.createElement('meta');
-    webAppCapable.setAttribute('name', 'apple-mobile-web-app-capable');
-    webAppCapable.setAttribute('content', 'yes');
-    document.head.appendChild(webAppCapable);
-}
+            // Meta tags específicos para iOS
+            let viewport = document.querySelector('meta[name="viewport"]');
+            if (!viewport) {
+                viewport = document.createElement('meta');
+                viewport.name = 'viewport';
+                document.head.appendChild(viewport);
+            }
+            viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+
+            const webAppCapable = document.createElement('meta');
+            webAppCapable.name = 'apple-mobile-web-app-capable';
+            webAppCapable.content = 'yes';
+            if (!document.querySelector('meta[name="apple-mobile-web-app-capable"]')) {
+                document.head.appendChild(webAppCapable);
+            }
+        }
+    } catch (error) {
+        console.error('Error aplicando fixes de iOS:', error);
+        // No romper la app si falla
+    }
+})();
 </script>
 """
 
-    # Leer CSS y JS para iOS 26 CON CACHE
+    # Leer CSS y JS para iOS - SIN EVAL para máxima compatibilidad
     try:
         ios_fixes_css = load_css_file('assets/ios_safari_fixes.css')
         safari_js = load_css_file('assets/safari_detector.js')
 
         if ios_fixes_css and safari_js:
+            # Escapar caracteres especiales para template literals
             ios_fixes_css = ios_fixes_css.replace('`', '\\`').replace('${', '\\${')
-            safari_js = safari_js.replace('`', '\\`').replace('${', '\\${')
 
-        ios_detection_script = ios_detection_script.replace('PLACEHOLDER_CSS_CONTENT', ios_fixes_css)
-        ios_detection_script = ios_detection_script.replace('PLACEHOLDER_JS_CONTENT', safari_js)
+            # Extraer solo el cuerpo de la función IIFE de safari_js para evitar eval
+            # Eliminar el wrapper IIFE externo y dejar solo el código interno
+            safari_js_clean = safari_js.replace('(function() {', '').replace('})();', '')
+            safari_js_clean = safari_js_clean.strip()
+
+            ios_detection_script = ios_detection_script.replace('PLACEHOLDER_CSS_CONTENT', ios_fixes_css or '/* CSS not loaded */')
+            ios_detection_script = ios_detection_script.replace('PLACEHOLDER_JS_DIRECT', safari_js_clean or '// JS not loaded')
+        else:
+            # Fallback si no se cargan los archivos
+            ios_detection_script = ios_detection_script.replace('PLACEHOLDER_CSS_CONTENT', '/* CSS not available */')
+            ios_detection_script = ios_detection_script.replace('PLACEHOLDER_JS_DIRECT', '// JS not available')
 
         st.markdown(ios_detection_script, unsafe_allow_html=True)
     except Exception as e:
-        # Si no se pueden cargar los archivos específicos, usar script básico
+        # Si hay error, no cargar nada para evitar romper la app en iOS
         print(f"⚠️ No se pudieron cargar archivos iOS específicos: {e}")
-        basic_ios_script = ios_detection_script.replace('PLACEHOLDER_CSS_CONTENT', '/* CSS not available */')
-        basic_ios_script = basic_ios_script.replace('PLACEHOLDER_JS_CONTENT', '/* JS not available */')
-
-        # Solo cargar si no hay errores visibles
-        try:
-            st.markdown(basic_ios_script, unsafe_allow_html=True)
-        except Exception as script_error:
-            print(f"⚠️ Error cargando script iOS básico: {script_error}")
-            # No cargar nada si hay problemas
+        # La app debe funcionar sin los fixes de iOS
 
 # NOTA: Los fixes de iOS se cargan ahora de forma diferida en la aplicación principal
 # para evitar que aparezcan como texto durante el login
