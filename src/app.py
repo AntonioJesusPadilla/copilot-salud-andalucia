@@ -1021,6 +1021,18 @@ def load_optimized_css():
         print(f"📂 Ruta absoluta: {os.path.join(project_root, theme_file)}")
         print(f"✅ Existe archivo: {os.path.exists(os.path.join(project_root, theme_file))}")
 
+        # DEBUG: Mostrar en pantalla qué CSS se está cargando
+        st.markdown(f"""
+        <div style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white;
+                    padding: 10px; border-radius: 8px; font-size: 12px; z-index: 9999; max-width: 300px;">
+            <strong>🎨 CSS Debug:</strong><br>
+            Tema: <code>{st.session_state.theme_mode}</code><br>
+            Cloud: <code>{is_cloud}</code><br>
+            Archivo: <code>{theme_file}</code><br>
+            Env: <code>{os.getenv('STREAMLIT_RUNTIME_ENVIRONMENT', 'local')}</code>
+        </div>
+        """, unsafe_allow_html=True)
+
         theme_css = load_css_file(theme_file)
         if theme_css:
             print(f"✅ CSS cargado exitosamente: {len(theme_css)} caracteres")
@@ -1159,6 +1171,14 @@ if css_loaded != "mobile_basic":
     extra_css = load_css_file(extra_css_file)
     if extra_css:
         st.markdown(f"<style>{extra_css}</style>", unsafe_allow_html=True)
+
+        # DEBUG: Confirmar carga de extra styles
+        st.markdown(f"""
+        <div style="position: fixed; bottom: 50px; right: 10px; background: rgba(0,128,0,0.8); color: white;
+                    padding: 8px; border-radius: 8px; font-size: 11px; z-index: 9999; max-width: 250px;">
+            ✅ Extra CSS: <code>{extra_css_file}</code> ({len(extra_css)} chars)
+        </div>
+        """, unsafe_allow_html=True)
 
     # CSS crítico inline para tarjeta de sidebar (sin cache)
     critical_css = """
