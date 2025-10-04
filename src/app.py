@@ -1006,9 +1006,13 @@ def load_optimized_css():
             return "mobile_basic"
 
         # CSS completo para desktop - CON CACHE
-        # Detectar si estamos en Streamlit Cloud
-        is_cloud = os.getenv('STREAMLIT_RUNTIME_ENVIRONMENT') == 'cloud' or \
-                   'streamlit.app' in os.getenv('STREAMLIT_SERVER_HEADLESS', '')
+        # Detectar si estamos en Streamlit Cloud (método correcto según comunidad)
+        is_cloud = any([
+            os.getenv('USER') == 'appuser',  # Usuario en Streamlit Cloud
+            os.path.exists('/home/appuser/.streamlit/'),  # Directorio de Streamlit Cloud
+            'HOSTNAME' in os.environ and 'streamlit' in os.environ.get('HOSTNAME', '').lower(),
+            os.getenv('STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION') is not None  # Variable específica de Cloud
+        ])
 
         # Usar versión optimizada para Cloud (sin variables CSS, con !important)
         if is_cloud:
@@ -1162,9 +1166,13 @@ css_loaded = load_optimized_css()
 # Cargar CSS extra solo en desktop - CON CACHE
 extra_css = None
 if css_loaded != "mobile_basic":
-    # Detectar si estamos en Cloud
-    is_cloud = os.getenv('STREAMLIT_RUNTIME_ENVIRONMENT') == 'cloud' or \
-               'streamlit.app' in os.getenv('STREAMLIT_SERVER_HEADLESS', '')
+    # Detectar si estamos en Cloud (misma lógica que load_optimized_css)
+    is_cloud = any([
+        os.getenv('USER') == 'appuser',
+        os.path.exists('/home/appuser/.streamlit/'),
+        'HOSTNAME' in os.environ and 'streamlit' in os.environ.get('HOSTNAME', '').lower(),
+        os.getenv('STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION') is not None
+    ])
 
     # Usar versión Cloud si está en Cloud
     extra_css_file = 'assets/extra_styles_cloud.css' if is_cloud else 'assets/extra_styles.css'
