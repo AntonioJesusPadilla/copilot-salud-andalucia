@@ -776,41 +776,70 @@ class AdminWidgets:
         st.markdown("---")
         st.markdown('<h5 style="color: #f8fafc;">📊 Estado Operativo en Tiempo Real</h5>', unsafe_allow_html=True)
 
+        # Detectar tema actual para usar colores correctos
+        is_dark = st.session_state.get('theme_mode', 'dark') == 'dark'
+
+        # Definir estilos según tema
+        if is_dark:
+            # MODO OSCURO: Fondos oscuros vibrantes con texto blanco
+            operativo_style = "background: linear-gradient(135deg, #065f46 0%, #047857 100%); border: 2px solid #10b981; color: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.3); text-align: center;"
+            alerta_style = "background: linear-gradient(135deg, #92400e 0%, #b45309 100%); border: 2px solid #f59e0b; color: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.3); text-align: center;"
+            monitoreo_style = "background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%); border: 2px solid #60a5fa; color: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.3); text-align: center;"
+            predictivo_style = "background: linear-gradient(135deg, #581c87 0%, #7c3aed 100%); border: 2px solid #a855f7; color: white; padding: 2rem; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.3); text-align: center;"
+            title_color = "white"
+            subtitle_color = "white"
+        else:
+            # MODO CLARO: Fondos claros con texto oscuro
+            operativo_style = "background: #f0fdf4; border: 2px solid #22c55e; padding: 2rem; border-radius: 16px; text-align: center;"
+            alerta_style = "background: #fefce8; border: 2px solid #eab308; padding: 2rem; border-radius: 16px; text-align: center;"
+            monitoreo_style = "background: #eff6ff; border: 2px solid #3b82f6; padding: 2rem; border-radius: 16px; text-align: center;"
+            predictivo_style = "background: #f3e8ff; border: 2px solid #a855f7; padding: 2rem; border-radius: 16px; text-align: center;"
+            title_color = "#065f46" if "operativo" else "#78350f"
+            subtitle_color = "#047857" if "operativo" else "#92400e"
+
         col1, col2, col3, col4 = st.columns(4)
 
         with col1:
-            st.markdown("""
-            <div class="status-card status-card-success" style="background: #f0fdf4; border-color: #22c55e;">
+            title_c = "white" if is_dark else "#065f46"
+            subtitle_c = "white" if is_dark else "#047857"
+            st.markdown(f"""
+            <div class="status-card status-card-success status-card-operativo status-card-green" style="{operativo_style}">
                 <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🟢</div>
-                <div class="status-card-title" style="font-weight: 700; color: #065f46; font-size: 1.1rem; margin-bottom: 0.3rem;">OPERATIVO</div>
-                <div class="status-card-subtitle" style="font-size: 1rem; color: #047857; font-weight: 600;">Sistema estable</div>
+                <div class="status-card-title" style="font-weight: 700; color: {title_c}; font-size: 1.1rem; margin-bottom: 0.3rem;">OPERATIVO</div>
+                <div class="status-card-subtitle" style="font-size: 1rem; color: {subtitle_c}; font-weight: 600;">Sistema estable</div>
             </div>
             """, unsafe_allow_html=True)
 
         with col2:
-            st.markdown("""
-            <div class="status-card status-card-warning" style="background: #fefce8; border-color: #eab308;">
+            title_c = "white" if is_dark else "#78350f"
+            subtitle_c = "white" if is_dark else "#92400e"
+            st.markdown(f"""
+            <div class="status-card status-card-warning status-card-alerta status-card-orange" style="{alerta_style}">
                 <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🟡</div>
-                <div class="status-card-title" style="font-weight: 700; color: #78350f; font-size: 1.1rem; margin-bottom: 0.3rem;">ALERTA</div>
-                <div class="status-card-subtitle" style="font-size: 1rem; color: #92400e; font-weight: 600;">Capacidad alta</div>
+                <div class="status-card-title" style="font-weight: 700; color: {title_c}; font-size: 1.1rem; margin-bottom: 0.3rem;">ALERTA</div>
+                <div class="status-card-subtitle" style="font-size: 1rem; color: {subtitle_c}; font-weight: 600;">Capacidad alta</div>
             </div>
             """, unsafe_allow_html=True)
 
         with col3:
-            st.markdown("""
-            <div class="status-card status-card-info" style="background: #eff6ff; border-color: #3b82f6;">
+            title_c = "white" if is_dark else "#1e3a8a"
+            subtitle_c = "white" if is_dark else "#1e40af"
+            st.markdown(f"""
+            <div class="status-card status-card-info status-card-monitoreo status-card-blue" style="{monitoreo_style}">
                 <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🔵</div>
-                <div class="status-card-title" style="font-weight: 700; color: #1e3a8a; font-size: 1.1rem; margin-bottom: 0.3rem;">MONITOREO</div>
-                <div class="status-card-subtitle" style="font-size: 1rem; color: #1e40af; font-weight: 600;">Supervisión activa</div>
+                <div class="status-card-title" style="font-weight: 700; color: {title_c}; font-size: 1.1rem; margin-bottom: 0.3rem;">MONITOREO</div>
+                <div class="status-card-subtitle" style="font-size: 1rem; color: {subtitle_c}; font-weight: 600;">Supervisión activa</div>
             </div>
             """, unsafe_allow_html=True)
 
         with col4:
-            st.markdown("""
-            <div class="status-card status-card-predictive" style="background: #f3e8ff; border-color: #a855f7;">
+            title_c = "white" if is_dark else "#581c87"
+            subtitle_c = "white" if is_dark else "#6b21a8"
+            st.markdown(f"""
+            <div class="status-card status-card-predictive status-card-predictivo status-card-purple" style="{predictivo_style}">
                 <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🔮</div>
-                <div class="status-card-title" style="font-weight: 700; color: #581c87; font-size: 1.1rem; margin-bottom: 0.3rem;">PREDICTIVO</div>
-                <div class="status-card-subtitle" style="font-size: 1rem; color: #6b21a8; font-weight: 600;">IA analítica</div>
+                <div class="status-card-title" style="font-weight: 700; color: {title_c}; font-size: 1.1rem; margin-bottom: 0.3rem;">PREDICTIVO</div>
+                <div class="status-card-subtitle" style="font-size: 1rem; color: {subtitle_c}; font-weight: 600;">IA analítica</div>
             </div>
             """, unsafe_allow_html=True)
 
