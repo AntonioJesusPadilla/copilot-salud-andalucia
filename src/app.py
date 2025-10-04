@@ -979,9 +979,9 @@ def load_optimized_css():
         is_cloud = os.getenv('STREAMLIT_RUNTIME_ENVIRONMENT') == 'cloud' or \
                    'streamlit.app' in os.getenv('STREAMLIT_SERVER_HEADLESS', '')
 
-        # Usar versión optimizada para Cloud
-        if is_cloud and st.session_state.theme_mode == 'dark':
-            theme_file = 'assets/theme_dark_cloud.css'
+        # Usar versión optimizada para Cloud (sin variables CSS, con !important)
+        if is_cloud:
+            theme_file = f'assets/theme_{st.session_state.theme_mode}_cloud.css'
         else:
             theme_file = f'assets/theme_{st.session_state.theme_mode}.css'
 
