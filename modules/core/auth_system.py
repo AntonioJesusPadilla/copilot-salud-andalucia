@@ -395,114 +395,99 @@ def render_login_page():
     from datetime import datetime
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
 
-    # PRIMERO: Reset CSS ULTRA AGRESIVO para eliminar TODOS los estilos de la app
+    # PRIMERO: Reset CSS con MÁXIMA ESPECIFICIDAD para sobrescribir tema oscuro
+    # Los selectores del tema oscuro usan: html body .stApp .main
+    # Necesitamos igualar o superar esa especificidad
     st.markdown("""
     <style>
-    /* ========== RESET ABSOLUTO - MÁXIMA PRIORIDAD ========== */
-    /* FORZAR tema light - remover data-theme dark */
-    html[data-theme="dark"],
-    body[data-theme="dark"],
-    .stApp[data-theme="dark"] {
-        background: #f8fafc !important;
-        background-color: #f8fafc !important;
-        color: #1a202c !important;
-    }
+    /* ========== RESET ABSOLUTO - MÁXIMA ESPECIFICIDAD ========== */
 
-    /* Forzar fondo claro en TODA la página */
-    html, body, #root, .stApp, .main,
-    [data-testid="stAppViewContainer"],
-    [data-testid="stApp"],
-    section[data-testid="stMain"],
-    .block-container {
+    /* Forzar fondo claro - Especificidad: html body .stApp .main */
+    html body .stApp .main,
+    html body .stApp,
+    html body,
+    html[data-theme="dark"] body .stApp .main,
+    html[data-theme="dark"] body .stApp,
+    html[data-theme="dark"] body {
         background: #f8fafc !important;
         background-color: #f8fafc !important;
         background-image: none !important;
         color: #1a202c !important;
     }
 
-    /* Eliminar TODOS los gradientes oscuros */
-    * {
-        background-image: none !important;
-    }
-
-    /* Resetear absolutamente TODO */
-    .main *, .stApp *, .block-container *,
-    section *, div *, span *, p *, h1 *, h2 *, h3 *, h4 *, h5 * {
-        background: transparent !important;
-        background-color: transparent !important;
-    }
-
-    /* Texto oscuro por defecto en TODO */
-    .main, .stApp, .block-container,
-    .main *, .stApp *, .block-container *,
-    h1, h2, h3, h4, h5, h6, p, span, div, label {
-        color: #1a202c !important;
-    }
-
-    /* Limpiar labels - ULTRA ESPECÍFICO */
-    label,
-    .stTextInput label,
-    .stPassword label,
-    [data-testid="stWidgetLabel"],
-    .stTextInput > label,
-    .stPassword > label {
-        color: #2d3748 !important;
-        background: transparent !important;
-    }
-
-    /* Limpiar botones - ULTRA ESPECÍFICO */
-    button,
-    .stButton button,
-    .stButton > button,
-    [data-testid="baseButton-secondary"],
-    [data-testid="baseButton-primary"],
-    button[kind="secondary"],
-    button[kind="primary"] {
+    /* Resetear inputs de texto - MÁXIMA ESPECIFICIDAD */
+    html body .stApp .main .stTextInput,
+    html body .stApp .main div.stTextInput,
+    html body .stApp .main .stTextInput > div,
+    html body .stApp .main .stTextInput > div > div,
+    html body .stApp .main .stTextInput input,
+    html body .stApp .main .stTextInput *,
+    html body .stApp .main input[type="text"],
+    html body .stApp .main input[type="password"],
+    html body .stApp .main .stPassword input,
+    html body .stApp .main textarea,
+    html body .stApp .main select {
         background: white !important;
         background-color: white !important;
         color: #1a202c !important;
         border: 1px solid #cbd5e0 !important;
     }
 
-    /* Limpiar inputs - ULTRA ESPECÍFICO con selectores Emotion CSS */
-    input,
-    textarea,
-    select,
-    .stTextInput input,
-    .stPassword input,
-    .stTextInput > div > div > input,
-    .stPassword > div > div > input,
-    div[data-baseweb="input"] input,
-    div[data-baseweb="base-input"] input,
-    [class*="st-emotion-cache"] input,
-    input[type="text"],
-    input[type="password"] {
+    /* Selectboxes */
+    html body .stApp .main .stSelectbox,
+    html body .stApp .main .stSelectbox > div > div > div,
+    html body .stApp .main .stSelectbox div[data-baseweb="select"],
+    html body .stApp .main div[data-baseweb="select"],
+    html body .stApp .main div[data-baseweb="select"] > div,
+    html body .stApp .main .stSelectbox *,
+    html body .stApp .main div[data-baseweb="select"] * {
+        background: white !important;
+        background-color: white !important;
+        color: #1a202c !important;
+    }
+
+    /* Botones */
+    html body .stApp .main button,
+    html body .stApp .main .stButton button,
+    html body .stApp .main [data-testid="baseButton-secondary"],
+    html body .stApp .main [data-testid="baseButton-primary"] {
         background: white !important;
         background-color: white !important;
         color: #1a202c !important;
         border: 1px solid #cbd5e0 !important;
-        box-shadow: none !important;
     }
 
-    /* Forzar placeholders oscuros */
-    input::placeholder,
-    textarea::placeholder {
+    /* Texto y labels */
+    html body .stApp .main *,
+    html body .stApp .main label,
+    html body .stApp .main p,
+    html body .stApp .main span,
+    html body .stApp .main div,
+    html body .stApp .main h1,
+    html body .stApp .main h2,
+    html body .stApp .main h3,
+    html body .stApp .main .stMarkdown,
+    html body .stApp .main .stText {
+        color: #1a202c !important;
+    }
+
+    /* Placeholders */
+    html body .stApp .main input::placeholder,
+    html body .stApp .main textarea::placeholder {
         color: #a0aec0 !important;
         opacity: 1 !important;
     }
 
-    /* Asegurar que NO hay overlays oscuros */
-    .stApp::before,
-    .main::before,
-    body::before,
-    html::before {
+    /* Eliminar overlays */
+    html body .stApp::before,
+    html body .stApp .main::before {
         display: none !important;
         content: none !important;
     }
 
-    /* Eliminar cualquier background-image residual */
-    html, body, .stApp, .main, .block-container,
-    html *, body *, .stApp *, .main *, .block-container * {
+    /* Eliminar todos los background-image */
+    html body .stApp .main *,
+    html body .stApp * {
         background-image: none !important;
     }
     </style>
