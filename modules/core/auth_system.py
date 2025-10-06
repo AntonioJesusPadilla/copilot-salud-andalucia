@@ -395,111 +395,78 @@ def render_login_page():
     from datetime import datetime
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
 
-    # Marcar el body como "login" para que el CSS sepa que estamos en pantalla de login
-    st.markdown("""
-    <script>
-    (function() {
-        document.body.setAttribute('data-page', 'login');
-        document.body.removeAttribute('data-authenticated');
-        document.documentElement.setAttribute('data-page', 'login');
-        console.log('🔓 Página de LOGIN marcada en body');
-    })();
-    </script>
-    """, unsafe_allow_html=True)
-
-    # PRIMERO: Reset CSS con MÁXIMA ESPECIFICIDAD para sobrescribir tema oscuro
-    # Los selectores del tema oscuro usan: html body .stApp .main
-    # Necesitamos igualar o superar esa especificidad
-    # CRÍTICO: Usar body[data-page="login"] para especificidad ULTRA ALTA
+    # RESET CSS ULTRA AGRESIVO - SIN DEPENDER DE JAVASCRIPT
+    # Estrategia: Usar clase .login-container que SOLO existe en login
+    # Esto nos da un selector único sin necesitar JavaScript
     st.markdown("""
     <style>
-    /* ========== RESET ABSOLUTO LOGIN - MÁXIMA ESPECIFICIDAD ========== */
+    /* ========== RESET ABSOLUTO PARA PÁGINA DE LOGIN ========== */
+    /* CRÍTICO: Estos estilos se aplican SOLO cuando existe .login-container */
+    /* que es la clase del contenedor principal del login */
 
-    /* Forzar fondo claro en LOGIN - ULTRA ESPECÍFICO */
-    html[data-page="login"] body[data-page="login"] .stApp .main,
-    html[data-page="login"] body[data-page="login"] .stApp,
-    html[data-page="login"] body[data-page="login"],
-    body[data-page="login"] .stApp .main,
-    body[data-page="login"] .stApp,
-    body[data-page="login"] {
+    /* Forzar fondo claro cuando existe login-container */
+    .login-container ~ * html body .stApp .main,
+    body:has(.login-container) .stApp .main,
+    body:has(.login-container) .stApp,
+    body:has(.login-container),
+    .login-container,
+    /* Fallback para navegadores sin :has() */
+    html body .stApp .main:has(.login-container),
+    html body .stApp:has(.login-container),
+    html body:has(.login-container) {
         background: #f8fafc !important;
         background-color: #f8fafc !important;
         background-image: none !important;
         color: #1a202c !important;
     }
 
-    /* Resetear inputs de texto - MÁXIMA ESPECIFICIDAD con data-page LOGIN */
-    body[data-page="login"] .stTextInput,
-    body[data-page="login"] .stTextInput > div,
-    body[data-page="login"] .stTextInput > div > div,
-    body[data-page="login"] .stTextInput input,
-    body[data-page="login"] .stTextInput *,
-    body[data-page="login"] input[type="text"],
-    body[data-page="login"] input[type="password"],
-    body[data-page="login"] .stPassword input,
-    body[data-page="login"] textarea,
-    body[data-page="login"] select {
+    /* SOBRESCRIBIR con especificidad BRUTAL usando ID del container */
+    /* El login siempre está en un div específico */
+    #root .stApp .main .stTextInput,
+    #root .stApp .main .stTextInput > div,
+    #root .stApp .main .stTextInput > div > div,
+    #root .stApp .main .stTextInput input,
+    #root .stApp .main input[type="text"],
+    #root .stApp .main input[type="password"],
+    #root .stApp .main textarea,
+    #root .stApp .main select {
         background: white !important;
         background-color: white !important;
         color: #1a202c !important;
         border: 1px solid #cbd5e0 !important;
     }
 
-    /* Selectboxes en LOGIN */
-    body[data-page="login"] .stSelectbox,
-    body[data-page="login"] .stSelectbox > div > div > div,
-    body[data-page="login"] .stSelectbox div[data-baseweb="select"],
-    body[data-page="login"] div[data-baseweb="select"],
-    body[data-page="login"] div[data-baseweb="select"] > div,
-    body[data-page="login"] .stSelectbox *,
-    body[data-page="login"] div[data-baseweb="select"] * {
-        background: white !important;
-        background-color: white !important;
-        color: #1a202c !important;
-    }
-
-    /* Botones en LOGIN */
-    body[data-page="login"] button,
-    body[data-page="login"] .stButton button,
-    body[data-page="login"] [data-testid="baseButton-secondary"],
-    body[data-page="login"] [data-testid="baseButton-primary"] {
+    /* Botones con especificidad ID */
+    #root .stApp .main button,
+    #root .stApp .main .stButton button {
         background: white !important;
         background-color: white !important;
         color: #1a202c !important;
         border: 1px solid #cbd5e0 !important;
     }
 
-    /* Texto y labels en LOGIN */
-    body[data-page="login"] *,
-    body[data-page="login"] label,
-    body[data-page="login"] p,
-    body[data-page="login"] span,
-    body[data-page="login"] div,
-    body[data-page="login"] h1,
-    body[data-page="login"] h2,
-    body[data-page="login"] h3,
-    body[data-page="login"] .stMarkdown,
-    body[data-page="login"] .stText {
+    /* Texto con especificidad ID */
+    #root .stApp .main *,
+    #root .stApp .main label,
+    #root .stApp .main p,
+    #root .stApp .main span,
+    #root .stApp .main div,
+    #root .stApp .main h1,
+    #root .stApp .main h2,
+    #root .stApp .main h3 {
         color: #1a202c !important;
     }
 
-    /* Placeholders en LOGIN */
-    body[data-page="login"] input::placeholder,
-    body[data-page="login"] textarea::placeholder {
+    /* Placeholders */
+    #root .stApp .main input::placeholder,
+    #root .stApp .main textarea::placeholder {
         color: #a0aec0 !important;
         opacity: 1 !important;
     }
 
-    /* Eliminar overlays en LOGIN */
-    body[data-page="login"] .stApp::before,
-    body[data-page="login"] .stApp .main::before {
-        display: none !important;
-        content: none !important;
-    }
-
-    /* Eliminar todos los background-image en LOGIN */
-    body[data-page="login"] .stApp .main *,
-    body[data-page="login"] .stApp * {
+    /* Eliminar todos los background-image */
+    #root .stApp .main *,
+    #root .stApp * {
         background-image: none !important;
     }
     </style>
