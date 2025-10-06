@@ -1543,14 +1543,14 @@ html body .stApp .main * {
     with col2:
         # Usar f-string para interpolar variables según el tema
         if current_theme == 'dark':
-            header_color = '#f9fafb'
-            subtitle_color = '#d1d5db'
-            text_color = '#9ca3af'
-            container_bg = '#1e293b'
-            container_border = '1px solid #374151'
+            header_color = '#ffffff'
+            subtitle_color = '#e2e8f0'
+            text_color = '#cbd5e1'
+            container_bg = '#475569'
+            container_border = '1px solid #64748b'
             container_shadow = '0 10px 40px rgba(0,0,0,0.3)'
-            header_bg = 'linear-gradient(135deg, #334155 0%, #1e293b 100%)'
-            form_bg = '#1e293b'
+            header_bg = 'linear-gradient(135deg, #64748b 0%, #475569 100%)'
+            form_bg = '#475569'
         else:
             header_color = '#1a202c'
             subtitle_color = '#4a5568'
