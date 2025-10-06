@@ -31,15 +31,47 @@ print(f"Project root: {project_root}")
 print(f"Source dir: {src_dir}")
 print(f"Python path: {sys.path}")
 
+# ===== CONFIGURACIÓN DE PÁGINA - DEBE SER LO PRIMERO =====
+# CRÍTICO: set_page_config DEBE ir antes de cualquier comando st.*
+# Intentar usar favicon personalizado, fallback a emoji
+favicon_path = "assets/favicon.ico"
+if os.path.exists(favicon_path):
+    page_icon = favicon_path
+else:
+    page_icon = "⚕️"
+
+# Configuración de página - SIEMPRE WIDE MODE (optimizado para desktop)
+try:
+    st.set_page_config(
+        page_title="Copilot Salud Andalucía - Sistema de Análisis Sociosanitario",
+        page_icon=page_icon,
+        layout="wide",  # SIEMPRE wide mode para aprovechar pantalla completa
+        initial_sidebar_state="expanded",
+        menu_items={
+            'Get Help': None,
+            'Report a bug': None,
+            'About': '# Copilot Salud Andalucía v2.1\nSistema de Análisis Sociosanitario de Málaga'
+        }
+    )
+except Exception:
+    # Fallback a configuración básica
+    st.set_page_config(
+        page_title="Copilot Salud Andalucía",
+        page_icon="⚕️",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+# ===== FIN CONFIGURACIÓN DE PÁGINA =====
+
 # Importar sistema de autenticación
 try:
     from modules.core.auth_system import (
-        check_authentication, render_login_page, logout, 
+        check_authentication, render_login_page, logout,
         render_user_management, render_user_profile, HealthAuthenticator
     )
     AUTH_AVAILABLE = True
 except ImportError as e:
-    st.error(f"❌ Error importando sistema de autenticación: {str(e)}")
+    print(f"❌ Error importando sistema de autenticación: {str(e)}")
     AUTH_AVAILABLE = False
 
 # Importar módulos IA
@@ -48,7 +80,7 @@ try:
     from modules.visualization.chart_generator import SmartChartGenerator, DataAnalyzer
     AI_AVAILABLE = True
 except ImportError as e:
-        st.error(f"❌ Error importando módulos IA: {str(e)}")
+        print(f"❌ Error importando módulos IA: {str(e)}")
         AI_AVAILABLE = False
 
 # Importar módulos de mapas (opcional para Streamlit Cloud)
@@ -91,7 +123,7 @@ try:
     from modules.core.role_dashboards import RoleDashboards
     ROLE_DASHBOARDS_AVAILABLE = True
 except ImportError as e:
-    st.error(f"❌ Error importando dashboards por rol: {str(e)}")
+    print(f"❌ Error importando dashboards por rol: {str(e)}")
     ROLE_DASHBOARDS_AVAILABLE = False
 
 # Importar sistemas de optimización y seguridad
@@ -680,36 +712,8 @@ def load_health_datasets_legacy():
         st.error(f"❌ Error crítico cargando datasets: {str(e)}")
         return None
 
-# Configuración de la página
-# Intentar usar favicon personalizado, fallback a emoji
-favicon_path = "assets/favicon.ico"
-if os.path.exists(favicon_path):
-    page_icon = favicon_path
-else:
-    page_icon = "⚕️"  # Símbolo médico más visible
-
-# Configuración de página - SIEMPRE WIDE MODE (optimizado para desktop)
-# La aplicación está diseñada principalmente para pantallas de ordenador
-try:
-    st.set_page_config(
-        page_title="Copilot Salud Andalucía - Sistema de Análisis Sociosanitario",
-        page_icon=page_icon,
-        layout="wide",  # SIEMPRE wide mode para aprovechar pantalla completa
-        initial_sidebar_state="expanded",  # Sidebar expandido por defecto
-        menu_items={
-            'Get Help': None,
-            'Report a bug': None,
-            'About': '# Copilot Salud Andalucía v2.1\nSistema de Análisis Sociosanitario de Málaga'
-        }
-    )
-except Exception:
-    # Fallback a configuración básica si hay algún error
-    st.set_page_config(
-        page_title="Copilot Salud Andalucía",
-        page_icon="⚕️",
-        layout="wide",
-        initial_sidebar_state="expanded"
-    )
+# NOTA: set_page_config ya se configuró al inicio del archivo (línea ~45)
+# para asegurar que se ejecuta ANTES de cualquier otro comando de Streamlit
 
 # ===== ESTILOS CRÍTICOS - APLICAR INMEDIATAMENTE =====
 st.markdown("""
