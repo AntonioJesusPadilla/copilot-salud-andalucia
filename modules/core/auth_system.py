@@ -395,12 +395,13 @@ def render_login_page():
     from datetime import datetime
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
 
-    # RESET CSS ULTRA AGRESIVO - SIN DEPENDER DE JAVASCRIPT
-    # Estrategia: Usar clase .login-container que SOLO existe en login
-    # Esto nos da un selector único sin necesitar JavaScript
-    st.markdown("""
-    <style>
-    /* ========== RESET ABSOLUTO PARA PÁGINA DE LOGIN ========== */
+    print(f"🔓 RENDERIZANDO LOGIN - Timestamp CSS: {timestamp}")
+
+    # RESET CSS MEGA ULTRA AGRESIVO con ID único
+    # Este CSS se carga AL FINAL, después de TODO el CSS del tema oscuro
+    st.markdown(f"""
+    <style id="login-reset-{timestamp}">
+    /* ========== RESET BRUTAL LOGIN - ID: {timestamp} ========== */
     /* CRÍTICO: Estos estilos se aplican SOLO cuando existe .login-container */
     /* que es la clase del contenedor principal del login */
 
