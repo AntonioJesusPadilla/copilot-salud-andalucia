@@ -370,13 +370,14 @@ html body .stApp .main .stChatInput textarea * {
     color: #ffffff !important;
 }
 
-/* Chat Input - Placeholder */
+/* Chat Input - Placeholder - MUY CLARO para visibilidad */
 html body .stApp .main .stChatInput input::placeholder,
 html body .stApp .main .stChatInput textarea::placeholder,
 html body .stApp .main [data-testid="stChatInput"] input::placeholder,
 html body .stApp .main [data-testid="stChatInput"] textarea::placeholder {
-    color: #94a3b8 !important;
-    opacity: 0.8 !important;
+    color: #cbd5e1 !important;
+    opacity: 1 !important;
+    font-weight: 500 !important;
 }
 
 /* CRÍTICO: Forzar visibilidad en TODOS los inputs del chat */
