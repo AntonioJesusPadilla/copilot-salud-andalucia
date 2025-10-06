@@ -923,9 +923,8 @@ except:
     pass
 
 # Cache para CSS - Con TTL para permitir actualizaciones en Cloud
-@st.cache_data(ttl=60)  # Cache por 60 segundos - permite recargas en Cloud
 def load_css_file(file_path):
-    """Cargar archivo CSS con cache temporal para permitir actualizaciones"""
+    """Cargar archivo CSS SIN CACHE para garantizar actualizaciones inmediatas"""
     try:
         # Usar ruta absoluta basada en project_root para compatibilidad con Streamlit Cloud
         if not os.path.isabs(file_path):
@@ -1033,16 +1032,19 @@ def load_optimized_css():
         if theme_css:
             print(f"✅ CSS cargado exitosamente: {len(theme_css)} caracteres")
 
-            # Agregar hash del contenido para cache-busting agresivo
+            # Agregar hash del contenido + timestamp para cache-busting AGRESIVO
             import hashlib
+            import time
             css_hash = hashlib.md5(theme_css.encode()).hexdigest()[:8]
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            cache_buster = int(time.time())  # Unix timestamp para forzar recarga
 
             # Comentario con timestamp Y hash para romper caché del navegador
-            css_with_version = f"/* CSS Version: {timestamp} | Hash: {css_hash} */\n{theme_css}"
+            css_with_version = f"/* CSS Version: {timestamp} | Hash: {css_hash} | CB: {cache_buster} */\n{theme_css}"
 
-            print(f"🎨 CSS aplicado - Tema: {st.session_state.theme_mode} | Hash: {css_hash}")
-            st.markdown(f"<style>{css_with_version}</style>", unsafe_allow_html=True)
+            print(f"🎨 CSS aplicado - Tema: {st.session_state.theme_mode} | Hash: {css_hash} | CB: {cache_buster}")
+            # Usar ID único en el style tag para forzar re-render
+            st.markdown(f"<style id='theme-css-{cache_buster}'>{css_with_version}</style>", unsafe_allow_html=True)
             return f"theme_{st.session_state.theme_mode}_{'cloud' if is_cloud else 'local'}"
         else:
             # Fallback inmediato si no se puede cargar el tema
