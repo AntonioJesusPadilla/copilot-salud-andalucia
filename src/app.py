@@ -2583,13 +2583,81 @@ def render_page_navigation(app):
         if len(tabs_available) == 1:
             tab_functions[0]()
         elif len(tabs_available) > 1:
-            # Crear tabs siempre
-            tabs = st.tabs(tabs_available)
+            # Inicializar tab seleccionado si no existe
+            if 'active_tab_index' not in st.session_state:
+                st.session_state.active_tab_index = 0
 
-            # Mostrar todos los tabs normalmente
-            for i, tab_function in enumerate(tab_functions):
-                with tabs[i]:
-                    tab_function()
+            # Usar radio horizontal para simular tabs (más visual que selectbox)
+            selected_tab_name = st.radio(
+                "Navegación:",
+                tabs_available,
+                index=st.session_state.active_tab_index,
+                key="tab_selector",
+                horizontal=True,
+                label_visibility="collapsed"
+            )
+
+            # Actualizar índice del tab activo
+            st.session_state.active_tab_index = tabs_available.index(selected_tab_name)
+
+            # CSS para hacer que los radio buttons se vean como tabs
+            current_theme = st.session_state.get('theme_mode', 'light')
+            if current_theme == 'dark':
+                tab_bg = '#475569'
+                tab_active_bg = '#3b82f6'
+                tab_text = '#ffffff'
+                border_color = '#64748b'
+            else:
+                tab_bg = '#f3f4f6'
+                tab_active_bg = '#3b82f6'
+                tab_text = '#1f2937'
+                border_color = '#d1d5db'
+
+            st.markdown(f"""
+            <style>
+            /* Estilo de tabs para radio buttons horizontales */
+            div[data-testid="stHorizontalBlock"] label {{
+                background: {tab_bg} !important;
+                padding: 0.75rem 1.5rem !important;
+                border-radius: 8px 8px 0 0 !important;
+                border: 2px solid {border_color} !important;
+                border-bottom: none !important;
+                margin-right: 4px !important;
+                cursor: pointer !important;
+                transition: all 0.2s ease !important;
+                font-weight: 500 !important;
+            }}
+
+            /* Tab activo */
+            div[data-testid="stHorizontalBlock"] label:has(input:checked) {{
+                background: {tab_active_bg} !important;
+                color: white !important;
+                border-color: {tab_active_bg} !important;
+            }}
+
+            /* Hover effect */
+            div[data-testid="stHorizontalBlock"] label:hover {{
+                background: {tab_active_bg} !important;
+                color: white !important;
+                opacity: 0.9 !important;
+            }}
+
+            /* Ocultar radio circle */
+            div[data-testid="stHorizontalBlock"] input[type="radio"] {{
+                display: none !important;
+            }}
+
+            /* Separador debajo de tabs */
+            div[data-testid="stHorizontalBlock"] {{
+                border-bottom: 2px solid {border_color} !important;
+                padding-bottom: 0 !important;
+                margin-bottom: 1rem !important;
+            }}
+            </style>
+            """, unsafe_allow_html=True)
+
+            # Renderizar solo el contenido del tab seleccionado
+            tab_functions[st.session_state.active_tab_index]()
         else:
             if app.user['role'] == 'invitado':
                 st.info("ℹ️ **Usuario Invitado**: Solo tienes acceso al Dashboard básico. Para más funcionalidades, contacta al administrador.")
