@@ -365,25 +365,14 @@ def render_login_page():
     """Renderizar página de login"""
 
     # FORZAR RECARGA COMPLETA si viene de logout (para limpiar CSS del DOM)
+    # Simplemente mostrar mensaje y dejar que el usuario haga login de nuevo
+    # El CSS ya se carga solo cuando está autenticado, así que el login debería verse limpio
     if st.session_state.get('force_reload_after_logout', False):
         # Limpiar la flag
         del st.session_state['force_reload_after_logout']
 
-        # Inyectar JavaScript directamente en el DOM (sin iframe sandbox)
-        st.markdown("""
-        <script>
-        (function() {
-            console.log('🔄 Forzando recarga completa tras logout...');
-            // Forzar recarga completa desde el contexto principal
-            setTimeout(function() {
-                window.location.reload(true); // true = forzar desde servidor, no caché
-            }, 100);
-        })();
-        </script>
-        """, unsafe_allow_html=True)
-
-        # Detener ejecución aquí, el navegador recargará
-        st.stop()
+        # Mensaje opcional indicando que se cerró sesión
+        # (El login normal se renderizará después)
 
     # Inicializar tema si no existe
     if 'theme_mode' not in st.session_state:
@@ -406,10 +395,43 @@ def render_login_page():
     from datetime import datetime
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
 
-    # Aplicar CSS básico primero
+    # PRIMERO: Reset CSS de la app para evitar contaminación tras logout
     st.markdown("""
     <style>
-    /* CSS ACTUALIZADO - {timestamp} */
+    /* ========== RESET CSS APP - FORZAR ESTILOS LIMPIOS LOGIN ========== */
+    /* Sobrescribir TODOS los estilos de la app principal */
+    .stApp, .main, [data-testid="stAppViewContainer"], body, html {
+        background: #f8fafc !important;
+        background-image: none !important;
+        color: #1a202c !important;
+    }
+
+    /* Resetear todos los elementos para login */
+    .main *, .stApp *, div:not(.login-container):not(.login-header):not(.login-form-container) {
+        color: inherit !important;
+        background: transparent !important;
+    }
+
+    /* Limpiar estilos de botones */
+    button:not(.login-btn):not([key="login_theme_btn"]) {
+        background: white !important;
+        color: #1a202c !important;
+        border: 1px solid #cbd5e0 !important;
+    }
+
+    /* Limpiar inputs */
+    input, textarea, select {
+        background: white !important;
+        color: #1a202c !important;
+        border: 1px solid #cbd5e0 !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # Aplicar CSS específico del login
+    st.markdown("""
+    <style>
+    /* CSS LOGIN - {timestamp} */
         /* ========== OCULTAR SIDEBAR EN LOGIN ========== */
         [data-testid="stSidebar"],
         .stSidebar,
