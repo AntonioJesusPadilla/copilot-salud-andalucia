@@ -1694,22 +1694,30 @@ def render_login_page():
         document.addEventListener('DOMContentLoaded', applyThemeStyles);
 
         // Detectar cambios en el atributo data-theme
-        const observer = new MutationObserver(function(mutations) {
-            let themeChanged = false;
-            mutations.forEach(function(mutation) {
-                if (mutation.type === 'attributes' &&
-                    mutation.attributeName === 'data-theme') {
-                    themeChanged = true;
+        try {
+            const observer = new MutationObserver(function(mutations) {
+                let themeChanged = false;
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'attributes' &&
+                        mutation.attributeName === 'data-theme') {
+                        themeChanged = true;
+                    }
+                });
+                if (themeChanged) {
+                    setTimeout(applyThemeStyles, 50);
                 }
             });
-            if (themeChanged) {
-                setTimeout(applyThemeStyles, 50);
-            }
-        });
 
-        // Observar cambios en body y html
-        observer.observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+            // Observar cambios en body y html (validar que existen)
+            if (document.body && document.body.nodeType === 1) {
+                observer.observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
+            }
+            if (document.documentElement && document.documentElement.nodeType === 1) {
+                observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+            }
+        } catch(e) {
+            console.warn('⚠️ No se pudo inicializar MutationObserver en login:', e);
+        }
 
         // Ejecutar cada 2 segundos como respaldo
         setInterval(applyThemeStyles, 2000);
