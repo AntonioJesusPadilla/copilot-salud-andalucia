@@ -627,8 +627,17 @@ html body .stApp .main * {
 
         [data-theme="dark"] .login-header,
         body[data-theme="dark"] .login-header {
-            background: linear-gradient(135deg, #64748b 0%, #475569 100%) !important;
-            color: #f9fafb !important;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+            color: #ffffff !important;
+        }
+
+        [data-theme="dark"] .login-header *,
+        [data-theme="dark"] .login-header div,
+        [data-theme="dark"] .login-header > div,
+        body[data-theme="dark"] .login-header *,
+        body[data-theme="dark"] .login-header div,
+        body[data-theme="dark"] .login-header > div {
+            color: #ffffff !important;
         }
 
         [data-theme="dark"] .login-header h1,
@@ -638,12 +647,12 @@ html body .stApp .main * {
 
         [data-theme="dark"] .login-header h3,
         body[data-theme="dark"] .login-header h3 {
-            color: #e2e8f0 !important;
+            color: #ffffff !important;
         }
 
         [data-theme="dark"] .login-header p,
         body[data-theme="dark"] .login-header p {
-            color: #cbd5e1 !important;
+            color: #ffffff !important;
         }
 
         [data-theme="dark"] .login-form-container,
@@ -1045,11 +1054,20 @@ html body .stApp .main * {
 
             .login-header,
             .login-header *,
+            .login-header div,
             .login-header h1,
             .login-header h2,
             .login-header h3,
             .login-header p {
-                color: #f9fafb !important;
+                color: #ffffff !important;
+            }
+
+            .login-header > div {
+                color: #ffffff !important;
+            }
+
+            .login-header > div:first-child {
+                color: #ffffff !important;
             }
 
             .demo-credentials {
@@ -1544,13 +1562,13 @@ html body .stApp .main * {
         # Usar f-string para interpolar variables según el tema
         if current_theme == 'dark':
             header_color = '#ffffff'
-            subtitle_color = '#e2e8f0'
-            text_color = '#cbd5e1'
-            container_bg = '#475569'
-            container_border = '1px solid #64748b'
-            container_shadow = '0 10px 40px rgba(0,0,0,0.3)'
-            header_bg = 'linear-gradient(135deg, #64748b 0%, #475569 100%)'
-            form_bg = '#475569'
+            subtitle_color = '#f1f5f9'
+            text_color = '#e2e8f0'
+            container_bg = '#334155'
+            container_border = '1px solid #475569'
+            container_shadow = '0 10px 40px rgba(0,0,0,0.5)'
+            header_bg = 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)'
+            form_bg = '#334155'
         else:
             header_color = '#1a202c'
             subtitle_color = '#4a5568'
@@ -1564,9 +1582,9 @@ html body .stApp .main * {
         st.markdown(f"""
         <div class="login-container" style="max-width: 420px; margin: 0 auto; background: {container_bg}; border-radius: 24px; box-shadow: {container_shadow}; border: {container_border};">
             <div class="login-header" style="background: {header_bg}; padding: 32px; border-radius: 24px 24px 0 0; text-align: center;">
-                <div style="color: {header_color}; font-size: 32px; font-weight: 700; margin-bottom: 8px;">🏥 Copilot Salud</div>
-                <div style="color: {subtitle_color}; font-size: 18px; font-weight: 500; margin: 8px 0;">Sistema de Análisis Sociosanitario</div>
-                <div style="color: {text_color}; font-size: 14px; margin-top: 8px;">Provincia de Málaga - Andalucía</div>
+                <div style="color: {header_color} !important; font-size: 32px; font-weight: 700; margin-bottom: 8px;">🏥 Copilot Salud</div>
+                <div style="color: {subtitle_color} !important; font-size: 18px; font-weight: 500; margin: 8px 0;">Sistema de Análisis Sociosanitario</div>
+                <div style="color: {text_color} !important; font-size: 14px; margin-top: 8px;">Provincia de Málaga - Andalucía</div>
             </div>
             <div class="login-form-container" style="padding: 32px; background: {form_bg};">
         """, unsafe_allow_html=True)
