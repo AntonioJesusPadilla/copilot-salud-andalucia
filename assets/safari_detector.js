@@ -74,18 +74,27 @@
     // Fix específico para Streamlit en iOS 26
     function fixStreamlitIOS26() {
         // Observar cambios en el DOM de Streamlit
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.addedNodes.length > 0) {
-                    applySafariIOS26Fixes();
-                }
+        try {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.addedNodes.length > 0) {
+                        applySafariIOS26Fixes();
+                    }
+                });
             });
-        });
 
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
+            // Validar que document.body existe antes de observar
+            if (document.body && document.body.nodeType === 1) {
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+            } else {
+                console.warn('⚠️ document.body no disponible para MutationObserver');
+            }
+        } catch(e) {
+            console.warn('⚠️ No se pudo inicializar MutationObserver en Safari:', e);
+        }
 
         // Fix inicial
         applySafariIOS26Fixes();
