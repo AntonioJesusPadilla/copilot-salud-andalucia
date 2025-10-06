@@ -1,19 +1,7 @@
 import streamlit as st
-from streamlit_option_menu import option_menu
-import pandas as pd
-import numpy as np
-import plotly.express as px
-import plotly.graph_objects as go
-import plotly.io as pio
-
-# CONFIGURACIÓN GLOBAL DE PLOTLY: Deshabilitar hover por defecto
-pio.templates.default = "plotly"  # Asegurar template básico
-from datetime import datetime
 import os
 import sys
-import re
-from io import StringIO
-from dotenv import load_dotenv
+from datetime import datetime
 
 # Añadir directorios al path ANTES de importar módulos locales
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -25,15 +13,40 @@ for path in [project_root, src_dir]:
     if path not in sys.path:
         sys.path.insert(0, path)
 
-# Ahora importar módulos locales
-from modules.ai.streamlit_async_wrapper import get_streamlit_async_wrapper
-
 print(f"Project root: {project_root}")
 print(f"Source dir: {src_dir}")
 print(f"Python path: {sys.path}")
 
 # ===== CONFIGURACIÓN DE PÁGINA - DEBE SER LO PRIMERO =====
 # CRÍTICO: set_page_config DEBE ir antes de cualquier comando st.*
+
+def is_mobile_device():
+    """
+    Detecta si el usuario está usando un dispositivo móvil
+    basándose en el user agent del navegador
+    """
+    try:
+        # Intentar obtener el user agent desde los query params o headers
+        import streamlit.web.server.websocket_headers as wsh
+        headers = wsh.get_websocket_headers()
+        user_agent = headers.get("User-Agent", "").lower()
+    except:
+        # Fallback: asumir desktop si no podemos detectar
+        return False
+
+    # Patrones comunes de dispositivos móviles
+    mobile_patterns = [
+        'iphone', 'ipad', 'ipod',  # iOS
+        'android',                  # Android
+        'mobile', 'phone',          # Genéricos
+        'blackberry', 'windows phone', 'webos'  # Otros
+    ]
+
+    return any(pattern in user_agent for pattern in mobile_patterns)
+
+# Detectar tipo de dispositivo
+IS_MOBILE = is_mobile_device()
+
 # Intentar usar favicon personalizado, fallback a emoji
 favicon_path = "assets/favicon.ico"
 if os.path.exists(favicon_path):
@@ -41,13 +54,13 @@ if os.path.exists(favicon_path):
 else:
     page_icon = "⚕️"
 
-# Configuración de página - SIEMPRE WIDE MODE (optimizado para desktop)
+# Configuración de página adaptativa: wide para desktop, centered para móvil
 try:
     st.set_page_config(
         page_title="Copilot Salud Andalucía - Sistema de Análisis Sociosanitario",
         page_icon=page_icon,
-        layout="wide",  # SIEMPRE wide mode para aprovechar pantalla completa
-        initial_sidebar_state="expanded",
+        layout="centered" if IS_MOBILE else "wide",  # Adaptativo según dispositivo
+        initial_sidebar_state="collapsed" if IS_MOBILE else "expanded",  # Sidebar colapsado en móvil
         menu_items={
             'Get Help': None,
             'Report a bug': None,
@@ -55,14 +68,50 @@ try:
         }
     )
 except Exception:
-    # Fallback a configuración básica
+    # Fallback a configuración básica adaptativa
     st.set_page_config(
         page_title="Copilot Salud Andalucía",
         page_icon="⚕️",
-        layout="wide",
-        initial_sidebar_state="expanded"
+        layout="centered" if IS_MOBILE else "wide",
+        initial_sidebar_state="collapsed" if IS_MOBILE else "expanded"
     )
 # ===== FIN CONFIGURACIÓN DE PÁGINA =====
+
+# Imports críticos y ligeros primero
+print(f"Project root: {project_root}")
+print(f"Source dir: {src_dir}")
+print(f"Python path: {sys.path}")
+
+# OPTIMIZACIÓN MÓVIL: Cargar módulos pesados solo cuando sea necesario
+if IS_MOBILE:
+    print("📱 Dispositivo móvil detectado - carga optimizada de módulos")
+    # En móvil, importar solo lo esencial
+    from modules.ai.streamlit_async_wrapper import get_streamlit_async_wrapper
+else:
+    print("💻 Dispositivo desktop detectado - carga completa de módulos")
+    # En desktop, importar todo desde el inicio
+    from streamlit_option_menu import option_menu
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+    import plotly.graph_objects as go
+    import plotly.io as pio
+    from io import StringIO
+    from dotenv import load_dotenv
+    from modules.ai.streamlit_async_wrapper import get_streamlit_async_wrapper
+
+    # CONFIGURACIÓN GLOBAL DE PLOTLY: Deshabilitar hover por defecto
+    pio.templates.default = "plotly"
+
+# Imports comunes (ligeros)
+import re
+
+# Cargar variables de entorno
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 # Importar sistema de autenticación
 try:
@@ -75,49 +124,59 @@ except ImportError as e:
     print(f"❌ Error importando sistema de autenticación: {str(e)}")
     AUTH_AVAILABLE = False
 
-# Importar módulos IA
-try:
-    from modules.ai.ai_processor import HealthAnalyticsAI, HealthMetricsCalculator
-    from modules.visualization.chart_generator import SmartChartGenerator, DataAnalyzer
-    AI_AVAILABLE = True
-except ImportError as e:
+# Importar módulos IA (diferido en móvil)
+if not IS_MOBILE:
+    try:
+        from modules.ai.ai_processor import HealthAnalyticsAI, HealthMetricsCalculator
+        from modules.visualization.chart_generator import SmartChartGenerator, DataAnalyzer
+        AI_AVAILABLE = True
+    except ImportError as e:
         print(f"❌ Error importando módulos IA: {str(e)}")
         AI_AVAILABLE = False
+else:
+    # En móvil, marcar como disponible pero no importar aún
+    AI_AVAILABLE = True
 
-# Importar módulos de mapas (opcional para Streamlit Cloud)
-try:
-    import importlib
-    import sys
-
-    # Verificar dependencias básicas de mapas
+# Importar módulos de mapas (opcional para Streamlit Cloud y diferido en móvil)
+if not IS_MOBILE:
     try:
-        import folium
-        import streamlit_folium
-        # Test adicional: verificar que el módulo local existe
-        from modules.visualization.map_interface import MapInterface
+        import importlib
+        import sys
 
-        MAPS_DEPENDENCIES_OK = True
-        print("✅ GLOBAL INIT: Dependencias de mapas encontradas: folium, streamlit_folium, MapInterface")
-    except ImportError as deps_error:
-        print(f"❌ GLOBAL INIT: Dependencias de mapas no disponibles: {str(deps_error)}")
+        # Verificar dependencias básicas de mapas
+        try:
+            import folium
+            import streamlit_folium
+            # Test adicional: verificar que el módulo local existe
+            from modules.visualization.map_interface import MapInterface
+
+            MAPS_DEPENDENCIES_OK = True
+            print("✅ GLOBAL INIT: Dependencias de mapas encontradas: folium, streamlit_folium, MapInterface")
+        except ImportError as deps_error:
+            print(f"❌ GLOBAL INIT: Dependencias de mapas no disponibles: {str(deps_error)}")
+            # NO mostrar warning en la UI durante la inicialización global
+            MAPS_DEPENDENCIES_OK = False
+
+        # Carga diferida de mapas - solo marcar disponibilidad
+        MAPS_AVAILABLE = MAPS_DEPENDENCIES_OK
+        print(f"🔧 GLOBAL INIT: MAPS_AVAILABLE establecido en: {MAPS_AVAILABLE}")
+        print(f"🔧 GLOBAL INIT: MAPS_DEPENDENCIES_OK es: {MAPS_DEPENDENCIES_OK}")
+
+        # Si las dependencias no están disponibles globalmente, intentar verificación diferida
+        if not MAPS_DEPENDENCIES_OK:
+            print("⚠️ GLOBAL INIT: Dependencias no disponibles globalmente, se intentará carga diferida")
+
+    except Exception as e:
+        print(f"❌ GLOBAL INIT: Excepción en bloque de mapas: {str(e)}")
         # NO mostrar warning en la UI durante la inicialización global
+        MAPS_AVAILABLE = False
         MAPS_DEPENDENCIES_OK = False
-
-    # Carga diferida de mapas - solo marcar disponibilidad
-    MAPS_AVAILABLE = MAPS_DEPENDENCIES_OK
-    print(f"🔧 GLOBAL INIT: MAPS_AVAILABLE establecido en: {MAPS_AVAILABLE}")
-    print(f"🔧 GLOBAL INIT: MAPS_DEPENDENCIES_OK es: {MAPS_DEPENDENCIES_OK}")
-
-    # Si las dependencias no están disponibles globalmente, intentar verificación diferida
-    if not MAPS_DEPENDENCIES_OK:
-        print("⚠️ GLOBAL INIT: Dependencias no disponibles globalmente, se intentará carga diferida")
-
-except Exception as e:
-    print(f"❌ GLOBAL INIT: Excepción en bloque de mapas: {str(e)}")
-    # NO mostrar warning en la UI durante la inicialización global
-    MAPS_AVAILABLE = False
+        print("🔧 GLOBAL INIT: MAPS_AVAILABLE y MAPS_DEPENDENCIES_OK establecidos en False por excepción")
+else:
+    # En móvil, diferir carga de mapas hasta que se necesite
+    print("📱 Móvil: Diferir carga de módulos de mapas")
+    MAPS_AVAILABLE = True
     MAPS_DEPENDENCIES_OK = False
-    print("🔧 GLOBAL INIT: MAPS_AVAILABLE y MAPS_DEPENDENCIES_OK establecidos en False por excepción")
 
 # Importar dashboards personalizados por rol
 try:
