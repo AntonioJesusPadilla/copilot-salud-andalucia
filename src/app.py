@@ -2148,17 +2148,24 @@ def main():
                         console.log('  - classes:', sidebar.className);
 
                         // Usar MutationObserver para detectar CUALQUIER cambio
-                        const observer = new MutationObserver(function(mutations) {{
-                            mutations.forEach(function(mutation) {{
-                                console.log('🔍 Mutation detected:', mutation.type, mutation.attributeName);
+                        try {{
+                            const observer = new MutationObserver(function(mutations) {{
+                                mutations.forEach(function(mutation) {{
+                                    console.log('🔍 Mutation detected:', mutation.type, mutation.attributeName);
+                                }});
+                                setTimeout(checkAndResize, 50);
                             }});
-                            setTimeout(checkAndResize, 50);
-                        }});
 
-                        observer.observe(sidebar, {{
-                            attributes: true,
-                            attributeFilter: ['style', 'aria-expanded', 'class', 'data-state']
-                        }});
+                            // Verificar que sidebar es un nodo válido antes de observar
+                            if (sidebar && sidebar.nodeType === 1) {{
+                                observer.observe(sidebar, {{
+                                    attributes: true,
+                                    attributeFilter: ['style', 'aria-expanded', 'class', 'data-state']
+                                }});
+                            }}
+                        }} catch(e) {{
+                            console.warn('⚠️ No se pudo inicializar MutationObserver:', e);
+                        }}
 
                         // Polling cada 500ms (solo cuando sidebar existe)
                         intervalId = setInterval(checkAndResize, 500);
@@ -2723,29 +2730,45 @@ def main():
         }}, 2000);
 
         // Observar cambios del DOM para aplicar estilos a nuevos elementos
-        const observer = new MutationObserver(function(mutations) {{
-            const isLoginPage = document.querySelector('.login-container') !== null;
-            if (isLoginPage) return; // No aplicar estilos en login
+        try {{
+            const observer = new MutationObserver(function(mutations) {{
+                const isLoginPage = document.querySelector('.login-container') !== null;
+                if (isLoginPage) return; // No aplicar estilos en login
 
-            mutations.forEach(function(mutation) {{
-                mutation.addedNodes.forEach(function(node) {{
-                    if (node.nodeType === 1) {{ // Element node
-                        const elements = node.querySelectorAll('.main *, [data-testid="stMetric"] *');
-                        elements.forEach(function(el) {{
-                            if (!el.closest('.stButton') &&
-                                !el.closest('[data-testid="stAlert"]') &&
-                                !el.closest('[data-baseweb="notification"]') &&
-                                !el.closest('.main-header-secure') &&
-                                !el.closest('.login-container')) {{
-                                el.style.color = textColor;
-                            }}
-                        }});
-                    }}
+                mutations.forEach(function(mutation) {{
+                    mutation.addedNodes.forEach(function(node) {{
+                        if (node.nodeType === 1) {{ // Element node
+                            const elements = node.querySelectorAll('.main *, [data-testid="stMetric"] *');
+                            elements.forEach(function(el) {{
+                                if (!el.closest('.stButton') &&
+                                    !el.closest('[data-testid="stAlert"]') &&
+                                    !el.closest('[data-baseweb="notification"]') &&
+                                    !el.closest('.main-header-secure') &&
+                                    !el.closest('.login-container')) {{
+                                    el.style.color = textColor;
+                                }}
+                            }});
+                        }}
+                    }});
                 }});
             }});
-        }});
 
-        observer.observe(document.body, {{ childList: true, subtree: true }});
+            // Verificar que document.body existe antes de observar
+            if (document.body && document.body.nodeType === 1) {{
+                observer.observe(document.body, {{ childList: true, subtree: true }});
+            }} else {{
+                // Esperar a que document.body esté disponible
+                if (document.readyState === 'loading') {{
+                    document.addEventListener('DOMContentLoaded', function() {{
+                        if (document.body && document.body.nodeType === 1) {{
+                            observer.observe(document.body, {{ childList: true, subtree: true }});
+                        }}
+                    }});
+                }}
+            }}
+        }} catch(e) {{
+            console.warn('⚠️ No se pudo inicializar MutationObserver para tema:', e);
+        }}
     }})();
     </script>
     """, unsafe_allow_html=True)
