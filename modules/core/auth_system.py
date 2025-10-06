@@ -2071,19 +2071,36 @@ def check_authentication():
 
 def logout():
     """Cerrar sesión y limpiar completamente el estado"""
-    # Guardar el tema antes de limpiar
-    theme_to_keep = st.session_state.get('theme_mode', 'light')
-
     # LIMPIAR TODO el session_state para eliminar CSS residual
     keys_to_delete = list(st.session_state.keys())
     for key in keys_to_delete:
         del st.session_state[key]
 
-    # Restaurar solo el tema para la pantalla de login
-    st.session_state.theme_mode = theme_to_keep
+    # FORZAR tema LIGHT al hacer logout y limpiar localStorage
+    st.session_state.theme_mode = 'light'
 
-    # Marcar que se hizo logout para forzar recarga completa
+    # Inyectar JavaScript para limpiar localStorage y forzar tema light
+    st.markdown("""
+    <script>
+    (function() {
+        // Limpiar localStorage
+        localStorage.removeItem('copilot_theme_mode');
+        localStorage.setItem('copilot_theme_mode', 'light');
+
+        // Forzar tema light en el DOM inmediatamente
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.body.setAttribute('data-theme', 'light');
+
+        // Recargar página completamente para resetear todo el CSS
+        setTimeout(function() {
+            window.location.reload(true);
+        }, 100);
+    })();
+    </script>
+    """, unsafe_allow_html=True)
+
+    # Marcar que se hizo logout
     st.session_state['force_reload_after_logout'] = True
 
-    # Forzar rerun primero para limpiar session state
+    # Forzar rerun
     st.rerun()
