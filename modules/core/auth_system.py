@@ -364,6 +364,26 @@ class HealthAuthenticator:
 def render_login_page():
     """Renderizar página de login"""
 
+    # FORZAR RECARGA COMPLETA si viene de logout (para limpiar CSS del DOM)
+    if st.session_state.get('force_reload_after_logout', False):
+        # Limpiar la flag
+        del st.session_state['force_reload_after_logout']
+
+        # Inyectar JavaScript para forzar recarga COMPLETA del navegador
+        import streamlit.components.v1 as components
+        components.html("""
+        <script>
+        (function() {
+            console.log('🔄 Forzando recarga completa tras logout...');
+            // Usar replace en lugar de reload para no mantener historial
+            window.parent.location.replace(window.parent.location.href);
+        })();
+        </script>
+        """, height=0)
+
+        # Detener ejecución aquí, el navegador recargará
+        st.stop()
+
     # Inicializar tema si no existe
     if 'theme_mode' not in st.session_state:
         st.session_state.theme_mode = 'light'
@@ -2008,5 +2028,8 @@ def logout():
     # Restaurar solo el tema para la pantalla de login
     st.session_state.theme_mode = theme_to_keep
 
-    # Forzar recarga completa de la página para limpiar CSS del DOM
+    # Marcar que se hizo logout para forzar recarga completa
+    st.session_state['force_reload_after_logout'] = True
+
+    # Forzar rerun primero para limpiar session state
     st.rerun()
