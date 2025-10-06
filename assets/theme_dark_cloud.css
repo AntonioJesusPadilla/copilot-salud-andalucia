@@ -195,31 +195,101 @@ button[kind="secondary"] {
     color: #ffffff !important;
 }
 
-/* ========== INPUTS ========== */
+/* ========== INPUTS - ULTRA ESPECÍFICO PARA CLOUD ========== */
+/* Selectbox - TODOS los niveles */
+.stSelectbox,
+div.stSelectbox,
+[data-testid="stSelectbox"],
+.stSelectbox > div,
 .stSelectbox > div > div,
-.stTextInput > div > div,
-.stTextArea > div > div {
+.stSelectbox div[data-baseweb="select"],
+div[data-baseweb="select"] {
+    background: #1e293b !important;
+    background-color: #1e293b !important;
     border-radius: 12px !important;
     border: 2px solid #64748b !important;
-    background: #0f172a !important;
     color: #ffffff !important;
 }
 
+/* TextInput y TextArea - TODOS los niveles */
+.stTextInput,
+div.stTextInput,
+.stTextArea,
+div.stTextArea,
+.stTextInput > div,
+.stTextInput > div > div,
+.stTextArea > div,
+.stTextArea > div > div,
+.stTextInput input,
+.stTextArea textarea {
+    background: #1e293b !important;
+    background-color: #1e293b !important;
+    border-radius: 12px !important;
+    border: 2px solid #64748b !important;
+    color: #ffffff !important;
+}
+
+/* Chat Input específico */
+.stChatInput,
+div.stChatInput,
+.stChatInput > div,
+.stChatInput > div > div,
+.stChatInput input,
+.stChatInput textarea,
+[data-testid="stChatInput"],
+[data-testid="stChatInput"] input,
+[data-testid="stChatInput"] textarea {
+    background: #1e293b !important;
+    background-color: #1e293b !important;
+    border: 2px solid #64748b !important;
+    border-radius: 12px !important;
+    color: #ffffff !important;
+}
+
+/* Inputs genéricos - máxima prioridad */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+textarea,
+select {
+    background: #1e293b !important;
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+    border: 2px solid #64748b !important;
+    border-radius: 8px !important;
+}
+
+/* Hover states */
+.stSelectbox:hover,
+.stSelectbox > div:hover,
 .stSelectbox > div > div:hover,
+.stTextInput:hover,
+.stTextInput > div:hover,
 .stTextInput > div > div:hover,
+.stTextArea:hover,
+.stTextArea > div:hover,
 .stTextArea > div > div:hover {
     border-color: #4ade80 !important;
 }
 
-.stSelectbox > div > div:focus-within,
-.stTextInput > div > div:focus-within,
-.stTextArea > div > div:focus-within {
+/* Focus states */
+.stSelectbox:focus-within,
+.stSelectbox > div:focus-within,
+.stTextInput:focus-within,
+.stTextInput > div:focus-within,
+.stTextArea:focus-within,
+.stTextArea > div:focus-within {
     border-color: #4ade80 !important;
     box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.1) !important;
 }
 
-/* Input text color */
-.stSelectbox input, .stTextInput input, .stTextArea textarea {
+/* Texto dentro de inputs - FORZADO */
+.stSelectbox input,
+.stTextInput input,
+.stTextArea textarea,
+.stChatInput input,
+.stChatInput textarea,
+input, textarea, select {
     color: #ffffff !important;
 }
 

@@ -2026,6 +2026,68 @@ def main():
             """
             st.markdown(status_card_fix_script, unsafe_allow_html=True)
 
+        # SCRIPT JAVASCRIPT para forzar estilos en inputs/selectbox (Cloud)
+        if is_cloud:
+            inputs_fix_script = """
+            <script>
+            (function() {
+                'use strict';
+
+                function forceInputStyles() {
+                    // Obtener el tema actual
+                    const isDark = localStorage.getItem('copilot_theme_mode') === 'dark';
+
+                    if (!isDark) return; // Solo aplicar en modo oscuro
+
+                    // Forzar fondo oscuro en TODOS los selectbox
+                    const selectboxes = document.querySelectorAll('.stSelectbox, div.stSelectbox, [data-testid="stSelectbox"], div[data-baseweb="select"], .stSelectbox > div, .stSelectbox > div > div');
+                    selectboxes.forEach(function(el) {
+                        el.style.setProperty('background', '#1e293b', 'important');
+                        el.style.setProperty('background-color', '#1e293b', 'important');
+                        el.style.setProperty('color', '#ffffff', 'important');
+                        el.style.setProperty('border', '2px solid #64748b', 'important');
+                    });
+
+                    // Forzar fondo oscuro en TODOS los inputs de texto
+                    const textInputs = document.querySelectorAll('.stTextInput, .stTextArea, .stChatInput, .stTextInput input, .stTextArea textarea, .stChatInput input, .stChatInput textarea, input[type="text"], textarea');
+                    textInputs.forEach(function(el) {
+                        el.style.setProperty('background', '#1e293b', 'important');
+                        el.style.setProperty('background-color', '#1e293b', 'important');
+                        el.style.setProperty('color', '#ffffff', 'important');
+                        el.style.setProperty('border', '2px solid #64748b', 'important');
+                    });
+
+                    // Forzar texto blanco en inputs genéricos
+                    const allInputs = document.querySelectorAll('input, textarea, select');
+                    allInputs.forEach(function(el) {
+                        el.style.setProperty('color', '#ffffff', 'important');
+                    });
+
+                    console.log('✅ Input/Selectbox styles forced for Cloud (Dark Mode)');
+                }
+
+                // Ejecutar inmediatamente
+                forceInputStyles();
+
+                // Re-ejecutar después de 100ms, 500ms y 1s
+                setTimeout(forceInputStyles, 100);
+                setTimeout(forceInputStyles, 500);
+                setTimeout(forceInputStyles, 1000);
+
+                // Observer para detectar cambios en el DOM
+                const observer = new MutationObserver(function(mutations) {
+                    forceInputStyles();
+                });
+
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+            })();
+            </script>
+            """
+            st.markdown(inputs_fix_script, unsafe_allow_html=True)
+
     # Aplicar estilos adicionales según dispositivo
     if css_loaded == "mobile_basic":
         # Estilos básicos para móviles - no cargar fuentes pesadas
