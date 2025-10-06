@@ -2030,6 +2030,16 @@ def main():
     components.html(f"""
     <script>
     (function() {{
+        'use strict';
+
+        // CRÍTICO: Validar que parent.document existe antes de CUALQUIER operación
+        if (!parent || !parent.document || !parent.document.body) {{
+            console.warn('⚠️ Parent document no disponible, esperando...');
+            // Reintentar cuando el parent esté listo
+            setTimeout(arguments.callee, 100);
+            return;
+        }}
+
         const theme = '{current_theme}';
         const doc = parent.document;
 
