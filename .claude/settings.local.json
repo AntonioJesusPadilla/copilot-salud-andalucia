@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(streamlit --version)",
+      "WebFetch(domain:copilot-salud-andalucia.streamlit.app)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

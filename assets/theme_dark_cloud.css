@@ -303,37 +303,65 @@ button[kind="secondary"] {
     border: 1px solid #64748b !important;
 }
 
-/* ========== ESTADO OPERATIVO - CARDS CRÍTICAS ========== */
-.status-card-operativo, .status-card-green {
+/* ========== ESTADO OPERATIVO - CARDS CRÍTICAS (ULTRA ESPECÍFICO) ========== */
+/* Selectores múltiples para MÁXIMA especificidad */
+div.status-card.status-card-operativo,
+div.status-card.status-card-green,
+div[class*="status-card-operativo"],
+div[class*="status-card-green"],
+.status-card-operativo,
+.status-card-green {
     background: linear-gradient(135deg, #065f46 0%, #047857 100%) !important;
     color: white !important;
     padding: 2rem !important;
     border-radius: 16px !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+    border: 2px solid #10b981 !important;
 }
 
-.status-card-alerta, .status-card-orange, .status-card-warning {
+div.status-card.status-card-alerta,
+div.status-card.status-card-orange,
+div.status-card.status-card-warning,
+div[class*="status-card-alerta"],
+div[class*="status-card-orange"],
+div[class*="status-card-warning"],
+.status-card-alerta,
+.status-card-orange,
+.status-card-warning {
     background: linear-gradient(135deg, #92400e 0%, #b45309 100%) !important;
     color: white !important;
     padding: 2rem !important;
     border-radius: 16px !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+    border: 2px solid #f59e0b !important;
 }
 
-.status-card-monitoreo, .status-card-blue {
+div.status-card.status-card-monitoreo,
+div.status-card.status-card-blue,
+div[class*="status-card-monitoreo"],
+div[class*="status-card-blue"],
+.status-card-monitoreo,
+.status-card-blue {
     background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important;
     color: white !important;
     padding: 2rem !important;
     border-radius: 16px !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+    border: 2px solid #60a5fa !important;
 }
 
-.status-card-predictivo, .status-card-purple {
+div.status-card.status-card-predictivo,
+div.status-card.status-card-purple,
+div[class*="status-card-predictivo"],
+div[class*="status-card-purple"],
+.status-card-predictivo,
+.status-card-purple {
     background: linear-gradient(135deg, #581c87 0%, #7c3aed 100%) !important;
     color: white !important;
     padding: 2rem !important;
     border-radius: 16px !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+    border: 2px solid #a855f7 !important;
 }
 
 /* Asegurar texto blanco en status cards */

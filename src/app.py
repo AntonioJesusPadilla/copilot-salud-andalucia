@@ -1214,6 +1214,72 @@ if css_loaded != "mobile_basic":
     """
     st.markdown(critical_css, unsafe_allow_html=True)
 
+    # SCRIPT JAVASCRIPT para forzar estilos correctos en status cards (Cloud)
+    if is_cloud:
+        status_card_fix_script = """
+        <script>
+        (function() {
+            'use strict';
+
+            function forceStatusCardStyles() {
+                // Obtener el tema actual
+                const isDark = localStorage.getItem('copilot_theme_mode') === 'dark' ||
+                              !localStorage.getItem('copilot_theme_mode'); // dark por defecto
+
+                if (!isDark) return; // Solo aplicar en modo oscuro
+
+                // Estilos para cada tipo de card
+                const cardStyles = {
+                    'operativo': 'background: linear-gradient(135deg, #065f46 0%, #047857 100%) !important; border: 2px solid #10b981 !important; color: white !important;',
+                    'green': 'background: linear-gradient(135deg, #065f46 0%, #047857 100%) !important; border: 2px solid #10b981 !important; color: white !important;',
+                    'alerta': 'background: linear-gradient(135deg, #92400e 0%, #b45309 100%) !important; border: 2px solid #f59e0b !important; color: white !important;',
+                    'orange': 'background: linear-gradient(135deg, #92400e 0%, #b45309 100%) !important; border: 2px solid #f59e0b !important; color: white !important;',
+                    'warning': 'background: linear-gradient(135deg, #92400e 0%, #b45309 100%) !important; border: 2px solid #f59e0b !important; color: white !important;',
+                    'monitoreo': 'background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important; border: 2px solid #60a5fa !important; color: white !important;',
+                    'blue': 'background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important; border: 2px solid #60a5fa !important; color: white !important;',
+                    'predictivo': 'background: linear-gradient(135deg, #581c87 0%, #7c3aed 100%) !important; border: 2px solid #a855f7 !important; color: white !important;',
+                    'purple': 'background: linear-gradient(135deg, #581c87 0%, #7c3aed 100%) !important; border: 2px solid #a855f7 !important; color: white !important;'
+                };
+
+                // Aplicar estilos a cada tipo de card
+                Object.keys(cardStyles).forEach(function(cardType) {
+                    const cards = document.querySelectorAll(`.status-card-${cardType}, div[class*="status-card-${cardType}"]`);
+                    cards.forEach(function(card) {
+                        card.setAttribute('style', cardStyles[cardType] + ' padding: 2rem; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.3); text-align: center;');
+
+                        // Asegurar texto blanco en todos los elementos hijos
+                        const children = card.querySelectorAll('*');
+                        children.forEach(function(child) {
+                            child.style.color = 'white';
+                        });
+                    });
+                });
+
+                console.log('✅ Status card styles forced for Cloud');
+            }
+
+            // Ejecutar inmediatamente
+            forceStatusCardStyles();
+
+            // Re-ejecutar después de 100ms, 500ms y 1s para capturar renders tardíos
+            setTimeout(forceStatusCardStyles, 100);
+            setTimeout(forceStatusCardStyles, 500);
+            setTimeout(forceStatusCardStyles, 1000);
+
+            // Observer para detectar cambios en el DOM
+            const observer = new MutationObserver(function(mutations) {
+                forceStatusCardStyles();
+            });
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        })();
+        </script>
+        """
+        st.markdown(status_card_fix_script, unsafe_allow_html=True)
+
 # Cargar detector y correcciones para iOS Safari (compatible con todas las versiones)
 def load_ios_fixes():
     """Cargar fixes de iOS solo cuando sea necesario - SIN EVAL para evitar CSP"""
