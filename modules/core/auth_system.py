@@ -420,53 +420,59 @@ def render_login_page():
         color: #1a202c !important;
     }
 
-    /* SOBRESCRIBIR con especificidad BRUTAL usando ID del container */
-    /* El login siempre está en un div específico */
-    #root .stApp .main .stTextInput,
-    #root .stApp .main .stTextInput > div,
-    #root .stApp .main .stTextInput > div > div,
-    #root .stApp .main .stTextInput input,
-    #root .stApp .main input[type="text"],
-    #root .stApp .main input[type="password"],
-    #root .stApp .main textarea,
-    #root .stApp .main select {
+    /* INPUTS - MÁXIMA ESPECIFICIDAD (html body + elementos) */
+    html body .stApp .main .stTextInput,
+    html body .stApp .main .stTextInput > div,
+    html body .stApp .main .stTextInput > div > div,
+    html body .stApp .main .stTextInput input,
+    html body .stApp .main .stTextInput *,
+    html body .stApp .main .stPassword input,
+    html body .stApp .main input[type="text"],
+    html body .stApp .main input[type="password"],
+    html body .stApp .main textarea,
+    html body .stApp .main select {
+        background: white !important;
+        background-color: white !important;
+        color: #1a202c !important;
+        border: 1px solid #cbd5e0 !important;
+        box-shadow: none !important;
+    }
+
+    /* BOTONES - MÁXIMA ESPECIFICIDAD */
+    html body .stApp .main button,
+    html body .stApp .main .stButton button,
+    html body .stApp .main .stButton > button,
+    html body .stApp .main [data-testid="baseButton-secondary"],
+    html body .stApp .main [data-testid="baseButton-primary"] {
         background: white !important;
         background-color: white !important;
         color: #1a202c !important;
         border: 1px solid #cbd5e0 !important;
     }
 
-    /* Botones con especificidad ID */
-    #root .stApp .main button,
-    #root .stApp .main .stButton button {
-        background: white !important;
-        background-color: white !important;
-        color: #1a202c !important;
-        border: 1px solid #cbd5e0 !important;
-    }
-
-    /* Texto con especificidad ID */
-    #root .stApp .main *,
-    #root .stApp .main label,
-    #root .stApp .main p,
-    #root .stApp .main span,
-    #root .stApp .main div,
-    #root .stApp .main h1,
-    #root .stApp .main h2,
-    #root .stApp .main h3 {
+    /* TEXTO - MÁXIMA ESPECIFICIDAD */
+    html body .stApp .main,
+    html body .stApp .main *,
+    html body .stApp .main label,
+    html body .stApp .main p,
+    html body .stApp .main span,
+    html body .stApp .main div,
+    html body .stApp .main h1,
+    html body .stApp .main h2,
+    html body .stApp .main h3 {
         color: #1a202c !important;
     }
 
-    /* Placeholders */
-    #root .stApp .main input::placeholder,
-    #root .stApp .main textarea::placeholder {
+    /* PLACEHOLDERS */
+    html body .stApp .main input::placeholder,
+    html body .stApp .main textarea::placeholder {
         color: #a0aec0 !important;
         opacity: 1 !important;
     }
 
-    /* Eliminar todos los background-image */
-    #root .stApp .main *,
-    #root .stApp * {
+    /* ELIMINAR BACKGROUND-IMAGE */
+    html body .stApp *,
+    html body .stApp .main * {
         background-image: none !important;
     }
     </style>
