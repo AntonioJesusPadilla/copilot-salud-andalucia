@@ -265,7 +265,11 @@ li[role="option"]:hover {
 }
 
 /* ========== SELECTBOX INPUT CERRADO ========== */
-/* Input del selectbox cuando está cerrado */
+/* Input del selectbox cuando está cerrado - ULTRA ESPECÍFICO */
+html body .stApp .main .stSelectbox input[role="combobox"],
+html body .stApp .main [data-testid="stSelectbox"] input[role="combobox"],
+html body .stApp .main input[role="combobox"],
+html body .stApp .main .stSelectbox input,
 .stSelectbox input[role="combobox"],
 [data-testid="stSelectbox"] input[role="combobox"],
 input[role="combobox"][aria-label*="Selecciona"],
@@ -274,9 +278,13 @@ input[role="combobox"][aria-label*="Selecciona"],
     background-color: #1e293b !important;
     color: #ffffff !important;
     border: 2px solid #64748b !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
 }
 
 /* Contenedor del input del selectbox */
+html body .stApp .main .stSelectbox > div,
+html body .stApp .main .stSelectbox > div > div,
 .st-ba.st-d2.st-d4,
 div[class*="st-ba"][class*="st-d2"],
 .stSelectbox > div,
@@ -285,11 +293,20 @@ div[class*="st-ba"][class*="st-d2"],
     background-color: #1e293b !important;
 }
 
-/* Texto seleccionado en el input */
+/* Texto seleccionado en el input - FORZAR BLANCO */
+html body .stApp .main .stSelectbox input[role="combobox"]::placeholder,
+html body .stApp .main .stSelectbox input::placeholder,
 div[value*="Mapa"],
 div[class*="st-en"],
 .st-en {
     background: transparent !important;
+    color: #ffffff !important;
+}
+
+/* Valor actual del selectbox (texto visible) */
+html body .stApp .main .stSelectbox [data-baseweb="select"] > div,
+html body .stApp .main .stSelectbox [data-baseweb="select"] span,
+html body .stApp .main .stSelectbox [data-baseweb="select"] div {
     color: #ffffff !important;
 }
 
@@ -317,7 +334,7 @@ html body .stApp .main .stTextArea * {
     color: #ffffff !important;
 }
 
-/* Chat Input específico - Máxima especificidad */
+/* Chat Input específico - MÁXIMA ESPECIFICIDAD */
 html body .stApp .main .stChatInput,
 html body .stApp .main div.stChatInput,
 html body .stApp .main .stChatInput > div,
@@ -332,11 +349,16 @@ html body .stApp .main [data-testid="stChatInput"] textarea {
     border: 2px solid #64748b !important;
     border-radius: 12px !important;
     color: #ffffff !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
 }
 
+/* Chat Input - TODO el contenido blanco */
 html body .stApp .main .stChatInput *,
-html body .stApp .main [data-testid="stChatInput"] * {
-    background-color: #1e293b !important;
+html body .stApp .main [data-testid="stChatInput"] *,
+html body .stApp .main .stChatInput input *,
+html body .stApp .main .stChatInput textarea * {
+    background-color: transparent !important;
     color: #ffffff !important;
 }
 
@@ -346,6 +368,15 @@ html body .stApp .main [data-testid="stChatInput"] * {
     background: #1e293b !important;
     background-color: #1e293b !important;
     color: #ffffff !important;
+}
+
+/* Chat Input - Placeholder */
+html body .stApp .main .stChatInput input::placeholder,
+html body .stApp .main .stChatInput textarea::placeholder,
+html body .stApp .main [data-testid="stChatInput"] input::placeholder,
+html body .stApp .main [data-testid="stChatInput"] textarea::placeholder {
+    color: #94a3b8 !important;
+    opacity: 0.8 !important;
 }
 
 /* Inputs genéricos - Máxima especificidad */
