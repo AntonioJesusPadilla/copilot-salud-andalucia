@@ -1963,7 +1963,10 @@ def main():
 
         # SCRIPT JAVASCRIPT para forzar estilos correctos en status cards (Cloud)
         if is_cloud:
-            status_card_fix_script = """
+            import streamlit.components.v1 as components
+
+            # Combinar ambos scripts (status cards + inputs) en uno solo
+            components.html("""
             <script>
             (function() {
                 'use strict';
@@ -2021,18 +2024,8 @@ def main():
                     childList: true,
                     subtree: true
                 });
-            })();
-            </script>
-            """
-            st.markdown(status_card_fix_script, unsafe_allow_html=True)
 
-        # SCRIPT JAVASCRIPT para forzar estilos en inputs/selectbox (Cloud)
-        if is_cloud:
-            inputs_fix_script = """
-            <script>
-            (function() {
-                'use strict';
-
+                // ========== FUNCIÓN PARA INPUTS Y SELECTBOX ==========
                 function forceInputStyles() {
                     // Obtener el tema actual
                     const isDark = localStorage.getItem('copilot_theme_mode') === 'dark';
@@ -2066,27 +2059,28 @@ def main():
                     console.log('✅ Input/Selectbox styles forced for Cloud (Dark Mode)');
                 }
 
-                // Ejecutar inmediatamente
+                // Ejecutar ambas funciones inmediatamente
+                forceStatusCardStyles();
                 forceInputStyles();
 
                 // Re-ejecutar después de 100ms, 500ms y 1s
-                setTimeout(forceInputStyles, 100);
-                setTimeout(forceInputStyles, 500);
-                setTimeout(forceInputStyles, 1000);
+                setTimeout(function() { forceStatusCardStyles(); forceInputStyles(); }, 100);
+                setTimeout(function() { forceStatusCardStyles(); forceInputStyles(); }, 500);
+                setTimeout(function() { forceStatusCardStyles(); forceInputStyles(); }, 1000);
 
-                // Observer para detectar cambios en el DOM
-                const observer = new MutationObserver(function(mutations) {
+                // Observer global para ambas funciones
+                const globalObserver = new MutationObserver(function(mutations) {
+                    forceStatusCardStyles();
                     forceInputStyles();
                 });
 
-                observer.observe(document.body, {
+                globalObserver.observe(document.body, {
                     childList: true,
                     subtree: true
                 });
             })();
             </script>
-            """
-            st.markdown(inputs_fix_script, unsafe_allow_html=True)
+            """, height=0)
 
     # Aplicar estilos adicionales según dispositivo
     if css_loaded == "mobile_basic":
