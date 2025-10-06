@@ -1996,10 +1996,17 @@ def check_authentication():
     return st.session_state.authenticated
 
 def logout():
-    """Cerrar sesión"""
-    for key in ['authenticated', 'user', 'auth_token']:
-        if key in st.session_state:
-            del st.session_state[key]
-    # Resetear tema a claro al cerrar sesión
-    st.session_state.theme_mode = 'light'
+    """Cerrar sesión y limpiar completamente el estado"""
+    # Guardar el tema antes de limpiar
+    theme_to_keep = st.session_state.get('theme_mode', 'light')
+
+    # LIMPIAR TODO el session_state para eliminar CSS residual
+    keys_to_delete = list(st.session_state.keys())
+    for key in keys_to_delete:
+        del st.session_state[key]
+
+    # Restaurar solo el tema para la pantalla de login
+    st.session_state.theme_mode = theme_to_keep
+
+    # Forzar recarga completa de la página para limpiar CSS del DOM
     st.rerun()

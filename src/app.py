@@ -1161,124 +1161,8 @@ def load_optimized_css():
 # Limpiar cache automáticamente
 clear_cache_if_needed()
 
-css_loaded = load_optimized_css()
-
-# Cargar CSS extra solo en desktop - CON CACHE
-extra_css = None
-if css_loaded != "mobile_basic":
-    # Detectar si estamos en Cloud (misma lógica que load_optimized_css)
-    is_cloud = any([
-        os.getenv('USER') == 'appuser',
-        os.path.exists('/home/appuser/.streamlit/'),
-        'HOSTNAME' in os.environ and 'streamlit' in os.environ.get('HOSTNAME', '').lower(),
-        os.getenv('STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION') is not None
-    ])
-
-    # Usar versión Cloud si está en Cloud
-    extra_css_file = 'assets/extra_styles_cloud.css' if is_cloud else 'assets/extra_styles.css'
-    extra_css = load_css_file(extra_css_file)
-    if extra_css:
-        # Agregar timestamp para romper caché del navegador
-        extra_css_with_version = f"/* Extra CSS Version: {datetime.now().strftime('%Y%m%d_%H%M%S')} */\n{extra_css}"
-        st.markdown(f"<style>{extra_css_with_version}</style>", unsafe_allow_html=True)
-
-        # Guardar info de extra CSS en debug
-        if 'css_debug_info' in st.session_state:
-            st.session_state['css_debug_info']['extra_css_file'] = extra_css_file
-            st.session_state['css_debug_info']['extra_css_size'] = len(extra_css)
-
-    # CSS crítico inline para tarjeta de sidebar (sin cache)
-    critical_css = """
-    <style>
-    /* CRÍTICO: Texto blanco en tarjeta de sidebar */
-    .sidebar-user-card,
-    .sidebar-user-card *,
-    .sidebar-user-card strong,
-    .sidebar-user-card small,
-    section[data-testid="stSidebar"] .sidebar-user-card *,
-    section[data-testid="stSidebar"] strong,
-    section[data-testid="stSidebar"] small {
-        color: #ffffff !important;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.6) !important;
-    }
-
-    /* CRÍTICO: Expansión del sidebar */
-    section[data-testid="stSidebar"][aria-expanded="false"] ~ section[data-testid="stMain"] .main .block-container {
-        max-width: 100% !important;
-        width: 100% !important;
-        margin-left: 0 !important;
-        padding-left: 3rem !important;
-        padding-right: 3rem !important;
-    }
-    </style>
-    """
-    st.markdown(critical_css, unsafe_allow_html=True)
-
-    # SCRIPT JAVASCRIPT para forzar estilos correctos en status cards (Cloud)
-    if is_cloud:
-        status_card_fix_script = """
-        <script>
-        (function() {
-            'use strict';
-
-            function forceStatusCardStyles() {
-                // Obtener el tema actual
-                const isDark = localStorage.getItem('copilot_theme_mode') === 'dark' ||
-                              !localStorage.getItem('copilot_theme_mode'); // dark por defecto
-
-                if (!isDark) return; // Solo aplicar en modo oscuro
-
-                // Estilos para cada tipo de card
-                const cardStyles = {
-                    'operativo': 'background: linear-gradient(135deg, #065f46 0%, #047857 100%) !important; border: 2px solid #10b981 !important; color: white !important;',
-                    'green': 'background: linear-gradient(135deg, #065f46 0%, #047857 100%) !important; border: 2px solid #10b981 !important; color: white !important;',
-                    'alerta': 'background: linear-gradient(135deg, #92400e 0%, #b45309 100%) !important; border: 2px solid #f59e0b !important; color: white !important;',
-                    'orange': 'background: linear-gradient(135deg, #92400e 0%, #b45309 100%) !important; border: 2px solid #f59e0b !important; color: white !important;',
-                    'warning': 'background: linear-gradient(135deg, #92400e 0%, #b45309 100%) !important; border: 2px solid #f59e0b !important; color: white !important;',
-                    'monitoreo': 'background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important; border: 2px solid #60a5fa !important; color: white !important;',
-                    'blue': 'background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important; border: 2px solid #60a5fa !important; color: white !important;',
-                    'predictivo': 'background: linear-gradient(135deg, #581c87 0%, #7c3aed 100%) !important; border: 2px solid #a855f7 !important; color: white !important;',
-                    'purple': 'background: linear-gradient(135deg, #581c87 0%, #7c3aed 100%) !important; border: 2px solid #a855f7 !important; color: white !important;'
-                };
-
-                // Aplicar estilos a cada tipo de card
-                Object.keys(cardStyles).forEach(function(cardType) {
-                    const cards = document.querySelectorAll(`.status-card-${cardType}, div[class*="status-card-${cardType}"]`);
-                    cards.forEach(function(card) {
-                        card.setAttribute('style', cardStyles[cardType] + ' padding: 2rem; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.3); text-align: center;');
-
-                        // Asegurar texto blanco en todos los elementos hijos
-                        const children = card.querySelectorAll('*');
-                        children.forEach(function(child) {
-                            child.style.color = 'white';
-                        });
-                    });
-                });
-
-                console.log('✅ Status card styles forced for Cloud');
-            }
-
-            // Ejecutar inmediatamente
-            forceStatusCardStyles();
-
-            // Re-ejecutar después de 100ms, 500ms y 1s para capturar renders tardíos
-            setTimeout(forceStatusCardStyles, 100);
-            setTimeout(forceStatusCardStyles, 500);
-            setTimeout(forceStatusCardStyles, 1000);
-
-            // Observer para detectar cambios en el DOM
-            const observer = new MutationObserver(function(mutations) {
-                forceStatusCardStyles();
-            });
-
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
-            });
-        })();
-        </script>
-        """
-        st.markdown(status_card_fix_script, unsafe_allow_html=True)
+# NOTA: CSS se carga DESPUÉS de verificar autenticación (ver main())
+# Esto evita que el CSS de la app principal contamine la pantalla de login
 
 # Cargar detector y correcciones para iOS Safari (compatible con todas las versiones)
 def load_ios_fixes():
@@ -2045,6 +1929,125 @@ def main():
         return
 
     # === A PARTIR DE AQUÍ: USUARIO AUTENTICADO ===
+
+    # CARGAR CSS DE LA APLICACIÓN (Solo para usuarios autenticados)
+    css_loaded = load_optimized_css()
+
+    # Cargar CSS extra solo en desktop
+    if css_loaded != "mobile_basic":
+        # Detectar si estamos en Cloud
+        is_cloud = any([
+            os.getenv('USER') == 'appuser',
+            os.path.exists('/home/appuser/.streamlit/'),
+            'HOSTNAME' in os.environ and 'streamlit' in os.environ.get('HOSTNAME', '').lower(),
+            os.getenv('STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION') is not None
+        ])
+
+        # Usar versión Cloud si está en Cloud
+        extra_css_file = 'assets/extra_styles_cloud.css' if is_cloud else 'assets/extra_styles.css'
+        extra_css = load_css_file(extra_css_file)
+        if extra_css:
+            # Agregar timestamp para romper caché del navegador
+            extra_css_with_version = f"/* Extra CSS Version: {datetime.now().strftime('%Y%m%d_%H%M%S')} */\n{extra_css}"
+            st.markdown(f"<style>{extra_css_with_version}</style>", unsafe_allow_html=True)
+
+            # Guardar info de extra CSS en debug
+            if 'css_debug_info' in st.session_state:
+                st.session_state['css_debug_info']['extra_css_file'] = extra_css_file
+                st.session_state['css_debug_info']['extra_css_size'] = len(extra_css)
+
+        # CSS crítico inline para tarjeta de sidebar
+        critical_css = """
+        <style>
+        /* CRÍTICO: Texto blanco en tarjeta de sidebar */
+        .sidebar-user-card,
+        .sidebar-user-card *,
+        .sidebar-user-card strong,
+        .sidebar-user-card small,
+        section[data-testid="stSidebar"] .sidebar-user-card *,
+        section[data-testid="stSidebar"] strong,
+        section[data-testid="stSidebar"] small {
+            color: #ffffff !important;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6) !important;
+        }
+
+        /* CRÍTICO: Expansión del sidebar */
+        section[data-testid="stSidebar"][aria-expanded="false"] ~ section[data-testid="stMain"] .main .block-container {
+            max-width: 100% !important;
+            width: 100% !important;
+            margin-left: 0 !important;
+            padding-left: 3rem !important;
+            padding-right: 3rem !important;
+        }
+        </style>
+        """
+        st.markdown(critical_css, unsafe_allow_html=True)
+
+        # SCRIPT JAVASCRIPT para forzar estilos correctos en status cards (Cloud)
+        if is_cloud:
+            status_card_fix_script = """
+            <script>
+            (function() {
+                'use strict';
+
+                function forceStatusCardStyles() {
+                    // Obtener el tema actual
+                    const isDark = localStorage.getItem('copilot_theme_mode') === 'dark' ||
+                                  !localStorage.getItem('copilot_theme_mode'); // dark por defecto
+
+                    if (!isDark) return; // Solo aplicar en modo oscuro
+
+                    // Estilos para cada tipo de card
+                    const cardStyles = {
+                        'operativo': 'background: linear-gradient(135deg, #065f46 0%, #047857 100%) !important; border: 2px solid #10b981 !important; color: white !important;',
+                        'green': 'background: linear-gradient(135deg, #065f46 0%, #047857 100%) !important; border: 2px solid #10b981 !important; color: white !important;',
+                        'alerta': 'background: linear-gradient(135deg, #92400e 0%, #b45309 100%) !important; border: 2px solid #f59e0b !important; color: white !important;',
+                        'orange': 'background: linear-gradient(135deg, #92400e 0%, #b45309 100%) !important; border: 2px solid #f59e0b !important; color: white !important;',
+                        'warning': 'background: linear-gradient(135deg, #92400e 0%, #b45309 100%) !important; border: 2px solid #f59e0b !important; color: white !important;',
+                        'monitoreo': 'background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important; border: 2px solid #60a5fa !important; color: white !important;',
+                        'blue': 'background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important; border: 2px solid #60a5fa !important; color: white !important;',
+                        'predictivo': 'background: linear-gradient(135deg, #581c87 0%, #7c3aed 100%) !important; border: 2px solid #a855f7 !important; color: white !important;',
+                        'purple': 'background: linear-gradient(135deg, #581c87 0%, #7c3aed 100%) !important; border: 2px solid #a855f7 !important; color: white !important;'
+                    };
+
+                    // Aplicar estilos a cada tipo de card
+                    Object.keys(cardStyles).forEach(function(cardType) {
+                        const cards = document.querySelectorAll(`.status-card-${cardType}, div[class*="status-card-${cardType}"]`);
+                        cards.forEach(function(card) {
+                            card.setAttribute('style', cardStyles[cardType] + ' padding: 2rem; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.3); text-align: center;');
+
+                            // Asegurar texto blanco en todos los elementos hijos
+                            const children = card.querySelectorAll('*');
+                            children.forEach(function(child) {
+                                child.style.color = 'white';
+                            });
+                        });
+                    });
+
+                    console.log('✅ Status card styles forced for Cloud');
+                }
+
+                // Ejecutar inmediatamente
+                forceStatusCardStyles();
+
+                // Re-ejecutar después de 100ms, 500ms y 1s para capturar renders tardíos
+                setTimeout(forceStatusCardStyles, 100);
+                setTimeout(forceStatusCardStyles, 500);
+                setTimeout(forceStatusCardStyles, 1000);
+
+                // Observer para detectar cambios en el DOM
+                const observer = new MutationObserver(function(mutations) {
+                    forceStatusCardStyles();
+                });
+
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+            })();
+            </script>
+            """
+            st.markdown(status_card_fix_script, unsafe_allow_html=True)
 
     # DEBUG INFO en sidebar (SIEMPRE visible para usuarios autenticados)
     with st.sidebar:
