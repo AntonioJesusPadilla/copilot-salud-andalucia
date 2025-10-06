@@ -2632,17 +2632,31 @@ def render_page_navigation(app):
                     },
                 }
 
+            # Inicializar el tab actual en session_state si no existe
+            if 'current_active_tab' not in st.session_state:
+                st.session_state.current_active_tab = tabs_available[0]
+
+            # Calcular default_index basado en el tab guardado
+            try:
+                default_idx = tabs_available.index(st.session_state.current_active_tab)
+            except (ValueError, AttributeError):
+                default_idx = 0
+                st.session_state.current_active_tab = tabs_available[0]
+
             # Crear menú horizontal (similar a tabs)
             selected_tab = option_menu(
                 menu_title=None,  # Sin título
                 options=tabs_available,
                 icons=["bar-chart-fill", "robot", "file-earmark-text", "geo-alt-fill", "map"],  # Iconos opcionales
                 menu_icon="cast",
-                default_index=0,
+                default_index=default_idx,
                 orientation="horizontal",
                 styles=menu_styles,
                 key="main_navigation_menu"
             )
+
+            # Guardar el tab seleccionado en session_state
+            st.session_state.current_active_tab = selected_tab
 
             # Renderizar solo el contenido del tab seleccionado
             selected_index = tabs_available.index(selected_tab)
