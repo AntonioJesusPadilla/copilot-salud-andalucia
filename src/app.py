@@ -1248,29 +1248,7 @@ def load_ios_fixes():
 # NOTA: Los fixes de iOS se cargan ahora de forma diferida en la aplicación principal
 # para evitar que aparezcan como texto durante el login
 
-# Aplicar estilos adicionales optimizados
-if css_loaded == "mobile_basic":
-    # Estilos básicos para móviles - no cargar fuentes pesadas
-    st.markdown("""
-    <style>
-    /* Usar fuente del sistema en móviles para mejor performance */
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-        font-size: 16px; /* Prevenir zoom en iOS */
-    }
-    </style>
-    """, unsafe_allow_html=True)
-else:
-    # Estilos completos para desktop
-    st.markdown(f"""
-    <style>
-    /* Importar fuentes modernas */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
-
-    /* Estilos adicionales solo si no se cargó el CSS temático */
-    {'' if css_loaded.startswith('theme_') else 'body { font-family: Inter, sans-serif; }'}
-    </style>
-    """, unsafe_allow_html=True)
+# NOTA: Estilos adicionales se cargan DESPUÉS de verificar autenticación en main()
 
 class SecureHealthAnalyticsApp:
     def __init__(self):
@@ -2048,6 +2026,27 @@ def main():
             </script>
             """
             st.markdown(status_card_fix_script, unsafe_allow_html=True)
+
+    # Aplicar estilos adicionales según dispositivo
+    if css_loaded == "mobile_basic":
+        # Estilos básicos para móviles - no cargar fuentes pesadas
+        st.markdown("""
+        <style>
+        /* Usar fuente del sistema en móviles para mejor performance */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            font-size: 16px; /* Prevenir zoom en iOS */
+        }
+        </style>
+        """, unsafe_allow_html=True)
+    else:
+        # Estilos completos para desktop
+        st.markdown("""
+        <style>
+        /* Importar fuentes modernas */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+        </style>
+        """, unsafe_allow_html=True)
 
     # DEBUG INFO en sidebar (SIEMPRE visible para usuarios autenticados)
     with st.sidebar:
