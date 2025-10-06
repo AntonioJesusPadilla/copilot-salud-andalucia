@@ -195,15 +195,17 @@ button[kind="secondary"] {
     color: #ffffff !important;
 }
 
-/* ========== INPUTS - ULTRA ESPECÍFICO PARA CLOUD ========== */
-/* Selectbox - TODOS los niveles */
-.stSelectbox,
-div.stSelectbox,
-[data-testid="stSelectbox"],
-.stSelectbox > div,
-.stSelectbox > div > div,
-.stSelectbox div[data-baseweb="select"],
-div[data-baseweb="select"] {
+/* ========== INPUTS - MÁXIMA ESPECIFICIDAD PARA CLOUD ========== */
+/* HACK: Usar selectores con ID que tienen más peso que inline styles */
+html body .stApp .main .stSelectbox,
+html body .stApp .main div.stSelectbox,
+html body .stApp .main [data-testid="stSelectbox"],
+html body .stApp .main .stSelectbox > div,
+html body .stApp .main .stSelectbox > div > div,
+html body .stApp .main .stSelectbox > div > div > div,
+html body .stApp .main .stSelectbox div[data-baseweb="select"],
+html body .stApp .main div[data-baseweb="select"],
+html body .stApp .main div[data-baseweb="select"] > div {
     background: #1e293b !important;
     background-color: #1e293b !important;
     border-radius: 12px !important;
@@ -211,17 +213,24 @@ div[data-baseweb="select"] {
     color: #ffffff !important;
 }
 
-/* TextInput y TextArea - TODOS los niveles */
-.stTextInput,
-div.stTextInput,
-.stTextArea,
-div.stTextArea,
-.stTextInput > div,
-.stTextInput > div > div,
-.stTextArea > div,
-.stTextArea > div > div,
-.stTextInput input,
-.stTextArea textarea {
+/* Forzar TODO el árbol de selectbox */
+html body .stApp .main .stSelectbox *,
+html body .stApp .main div[data-baseweb="select"] * {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+}
+
+/* TextInput y TextArea - Máxima especificidad */
+html body .stApp .main .stTextInput,
+html body .stApp .main div.stTextInput,
+html body .stApp .main .stTextArea,
+html body .stApp .main div.stTextArea,
+html body .stApp .main .stTextInput > div,
+html body .stApp .main .stTextInput > div > div,
+html body .stApp .main .stTextArea > div,
+html body .stApp .main .stTextArea > div > div,
+html body .stApp .main .stTextInput input,
+html body .stApp .main .stTextArea textarea {
     background: #1e293b !important;
     background-color: #1e293b !important;
     border-radius: 12px !important;
@@ -229,16 +238,22 @@ div.stTextArea,
     color: #ffffff !important;
 }
 
-/* Chat Input específico */
-.stChatInput,
-div.stChatInput,
-.stChatInput > div,
-.stChatInput > div > div,
-.stChatInput input,
-.stChatInput textarea,
-[data-testid="stChatInput"],
-[data-testid="stChatInput"] input,
-[data-testid="stChatInput"] textarea {
+html body .stApp .main .stTextInput *,
+html body .stApp .main .stTextArea * {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+}
+
+/* Chat Input específico - Máxima especificidad */
+html body .stApp .main .stChatInput,
+html body .stApp .main div.stChatInput,
+html body .stApp .main .stChatInput > div,
+html body .stApp .main .stChatInput > div > div,
+html body .stApp .main .stChatInput input,
+html body .stApp .main .stChatInput textarea,
+html body .stApp .main [data-testid="stChatInput"],
+html body .stApp .main [data-testid="stChatInput"] input,
+html body .stApp .main [data-testid="stChatInput"] textarea {
     background: #1e293b !important;
     background-color: #1e293b !important;
     border: 2px solid #64748b !important;
@@ -246,12 +261,18 @@ div.stChatInput,
     color: #ffffff !important;
 }
 
-/* Inputs genéricos - máxima prioridad */
-input[type="text"],
-input[type="password"],
-input[type="email"],
-textarea,
-select {
+html body .stApp .main .stChatInput *,
+html body .stApp .main [data-testid="stChatInput"] * {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+}
+
+/* Inputs genéricos - Máxima especificidad */
+html body .stApp .main input[type="text"],
+html body .stApp .main input[type="password"],
+html body .stApp .main input[type="email"],
+html body .stApp .main textarea,
+html body .stApp .main select {
     background: #1e293b !important;
     background-color: #1e293b !important;
     color: #ffffff !important;
