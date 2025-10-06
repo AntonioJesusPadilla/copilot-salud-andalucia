@@ -399,85 +399,86 @@ def render_login_page():
 
     # RESET CSS MEGA ULTRA AGRESIVO con ID único
     # Este CSS se carga AL FINAL, después de TODO el CSS del tema oscuro
-    st.markdown(f"""
-    <style id="login-reset-{timestamp}">
-    /* ========== RESET BRUTAL LOGIN - ID: {timestamp} ========== */
-    /* CRÍTICO: Estos estilos se aplican SOLO cuando existe .login-container */
-    /* que es la clase del contenedor principal del login */
+    # Usar doble llaves {{}} para escapar llaves en f-string
+    reset_css_content = """<style id="login-reset-TIMESTAMP">
+/* ========== RESET BRUTAL LOGIN - ID: TIMESTAMP ========== */
+/* CRITICO: Estos estilos se aplican SOLO cuando existe .login-container */
 
-    /* Forzar fondo claro cuando existe login-container */
-    .login-container ~ * html body .stApp .main,
-    body:has(.login-container) .stApp .main,
-    body:has(.login-container) .stApp,
-    body:has(.login-container),
-    .login-container,
-    /* Fallback para navegadores sin :has() */
-    html body .stApp .main:has(.login-container),
-    html body .stApp:has(.login-container),
-    html body:has(.login-container) {
-        background: #f8fafc !important;
-        background-color: #f8fafc !important;
-        background-image: none !important;
-        color: #1a202c !important;
-    }
+/* Forzar fondo claro cuando existe login-container */
+.login-container ~ * html body .stApp .main,
+body:has(.login-container) .stApp .main,
+body:has(.login-container) .stApp,
+body:has(.login-container),
+.login-container,
+html body .stApp .main:has(.login-container),
+html body .stApp:has(.login-container),
+html body:has(.login-container) {
+    background: #f8fafc !important;
+    background-color: #f8fafc !important;
+    background-image: none !important;
+    color: #1a202c !important;
+}
 
-    /* INPUTS - MÁXIMA ESPECIFICIDAD (html body + elementos) */
-    html body .stApp .main .stTextInput,
-    html body .stApp .main .stTextInput > div,
-    html body .stApp .main .stTextInput > div > div,
-    html body .stApp .main .stTextInput input,
-    html body .stApp .main .stTextInput *,
-    html body .stApp .main .stPassword input,
-    html body .stApp .main input[type="text"],
-    html body .stApp .main input[type="password"],
-    html body .stApp .main textarea,
-    html body .stApp .main select {
-        background: white !important;
-        background-color: white !important;
-        color: #1a202c !important;
-        border: 1px solid #cbd5e0 !important;
-        box-shadow: none !important;
-    }
+/* INPUTS - MAXIMA ESPECIFICIDAD */
+html body .stApp .main .stTextInput,
+html body .stApp .main .stTextInput > div,
+html body .stApp .main .stTextInput > div > div,
+html body .stApp .main .stTextInput input,
+html body .stApp .main .stTextInput *,
+html body .stApp .main .stPassword input,
+html body .stApp .main input[type="text"],
+html body .stApp .main input[type="password"],
+html body .stApp .main textarea,
+html body .stApp .main select {
+    background: white !important;
+    background-color: white !important;
+    color: #1a202c !important;
+    border: 1px solid #cbd5e0 !important;
+    box-shadow: none !important;
+}
 
-    /* BOTONES - MÁXIMA ESPECIFICIDAD */
-    html body .stApp .main button,
-    html body .stApp .main .stButton button,
-    html body .stApp .main .stButton > button,
-    html body .stApp .main [data-testid="baseButton-secondary"],
-    html body .stApp .main [data-testid="baseButton-primary"] {
-        background: white !important;
-        background-color: white !important;
-        color: #1a202c !important;
-        border: 1px solid #cbd5e0 !important;
-    }
+/* BOTONES - MAXIMA ESPECIFICIDAD */
+html body .stApp .main button,
+html body .stApp .main .stButton button,
+html body .stApp .main .stButton > button,
+html body .stApp .main [data-testid="baseButton-secondary"],
+html body .stApp .main [data-testid="baseButton-primary"] {
+    background: white !important;
+    background-color: white !important;
+    color: #1a202c !important;
+    border: 1px solid #cbd5e0 !important;
+}
 
-    /* TEXTO - MÁXIMA ESPECIFICIDAD */
-    html body .stApp .main,
-    html body .stApp .main *,
-    html body .stApp .main label,
-    html body .stApp .main p,
-    html body .stApp .main span,
-    html body .stApp .main div,
-    html body .stApp .main h1,
-    html body .stApp .main h2,
-    html body .stApp .main h3 {
-        color: #1a202c !important;
-    }
+/* TEXTO - MAXIMA ESPECIFICIDAD */
+html body .stApp .main,
+html body .stApp .main *,
+html body .stApp .main label,
+html body .stApp .main p,
+html body .stApp .main span,
+html body .stApp .main div,
+html body .stApp .main h1,
+html body .stApp .main h2,
+html body .stApp .main h3 {
+    color: #1a202c !important;
+}
 
-    /* PLACEHOLDERS */
-    html body .stApp .main input::placeholder,
-    html body .stApp .main textarea::placeholder {
-        color: #a0aec0 !important;
-        opacity: 1 !important;
-    }
+/* PLACEHOLDERS */
+html body .stApp .main input::placeholder,
+html body .stApp .main textarea::placeholder {
+    color: #a0aec0 !important;
+    opacity: 1 !important;
+}
 
-    /* ELIMINAR BACKGROUND-IMAGE */
-    html body .stApp *,
-    html body .stApp .main * {
-        background-image: none !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+/* ELIMINAR BACKGROUND-IMAGE */
+html body .stApp *,
+html body .stApp .main * {
+    background-image: none !important;
+}
+</style>"""
+
+    # Reemplazar timestamp
+    reset_css_content = reset_css_content.replace("TIMESTAMP", timestamp)
+    st.markdown(reset_css_content, unsafe_allow_html=True)
 
     # Aplicar CSS específico del login
     st.markdown("""
