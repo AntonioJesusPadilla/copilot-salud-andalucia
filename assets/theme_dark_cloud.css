@@ -379,6 +379,26 @@ html body .stApp .main [data-testid="stChatInput"] textarea::placeholder {
     opacity: 0.8 !important;
 }
 
+/* CRÍTICO: Forzar visibilidad en TODOS los inputs del chat */
+[data-testid="stChatInput"],
+[data-testid="stChatInput"] > div,
+[data-testid="stChatInput"] input,
+[data-testid="stChatInput"] textarea,
+.stChatInput,
+.stChatInput > div,
+.stChatInput input,
+.stChatInput textarea {
+    background: #475569 !important;
+    background-color: #475569 !important;
+    color: #ffffff !important;
+}
+
+/* Asegurar que el texto dentro sea visible */
+[data-testid="stChatInput"] *:not(button),
+.stChatInput *:not(button) {
+    color: #ffffff !important;
+}
+
 /* Inputs genéricos - Máxima especificidad */
 html body .stApp .main input[type="text"],
 html body .stApp .main input[type="password"],

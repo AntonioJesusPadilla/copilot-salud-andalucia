@@ -627,28 +627,28 @@ html body .stApp .main * {
 
         [data-theme="dark"] .login-header,
         body[data-theme="dark"] .login-header {
-            background: linear-gradient(135deg, #334155 0%, #1e293b 100%) !important;
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%) !important;
             color: #f9fafb !important;
         }
 
         [data-theme="dark"] .login-header h1,
         body[data-theme="dark"] .login-header h1 {
-            color: #f9fafb !important;
+            color: #ffffff !important;
         }
 
         [data-theme="dark"] .login-header h3,
         body[data-theme="dark"] .login-header h3 {
-            color: #d1d5db !important;
+            color: #e2e8f0 !important;
         }
 
         [data-theme="dark"] .login-header p,
         body[data-theme="dark"] .login-header p {
-            color: #9ca3af !important;
+            color: #cbd5e1 !important;
         }
 
         [data-theme="dark"] .login-form-container,
         body[data-theme="dark"] .login-form-container {
-            background: #1e293b !important;
+            background: #475569 !important;
         }
 
         [data-theme="dark"] .demo-credentials,
