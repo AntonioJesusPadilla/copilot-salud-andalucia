@@ -922,17 +922,24 @@ try:
 except:
     pass
 
-# Cache para CSS - SOLUCIÓN AL ERROR "Too many open files"
-@st.cache_data  # HABILITADO DE NUEVO
+# Cache para CSS - Con TTL para permitir actualizaciones en Cloud
+@st.cache_data(ttl=60)  # Cache por 60 segundos - permite recargas en Cloud
 def load_css_file(file_path):
-    """Cargar archivo CSS con cache para evitar múltiples aperturas"""
+    """Cargar archivo CSS con cache temporal para permitir actualizaciones"""
     try:
         # Usar ruta absoluta basada en project_root para compatibilidad con Streamlit Cloud
         if not os.path.isabs(file_path):
             file_path = os.path.join(project_root, file_path)
 
+        # Leer el archivo
         with open(file_path, 'r', encoding='utf-8') as f:
-            return f.read()
+            content = f.read()
+
+        # Obtener timestamp de modificación del archivo para cache-busting
+        file_mtime = os.path.getmtime(file_path)
+        print(f"📄 CSS cargado: {file_path} (mtime: {file_mtime})")
+
+        return content
     except Exception as e:
         print(f"⚠️ Error cargando CSS {file_path}: {e}")
         return None
@@ -1025,8 +1032,16 @@ def load_optimized_css():
         theme_css = load_css_file(theme_file)
         if theme_css:
             print(f"✅ CSS cargado exitosamente: {len(theme_css)} caracteres")
-            # Agregar comentario con timestamp para romper caché del navegador
-            css_with_version = f"/* CSS Version: {datetime.now().strftime('%Y%m%d_%H%M%S')} */\n{theme_css}"
+
+            # Agregar hash del contenido para cache-busting agresivo
+            import hashlib
+            css_hash = hashlib.md5(theme_css.encode()).hexdigest()[:8]
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+
+            # Comentario con timestamp Y hash para romper caché del navegador
+            css_with_version = f"/* CSS Version: {timestamp} | Hash: {css_hash} */\n{theme_css}"
+
+            print(f"🎨 CSS aplicado - Tema: {st.session_state.theme_mode} | Hash: {css_hash}")
             st.markdown(f"<style>{css_with_version}</style>", unsafe_allow_html=True)
             return f"theme_{st.session_state.theme_mode}_{'cloud' if is_cloud else 'local'}"
         else:
@@ -2048,38 +2063,14 @@ def main():
     # === OPCIÓN 1: Botones en Sidebar (Implementación Simple) ===
     # Los botones se agregarán en render_secure_sidebar() más abajo
 
-    # === APLICAR data-theme INMEDIATAMENTE CON HTML COMPONENT ===
+    # === NOTA: components.html() DESHABILITADO ===
+    # Causa errores MutationObserver irresolubles en Cloud
+    # Reemplazado con CSS puro que se carga condicionalmente
+
     current_theme = st.session_state.get('theme_mode', 'light')
 
-    # DESHABILITADO: components.html causa errores de MutationObserver en Cloud
-    # y se ejecuta en momentos incorrectos (ej: después de logout)
-    # Solución: Usar solo CSS puro que se carga condicionalmente
-
-    # import streamlit.components.v1 as components
-    # components.html(f"""
-    if False:  # DISABLED - Bloque completo deshabilitado
-        pass
-    """
-    <script>
-    (function() {{
-        'use strict';
-
-        // CRÍTICO: Validar que parent.document existe antes de CUALQUIER operación
-        if (!parent || !parent.document || !parent.document.body) {{
-            console.warn('⚠️ Parent document no disponible, aborting...');
-            return; // NO reintentar, simplemente abortar
-        }}
-
-        const doc = parent.document;
-
-        // CRÍTICO: Detectar si estamos en página de login y abortar
-        const isLoginPage = doc.querySelector('.login-container') !== null;
-        if (isLoginPage) {{
-            console.log('🔓 Login page detected, skipping theme script');
-            return;
-        }}
-
-        const theme = '{current_theme}';
+    # TODO el manejo de tema se hace vía CSS puro cargado en load_optimized_css()
+    # No se usa JavaScript para evitar problemas con iframes en Cloud
 
         // Variable global para estado del sidebar (fuera de la función)
         if (!window.sidebarLastState) {{
