@@ -264,6 +264,35 @@ li[role="option"]:hover {
     color: #ffffff !important;
 }
 
+/* ========== SELECTBOX INPUT CERRADO ========== */
+/* Input del selectbox cuando está cerrado */
+.stSelectbox input[role="combobox"],
+[data-testid="stSelectbox"] input[role="combobox"],
+input[role="combobox"][aria-label*="Selecciona"],
+.st-ba input[role="combobox"] {
+    background: #1e293b !important;
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+    border: 2px solid #64748b !important;
+}
+
+/* Contenedor del input del selectbox */
+.st-ba.st-d2.st-d4,
+div[class*="st-ba"][class*="st-d2"],
+.stSelectbox > div,
+.stSelectbox > div > div {
+    background: #1e293b !important;
+    background-color: #1e293b !important;
+}
+
+/* Texto seleccionado en el input */
+div[value*="Mapa"],
+div[class*="st-en"],
+.st-en {
+    background: transparent !important;
+    color: #ffffff !important;
+}
+
 /* TextInput y TextArea - Máxima especificidad */
 html body .stApp .main .stTextInput,
 html body .stApp .main div.stTextInput,
