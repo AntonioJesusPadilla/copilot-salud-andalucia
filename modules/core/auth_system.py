@@ -1234,9 +1234,9 @@ html body .stApp .main * {
     # CSS FINAL SUPER AGRESIVO para modo oscuro
     if 'theme_mode' in st.session_state and st.session_state.theme_mode == 'dark':
         final_timestamp = datetime.now().strftime("%H%M%S%f")
-        st.markdown(f"""
+        dark_mode_css = """
         <style>
-        /* ULTRA AGGRESSIVE DARK MODE ONLY - {final_timestamp} */
+        /* ULTRA AGGRESSIVE DARK MODE ONLY - TIMESTAMP */
 
         /* APLICAR SOLO CUANDO data-theme="dark" */
         [data-theme="dark"] button,
@@ -1312,15 +1312,17 @@ html body .stApp .main * {
             color: #ffffff !important;
         }}
         </style>
-        """, unsafe_allow_html=True)
+        """
+        dark_mode_css = dark_mode_css.replace("TIMESTAMP", final_timestamp)
+        st.markdown(dark_mode_css, unsafe_allow_html=True)
 
     # CSS para asegurar modo claro correcto
     else:
         # Asegurar que en modo claro el texto sea negro
         light_timestamp = datetime.now().strftime("%H%M%S%f")
-        st.markdown(f"""
+        light_mode_css = """
         <style>
-        /* FORCE LIGHT MODE COLORS - {light_timestamp} */
+        /* FORCE LIGHT MODE COLORS - TIMESTAMP */
 
         /* ASEGURAR TEXTO NEGRO EN MODO CLARO */
         [data-theme="light"] *,
@@ -1531,7 +1533,9 @@ html body .stApp .main * {
             color: #cbd5e1 !important;
         }}
         </style>
-        """, unsafe_allow_html=True)
+        """
+        light_mode_css = light_mode_css.replace("TIMESTAMP", light_timestamp)
+        st.markdown(light_mode_css, unsafe_allow_html=True)
 
     # Centrar la página de login
     col1, col2, col3 = st.columns([1, 2, 1])
