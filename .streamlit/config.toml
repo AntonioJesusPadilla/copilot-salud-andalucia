@@ -27,3 +27,9 @@ level = "error"
 fastReruns = true
 enforceSerializableSessionState = false
 magicEnabled = false
+
+[ui]
+# Forzar wide mode por defecto (optimizado para desktop)
+wideMode = true
+hideTopBar = false
+hideSidebarNav = false

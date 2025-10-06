@@ -688,37 +688,20 @@ if os.path.exists(favicon_path):
 else:
     page_icon = "⚕️"  # Símbolo médico más visible
 
-# Detectar si es un dispositivo móvil para optimizar configuración
+# Configuración de página - SIEMPRE WIDE MODE (optimizado para desktop)
+# La aplicación está diseñada principalmente para pantallas de ordenador
 try:
-    # Usar user agent para detectar móviles si está disponible
-    is_mobile = False
-    if hasattr(st, 'context') and hasattr(st.context, 'user_agent'):
-        user_agent = st.context.user_agent or ""
-        is_mobile = any(mobile in user_agent.lower() for mobile in ['mobile', 'android', 'iphone', 'ipad'])
-
-    # OVERRIDE: Streamlit Cloud siempre como desktop
-    try:
-        host = str(st.context.headers.get('host', '')) if hasattr(st, 'context') and hasattr(st.context, 'headers') else ''
-        if 'streamlit.app' in host:
-            is_mobile = False
-    except:
-        pass
-
-    # Configuración optimizada para móviles
-    if is_mobile:
-        st.set_page_config(
-            page_title="Copilot Salud Andalucía",
-            page_icon="⚕️",  # Usar emoji simple en móviles
-            layout="centered",  # Layout más estrecho para móviles
-            initial_sidebar_state="collapsed"  # Sidebar cerrado por defecto
-        )
-    else:
-        st.set_page_config(
-            page_title="Copilot Salud Andalucía",
-            page_icon=page_icon,
-            layout="wide",
-            initial_sidebar_state="expanded"
-        )
+    st.set_page_config(
+        page_title="Copilot Salud Andalucía - Sistema de Análisis Sociosanitario",
+        page_icon=page_icon,
+        layout="wide",  # SIEMPRE wide mode para aprovechar pantalla completa
+        initial_sidebar_state="expanded",  # Sidebar expandido por defecto
+        menu_items={
+            'Get Help': None,
+            'Report a bug': None,
+            'About': '# Copilot Salud Andalucía v2.1\nSistema de Análisis Sociosanitario de Málaga'
+        }
+    )
 except Exception:
     # Fallback a configuración básica si hay algún error
     st.set_page_config(
