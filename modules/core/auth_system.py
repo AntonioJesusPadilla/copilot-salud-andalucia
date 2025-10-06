@@ -395,35 +395,66 @@ def render_login_page():
     from datetime import datetime
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
 
-    # PRIMERO: Reset CSS de la app para evitar contaminación tras logout
+    # PRIMERO: Reset CSS ULTRA AGRESIVO para eliminar TODOS los estilos de la app
     st.markdown("""
     <style>
-    /* ========== RESET CSS APP - FORZAR ESTILOS LIMPIOS LOGIN ========== */
-    /* Sobrescribir TODOS los estilos de la app principal */
-    .stApp, .main, [data-testid="stAppViewContainer"], body, html {
+    /* ========== RESET ABSOLUTO - MÁXIMA PRIORIDAD ========== */
+    /* Forzar fondo claro en TODA la página */
+    html, body, #root, .stApp, .main,
+    [data-testid="stAppViewContainer"],
+    [data-testid="stApp"],
+    section[data-testid="stMain"],
+    .block-container {
         background: #f8fafc !important;
+        background-color: #f8fafc !important;
         background-image: none !important;
         color: #1a202c !important;
     }
 
-    /* Resetear todos los elementos para login */
-    .main *, .stApp *, div:not(.login-container):not(.login-header):not(.login-form-container) {
-        color: inherit !important;
+    /* Eliminar TODOS los gradientes oscuros */
+    * {
+        background-image: none !important;
+    }
+
+    /* Resetear absolutamente TODO */
+    .main *, .stApp *, .block-container *,
+    section *, div *, span *, p *, h1 *, h2 *, h3 *, h4 *, h5 * {
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+
+    /* Texto oscuro por defecto */
+    .main, .stApp, .block-container,
+    .main *, .stApp *, .block-container * {
+        color: #1a202c !important;
+    }
+
+    /* Limpiar labels */
+    label, .stTextInput label, .stPassword label {
+        color: #2d3748 !important;
         background: transparent !important;
     }
 
-    /* Limpiar estilos de botones */
-    button:not(.login-btn):not([key="login_theme_btn"]) {
+    /* Limpiar botones - fondo blanco */
+    button, .stButton button, [data-testid="baseButton-secondary"] {
         background: white !important;
+        background-color: white !important;
         color: #1a202c !important;
         border: 1px solid #cbd5e0 !important;
     }
 
-    /* Limpiar inputs */
-    input, textarea, select {
+    /* Limpiar inputs - fondo blanco */
+    input, textarea, select,
+    .stTextInput input, .stPassword input {
         background: white !important;
+        background-color: white !important;
         color: #1a202c !important;
         border: 1px solid #cbd5e0 !important;
+    }
+
+    /* Asegurar que NO hay overlays oscuros */
+    .stApp::before, .main::before, body::before {
+        display: none !important;
     }
     </style>
     """, unsafe_allow_html=True)
