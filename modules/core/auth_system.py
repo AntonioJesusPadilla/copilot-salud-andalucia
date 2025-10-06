@@ -369,17 +369,18 @@ def render_login_page():
         # Limpiar la flag
         del st.session_state['force_reload_after_logout']
 
-        # Inyectar JavaScript para forzar recarga COMPLETA del navegador
-        import streamlit.components.v1 as components
-        components.html("""
+        # Inyectar JavaScript directamente en el DOM (sin iframe sandbox)
+        st.markdown("""
         <script>
         (function() {
             console.log('🔄 Forzando recarga completa tras logout...');
-            // Usar replace en lugar de reload para no mantener historial
-            window.parent.location.replace(window.parent.location.href);
+            // Forzar recarga completa desde el contexto principal
+            setTimeout(function() {
+                window.location.reload(true); // true = forzar desde servidor, no caché
+            }, 100);
         })();
         </script>
-        """, height=0)
+        """, unsafe_allow_html=True)
 
         # Detener ejecución aquí, el navegador recargará
         st.stop()
