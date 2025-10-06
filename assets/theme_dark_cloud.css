@@ -220,6 +220,50 @@ html body .stApp .main div[data-baseweb="select"] * {
     color: #ffffff !important;
 }
 
+/* ========== EMOTION CSS - Selectbox Dropdown (CRÍTICO) ========== */
+/* Apuntar a las clases específicas de Emotion que genera Streamlit */
+[data-testid="stSelectboxVirtualDropdown"],
+ul[data-testid="stSelectboxVirtualDropdown"],
+[data-testid="stSelectboxVirtualDropdown"] li,
+[data-testid="stSelectboxVirtualDropdown"] [role="option"] {
+    background: #1e293b !important;
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+}
+
+/* Opciones del selectbox - Emotion classes */
+li[role="option"],
+li[class*="st-emotion-cache"],
+li[class*="eg1z3xh0"] {
+    background: #1e293b !important;
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+}
+
+/* Texto dentro de opciones - Emotion */
+li[role="option"] div,
+[class*="etx0m6x0"],
+[class*="etx0m6x1"],
+.st-emotion-cache-11loom0,
+.st-emotion-cache-qiev7j {
+    background: transparent !important;
+    color: #ffffff !important;
+}
+
+/* Opción seleccionada (aria-selected="true") */
+li[role="option"][aria-selected="true"] {
+    background: #2563eb !important;
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+}
+
+/* Hover en opciones */
+li[role="option"]:hover {
+    background: #334155 !important;
+    background-color: #334155 !important;
+    color: #ffffff !important;
+}
+
 /* TextInput y TextArea - Máxima especificidad */
 html body .stApp .main .stTextInput,
 html body .stApp .main div.stTextInput,
@@ -263,6 +307,14 @@ html body .stApp .main [data-testid="stChatInput"] textarea {
 
 html body .stApp .main .stChatInput *,
 html body .stApp .main [data-testid="stChatInput"] * {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+}
+
+/* Chat Input - Emotion CSS */
+[data-testid="stChatInput"] [class*="st-emotion-cache"],
+.stChatInput [class*="st-emotion-cache"] {
+    background: #1e293b !important;
     background-color: #1e293b !important;
     color: #ffffff !important;
 }
