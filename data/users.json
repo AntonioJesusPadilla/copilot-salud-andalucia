@@ -6,7 +6,7 @@
     "role": "admin",
     "organization": "Consejería de Salud",
     "created_date": "2025-09-03T13:13:02.989810",
-    "last_login": "2025-10-06T10:13:28.229826",
+    "last_login": "2025-10-06T11:17:43.059672",
     "active": true
   },
   "gestor.malaga": {
@@ -16,7 +16,7 @@
     "role": "gestor",
     "organization": "SAS Málaga",
     "created_date": "2025-09-03T13:13:03.253460",
-    "last_login": "2025-10-02T10:35:36.277435",
+    "last_login": "2025-10-06T10:52:04.762159",
     "active": true
   },
   "analista.datos": {

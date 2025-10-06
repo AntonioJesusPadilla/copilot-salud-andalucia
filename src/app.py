@@ -903,7 +903,7 @@ section[data-testid="stMain"],
 # Inicializar tema con persistencia en localStorage
 if 'theme_mode' not in st.session_state:
     # Intentar leer tema guardado desde localStorage (inyectado via JavaScript)
-    st.session_state.theme_mode = 'dark'  # DARK por defecto para mejor UX
+    st.session_state.theme_mode = 'light'  # CLARO por defecto
 
     # Inyectar script para leer/escribir tema en localStorage
     st.markdown("""
@@ -1970,8 +1970,7 @@ def main():
 
                 function forceStatusCardStyles() {
                     // Obtener el tema actual
-                    const isDark = localStorage.getItem('copilot_theme_mode') === 'dark' ||
-                                  !localStorage.getItem('copilot_theme_mode'); // dark por defecto
+                    const isDark = localStorage.getItem('copilot_theme_mode') === 'dark';
 
                     if (!isDark) return; // Solo aplicar en modo oscuro
 
