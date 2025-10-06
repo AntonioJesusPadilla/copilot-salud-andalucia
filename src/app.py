@@ -1038,7 +1038,9 @@ def load_optimized_css():
         theme_css = load_css_file(theme_file)
         if theme_css:
             print(f"✅ CSS cargado exitosamente: {len(theme_css)} caracteres")
-            st.markdown(f"<style>{theme_css}</style>", unsafe_allow_html=True)
+            # Agregar comentario con timestamp para romper caché del navegador
+            css_with_version = f"/* CSS Version: {datetime.now().strftime('%Y%m%d_%H%M%S')} */\n{theme_css}"
+            st.markdown(f"<style>{css_with_version}</style>", unsafe_allow_html=True)
             return f"theme_{st.session_state.theme_mode}_{'cloud' if is_cloud else 'local'}"
         else:
             # Fallback inmediato si no se puede cargar el tema
@@ -1176,7 +1178,9 @@ if css_loaded != "mobile_basic":
     extra_css_file = 'assets/extra_styles_cloud.css' if is_cloud else 'assets/extra_styles.css'
     extra_css = load_css_file(extra_css_file)
     if extra_css:
-        st.markdown(f"<style>{extra_css}</style>", unsafe_allow_html=True)
+        # Agregar timestamp para romper caché del navegador
+        extra_css_with_version = f"/* Extra CSS Version: {datetime.now().strftime('%Y%m%d_%H%M%S')} */\n{extra_css}"
+        st.markdown(f"<style>{extra_css_with_version}</style>", unsafe_allow_html=True)
 
         # Guardar info de extra CSS en debug
         if 'css_debug_info' in st.session_state:
