@@ -1895,6 +1895,19 @@ def main():
 
     # === A PARTIR DE AQUÍ: USUARIO AUTENTICADO ===
 
+    # Marcar el body como "authenticated" para que el CSS de tema se aplique
+    st.markdown("""
+    <script>
+    (function() {
+        document.body.setAttribute('data-authenticated', 'true');
+        document.body.setAttribute('data-page', 'app');
+        document.documentElement.setAttribute('data-authenticated', 'true');
+        document.documentElement.setAttribute('data-page', 'app');
+        console.log('🔐 Usuario AUTENTICADO - Body marcado');
+    })();
+    </script>
+    """, unsafe_allow_html=True)
+
     # CARGAR CSS DE LA APLICACIÓN (Solo para usuarios autenticados)
     css_loaded = load_optimized_css()
 

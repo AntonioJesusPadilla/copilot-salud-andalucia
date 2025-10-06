@@ -3,7 +3,8 @@
     "allow": [
       "Bash(streamlit --version)",
       "WebFetch(domain:copilot-salud-andalucia.streamlit.app)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nFix CRÍTICO: Igualar especificidad CSS del tema oscuro en login\n\n- Usar selectores: html body .stApp .main (igual que theme_dark_cloud.css)\n- Sobrescribir inputs con máxima especificidad\n- Sobrescribir botones, selectboxes y texto\n- Eliminar selectores genéricos con baja especificidad\n\nEl tema oscuro usa \"html body .stApp .main .stTextInput input\" con\nespecificidad muy alta. Necesitábamos igualar exactamente esa\nespecificidad para que nuestro CSS de reset funcione.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []

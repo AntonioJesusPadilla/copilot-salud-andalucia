@@ -395,99 +395,111 @@ def render_login_page():
     from datetime import datetime
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
 
+    # Marcar el body como "login" para que el CSS sepa que estamos en pantalla de login
+    st.markdown("""
+    <script>
+    (function() {
+        document.body.setAttribute('data-page', 'login');
+        document.body.removeAttribute('data-authenticated');
+        document.documentElement.setAttribute('data-page', 'login');
+        console.log('🔓 Página de LOGIN marcada en body');
+    })();
+    </script>
+    """, unsafe_allow_html=True)
+
     # PRIMERO: Reset CSS con MÁXIMA ESPECIFICIDAD para sobrescribir tema oscuro
     # Los selectores del tema oscuro usan: html body .stApp .main
     # Necesitamos igualar o superar esa especificidad
+    # CRÍTICO: Usar body[data-page="login"] para especificidad ULTRA ALTA
     st.markdown("""
     <style>
-    /* ========== RESET ABSOLUTO - MÁXIMA ESPECIFICIDAD ========== */
+    /* ========== RESET ABSOLUTO LOGIN - MÁXIMA ESPECIFICIDAD ========== */
 
-    /* Forzar fondo claro - Especificidad: html body .stApp .main */
-    html body .stApp .main,
-    html body .stApp,
-    html body,
-    html[data-theme="dark"] body .stApp .main,
-    html[data-theme="dark"] body .stApp,
-    html[data-theme="dark"] body {
+    /* Forzar fondo claro en LOGIN - ULTRA ESPECÍFICO */
+    html[data-page="login"] body[data-page="login"] .stApp .main,
+    html[data-page="login"] body[data-page="login"] .stApp,
+    html[data-page="login"] body[data-page="login"],
+    body[data-page="login"] .stApp .main,
+    body[data-page="login"] .stApp,
+    body[data-page="login"] {
         background: #f8fafc !important;
         background-color: #f8fafc !important;
         background-image: none !important;
         color: #1a202c !important;
     }
 
-    /* Resetear inputs de texto - MÁXIMA ESPECIFICIDAD */
-    html body .stApp .main .stTextInput,
-    html body .stApp .main div.stTextInput,
-    html body .stApp .main .stTextInput > div,
-    html body .stApp .main .stTextInput > div > div,
-    html body .stApp .main .stTextInput input,
-    html body .stApp .main .stTextInput *,
-    html body .stApp .main input[type="text"],
-    html body .stApp .main input[type="password"],
-    html body .stApp .main .stPassword input,
-    html body .stApp .main textarea,
-    html body .stApp .main select {
+    /* Resetear inputs de texto - MÁXIMA ESPECIFICIDAD con data-page LOGIN */
+    body[data-page="login"] .stTextInput,
+    body[data-page="login"] .stTextInput > div,
+    body[data-page="login"] .stTextInput > div > div,
+    body[data-page="login"] .stTextInput input,
+    body[data-page="login"] .stTextInput *,
+    body[data-page="login"] input[type="text"],
+    body[data-page="login"] input[type="password"],
+    body[data-page="login"] .stPassword input,
+    body[data-page="login"] textarea,
+    body[data-page="login"] select {
         background: white !important;
         background-color: white !important;
         color: #1a202c !important;
         border: 1px solid #cbd5e0 !important;
     }
 
-    /* Selectboxes */
-    html body .stApp .main .stSelectbox,
-    html body .stApp .main .stSelectbox > div > div > div,
-    html body .stApp .main .stSelectbox div[data-baseweb="select"],
-    html body .stApp .main div[data-baseweb="select"],
-    html body .stApp .main div[data-baseweb="select"] > div,
-    html body .stApp .main .stSelectbox *,
-    html body .stApp .main div[data-baseweb="select"] * {
+    /* Selectboxes en LOGIN */
+    body[data-page="login"] .stSelectbox,
+    body[data-page="login"] .stSelectbox > div > div > div,
+    body[data-page="login"] .stSelectbox div[data-baseweb="select"],
+    body[data-page="login"] div[data-baseweb="select"],
+    body[data-page="login"] div[data-baseweb="select"] > div,
+    body[data-page="login"] .stSelectbox *,
+    body[data-page="login"] div[data-baseweb="select"] * {
         background: white !important;
         background-color: white !important;
         color: #1a202c !important;
     }
 
-    /* Botones */
-    html body .stApp .main button,
-    html body .stApp .main .stButton button,
-    html body .stApp .main [data-testid="baseButton-secondary"],
-    html body .stApp .main [data-testid="baseButton-primary"] {
+    /* Botones en LOGIN */
+    body[data-page="login"] button,
+    body[data-page="login"] .stButton button,
+    body[data-page="login"] [data-testid="baseButton-secondary"],
+    body[data-page="login"] [data-testid="baseButton-primary"] {
         background: white !important;
         background-color: white !important;
         color: #1a202c !important;
         border: 1px solid #cbd5e0 !important;
     }
 
-    /* Texto y labels */
-    html body .stApp .main *,
-    html body .stApp .main label,
-    html body .stApp .main p,
-    html body .stApp .main span,
-    html body .stApp .main div,
-    html body .stApp .main h1,
-    html body .stApp .main h2,
-    html body .stApp .main h3,
-    html body .stApp .main .stMarkdown,
-    html body .stApp .main .stText {
+    /* Texto y labels en LOGIN */
+    body[data-page="login"] *,
+    body[data-page="login"] label,
+    body[data-page="login"] p,
+    body[data-page="login"] span,
+    body[data-page="login"] div,
+    body[data-page="login"] h1,
+    body[data-page="login"] h2,
+    body[data-page="login"] h3,
+    body[data-page="login"] .stMarkdown,
+    body[data-page="login"] .stText {
         color: #1a202c !important;
     }
 
-    /* Placeholders */
-    html body .stApp .main input::placeholder,
-    html body .stApp .main textarea::placeholder {
+    /* Placeholders en LOGIN */
+    body[data-page="login"] input::placeholder,
+    body[data-page="login"] textarea::placeholder {
         color: #a0aec0 !important;
         opacity: 1 !important;
     }
 
-    /* Eliminar overlays */
-    html body .stApp::before,
-    html body .stApp .main::before {
+    /* Eliminar overlays en LOGIN */
+    body[data-page="login"] .stApp::before,
+    body[data-page="login"] .stApp .main::before {
         display: none !important;
         content: none !important;
     }
 
-    /* Eliminar todos los background-image */
-    html body .stApp .main *,
-    html body .stApp * {
+    /* Eliminar todos los background-image en LOGIN */
+    body[data-page="login"] .stApp .main *,
+    body[data-page="login"] .stApp * {
         background-image: none !important;
     }
     </style>
