@@ -28,8 +28,5 @@ fastReruns = true
 enforceSerializableSessionState = false
 magicEnabled = false
 
-[ui]
-# Forzar wide mode por defecto (optimizado para desktop)
-wideMode = true
-hideTopBar = false
-hideSidebarNav = false
+# NOTA: ui.wideMode y ui.hideSidebarNav fueron removidos en Streamlit 1.30+
+# Ahora se usa st.set_page_config(layout="wide") en el código (ver app.py línea ~45)
