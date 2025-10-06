@@ -399,6 +399,15 @@ def render_login_page():
     st.markdown("""
     <style>
     /* ========== RESET ABSOLUTO - MÁXIMA PRIORIDAD ========== */
+    /* FORZAR tema light - remover data-theme dark */
+    html[data-theme="dark"],
+    body[data-theme="dark"],
+    .stApp[data-theme="dark"] {
+        background: #f8fafc !important;
+        background-color: #f8fafc !important;
+        color: #1a202c !important;
+    }
+
     /* Forzar fondo claro en TODA la página */
     html, body, #root, .stApp, .main,
     [data-testid="stAppViewContainer"],
@@ -423,38 +432,78 @@ def render_login_page():
         background-color: transparent !important;
     }
 
-    /* Texto oscuro por defecto */
+    /* Texto oscuro por defecto en TODO */
     .main, .stApp, .block-container,
-    .main *, .stApp *, .block-container * {
+    .main *, .stApp *, .block-container *,
+    h1, h2, h3, h4, h5, h6, p, span, div, label {
         color: #1a202c !important;
     }
 
-    /* Limpiar labels */
-    label, .stTextInput label, .stPassword label {
+    /* Limpiar labels - ULTRA ESPECÍFICO */
+    label,
+    .stTextInput label,
+    .stPassword label,
+    [data-testid="stWidgetLabel"],
+    .stTextInput > label,
+    .stPassword > label {
         color: #2d3748 !important;
         background: transparent !important;
     }
 
-    /* Limpiar botones - fondo blanco */
-    button, .stButton button, [data-testid="baseButton-secondary"] {
+    /* Limpiar botones - ULTRA ESPECÍFICO */
+    button,
+    .stButton button,
+    .stButton > button,
+    [data-testid="baseButton-secondary"],
+    [data-testid="baseButton-primary"],
+    button[kind="secondary"],
+    button[kind="primary"] {
         background: white !important;
         background-color: white !important;
         color: #1a202c !important;
         border: 1px solid #cbd5e0 !important;
     }
 
-    /* Limpiar inputs - fondo blanco */
-    input, textarea, select,
-    .stTextInput input, .stPassword input {
+    /* Limpiar inputs - ULTRA ESPECÍFICO con selectores Emotion CSS */
+    input,
+    textarea,
+    select,
+    .stTextInput input,
+    .stPassword input,
+    .stTextInput > div > div > input,
+    .stPassword > div > div > input,
+    div[data-baseweb="input"] input,
+    div[data-baseweb="base-input"] input,
+    [class*="st-emotion-cache"] input,
+    input[type="text"],
+    input[type="password"] {
         background: white !important;
         background-color: white !important;
         color: #1a202c !important;
         border: 1px solid #cbd5e0 !important;
+        box-shadow: none !important;
+    }
+
+    /* Forzar placeholders oscuros */
+    input::placeholder,
+    textarea::placeholder {
+        color: #a0aec0 !important;
+        opacity: 1 !important;
     }
 
     /* Asegurar que NO hay overlays oscuros */
-    .stApp::before, .main::before, body::before {
+    .stApp::before,
+    .main::before,
+    body::before,
+    html::before {
         display: none !important;
+        content: none !important;
+    }
+
+    /* Eliminar cualquier background-image residual */
+    html, body, .stApp, .main, .block-container,
+    html *, body *, .stApp *, .main *, .block-container * {
+        background-image: none !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -2076,31 +2125,13 @@ def logout():
     for key in keys_to_delete:
         del st.session_state[key]
 
-    # FORZAR tema LIGHT al hacer logout y limpiar localStorage
+    # FORZAR tema LIGHT SIEMPRE al hacer logout
     st.session_state.theme_mode = 'light'
+    st.session_state.authenticated = False
+    st.session_state.user = None
 
-    # Inyectar JavaScript para limpiar localStorage y forzar tema light
-    st.markdown("""
-    <script>
-    (function() {
-        // Limpiar localStorage
-        localStorage.removeItem('copilot_theme_mode');
-        localStorage.setItem('copilot_theme_mode', 'light');
-
-        // Forzar tema light en el DOM inmediatamente
-        document.documentElement.setAttribute('data-theme', 'light');
-        document.body.setAttribute('data-theme', 'light');
-
-        // Recargar página completamente para resetear todo el CSS
-        setTimeout(function() {
-            window.location.reload(true);
-        }, 100);
-    })();
-    </script>
-    """, unsafe_allow_html=True)
-
-    # Marcar que se hizo logout
+    # Marcar que se hizo logout para aplicar reset CSS
     st.session_state['force_reload_after_logout'] = True
 
-    # Forzar rerun
+    # Forzar rerun para aplicar CSS de reset
     st.rerun()
