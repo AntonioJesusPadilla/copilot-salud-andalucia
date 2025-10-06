@@ -2034,14 +2034,20 @@ def main():
 
         // CRÍTICO: Validar que parent.document existe antes de CUALQUIER operación
         if (!parent || !parent.document || !parent.document.body) {{
-            console.warn('⚠️ Parent document no disponible, esperando...');
-            // Reintentar cuando el parent esté listo
-            setTimeout(arguments.callee, 100);
+            console.warn('⚠️ Parent document no disponible, aborting...');
+            return; // NO reintentar, simplemente abortar
+        }}
+
+        const doc = parent.document;
+
+        // CRÍTICO: Detectar si estamos en página de login y abortar
+        const isLoginPage = doc.querySelector('.login-container') !== null;
+        if (isLoginPage) {{
+            console.log('🔓 Login page detected, skipping theme script');
             return;
         }}
 
         const theme = '{current_theme}';
-        const doc = parent.document;
 
         // Variable global para estado del sidebar (fuera de la función)
         if (!window.sidebarLastState) {{
