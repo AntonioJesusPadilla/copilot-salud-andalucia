@@ -1908,8 +1908,34 @@ def main():
     </script>
     """, unsafe_allow_html=True)
 
+    # FORZAR LAYOUT WIDE CON CSS (set_page_config no siempre funciona en Cloud)
+    st.markdown("""
+    <style>
+    /* FORZAR WIDE MODE */
+    .main .block-container {
+        max-width: 100% !important;
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+    }
+    section[data-testid="stMain"] {
+        max-width: 100% !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     # CARGAR CSS DE LA APLICACIÓN (Solo para usuarios autenticados)
     css_loaded = load_optimized_css()
+
+    # CSS GUARDIÁN: Asegurar que SIEMPRE se puede resetear en login
+    # Este CSS se carga DESPUÉS del tema y tiene timestamp único
+    guardian_css_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')
+    st.markdown(f"""
+    <style id="guardian-reset-{guardian_css_timestamp}">
+    /* CSS GUARDIÁN - Se carga DESPUÉS del tema para permitir reset en login */
+    /* Este CSS NO hace nada cuando estás autenticado */
+    /* Pero en login, render_login_page() puede sobrescribirlo fácilmente */
+    </style>
+    """, unsafe_allow_html=True)
 
     # Cargar CSS extra solo en desktop
     if css_loaded != "mobile_basic":
@@ -2025,9 +2051,15 @@ def main():
     # === APLICAR data-theme INMEDIATAMENTE CON HTML COMPONENT ===
     current_theme = st.session_state.get('theme_mode', 'light')
 
-    # Usar components.html para ejecutar JavaScript de forma más confiable
-    import streamlit.components.v1 as components
-    components.html(f"""
+    # DESHABILITADO: components.html causa errores de MutationObserver en Cloud
+    # y se ejecuta en momentos incorrectos (ej: después de logout)
+    # Solución: Usar solo CSS puro que se carga condicionalmente
+
+    # import streamlit.components.v1 as components
+    # components.html(f"""
+    if False:  # DISABLED - Bloque completo deshabilitado
+        pass
+    """
     <script>
     (function() {{
         'use strict';
@@ -2375,7 +2407,7 @@ def main():
         // setTimeout(handleSidebarResize, 500);
     }})();
     </script>
-    """, height=0)
+    # """, height=0)  # DISABLED
 
     # === CSS EMBEBIDO CRÍTICO PARA STREAMLIT CLOUD ===
     # Aplicar inmediatamente para garantizar visibilidad
