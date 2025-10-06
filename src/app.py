@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit_option_menu import option_menu
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -2583,81 +2584,69 @@ def render_page_navigation(app):
         if len(tabs_available) == 1:
             tab_functions[0]()
         elif len(tabs_available) > 1:
-            # Inicializar tab seleccionado si no existe
-            if 'active_tab_index' not in st.session_state:
-                st.session_state.active_tab_index = 0
+            # Usar option_menu para navegación persistente con aspecto elegante
+            # Detectar tema actual para estilos
+            current_theme = st.session_state.get('theme_mode', 'light')
 
-            # Usar radio horizontal para simular tabs (más visual que selectbox)
-            selected_tab_name = st.radio(
-                "Navegación:",
-                tabs_available,
-                index=st.session_state.active_tab_index,
-                key="tab_selector",
-                horizontal=True,
-                label_visibility="collapsed"
+            # Estilos según tema
+            if current_theme == 'dark':
+                menu_styles = {
+                    "container": {"padding": "0!important", "background-color": "#475569"},
+                    "icon": {"color": "#cbd5e1", "font-size": "18px"},
+                    "nav-link": {
+                        "font-size": "16px",
+                        "text-align": "center",
+                        "margin": "0px",
+                        "padding": "12px 16px",
+                        "color": "#cbd5e1",
+                        "background-color": "#475569",
+                        "border-radius": "8px 8px 0 0",
+                        "border-bottom": "3px solid transparent",
+                    },
+                    "nav-link-selected": {
+                        "background-color": "#3b82f6",
+                        "color": "white",
+                        "border-bottom": "3px solid #3b82f6",
+                        "font-weight": "600",
+                    },
+                }
+            else:
+                menu_styles = {
+                    "container": {"padding": "0!important", "background-color": "#f8f9fa"},
+                    "icon": {"color": "#495057", "font-size": "18px"},
+                    "nav-link": {
+                        "font-size": "16px",
+                        "text-align": "center",
+                        "margin": "0px",
+                        "padding": "12px 16px",
+                        "color": "#495057",
+                        "background-color": "#f8f9fa",
+                        "border-radius": "8px 8px 0 0",
+                        "border-bottom": "3px solid transparent",
+                    },
+                    "nav-link-selected": {
+                        "background-color": "#3b82f6",
+                        "color": "white",
+                        "border-bottom": "3px solid #3b82f6",
+                        "font-weight": "600",
+                    },
+                }
+
+            # Crear menú horizontal (similar a tabs)
+            selected_tab = option_menu(
+                menu_title=None,  # Sin título
+                options=tabs_available,
+                icons=["bar-chart-fill", "robot", "file-earmark-text", "geo-alt-fill", "map"],  # Iconos opcionales
+                menu_icon="cast",
+                default_index=0,
+                orientation="horizontal",
+                styles=menu_styles,
+                key="main_navigation_menu"
             )
 
-            # Actualizar índice del tab activo
-            st.session_state.active_tab_index = tabs_available.index(selected_tab_name)
-
-            # CSS para hacer que los radio buttons se vean como tabs
-            current_theme = st.session_state.get('theme_mode', 'light')
-            if current_theme == 'dark':
-                tab_bg = '#475569'
-                tab_active_bg = '#3b82f6'
-                tab_text = '#ffffff'
-                border_color = '#64748b'
-            else:
-                tab_bg = '#f3f4f6'
-                tab_active_bg = '#3b82f6'
-                tab_text = '#1f2937'
-                border_color = '#d1d5db'
-
-            st.markdown(f"""
-            <style>
-            /* Estilo de tabs para radio buttons horizontales */
-            div[data-testid="stHorizontalBlock"] label {{
-                background: {tab_bg} !important;
-                padding: 0.75rem 1.5rem !important;
-                border-radius: 8px 8px 0 0 !important;
-                border: 2px solid {border_color} !important;
-                border-bottom: none !important;
-                margin-right: 4px !important;
-                cursor: pointer !important;
-                transition: all 0.2s ease !important;
-                font-weight: 500 !important;
-            }}
-
-            /* Tab activo */
-            div[data-testid="stHorizontalBlock"] label:has(input:checked) {{
-                background: {tab_active_bg} !important;
-                color: white !important;
-                border-color: {tab_active_bg} !important;
-            }}
-
-            /* Hover effect */
-            div[data-testid="stHorizontalBlock"] label:hover {{
-                background: {tab_active_bg} !important;
-                color: white !important;
-                opacity: 0.9 !important;
-            }}
-
-            /* Ocultar radio circle */
-            div[data-testid="stHorizontalBlock"] input[type="radio"] {{
-                display: none !important;
-            }}
-
-            /* Separador debajo de tabs */
-            div[data-testid="stHorizontalBlock"] {{
-                border-bottom: 2px solid {border_color} !important;
-                padding-bottom: 0 !important;
-                margin-bottom: 1rem !important;
-            }}
-            </style>
-            """, unsafe_allow_html=True)
-
             # Renderizar solo el contenido del tab seleccionado
-            tab_functions[st.session_state.active_tab_index]()
+            selected_index = tabs_available.index(selected_tab)
+            tab_functions[selected_index]()
         else:
             if app.user['role'] == 'invitado':
                 st.info("ℹ️ **Usuario Invitado**: Solo tienes acceso al Dashboard básico. Para más funcionalidades, contacta al administrador.")
