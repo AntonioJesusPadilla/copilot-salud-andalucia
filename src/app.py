@@ -2107,7 +2107,7 @@ def main():
         st.session_state.theme_mode = 'light'
 
     # CSS para reducir padding superior y mejorar visibilidad de iconos sidebar
-    st.markdown("""
+    collapse_icon_css = """
     <style>
     /* Reducir padding superior del contenedor principal */
     .main .block-container {
@@ -2120,37 +2120,56 @@ def main():
         margin-top: 0 !important;
     }
 
-    /* Mejorar visibilidad de iconos collapse/expand sidebar en modo oscuro */
-    button[kind="header"],
-    button[kind="headerNoPadding"],
-    [data-testid="baseButton-header"],
-    [data-testid="baseButton-headerNoPadding"],
+    /* Icono << dentro del sidebar (para colapsar) - modo oscuro */
+    [data-testid="stSidebar"] button[kind="header"],
+    [data-testid="stSidebar"] button[kind="headerNoPadding"],
     [data-testid="collapsedControl"] {
-        color: #ffffff !important;
-        background-color: rgba(255, 255, 255, 0.1) !important;
-        border-radius: 4px !important;
-        padding: 4px !important;
+        background-color: rgba(255, 255, 255, 0.15) !important;
+        border-radius: 6px !important;
+        transition: all 0.2s ease !important;
     }
 
-    button[kind="header"]:hover,
-    button[kind="headerNoPadding"]:hover,
-    [data-testid="baseButton-header"]:hover,
-    [data-testid="baseButton-headerNoPadding"]:hover,
+    [data-testid="stSidebar"] button[kind="header"]:hover,
+    [data-testid="stSidebar"] button[kind="headerNoPadding"]:hover,
     [data-testid="collapsedControl"]:hover {
-        background-color: rgba(255, 255, 255, 0.2) !important;
-        color: #ffffff !important;
+        background-color: rgba(255, 255, 255, 0.25) !important;
     }
 
-    button[kind="header"] svg,
-    button[kind="headerNoPadding"] svg,
-    [data-testid="baseButton-header"] svg,
-    [data-testid="baseButton-headerNoPadding"] svg,
+    [data-testid="stSidebar"] button[kind="header"] svg,
+    [data-testid="stSidebar"] button[kind="headerNoPadding"] svg,
     [data-testid="collapsedControl"] svg {
         fill: #ffffff !important;
-        stroke: #ffffff !important;
+        color: #ffffff !important;
+    }
+
+    /* Icono >> en la barra superior blanca (para expandir) - modo oscuro */
+    .stApp > header button[kind="header"],
+    .stApp > header button[kind="headerNoPadding"],
+    section[data-testid="stHeader"] button[kind="header"],
+    section[data-testid="stHeader"] button[kind="headerNoPadding"] {
+        background-color: rgba(0, 0, 0, 0.1) !important;
+        border-radius: 6px !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .stApp > header button[kind="header"]:hover,
+    .stApp > header button[kind="headerNoPadding"]:hover,
+    section[data-testid="stHeader"] button[kind="header"]:hover,
+    section[data-testid="stHeader"] button[kind="headerNoPadding"]:hover {
+        background-color: rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .stApp > header button[kind="header"] svg,
+    .stApp > header button[kind="headerNoPadding"] svg,
+    section[data-testid="stHeader"] button[kind="header"] svg,
+    section[data-testid="stHeader"] button[kind="headerNoPadding"] svg {
+        fill: #0f172a !important;
+        color: #0f172a !important;
     }
     </style>
-    """, unsafe_allow_html=True)
+    """
+
+    st.markdown(collapse_icon_css, unsafe_allow_html=True)
 
     # === OPCIÓN 1: Botones en Sidebar (Implementación Simple) ===
     # Los botones se agregarán en render_secure_sidebar() más abajo
