@@ -8,6 +8,10 @@ enableCORS = true
 enableXsrfProtection = false
 baseUrlPath = ""
 runOnSave = false
+maxUploadSize = 200
+maxMessageSize = 200
+enableWebsocketCompression = true
+fileWatcherType = "none"
 
 [browser]
 gatherUsageStats = false
