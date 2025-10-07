@@ -172,3 +172,8 @@ data/cache/
 logs/
 *.log
 session_states/
+
+# Assets temporales y duplicados
+assets/remove/
+assets/temp/
+assets/*.backup
