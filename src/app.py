@@ -2665,28 +2665,34 @@ def render_page_navigation(app):
         # Página principal con tabs dinámicos
         tabs_available = []
         tab_functions = []
-        
+        tab_icons = []
+
         # Dashboard siempre disponible para usuarios con ver_datos
         if app.has_permission('ver_datos'):
-            tabs_available.append("📊 Dashboard")
+            tabs_available.append("Dashboard")
             tab_functions.append(lambda: render_secure_dashboard(app))
-        
+            tab_icons.append("bar-chart-fill")
+
         if app.has_permission('analisis_ia'):
-            tabs_available.append("🤖 Chat IA")
+            tabs_available.append("Chat IA")
             tab_functions.append(lambda: render_secure_chat(app))
-        
+            tab_icons.append("robot")
+
         if app.has_permission('reportes'):
-            tabs_available.append("📋 Reportes")
+            tabs_available.append("Reportes")
             tab_functions.append(lambda: render_secure_reportes(app))
-        
+            tab_icons.append("file-earmark-text")
+
         if app.has_permission('planificacion'):
-            tabs_available.append("📍 Planificación")
+            tabs_available.append("Planificación")
             tab_functions.append(lambda: render_secure_planificacion(app))
-        
+            tab_icons.append("geo-alt-fill")
+
         # Tab de mapas épicos disponible para usuarios con permisos de ver_datos o superior
         if app.has_permission('ver_datos') and MAPS_AVAILABLE:
-            tabs_available.append("🗺️ Mapas Épicos")
+            tabs_available.append("Mapas Épicos")
             tab_functions.append(lambda: render_epic_maps_tab(app))
+            tab_icons.append("map")
         
         # Si solo tiene un tab, mostrarlo directamente
         if len(tabs_available) == 1:
@@ -2755,7 +2761,7 @@ def render_page_navigation(app):
             selected_tab = option_menu(
                 menu_title=None,  # Sin título
                 options=tabs_available,
-                icons=["bar-chart-fill", "robot", "file-earmark-text", "geo-alt-fill", "map"],  # Iconos opcionales
+                icons=tab_icons,  # Iconos dinámicos según permisos
                 menu_icon="cast",
                 default_index=default_idx,
                 orientation="horizontal",
