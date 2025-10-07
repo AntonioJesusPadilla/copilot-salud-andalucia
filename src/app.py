@@ -2106,7 +2106,7 @@ def main():
     if 'theme_mode' not in st.session_state:
         st.session_state.theme_mode = 'light'
 
-    # CSS para reducir padding superior
+    # CSS para reducir padding superior y mejorar visibilidad de iconos sidebar
     st.markdown("""
     <style>
     /* Reducir padding superior del contenedor principal */
@@ -2118,6 +2118,36 @@ def main():
     .main .block-container > div:first-child {
         padding-top: 0 !important;
         margin-top: 0 !important;
+    }
+
+    /* Mejorar visibilidad de iconos collapse/expand sidebar en modo oscuro */
+    button[kind="header"],
+    button[kind="headerNoPadding"],
+    [data-testid="baseButton-header"],
+    [data-testid="baseButton-headerNoPadding"],
+    [data-testid="collapsedControl"] {
+        color: #ffffff !important;
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        border-radius: 4px !important;
+        padding: 4px !important;
+    }
+
+    button[kind="header"]:hover,
+    button[kind="headerNoPadding"]:hover,
+    [data-testid="baseButton-header"]:hover,
+    [data-testid="baseButton-headerNoPadding"]:hover,
+    [data-testid="collapsedControl"]:hover {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        color: #ffffff !important;
+    }
+
+    button[kind="header"] svg,
+    button[kind="headerNoPadding"] svg,
+    [data-testid="baseButton-header"] svg,
+    [data-testid="baseButton-headerNoPadding"] svg,
+    [data-testid="collapsedControl"] svg {
+        fill: #ffffff !important;
+        stroke: #ffffff !important;
     }
     </style>
     """, unsafe_allow_html=True)
