@@ -2089,18 +2089,18 @@ def main():
         </style>
         """, unsafe_allow_html=True)
 
-    # DEBUG INFO en sidebar (SIEMPRE visible para usuarios autenticados)
-    with st.sidebar:
-        if 'css_debug_info' in st.session_state:
-            with st.expander("🔧 Info Debug CSS", expanded=False):
-                info = st.session_state['css_debug_info']
-                st.write(f"**Tema:** `{info.get('tema', 'N/A')}`")
-                st.write(f"**Cloud detectado:** `{info.get('is_cloud', 'N/A')}`")
-                st.write(f"**Archivo tema:** `{info.get('theme_file', 'N/A')}`")
-                st.write(f"**Archivo extra:** `{info.get('extra_css_file', 'N/A')}`")
-                st.write(f"**USER env:** `{info.get('user_env', 'N/A')}`")
-                st.write(f"**HOSTNAME:** `{info.get('hostname_env', 'N/A')}`")
-                st.write(f"**Path /home/appuser:** `{info.get('appuser_path_exists', 'N/A')}`")
+    # DEBUG INFO deshabilitado (descomentar solo para debugging)
+    # with st.sidebar:
+    #     if 'css_debug_info' in st.session_state:
+    #         with st.expander("🔧 Info Debug CSS", expanded=False):
+    #             info = st.session_state['css_debug_info']
+    #             st.write(f"**Tema:** `{info.get('tema', 'N/A')}`")
+    #             st.write(f"**Cloud detectado:** `{info.get('is_cloud', 'N/A')}`")
+    #             st.write(f"**Archivo tema:** `{info.get('theme_file', 'N/A')}`")
+    #             st.write(f"**Archivo extra:** `{info.get('extra_css_file', 'N/A')}`")
+    #             st.write(f"**USER env:** `{info.get('user_env', 'N/A')}`")
+    #             st.write(f"**HOSTNAME:** `{info.get('hostname_env', 'N/A')}`")
+    #             st.write(f"**Path /home/appuser:** `{info.get('appuser_path_exists', 'N/A')}`")
 
     # Inicializar tema
     if 'theme_mode' not in st.session_state:
