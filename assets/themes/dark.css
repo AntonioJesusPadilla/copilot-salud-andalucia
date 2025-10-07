@@ -2233,3 +2233,61 @@ button[kind="primary"]:hover:not(.stFormSubmitButton button) {
     transform: translateY(-1px) !important;
     box-shadow: 0 4px 12px rgba(74, 222, 128, 0.2) !important;
 }
+
+/* ========== ICONOS COLLAPSE/EXPAND SIDEBAR ========== */
+/* Icono << dentro del sidebar (para colapsar) */
+[data-testid="stSidebar"] button[kind="header"],
+[data-testid="stSidebar"] button[kind="headerNoPadding"],
+[data-testid="collapsedControl"] button {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+    padding: 6px 8px !important;
+}
+
+[data-testid="stSidebar"] button[kind="header"]:hover,
+[data-testid="stSidebar"] button[kind="headerNoPadding"]:hover,
+[data-testid="collapsedControl"] button:hover {
+    background-color: rgba(255, 255, 255, 0.3) !important;
+    transform: scale(1.1) !important;
+}
+
+[data-testid="stSidebar"] button[kind="header"] svg,
+[data-testid="stSidebar"] button[kind="headerNoPadding"] svg,
+[data-testid="collapsedControl"] button svg,
+[data-testid="stSidebar"] svg {
+    fill: #ffffff !important;
+    color: #ffffff !important;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3)) !important;
+}
+
+/* Icono >> en la barra superior (para expandir cuando sidebar está colapsado) */
+.stApp > header button[kind="header"],
+.stApp > header button[kind="headerNoPadding"],
+section[data-testid="stHeader"] button[kind="header"],
+section[data-testid="stHeader"] button[kind="headerNoPadding"],
+[data-testid="collapsedControl"] {
+    background-color: rgba(15, 23, 42, 0.15) !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+    padding: 6px 8px !important;
+}
+
+.stApp > header button[kind="header"]:hover,
+.stApp > header button[kind="headerNoPadding"]:hover,
+section[data-testid="stHeader"] button[kind="header"]:hover,
+section[data-testid="stHeader"] button[kind="headerNoPadding"]:hover,
+[data-testid="collapsedControl"]:hover {
+    background-color: rgba(15, 23, 42, 0.25) !important;
+    transform: scale(1.1) !important;
+}
+
+.stApp > header button[kind="header"] svg,
+.stApp > header button[kind="headerNoPadding"] svg,
+section[data-testid="stHeader"] button[kind="header"] svg,
+section[data-testid="stHeader"] button[kind="headerNoPadding"] svg,
+[data-testid="collapsedControl"] svg {
+    fill: #0f172a !important;
+    color: #0f172a !important;
+    filter: drop-shadow(0 1px 2px rgba(255,255,255,0.3)) !important;
+}
