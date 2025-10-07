@@ -90,21 +90,20 @@ if IS_MOBILE:
 else:
     print("💻 Dispositivo desktop detectado - carga completa de módulos")
     # En desktop, importar todo desde el inicio
-    from streamlit_option_menu import option_menu
     import pandas as pd
     import numpy as np
     import plotly.express as px
     import plotly.graph_objects as go
     import plotly.io as pio
     from io import StringIO
-    from dotenv import load_dotenv
     from modules.ai.streamlit_async_wrapper import get_streamlit_async_wrapper
 
     # CONFIGURACIÓN GLOBAL DE PLOTLY: Deshabilitar hover por defecto
     pio.templates.default = "plotly"
 
-# Imports comunes (ligeros)
+# Imports comunes (ligeros) - necesarios para todos los dispositivos
 import re
+from streamlit_option_menu import option_menu
 
 # Cargar variables de entorno
 try:
