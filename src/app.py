@@ -25,24 +25,32 @@ def is_mobile_device():
     Detecta si el usuario está usando un dispositivo móvil
     basándose en el user agent del navegador
     """
+    # Método 1: Intentar obtener user agent
     try:
-        # Intentar obtener el user agent desde los query params o headers
         import streamlit.web.server.websocket_headers as wsh
         headers = wsh.get_websocket_headers()
         user_agent = headers.get("User-Agent", "").lower()
-    except:
-        # Fallback: asumir desktop si no podemos detectar
+
+        # Patrones comunes de dispositivos móviles
+        mobile_patterns = [
+            'iphone', 'ipad', 'ipod',  # iOS
+            'android',                  # Android
+            'mobile', 'phone',          # Genéricos
+            'blackberry', 'windows phone', 'webos'  # Otros
+        ]
+
+        if any(pattern in user_agent for pattern in mobile_patterns):
+            print(f"📱 Dispositivo móvil detectado: {user_agent[:50]}")
+            return True
+        else:
+            print(f"💻 Dispositivo desktop detectado: {user_agent[:50]}")
+            return False
+    except Exception as e:
+        print(f"⚠️ No se pudo detectar user agent: {e}")
+        # FALLBACK: Asumir desktop si no podemos detectar
+        # (Es mejor cargar de más que fallar)
+        print("💻 Fallback: asumiendo dispositivo desktop")
         return False
-
-    # Patrones comunes de dispositivos móviles
-    mobile_patterns = [
-        'iphone', 'ipad', 'ipod',  # iOS
-        'android',                  # Android
-        'mobile', 'phone',          # Genéricos
-        'blackberry', 'windows phone', 'webos'  # Otros
-    ]
-
-    return any(pattern in user_agent for pattern in mobile_patterns)
 
 # Detectar tipo de dispositivo
 IS_MOBILE = is_mobile_device()
@@ -103,7 +111,7 @@ else:
 
 # Imports comunes (ligeros) - necesarios para todos los dispositivos
 import re
-from streamlit_option_menu import option_menu
+# NOTA: option_menu se importa lazy después del login para evitar errores de registro
 
 # Cargar variables de entorno
 try:
@@ -123,7 +131,51 @@ except ImportError as e:
     print(f"❌ Error importando sistema de autenticación: {str(e)}")
     AUTH_AVAILABLE = False
 
-# Importar módulos IA (diferido en móvil)
+# ===== LAZY LOADING DE MÓDULOS PESADOS =====
+# Cache para módulos cargados dinámicamente
+_lazy_modules_cache = {}
+
+def lazy_import_data_modules():
+    """Lazy loading de pandas, numpy y plotly - solo cuando se necesiten"""
+    if 'data_modules' not in _lazy_modules_cache:
+        print("📦 Cargando módulos de datos (pandas, numpy, plotly)...")
+        import pandas as pd
+        import numpy as np
+        import plotly.express as px
+        import plotly.graph_objects as go
+        import plotly.io as pio
+        from io import StringIO
+
+        # Configuración de plotly
+        pio.templates.default = "plotly"
+
+        _lazy_modules_cache['data_modules'] = {
+            'pd': pd, 'np': np, 'px': px, 'go': go, 'pio': pio, 'StringIO': StringIO
+        }
+        print("✅ Módulos de datos cargados")
+    return _lazy_modules_cache['data_modules']
+
+def lazy_import_ai_modules():
+    """Lazy loading de módulos de IA - solo cuando se necesiten"""
+    if 'ai_modules' not in _lazy_modules_cache:
+        print("🤖 Cargando módulos de IA...")
+        try:
+            from modules.ai.ai_processor import HealthAnalyticsAI, HealthMetricsCalculator
+            from modules.visualization.chart_generator import SmartChartGenerator, DataAnalyzer
+            _lazy_modules_cache['ai_modules'] = {
+                'HealthAnalyticsAI': HealthAnalyticsAI,
+                'HealthMetricsCalculator': HealthMetricsCalculator,
+                'SmartChartGenerator': SmartChartGenerator,
+                'DataAnalyzer': DataAnalyzer
+            }
+            print("✅ Módulos de IA cargados")
+            return _lazy_modules_cache['ai_modules']
+        except ImportError as e:
+            print(f"❌ Error importando módulos IA: {str(e)}")
+            return None
+    return _lazy_modules_cache['ai_modules']
+
+# Importar módulos IA solo si NO es móvil (para desktop sí cargar al inicio)
 if not IS_MOBILE:
     try:
         from modules.ai.ai_processor import HealthAnalyticsAI, HealthMetricsCalculator
@@ -133,7 +185,7 @@ if not IS_MOBILE:
         print(f"❌ Error importando módulos IA: {str(e)}")
         AI_AVAILABLE = False
 else:
-    # En móvil, marcar como disponible pero no importar aún
+    # En móvil, marcar como disponible pero NO importar aún (usar lazy loading)
     AI_AVAILABLE = True
 
 # Importar módulos de mapas (opcional para Streamlit Cloud y diferido en móvil)
@@ -981,9 +1033,10 @@ try:
 except:
     pass
 
-# Cache para CSS - Con TTL para permitir actualizaciones en Cloud
+# Cache para CSS - OPTIMIZADO para móviles
+@st.cache_data(ttl=7200, show_spinner=False)  # Cache por 2 horas
 def load_css_file(file_path):
-    """Cargar archivo CSS SIN CACHE para garantizar actualizaciones inmediatas"""
+    """Cargar archivo CSS CON CACHE para mejor rendimiento en móviles"""
     try:
         # Usar ruta absoluta basada en project_root para compatibilidad con Streamlit Cloud
         if not os.path.isabs(file_path):
@@ -1028,33 +1081,31 @@ def clear_cache_if_needed():
 def load_optimized_css():
     """Cargar CSS optimizado según el dispositivo con cache"""
     try:
-        # Detectar si es móvil de forma básica
-        is_mobile = False
-        try:
-            # Intentar usar user agent si está disponible
-            if hasattr(st, 'context') and hasattr(st.context, 'user_agent'):
-                user_agent = str(st.context.user_agent or "").lower()
-                is_mobile = any(mobile in user_agent for mobile in ['mobile', 'android', 'iphone', 'ipad'])
-        except:
-            pass
+        # Detectar si es móvil usando la variable global IS_MOBILE
+        is_mobile = IS_MOBILE
 
-        # CSS básico para móviles (más liviano)
+        # CSS básico y MINIFICADO para móviles (más liviano y optimizado)
         if is_mobile:
             mobile_css = """
             <style>
-            /* CSS Básico para Móviles */
-            .main .block-container { padding: 1rem; max-width: 100%; }
-            .stSidebar { background: #f8f9fa; }
-            .stSelectbox label { font-size: 14px; }
-            .stButton button { width: 100%; margin-bottom: 0.5rem; }
-            .metric-card { margin-bottom: 1rem; padding: 1rem; }
-            .stProgress .st-bo { height: 4px; }
-            /* Optimizar plotly para móviles */
-            .js-plotly-plot { width: 100% !important; }
-            .plotly { width: 100% !important; }
+            /* CSS Minificado para Móviles - Optimizado para carga rápida */
+            .main .block-container{padding:1rem;max-width:100%}
+            .stSidebar{background:#f8f9fa}
+            .stSelectbox label{font-size:14px}
+            .stButton button{width:100%;margin-bottom:0.5rem;padding:0.5rem}
+            .metric-card{margin-bottom:1rem;padding:1rem}
+            .stProgress .st-bo{height:4px}
+            .js-plotly-plot,.plotly{width:100%!important}
+            /* Optimizaciones adicionales para rendimiento */
+            *{-webkit-tap-highlight-color:transparent}
+            img{max-width:100%;height:auto}
+            .stSpinner>div{border-width:2px}
+            /* Reducir animaciones para mejor rendimiento */
+            *{animation-duration:0.2s!important;transition-duration:0.2s!important}
             </style>
             """
             st.markdown(mobile_css, unsafe_allow_html=True)
+            print("📱 CSS móvil minificado aplicado")
             return "mobile_basic"
 
         # CSS completo para desktop - CON CACHE
@@ -1971,6 +2022,12 @@ def main():
 
     # === A PARTIR DE AQUÍ: USUARIO AUTENTICADO ===
 
+    # Mostrar indicador de carga para dispositivos móviles
+    if IS_MOBILE:
+        with st.spinner('⚡ Cargando aplicación...'):
+            import time
+            time.sleep(0.1)  # Breve pausa para que se vea el spinner
+
     # Marcar el body como "authenticated" para que el CSS de tema se aplique
     st.markdown("""
     <script>
@@ -2697,6 +2754,14 @@ def render_page_navigation(app):
         if len(tabs_available) == 1:
             tab_functions[0]()
         elif len(tabs_available) > 1:
+            # LAZY IMPORT: Importar option_menu solo cuando se necesita (después del login)
+            try:
+                from streamlit_option_menu import option_menu
+            except ImportError as e:
+                st.error(f"❌ No se pudo cargar el menú de navegación: {e}")
+                st.info("💡 Instala: pip install streamlit-option-menu")
+                return
+
             # Usar option_menu para navegación persistente con aspecto elegante
             # Detectar tema actual para estilos
             current_theme = st.session_state.get('theme_mode', 'light')
