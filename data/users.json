@@ -6,7 +6,7 @@
     "role": "admin",
     "organization": "Consejería de Salud",
     "created_date": "2025-09-03T13:13:02.989810",
-    "last_login": "2025-10-09T11:17:39.184369",
+    "last_login": "2025-10-09T17:30:19.666312",
     "active": true
   },
   "gestor.malaga": {
@@ -16,7 +16,7 @@
     "role": "gestor",
     "organization": "SAS Málaga",
     "created_date": "2025-09-03T13:13:03.253460",
-    "last_login": "2025-10-06T10:52:04.762159",
+    "last_login": "2025-10-09T17:28:47.238754",
     "active": true
   },
   "analista.datos": {
@@ -26,7 +26,7 @@
     "role": "analista",
     "organization": "IECA - Instituto de Estadística",
     "created_date": "2025-09-03T13:13:03.516964",
-    "last_login": "2025-10-09T10:01:55.632399",
+    "last_login": "2025-10-09T17:27:21.225255",
     "active": true
   },
   "demo": {
@@ -36,7 +36,7 @@
     "role": "invitado",
     "organization": "Demostración",
     "created_date": "2025-09-03T13:13:03.780244",
-    "last_login": "2025-10-09T10:42:42.172903",
+    "last_login": "2025-10-09T17:29:47.044201",
     "active": true
   }
 }

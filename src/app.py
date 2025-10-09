@@ -13,9 +13,10 @@ for path in [project_root, src_dir]:
     if path not in sys.path:
         sys.path.insert(0, path)
 
-print(f"Project root: {project_root}")
-print(f"Source dir: {src_dir}")
-print(f"Python path: {sys.path}")
+# Debug info comentado para evitar errores en Windows
+# print(f"Project root: {project_root}")
+# print(f"Source dir: {src_dir}")
+# print(f"Python path: {sys.path}")
 
 # ===== CONFIGURACIÓN DE PÁGINA - DEBE SER LO PRIMERO =====
 # CRÍTICO: set_page_config DEBE ir antes de cualquier comando st.*
@@ -40,16 +41,16 @@ def is_mobile_device():
         ]
 
         if any(pattern in user_agent for pattern in mobile_patterns):
-            print(f"📱 Dispositivo móvil detectado: {user_agent[:50]}")
+            # print(f"📱 Dispositivo móvil detectado: {user_agent[:50]}")
             return True
         else:
-            print(f"💻 Dispositivo desktop detectado: {user_agent[:50]}")
+            # print(f"💻 Dispositivo desktop detectado: {user_agent[:50]}")
             return False
     except Exception as e:
-        print(f"⚠️ No se pudo detectar user agent: {e}")
+        # print(f"⚠️ No se pudo detectar user agent: {e}")
         # FALLBACK: Asumir desktop si no podemos detectar
         # (Es mejor cargar de más que fallar)
-        print("💻 Fallback: asumiendo dispositivo desktop")
+        # print("💻 Fallback: asumiendo dispositivo desktop")
         return False
 
 # Detectar tipo de dispositivo
@@ -86,17 +87,19 @@ except Exception:
 # ===== FIN CONFIGURACIÓN DE PÁGINA =====
 
 # Imports críticos y ligeros primero
-print(f"Project root: {project_root}")
-print(f"Source dir: {src_dir}")
-print(f"Python path: {sys.path}")
+# Debug info (comentado para evitar errores en reruns)
+# print(f"Project root: {project_root}")
+# print(f"Source dir: {src_dir}")
+# print(f"Python path: {repr(sys.path)}")
 
 # OPTIMIZACIÓN MÓVIL: Cargar módulos pesados solo cuando sea necesario
 if IS_MOBILE:
-    print("📱 Dispositivo móvil detectado - carga optimizada de módulos")
+    # print("📱 Dispositivo móvil detectado - carga optimizada de módulos")
     # En móvil, importar solo lo esencial
     from modules.ai.streamlit_async_wrapper import get_streamlit_async_wrapper
 else:
-    print("💻 Dispositivo desktop detectado - carga completa de módulos")
+    # print("💻 Dispositivo desktop detectado - carga completa de módulos")
+    pass
     # En desktop, importar todo desde el inicio
     import pandas as pd
     import numpy as np
@@ -1048,11 +1051,11 @@ def load_css_file(file_path):
 
         # Obtener timestamp de modificación del archivo para cache-busting
         file_mtime = os.path.getmtime(file_path)
-        print(f"📄 CSS cargado: {file_path} (mtime: {file_mtime})")
+        # print(f"📄 CSS cargado: {file_path} (mtime: {file_mtime})")
 
         return content
     except Exception as e:
-        print(f"⚠️ Error cargando CSS {file_path}: {e}")
+        # print(f"⚠️ Error cargando CSS {file_path}: {e}")
         return None
 
 # Cache para datos grandes - Optimización de memoria
@@ -1123,10 +1126,10 @@ def load_optimized_css():
         else:
             theme_file = f'assets/theme_{st.session_state.theme_mode}.css'
 
-        print(f"🔍 Intentando cargar: {theme_file} (Cloud: {is_cloud})")
-        print(f"📁 Project root: {project_root}")
-        print(f"📂 Ruta absoluta: {os.path.join(project_root, theme_file)}")
-        print(f"✅ Existe archivo: {os.path.exists(os.path.join(project_root, theme_file))}")
+        # print(f"🔍 Intentando cargar: {theme_file} (Cloud: {is_cloud})")
+        # print(f"📁 Project root: {project_root}")
+        # print(f"📂 Ruta absoluta: {os.path.join(project_root, theme_file)}")
+        # print(f"✅ Existe archivo: {os.path.exists(os.path.join(project_root, theme_file))}")
 
         # Guardar info de debug en session_state para mostrarla después
         st.session_state['css_debug_info'] = {
@@ -1140,7 +1143,7 @@ def load_optimized_css():
 
         theme_css = load_css_file(theme_file)
         if theme_css:
-            print(f"✅ CSS cargado exitosamente: {len(theme_css)} caracteres")
+            # print(f"✅ CSS cargado exitosamente: {len(theme_css)} caracteres")
 
             # Agregar hash del contenido + timestamp para cache-busting AGRESIVO
             import hashlib
@@ -1152,13 +1155,13 @@ def load_optimized_css():
             # Comentario con timestamp Y hash para romper caché del navegador
             css_with_version = f"/* CSS Version: {timestamp} | Hash: {css_hash} | CB: {cache_buster} */\n{theme_css}"
 
-            print(f"🎨 CSS aplicado - Tema: {st.session_state.theme_mode} | Hash: {css_hash} | CB: {cache_buster}")
+            # print(f"🎨 CSS aplicado - Tema: {st.session_state.theme_mode} | Hash: {css_hash} | CB: {cache_buster}")
             # Usar ID único en el style tag para forzar re-render
             st.markdown(f"<style id='theme-css-{cache_buster}'>{css_with_version}</style>", unsafe_allow_html=True)
             return f"theme_{st.session_state.theme_mode}_{'cloud' if is_cloud else 'local'}"
         else:
             # Fallback inmediato si no se puede cargar el tema
-            print(f"❌ No se pudo cargar {theme_file}")
+            # print(f"❌ No se pudo cargar {theme_file}")
             raise Exception(f"No se pudo cargar el tema principal: {theme_file}")
 
     except Exception as e:
@@ -2693,6 +2696,20 @@ def main():
     # Navegación principal
     render_page_navigation(app)
 
+    # Footer con información de seguridad y auditoría
+    st.markdown("---")
+    st.markdown(f"""
+    <div style="text-align: center; color: #666; padding: 1rem; background: linear-gradient(135deg, rgba(0,168,107,0.05), rgba(33,150,243,0.05)); border-radius: 10px; border: 1px solid rgba(0,168,107,0.2);">
+        <p><strong>🔐 Sistema Seguro v2.0</strong> |
+        <strong>👤 Usuario:</strong> {app.user['name']} ({app.user['username']}) |
+        <strong>🎭 Rol:</strong> {app.role_info['name']} |
+        <strong>🏢 Org:</strong> {app.user['organization']}</p>
+        <p><strong>⏰ Sesión:</strong> {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} |
+        <strong>🔑 Permisos:</strong> {len(app.role_info['permissions'])} activos |
+        <strong>🤖 IA:</strong> {'🟢 Disponible' if app.ai_processor else '🔒 Restringida'}</p>
+    </div>
+    """, unsafe_allow_html=True)
+
 def render_page_navigation(app):
     """Navegación entre páginas según permisos"""
     
@@ -2751,7 +2768,7 @@ def render_page_navigation(app):
             # Detectar tema actual para estilos
             current_theme = st.session_state.get('theme_mode', 'light')
 
-            # Estilos según tema
+            # Estilos según tema - MEJORADO: Mayor especificidad para mantener estado activo visual
             if current_theme == 'dark':
                 menu_styles = {
                     "container": {"padding": "0!important", "background-color": "#475569"},
@@ -2765,12 +2782,15 @@ def render_page_navigation(app):
                         "background-color": "#475569",
                         "border-radius": "8px 8px 0 0",
                         "border-bottom": "3px solid transparent",
+                        "transition": "all 0.2s ease",
                     },
                     "nav-link-selected": {
-                        "background-color": "#3b82f6",
-                        "color": "white",
-                        "border-bottom": "3px solid #3b82f6",
-                        "font-weight": "600",
+                        "background-color": "#3b82f6 !important",
+                        "background": "linear-gradient(135deg, #3b82f6, #2563eb) !important",
+                        "color": "white !important",
+                        "border-bottom": "3px solid #3b82f6 !important",
+                        "font-weight": "600 !important",
+                        "box-shadow": "0 2px 8px rgba(59, 130, 246, 0.3) !important",
                     },
                 }
             else:
@@ -2786,12 +2806,15 @@ def render_page_navigation(app):
                         "background-color": "#f8f9fa",
                         "border-radius": "8px 8px 0 0",
                         "border-bottom": "3px solid transparent",
+                        "transition": "all 0.2s ease",
                     },
                     "nav-link-selected": {
-                        "background-color": "#3b82f6",
-                        "color": "white",
-                        "border-bottom": "3px solid #3b82f6",
-                        "font-weight": "600",
+                        "background-color": "#3b82f6 !important",
+                        "background": "linear-gradient(135deg, #3b82f6, #2563eb) !important",
+                        "color": "white !important",
+                        "border-bottom": "3px solid #3b82f6 !important",
+                        "font-weight": "600 !important",
+                        "box-shadow": "0 2px 8px rgba(59, 130, 246, 0.3) !important",
                     },
                 }
 
