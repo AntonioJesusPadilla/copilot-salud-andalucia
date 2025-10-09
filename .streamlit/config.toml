@@ -12,6 +12,8 @@ maxUploadSize = 200
 maxMessageSize = 200
 enableWebsocketCompression = true
 fileWatcherType = "none"
+# Optimizaciones para rendimiento en móviles
+enableStaticServing = false
 
 [browser]
 gatherUsageStats = false
@@ -31,6 +33,8 @@ level = "error"
 fastReruns = true
 enforceSerializableSessionState = false
 magicEnabled = false
+# Optimizaciones para carga más rápida
+postScriptGC = true
 
 # NOTA: ui.wideMode y ui.hideSidebarNav fueron removidos en Streamlit 1.30+
 # Ahora se usa st.set_page_config(layout="wide") en el código (ver app.py línea ~45)
