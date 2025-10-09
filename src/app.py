@@ -2692,21 +2692,6 @@ def main():
     
     # Navegación principal
     render_page_navigation(app)
-    
-    # Footer con información de seguridad y auditoría
-    st.markdown("---")
-    st.markdown(f"""
-    <div style="text-align: center; color: #666; padding: 1rem; background: linear-gradient(135deg, rgba(0,168,107,0.05), rgba(33,150,243,0.05)); border-radius: 10px; border: 1px solid rgba(0,168,107,0.2);">
-        <p><strong>🔐 Sistema Seguro v2.0</strong> | 
-        <strong>👤 Usuario:</strong> {app.user['name']} ({app.user['username']}) | 
-        <strong>🎭 Rol:</strong> {app.role_info['name']} | 
-        <strong>🏢 Org:</strong> {app.user['organization']}</p>
-        <p><strong>⏰ Sesión:</strong> {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} | 
-        <strong>🔑 Permisos:</strong> {len(app.role_info['permissions'])} activos | 
-        <strong>🤖 IA:</strong> {'🟢 Disponible' if app.ai_processor else '🔒 Restringida'}</p>
-        <p><em>🏥 Sistema de Análisis Sociosanitario de Málaga v2.1 - Acceso Autorizado</em></p>
-        </div>
-        """, unsafe_allow_html=True)
 
 def render_page_navigation(app):
     """Navegación entre páginas según permisos"""
@@ -2810,31 +2795,25 @@ def render_page_navigation(app):
                     },
                 }
 
-            # Inicializar el tab actual en session_state si no existe
-            if 'current_active_tab' not in st.session_state:
-                st.session_state.current_active_tab = tabs_available[0]
+            # PERSISTENCIA DEL MENÚ: Usar key única y confiar en el estado del componente
+            username = st.session_state.user.get('username', 'default')
+            menu_key = f"main_navigation_menu_{username}"
 
-            # Calcular default_index basado en el tab guardado
-            try:
-                default_idx = tabs_available.index(st.session_state.current_active_tab)
-            except (ValueError, AttributeError):
-                default_idx = 0
-                st.session_state.current_active_tab = tabs_available[0]
+            # El default_index solo se usa en la primera carga
+            # Después, option_menu mantiene su propio estado con la key
+            default_idx = 0
 
-            # Crear menú horizontal (similar a tabs)
+            # Crear menú horizontal - option_menu mantiene su estado automáticamente
             selected_tab = option_menu(
-                menu_title=None,  # Sin título
+                menu_title=None,
                 options=tabs_available,
-                icons=tab_icons,  # Iconos dinámicos según permisos
+                icons=tab_icons,
                 menu_icon="cast",
                 default_index=default_idx,
                 orientation="horizontal",
                 styles=menu_styles,
-                key="main_navigation_menu"
+                key=menu_key  # Key única por usuario para aislar estados
             )
-
-            # Guardar el tab seleccionado en session_state
-            st.session_state.current_active_tab = selected_tab
 
             # Renderizar solo el contenido del tab seleccionado
             selected_index = tabs_available.index(selected_tab)
@@ -3013,15 +2992,6 @@ def render_secure_chat(app):
             except:
                 st.info("🤖 IA Asíncrona: Disponible")
     
-    # Estado de IA mejorado
-    st.markdown(f"""
-    <div class="access-granted">
-        <h4>✅ Acceso Autorizado al Análisis con IA</h4>
-        <p><strong>Usuario:</strong> {app.user['name']} | <strong>Rol:</strong> {app.role_info['name']}</p>
-        <p><strong>Organización:</strong> {app.user['organization']}</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
     # Inicializar mensajes personalizados por usuario
     user_messages_key = f'secure_messages_{app.user["username"]}'
     if user_messages_key not in st.session_state:
@@ -3142,17 +3112,39 @@ def render_secure_chat(app):
 **🚀 ¡Prueba cualquiera de estos ejemplos o haz tu propia consulta!**"""}
         ]
     
-    # Mostrar historial específico del usuario
-    for message in st.session_state[user_messages_key]:
-        with st.chat_message(message["role"]):
-            if message["role"] == "assistant":
-                # Convertir resumen de asistente a formato CSS para modo oscuro
-                render_assistant_message_with_css(message["content"])
-            else:
-                st.markdown(message["content"])
-    
-    # Input del usuario
-    if prompt := st.chat_input(f"Consulta como {app.role_info['name']}..."):
+    # Mostrar mensaje de bienvenida inicial (solo si no hay interacción previa)
+    if len(st.session_state[user_messages_key]) == 1:
+        # Mostrar mensaje de bienvenida directamente, no como chat
+        welcome_msg = st.session_state[user_messages_key][0]["content"]
+        with st.chat_message("assistant"):
+            render_assistant_message_with_css(welcome_msg)
+
+        # Separador antes del input
+        st.markdown("---")
+
+        # Input del usuario - JUSTO DESPUÉS del mensaje de bienvenida
+        prompt = st.chat_input(f"💬 Consulta como {app.role_info['name']}...")
+
+    else:
+        # Ya hay interacciones, mostrar historial completo
+        st.markdown("---")
+        st.markdown("### 💬 Historial de Conversación")
+
+        for message in st.session_state[user_messages_key]:
+            with st.chat_message(message["role"]):
+                if message["role"] == "assistant":
+                    render_assistant_message_with_css(message["content"])
+                else:
+                    st.markdown(message["content"])
+
+        # Separador antes del input
+        st.markdown("---")
+
+        # Input del usuario - DESPUÉS del historial
+        prompt = st.chat_input(f"💬 Consulta como {app.role_info['name']}...")
+
+    # Procesar nuevo prompt si existe
+    if prompt:
         # Registrar intento de consulta IA
         if app.security_auditor:
             app.security_auditor.log_user_action(
