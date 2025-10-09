@@ -985,6 +985,39 @@ div[data-testid="column"] {
     box-shadow: 0 2px 8px rgba(0, 168, 107, 0.2);
 }
 
+/* ========== OPTION MENU - ESTILOS REFORZADOS ========== */
+/* Asegurar que la pestaña activa mantenga su estilo incluso durante reruns */
+div[data-testid="stHorizontalBlock"] > div > div > div > button[aria-selected="true"],
+div[data-testid="stHorizontalBlock"] > div > div > div > a[aria-selected="true"],
+nav[role="navigation"] > a[aria-selected="true"],
+nav[role="navigation"] > button[aria-selected="true"] {
+    background-color: #3b82f6 !important;
+    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+    color: white !important;
+    border-bottom: 3px solid #3b82f6 !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Evitar que hover interfiera con estado activo */
+div[data-testid="stHorizontalBlock"] > div > div > div > button[aria-selected="true"]:hover,
+div[data-testid="stHorizontalBlock"] > div > div > div > a[aria-selected="true"]:hover,
+nav[role="navigation"] > a[aria-selected="true"]:hover,
+nav[role="navigation"] > button[aria-selected="true"]:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+    color: white !important;
+    border-bottom: 3px solid #3b82f6 !important;
+}
+
+/* Estilos para pestañas no activas en hover */
+div[data-testid="stHorizontalBlock"] > div > div > div > button:not([aria-selected="true"]):hover,
+div[data-testid="stHorizontalBlock"] > div > div > div > a:not([aria-selected="true"]):hover,
+nav[role="navigation"] > a:not([aria-selected="true"]):hover,
+nav[role="navigation"] > button:not([aria-selected="true"]):hover {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+    transition: all 0.2s ease;
+}
+
 /* ========== COLUMNAS ========== */
 .stColumn {
     padding: 0 0.5rem;
