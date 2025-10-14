@@ -1,1 +1,1657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copilot Salud Andalucía - Presentación 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #667eea 100%);
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            width: 92%;
+            max-width: 1400px;
+            height: 88vh;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.4);
+            display: none;
+            padding: 50px 60px;
+            position: relative;
+            overflow-y: auto;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-header {
+            text-align: center;
+            margin-bottom: 35px;
+            padding-bottom: 20px;
+            border-bottom: 4px solid;
+            border-image: linear-gradient(90deg, #667eea 0%, #764ba2 100%) 1;
+        }
+
+        .slide-title {
+            font-size: 2.8em;
+            background: linear-gradient(135deg, #1a365d 0%, #667eea 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .slide-subtitle {
+            font-size: 1.3em;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
+            margin: 28px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 28px;
+            border-radius: 16px;
+            border-left: 6px solid #667eea;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            font-size: 2.2em;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.25em;
+            color: #1a202c;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .feature-description {
+            color: #4a5568;
+            line-height: 1.7;
+            font-size: 0.95em;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 20px;
+            margin: 35px 0;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 28px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .stat-number {
+            font-size: 2.8em;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            justify-content: center;
+            margin: 28px 0;
+        }
+
+        .tech-badge {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            padding: 12px 22px;
+            border-radius: 24px;
+            font-weight: 700;
+            font-size: 0.9em;
+            box-shadow: 0 4px 15px rgba(66, 153, 225, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .tech-badge:hover {
+            transform: translateY(-3px) scale(1.08);
+            box-shadow: 0 8px 25px rgba(66, 153, 225, 0.4);
+        }
+
+        .role-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin: 28px 0;
+        }
+
+        .role-card {
+            padding: 28px;
+            border-radius: 16px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .role-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+        }
+
+        .role-card:hover::after {
+            opacity: 1;
+        }
+
+        .role-admin {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+        }
+
+        .role-gestor {
+            background: linear-gradient(135deg, #2b6cb0 0%, #3182ce 100%);
+        }
+
+        .role-analista {
+            background: linear-gradient(135deg, #059669 0%, #38a169 100%);
+        }
+
+        .role-invitado {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+        }
+
+        .navigation {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 18px;
+            z-index: 100;
+        }
+
+        .nav-button {
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .nav-button:disabled {
+            background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .slide-counter {
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+            padding: 12px 24px;
+            border-radius: 24px;
+            color: #1a365d;
+            font-weight: 700;
+            font-size: 1em;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .bullet-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .bullet-list li {
+            padding: 10px 0;
+            position: relative;
+            padding-left: 32px;
+            font-size: 1.05em;
+            line-height: 1.7;
+            color: #2d3748;
+        }
+
+        .bullet-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #48bb78;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #fef5e7 0%, #fdebd0 100%);
+            border: 3px solid #f6ad55;
+            border-radius: 16px;
+            padding: 28px;
+            margin: 25px 0;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(246, 173, 85, 0.2);
+        }
+
+        .highlight-text {
+            font-size: 1.35em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #c53030 0%, #e53e3e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .demo-box {
+            background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+            border: 3px solid #38b2ac;
+            border-radius: 16px;
+            padding: 28px;
+            margin: 25px 0;
+            box-shadow: 0 8px 25px rgba(56, 178, 172, 0.2);
+        }
+
+        .demo-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #234e52;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        .demo-credentials {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .credential-item {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #2d3748;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .slide-intro {
+            text-align: center;
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #667eea 100%);
+            color: white;
+            justify-content: center;
+        }
+
+        .slide-intro .slide-title {
+            color: white;
+            -webkit-text-fill-color: white;
+            font-size: 4em;
+            margin-bottom: 25px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .slide-intro .slide-subtitle {
+            color: rgba(255,255,255,0.95);
+            font-size: 1.6em;
+            line-height: 1.5;
+        }
+
+        .author-info {
+            margin-top: 45px;
+            padding: 35px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .author-name {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .project-url {
+            background: rgba(255,255,255,0.25);
+            padding: 16px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            margin-top: 20px;
+            word-break: break-all;
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+
+        .url-box {
+            background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+            border: 3px solid #38b2ac;
+            border-radius: 16px;
+            padding: 28px;
+            margin: 25px 0;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(56, 178, 172, 0.2);
+        }
+
+        .url-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #234e52;
+            margin-bottom: 15px;
+        }
+
+        .url-link {
+            font-family: 'Courier New', monospace;
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            color: #1a365d;
+            word-break: break-all;
+            font-size: 0.95em;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 35px;
+            margin: 28px 0;
+        }
+
+        .column-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 28px;
+            border-radius: 16px;
+            border-left: 6px solid;
+        }
+
+        .column-section.problem {
+            border-left-color: #fc8181;
+        }
+
+        .column-section.solution {
+            border-left-color: #68d391;
+        }
+
+        @media (max-width: 1024px) {
+            .slide {
+                padding: 35px 40px;
+                height: 90vh;
+            }
+            
+            .slide-title {
+                font-size: 2.2em;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 25px 20px;
+                width: 96%;
+                height: 92vh;
+            }
+            
+            .slide-title {
+                font-size: 1.8em;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .nav-button {
+                padding: 12px 24px;
+                font-size: 0.85em;
+            }
+
+            .slide-intro .slide-title {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="slide-counter">
+            <span id="currentSlide">1</span> / <span id="totalSlides">14</span>
+        </div>
+
+        <!-- Slide 1: Portada -->
+        <div class="slide slide-intro active">
+            <div class="slide-content">
+                <h1 class="slide-title">🏥 Copilot Salud Andalucía</h1>
+                <p class="slide-subtitle">Sistema Inteligente de Análisis Sanitario con IA<br>para la Provincia de Málaga</p>
+                
+                <div class="author-info">
+                    <div class="author-name">👨‍💻 Antonio Jesús Padilla</div>
+                    <div style="opacity: 0.95; margin-top: 15px; font-size: 1.1em; line-height: 1.6;">
+                        Plataforma web avanzada que integra <strong>Inteligencia Artificial</strong>, 
+                        <strong>análisis geoespacial</strong> y <strong>sistema RBAC completo</strong> 
+                        para transformar la gestión sanitaria con datos actualizados 2025
+                    </div>
+                    <div class="project-url">
+                        🔗 github.com/AntonioJesusPadilla/copilot-salud-andalucia
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: El Problema -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2 class="slide-title">🎯 Desafío en la Gestión Sanitaria</h2>
+                <p class="slide-subtitle">Identificación de problemáticas actuales</p>
+            </div>
+            <div class="slide-content">
+                <div class="two-column">
+                    <div class="column-section problem">
+                        <div class="feature-icon" style="color: #fc8181;">❌</div>
+                        <h3 class="feature-title" style="color: #c53030;">Problemática Actual</h3>
+                        <div class="feature-description">
+                            <ul class="bullet-list">
+                                <li>Datos sanitarios fragmentados y dispersos</li>
+                                <li>Ausencia de análisis predictivo avanzado</li>
+                                <li>Inequidad territorial en acceso a servicios</li>
+                                <li>Decisiones sin soporte de datos en tiempo real</li>
+                                <li>Sistemas desactualizados y poco integrados</li>
+                                <li>Falta de personalización por rol de usuario</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="column-section solution">
+                        <div class="feature-icon" style="color: #68d391;">✅</div>
+                        <h3 class="feature-title" style="color: #276749;">Nuestra Solución</h3>
+                        <div class="feature-description">
+                            <ul class="bullet-list">
+                                <li>Plataforma unificada con IA de última generación</li>
+                                <li>Análisis predictivo con Llama 3.3 70B</li>
+                                <li>Evaluación exhaustiva de equidad territorial</li>
+                                <li>Toma de decisiones basada en datos actualizados</li>
+                                <li>Tecnología cloud moderna y escalable</li>
+                                <li>Personalización total por cada rol de usuario</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="highlight-box">
+                    <div class="highlight-text">
+                        🚀 Transformando la gestión sanitaria mediante Inteligencia Artificial, 
+                        mapas interactivos y personalización total por rol
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Funcionalidades Principales -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2 class="slide-title">⭐ Funcionalidades Principales</h2>
+                <p class="slide-subtitle">Características innovadoras del sistema</p>
+            </div>
+            <div class="slide-content">
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🤖</div>
+                        <h3 class="feature-title">Chat IA Especializado</h3>
+                        <p class="feature-description">
+                            Powered by <strong>Groq (Llama 3.3 70B)</strong> con análisis automatizado de datos sanitarios, 
+                            generación automática de visualizaciones y recomendaciones estratégicas personalizadas en lenguaje natural
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3 class="feature-title">Dashboards Personalizados</h3>
+                        <p class="feature-description">
+                            <strong>4 tipos de dashboard</strong> completamente personalizados: Ejecutivo, Operativo, Analítico y Público. 
+                            Cada uno con métricas específicas, temas visuales únicos y experiencia adaptada
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🗺️</div>
+                        <h3 class="feature-title">Mapas Épicos Interactivos</h3>
+                        <p class="feature-description">
+                            Geolocalización avanzada con <strong>Folium</strong>, 8 tipos de mapas con capas dinámicas, 
+                            análisis geoespacial con heatmaps y control de acceso granular por permisos
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📈</div>
+                        <h3 class="feature-title">Análisis Predictivo</h3>
+                        <p class="feature-description">
+                            Proyecciones demográficas actualizadas, optimización inteligente de recursos hospitalarios 
+                            y planificación estratégica basada en modelos predictivos de IA
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔐</div>
+                        <h3 class="feature-title">Sistema RBAC Completo</h3>
+                        <p class="feature-description">
+                            Control de acceso robusto basado en roles con <strong>autenticación JWT</strong>, 
+                            bcrypt para contraseñas, auditoría completa de accesos y <strong>18 permisos granulares</strong>
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚖️</div>
+                        <h3 class="feature-title">Evaluación de Equidad</h3>
+                        <p class="feature-description">
+                            Análisis profundo de equidad territorial, evaluación de accesibilidad sanitaria por distrito, 
+                            identificación de brechas en servicios y recomendaciones de mejora
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Sistema de Roles RBAC -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2 class="slide-title">👥 Sistema de Roles RBAC</h2>
+                <p class="slide-subtitle">Control de acceso y personalización completa</p>
+            </div>
+            <div class="slide-content">
+                <div class="role-cards">
+                    <div class="role-card role-admin">
+                        <h3 style="font-size: 1.4em; margin-bottom: 12px;">🔴 Administrador</h3>
+                        <p style="margin: 18px 0; font-size: 1.05em; opacity: 0.95;">Acceso Total al Sistema</p>
+                        <ul style="text-align: left; font-size: 0.9em; opacity: 0.9; line-height: 1.8;">
+                            <li>✅ Chat IA Completo con Groq</li>
+                            <li>✅ Dashboard con análisis avanzado</li>
+                            <li>✅ Todos los Reportes + Equidad</li>
+                            <li>✅ Planificación Estratégica</li>
+                            <li>✅ Gestión completa de Usuarios</li>
+                            <li>✅ Configuración del Sistema</li>
+                        </ul>
+                        <div style="margin-top: 18px; padding: 12px; background: rgba(255,255,255,0.2); border-radius: 8px;">
+                            <strong>Color:</strong> Azul ejecutivo #1a365d
+                        </div>
+                    </div>
+                    <div class="role-card role-gestor">
+                        <h3 style="font-size: 1.4em; margin-bottom: 12px;">🔵 Gestor Sanitario</h3>
+                        <p style="margin: 18px 0; font-size: 1.05em; opacity: 0.95;">Gestión y Planificación</p>
+                        <ul style="text-align: left; font-size: 0.9em; opacity: 0.9; line-height: 1.8;">
+                            <li>✅ Chat IA especializado en gestión</li>
+                            <li>✅ Dashboard con métricas clave</li>
+                            <li>✅ Reportes ejecutivos y operacionales</li>
+                            <li>✅ Planificación de recursos</li>
+                            <li>❌ Gestión de usuarios (restringida)</li>
+                        </ul>
+                        <div style="margin-top: 18px; padding: 12px; background: rgba(255,255,255,0.2); border-radius: 8px;">
+                            <strong>Color:</strong> Azul gestión #2b6cb0
+                        </div>
+                    </div>
+                    <div class="role-card role-analista">
+                        <h3 style="font-size: 1.4em; margin-bottom: 12px;">🟢 Analista de Datos</h3>
+                        <p style="margin: 18px 0; font-size: 1.05em; opacity: 0.95;">Análisis y Estadísticas</p>
+                        <ul style="text-align: left; font-size: 0.9em; opacity: 0.9; line-height: 1.8;">
+                            <li>✅ Chat IA para análisis estadísticos</li>
+                            <li>✅ Dashboard con visualizaciones avanzadas</li>
+                            <li>✅ Reportes técnicos y estadísticos</li>
+                            <li>❌ Planificación estratégica (restringida)</li>
+                        </ul>
+                        <div style="margin-top: 18px; padding: 12px; background: rgba(255,255,255,0.2); border-radius: 8px;">
+                            <strong>Color:</strong> Verde analítico #059669
+                        </div>
+                    </div>
+                    <div class="role-card role-invitado">
+                        <h3 style="font-size: 1.4em; margin-bottom: 12px;">🟣 Invitado</h3>
+                        <p style="margin: 18px 0; font-size: 1.05em; opacity: 0.95;">Visualización Básica</p>
+                        <ul style="text-align: left; font-size: 0.9em; opacity: 0.9; line-height: 1.8;">
+                            <li>✅ Dashboard básico con métricas generales</li>
+                            <li>❌ Chat IA (sin acceso)</li>
+                            <li>❌ Reportes avanzados</li>
+                            <li>❌ Planificación</li>
+                        </ul>
+                        <div style="margin-top: 18px; padding: 12px; background: rgba(255,255,255,0.2); border-radius: 8px;">
+                            <strong>Color:</strong> Gris público #6b7280
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="demo-box">
+                    <div class="demo-title">🔑 Credenciales de Acceso Demo</div>
+                    <div class="demo-credentials">
+                        <div class="credential-item"><strong>👨‍💼 Admin:</strong><br>admin / admin123</div>
+                        <div class="credential-item"><strong>🏥 Gestor:</strong><br>gestor.malaga / gestor123</div>
+                        <div class="credential-item"><strong>📊 Analista:</strong><br>analista.datos / analista123</div>
+                        <div class="credential-item"><strong>👤 Invitado:</strong><br>demo / demo123</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Stack Tecnológico -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2 class="slide-title">🛠️ Stack Tecnológico Completo</h2>
+                <p class="slide-subtitle">Tecnologías de última generación</p>
+            </div>
+            <div class="slide-content">
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🐍</div>
+                        <h3 class="feature-title">Backend & Core</h3>
+                        <div class="tech-stack">
+                            <span class="tech-badge">Python 3.9+</span>
+                            <span class="tech-badge">Streamlit</span>
+                            <span class="tech-badge">Pandas</span>
+                            <span class="tech-badge">NumPy</span>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🤖</div>
+                        <h3 class="feature-title">Inteligencia Artificial</h3>
+                        <div class="tech-stack">
+                            <span class="tech-badge">Groq API</span>
+                            <span class="tech-badge">Llama 3.3 70B</span>
+                            <span class="tech-badge">LangChain</span>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3 class="feature-title">Visualización de Datos</h3>
+                        <div class="tech-stack">
+                            <span class="tech-badge">Plotly Express</span>
+                            <span class="tech-badge">Plotly Graph</span>
+                            <span class="tech-badge">Matplotlib</span>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🗺️</div>
+                        <h3 class="feature-title">Mapas & Geolocalización</h3>
+                        <div class="tech-stack">
+                            <span class="tech-badge">Folium</span>
+                            <span class="tech-badge">Streamlit-Folium</span>
+                            <span class="tech-badge">Geopandas</span>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔐</div>
+                        <h3 class="feature-title">Seguridad & Autenticación</h3>
+                        <div class="tech-stack">
+                            <span class="tech-badge">JWT</span>
+                            <span class="tech-badge">bcrypt</span>
+                            <span class="tech-badge">python-dotenv</span>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎨</div>
+                        <h3 class="feature-title">Frontend & UI</h3>
+                        <div class="tech-stack">
+                            <span class="tech-badge">HTML5</span>
+                            <span class="tech-badge">CSS3</span>
+                            <span class="tech-badge">Google Fonts</span>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💾</div>
+                        <h3 class="feature-title">Almacenamiento</h3>
+                        <div class="tech-stack">
+                            <span class="tech-badge">JSON</span>
+                            <span class="tech-badge">CSV</span>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">☁️</div>
+                        <h3 class="feature-title">Cloud & Deployment</h3>
+                        <div class="tech-stack">
+                            <span class="tech-badge">Streamlit Cloud</span>
+                            <span class="tech-badge">Git</span>
+                            <span class="tech-badge">GitHub</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Datos del Sistema 2025 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2 class="slide-title">📊 Datos del Sistema 2025</h2>
+                <p class="slide-subtitle">Información actualizada de la provincia de Málaga</p>
+            </div>
+            <div class="slide-content">
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <div class="stat-number">10</div>
+                        <div class="stat-label">Hospitales</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">20</div>
+                        <div class="stat-label">Municipios</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">9</div>
+                        <div class="stat-label">Centros Especializados</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">15</div>
+                        <div class="stat-label">Rutas Analizadas</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">6</div>
+                        <div class="stat-label">Distritos Sanitarios</div>
+                    </div>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🏥</div>
+                        <h3 class="feature-title">Hospitales Málaga 2025</h3>
+                        <p class="feature-description">
+                            Información completa de <strong>10 centros hospitalarios</strong>: capacidad de camas, 
+                            personal sanitario por especialidad, servicios disponibles y áreas de cobertura geográfica
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">👥</div>
+                        <h3 class="feature-title">Demografía Málaga 2025</h3>
+                        <p class="feature-description">
+                            Proyecciones poblacionales actualizadas de <strong>20 municipios</strong>, análisis de 
+                            crecimiento demográfico, tendencias y datos socioeconómicos detallados
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔬</div>
+                        <h3 class="feature-title">Servicios Sanitarios 2025</h3>
+                        <p class="feature-description">
+                            Catálogo completo de <strong>9 centros especializados</strong> con información de 
+                            especialidades médicas, disponibilidad, capacidad e indicadores de calidad
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🗺️</div>
+                        <h3 class="feature-title">Accesibilidad Sanitaria 2025</h3>
+                        <p class="feature-description">
+                            Análisis de <strong>15 rutas principales</strong>: tiempos de acceso entre municipios y 
+                            hospitales, transporte sanitario e identificación de zonas con acceso limitado
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📈</div>
+                        <h3 class="feature-title">Indicadores de Salud 2025</h3>
+                        <p class="feature-description">
+                            Métricas por <strong>6 distritos sanitarios</strong>: ratios profesionales/población, 
+                            camas por habitante e indicadores de calidad asistencial
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3 class="feature-title">KPIs Estratégicos</h3>
+                        <p class="feature-description">
+                            Ratio camas/1000 hab., Índice de Equidad (0-100), Tiempo de acceso promedio y 
+                            Proyecciones de demanda basadas en IA
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Sistema de Mapas Épicos -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2 class="slide-title">🗺️ Sistema de Mapas Épicos Interactivos</h2>
+                <p class="slide-subtitle">8 tipos de mapas con control de acceso por permisos</p>
+            </div>
+            <div class="slide-content">
+                <div class="feature-grid">
+                    <div class="feature-card" style="border-left-color: #f6ad55;">
+                        <div class="feature-icon">🌟</div>
+                        <h3 class="feature-title">Mapa Completo Épico</h3>
+                        <p class="feature-description">
+                            <strong>Solo Administradores.</strong> Acceso a todas las capas disponibles incluyendo 
+                            datos sensibles, métricas estratégicas y análisis avanzados
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🏥</div>
+                        <h3 class="feature-title">Hospitales y Centros</h3>
+                        <p class="feature-description">
+                            Ubicaciones geográficas precisas, capacidad instalada, servicios especializados 
+                            disponibles y zonas de cobertura de cada centro
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🏘️</div>
+                        <h3 class="feature-title">Municipios y Demografía</h3>
+                        <p class="feature-description">
+                            Datos poblacionales por municipio, distribución demográfica, proyecciones de 
+                            crecimiento y densidad poblacional
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔥</div>
+                        <h3 class="feature-title">Heatmap de Accesibilidad</h3>
+                        <p class="feature-description">
+                            Análisis visual de tiempos de acceso, identificación de zonas críticas con 
+                            acceso limitado y puntos de mejora prioritarios
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💊</div>
+                        <h3 class="feature-title">Cobertura de Especialidades</h3>
+                        <p class="feature-description">
+                            Distribución geográfica de servicios médicos especializados, identificación 
+                            de gaps de cobertura y recomendaciones
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🛣️</div>
+                        <h3 class="feature-title">Rutas y Conexiones</h3>
+                        <p class="feature-description">
+                            Optimización de trayectos sanitarios, análisis de rutas de emergencia y 
+                            mejora de tiempos de respuesta
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3 class="feature-title">Análisis Demográfico</h3>
+                        <p class="feature-description">
+                            Tendencias poblacionales, proyecciones a futuro, análisis de envejecimiento 
+                            y necesidades sanitarias emergentes
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌐</div>
+                        <h3 class="feature-title">Ubicaciones Básicas (Público)</h3>
+                        <p class="feature-description">
+                            Información pública general de hospitales y centros de salud, accesible 
+                            para todos los usuarios sin restricciones
+                        </p>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <div class="highlight-text">
+                        🎯 Control de acceso granular mediante 18 permisos específicos: 
+                        cada usuario ve solo los mapas autorizados según su rol
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Seguridad Multicapa -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2 class="slide-title">🔐 Sistema de Seguridad Multicapa</h2>
+                <p class="slide-subtitle">Protección robusta en todos los niveles</p>
+            </div>
+            <div class="slide-content">
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔑</div>
+                        <h3 class="feature-title">Autenticación JWT</h3>
+                        <p class="feature-description">
+                            Tokens seguros JSON Web Token para sesiones de usuario con <strong>expiración automática</strong>, 
+                            renovación inteligente y validación en cada petición
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3 class="feature-title">Hashing bcrypt</h3>
+                        <p class="feature-description">
+                            Encriptación robusta de contraseñas mediante <strong>bcrypt con salt único</strong> 
+                            por usuario para almacenamiento seguro e irreversible
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">👥</div>
+                        <h3 class="feature-title">Control RBAC</h3>
+                        <p class="feature-description">
+                            Sistema completo de control de acceso basado en roles con <strong>18 permisos granulares</strong> 
+                            en español para funcionalidades específicas
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⏱️</div>
+                        <h3 class="feature-title">Gestión de Sesiones</h3>
+                        <p class="feature-description">
+                            Control automático de <strong>timeouts de sesión</strong>, renovación de tokens 
+                            antes de expiración y cierre seguro de sesiones
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">✅</div>
+                        <h3 class="feature-title">Validación de Permisos</h3>
+                        <p class="feature-description">
+                            <strong>Verificación en cada operación crítica</strong> del sistema: acceso a datos, 
+                            modificación de registros y ejecución de funciones
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📋</div>
+                        <h3 class="feature-title">Auditoría Completa</h3>
+                        <p class="feature-description">
+                            <strong>Logging exhaustivo</strong> de todas las actividades: accesos al sistema, 
+                            operaciones realizadas y cambios de configuración
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🛡️</div>
+                        <h3 class="feature-title">Sanitización de Inputs</h3>
+                        <p class="feature-description">
+                            Validación y limpieza automática de <strong>todas las entradas de usuario</strong> 
+                            para prevenir inyecciones y ataques maliciosos
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <h3 class="feature-title">Backup Automático</h3>
+                        <p class="feature-description">
+                            Respaldo automático y periódico de la <strong>base de datos de usuarios</strong> 
+                            para recuperación ante incidentes
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Sistema de Pruebas Integral -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2 class="slide-title">🧪 Sistema de Pruebas Integral</h2>
+                <p class="slide-subtitle">Calidad garantizada en todos los dispositivos</p>
+            </div>
+            <div class="slide-content">
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <div class="stat-number">54+</div>
+                        <div class="stat-label">Tests Automatizados</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">15</div>
+                        <div class="stat-label">Tests Manuales</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">7</div>
+                        <div class="stat-label">Resoluciones</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">95%+</div>
+                        <div class="stat-label">Cobertura</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Navegadores</div>
+                    </div>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📄</div>
+                        <h3 class="feature-title">Plan Completo (60+ páginas)</h3>
+                        <p class="feature-description">
+                            Documentación exhaustiva con procedimientos detallados para pruebas funcionales, 
+                            de rendimiento, seguridad y compatibilidad
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3 class="feature-title">Checklist Rápido (1 hora)</h3>
+                        <p class="feature-description">
+                            Verificación rápida de 40-60 minutos de las funcionalidades críticas del sistema 
+                            para validación ágil
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🤖</div>
+                        <h3 class="feature-title">Script Automatizado</h3>
+                        <p class="feature-description">
+                            Pruebas automáticas programadas de rendimiento, funcionalidad, compatibilidad 
+                            cross-browser y responsive design
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📋</div>
+                        <h3 class="feature-title">Guía de Pruebas Manuales</h3>
+                        <p class="feature-description">
+                            15 procedimientos detallados paso a paso para testing manual de características 
+                            específicas y casos edge
+                        </p>
+                    </div>
+                </div>
+
+                <div class="demo-box">
+                    <div class="demo-title">📊 Métricas de Calidad Verificadas</div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; margin-top: 18px;">
+                        <div style="background: white; padding: 18px; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                            <div style="font-weight: 800; font-size: 1.5em; color: #2c5282;">< 5s</div>
+                            <div style="font-size: 0.85em; color: #4a5568; margin-top: 5px;">Carga en PC</div>
+                        </div>
+                        <div style="background: white; padding: 18px; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                            <div style="font-weight: 800; font-size: 1.5em; color: #2c5282;">< 8s</div>
+                            <div style="font-size: 0.85em; color: #4a5568; margin-top: 5px;">Carga móviles</div>
+                        </div>
+                        <div style="background: white; padding: 18px; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                            <div style="font-weight: 800; font-size: 1.5em; color: #2c5282;">≥44px</div>
+                            <div style="font-size: 0.85em; color: #4a5568; margin-top: 5px;">Botones tablet</div>
+                        </div>
+                        <div style="background: white; padding: 18px; border-radius: 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                            <div style="font-weight: 800; font-size: 1.5em; color: #2c5282;">WCAG 2.1</div>
+                            <div style="font-size: 0.85em; color: #4a5568; margin-top: 5px;">Accesibilidad</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Métricas del Proyecto -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2 class="slide-title">📈 Métricas del Proyecto</h2>
+                <p class="slide-subtitle">Magnitud y alcance del desarrollo</p>
+            </div>
+            <div class="slide-content">
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <div class="stat-number">4,500+</div>
+                        <div class="stat-label">Líneas de Código</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">6</div>
+                        <div class="stat-label">Módulos Python</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">80+</div>
+                        <div class="stat-label">Funciones</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">5</div>
+                        <div class="stat-label">Datasets CSV</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">20+</div>
+                        <div class="stat-label">Visualizaciones</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">18</div>
+                        <div class="stat-label">Permisos RBAC</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">8</div>
+                        <div class="stat-label">Tipos de Mapas</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Dashboards</div>
+                    </div>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎨</div>
+                        <h3 class="feature-title">Personalización Total</h3>
+                        <p class="feature-description">
+                            <strong>4 temas visuales únicos</strong> completamente personalizados, esquemas de 
+                            colores específicos, tipografías adaptadas y UI diferenciada por rol
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3 class="feature-title">5 Datasets Actualizados</h3>
+                        <p class="feature-description">
+                            Datos 2025 de hospitales, demografía, servicios sanitarios, accesibilidad 
+                            e indicadores de salud con proyecciones verificadas
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔧</div>
+                        <h3 class="feature-title">Arquitectura Modular</h3>
+                        <p class="feature-description">
+                            Código limpio organizado en <strong>6 módulos especializados</strong> para fácil 
+                            mantenimiento, testing y escalabilidad futura
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">☁️</div>
+                        <h3 class="feature-title">Cloud-Optimized</h3>
+                        <p class="feature-description">
+                            Configuración específica para <strong>Streamlit Cloud</strong> con cache inteligente 
+                            TTL 1h, compresión de datos y variables de entorno seguras
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Casos de Uso por Rol -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2 class="slide-title">🎯 Casos de Uso por Tipo de Usuario</h2>
+                <p class="slide-subtitle">Aplicaciones prácticas del sistema</p>
+            </div>
+            <div class="slide-content">
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">👔</div>
+                        <h3 class="feature-title">Directivos Sanitarios</h3>
+                        <div class="feature-description">
+                            <ul class="bullet-list">
+                                <li>Monitoreo de KPIs estratégicos en tiempo real</li>
+                                <li>Análisis exhaustivo de equidad territorial</li>
+                                <li>Planificación estratégica de recursos a largo plazo</li>
+                                <li>Reportes ejecutivos automatizados con IA</li>
+                                <li>Toma de decisiones basada en datos actualizados</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🏥</div>
+                        <h3 class="feature-title">Gestores Hospitalarios</h3>
+                        <div class="feature-description">
+                            <ul class="bullet-list">
+                                <li>Optimización de recursos hospitalarios diarios</li>
+                                <li>Análisis detallado de demanda y capacidad</li>
+                                <li>Planificación eficiente de personal sanitario</li>
+                                <li>Evaluación de servicios especializados</li>
+                                <li>Gestión operativa basada en métricas clave</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3 class="feature-title">Analistas de Datos</h3>
+                        <div class="feature-description">
+                            <ul class="bullet-list">
+                                <li>Análisis estadístico avanzado con IA</li>
+                                <li>Creación de visualizaciones interactivas</li>
+                                <li>Proyecciones demográficas precisas</li>
+                                <li>Estudios profundos de accesibilidad</li>
+                                <li>Correlaciones y tendencias sanitarias</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3 class="feature-title">Planificadores Estratégicos</h3>
+                        <div class="feature-description">
+                            <ul class="bullet-list">
+                                <li>Identificación de necesidades sanitarias futuras</li>
+                                <li>Análisis de ubicaciones óptimas para nuevos centros</li>
+                                <li>Optimización de rutas de transporte sanitario</li>
+                                <li>Estudios de impacto poblacional</li>
+                                <li>Recomendaciones de inversión basadas en IA</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Reportes y Planificación -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2 class="slide-title">📑 Sistema de Reportes y Planificación</h2>
+                <p class="slide-subtitle">Generación automática de informes especializados</p>
+            </div>
+            <div class="slide-content">
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3 class="feature-title">Reporte Ejecutivo</h3>
+                        <p class="feature-description">
+                            Métricas clave para directivos con KPIs estratégicos, tendencias principales 
+                            y recomendaciones de alto nivel para toma de decisiones
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🏥</div>
+                        <h3 class="feature-title">Análisis de Infraestructura</h3>
+                        <p class="feature-description">
+                            Evaluación completa de centros sanitarios: capacidad instalada, utilización 
+                            de recursos, gaps identificados y oportunidades de mejora
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">👥</div>
+                        <h3 class="feature-title">Reporte Demográfico</h3>
+                        <p class="feature-description">
+                            Tendencias poblacionales detalladas, proyecciones a 5-10 años, análisis de 
+                            envejecimiento y necesidades sanitarias emergentes
+                        </p>
+                    </div>
+                    <div class="feature-card" style="border-left-color: #f6ad55;">
+                        <div class="feature-icon">⚖️</div>
+                        <h3 class="feature-title">Evaluación de Equidad (Admin)</h3>
+                        <p class="feature-description">
+                            Análisis exhaustivo de equidad territorial, identificación de brechas en 
+                            accesibilidad y recomendaciones para mejorar la distribución de servicios
+                        </p>
+                    </div>
+                    <div class="feature-card" style="border-left-color: #f6ad55;">
+                        <div class="feature-icon">📋</div>
+                        <h3 class="feature-title">Análisis Completo (Admin)</h3>
+                        <p class="feature-description">
+                            Reporte integral del sistema sanitario que combina todos los análisis 
+                            anteriores con insights profundos y estrategia a largo plazo
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📍</div>
+                        <h3 class="feature-title">Planificación de Ubicaciones</h3>
+                        <p class="feature-description">
+                            Análisis geoespacial para nuevos centros sanitarios: zonas prioritarias, 
+                            estudios de demanda y ROI estimado de inversiones
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📈</div>
+                        <h3 class="feature-title">Proyección de Demanda</h3>
+                        <p class="feature-description">
+                            Predicción de necesidades sanitarias futuras basada en IA: crecimiento 
+                            poblacional, cambios demográficos y tendencias de salud
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3 class="feature-title">Redistribución de Recursos</h3>
+                        <p class="feature-description">
+                            Recomendaciones para optimización de personal, equipamiento y camas 
+                            hospitalarias basadas en análisis de eficiencia actual
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🛣️</div>
+                        <h3 class="feature-title">Optimización de Rutas</h3>
+                        <p class="feature-description">
+                            Mejora de tiempos de acceso y transporte sanitario mediante análisis 
+                            de rutas críticas y propuestas de nuevas conexiones
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Despliegue y Acceso -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2 class="slide-title">🚀 Despliegue y Acceso al Sistema</h2>
+                <p class="slide-subtitle">Disponible en producción y local</p>
+            </div>
+            <div class="slide-content">
+                <div class="url-box">
+                    <div class="url-title">🌐 Aplicación en Producción</div>
+                    <div class="url-link">https://copilot-salud-andalucia.streamlit.app/</div>
+                </div>
+
+                <div class="two-column">
+                    <div class="column-section" style="border-left-color: #4299e1;">
+                        <div class="feature-icon" style="color: #4299e1;">☁️</div>
+                        <h3 class="feature-title">Despliegue en Cloud</h3>
+                        <div class="feature-description">
+                            <ul class="bullet-list">
+                                <li>Streamlit Cloud con setup automático</li>
+                                <li>Integración continua desde GitHub</li>
+                                <li>Configuración de variables de entorno</li>
+                                <li>Despliegue completado en 2-5 minutos</li>
+                                <li>SSL/HTTPS automático incluido</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="column-section" style="border-left-color: #48bb78;">
+                        <div class="feature-icon" style="color: #48bb78;">💻</div>
+                        <h3 class="feature-title">Instalación Local</h3>
+                        <div class="feature-description">
+                            <ul class="bullet-list">
+                                <li>Clonar repositorio de GitHub</li>
+                                <li>Crear entorno virtual Python 3.9+</li>
+                                <li>Instalar dependencias (requirements.txt)</li>
+                                <li>Configurar archivo .env con API keys</li>
+                                <li>Ejecutar: streamlit run streamlit_app.py</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔑</div>
+                        <h3 class="feature-title">Requisitos</h3>
+                        <p class="feature-description">
+                            <strong>Python 3.9+</strong>, cuenta GitHub gratuita, cuenta Streamlit Cloud 
+                            gratuita y API Key de Groq (gratuita para desarrollo)
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚙️</div>
+                        <h3 class="feature-title">Variables de Entorno</h3>
+                        <p class="feature-description">
+                            GROQ_API_KEY, JWT_SECRET_KEY, APP_ENVIRONMENT y SYSTEM_NAME 
+                            configurables vía Streamlit Secrets o archivo .env local
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <h3 class="feature-title">Actualización Automática</h3>
+                        <p class="feature-description">
+                            Push a GitHub activa redespliegue automático en Streamlit Cloud 
+                            con rollback instantáneo si hay errores detectados
+                        </p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3 class="feature-title">Multi-dispositivo</h3>
+                        <p class="feature-description">
+                            Accesible desde PC, tablets y móviles con diseño responsivo 
+                            optimizado y botones táctiles de tamaño adecuado
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Conclusiones y Futuro -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2 class="slide-title">🎯 Conclusiones y Roadmap Futuro</h2>
+                <p class="slide-subtitle">Logros alcanzados y visión a futuro</p>
+            </div>
+            <div class="slide-content">
+                <div class="highlight-box">
+                    <div class="highlight-text">
+                        ✨ Sistema completo y funcional que transforma la gestión sanitaria 
+                        mediante Inteligencia Artificial, análisis geoespacial y personalización total
+                    </div>
+                </div>
+
+                <div class="two-column">
+                    <div class="column-section" style="border-left-color: #48bb78;">
+                        <div class="feature-icon" style="color: #48bb78;">✅</div>
+                        <h3 class="feature-title">Logros Completados</h3>
+                        <div class="feature-description">
+                            <ul class="bullet-list">
+                                <li>Plataforma web completa y funcional en producción</li>
+                                <li>IA integrada con Llama 3.3 70B para análisis</li>
+                                <li>Sistema RBAC con 4 roles y 18 permisos</li>
+                                <li>8 tipos de mapas interactivos con Folium</li>
+                                <li>Testing integral con 95%+ de cobertura</li>
+                                <li>Documentación completa y detallada</li>
+                                <li>Diseño responsivo optimizado</li>
+                                <li>Datos actualizados 2025 de Málaga</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="column-section" style="border-left-color: #4299e1;">
+                        <div class="feature-icon" style="color: #4299e1;">🚀</div>
+                        <h3 class="feature-title">Roadmap Futuro</h3>
+                        <div class="feature-description">
+                            <ul class="bullet-list">
+                                <li>📱 Aplicación móvil nativa iOS/Android</li>
+                                <li>🗺️ Integración avanzada con sistemas GIS profesionales</li>
+                                <li>🔔 Sistema de alertas en tiempo real</li>
+                                <li>📊 Dashboards BI ejecutivos avanzados</li>
+                                <li>🤖 Modelos ML personalizados propios</li>
+                                <li>🔗 APIs REST para integración externa</li>
+                                <li>📧 Reportes programados por email</li>
+                                <li>🌐 Soporte multi-idioma (ES/EN)</li>
+                                <li>🧪 CI/CD con pruebas automatizadas</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="demo-box">
+                    <div class="demo-title">👨‍💻 Información de Contacto</div>
+                    <div style="text-align: center; margin-top: 18px;">
+                        <div style="font-size: 1.2em; font-weight: 700; margin-bottom: 15px;">
+                            Antonio Jesús Padilla
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
+                            <div style="background: white; padding: 15px; border-radius: 10px; font-family: monospace; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                                <strong>📧 Email:</strong><br>
+                                antoniojesuspadilla.dev@proton.me
+                            </div>
+                            <div style="background: white; padding: 15px; border-radius: 10px; font-family: monospace; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                                <strong>🐙 GitHub:</strong><br>
+                                github.com/antonioJesusPadilla
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 35px;">
+                    <div style="font-size: 1.5em; font-weight: 800; background: linear-gradient(135deg, #1a365d 0%, #667eea 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 15px;">
+                        🏥 Gracias por su Atención 🏥
+                    </div>
+                    <div style="font-size: 1.1em; color: #4a5568; font-weight: 600;">
+                        Transformando la gestión sanitaria con Inteligencia Artificial
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navegación -->
+        <div class="navigation">
+            <button class="nav-button" id="prevBtn" onclick="changeSlide(-1)">← Anterior</button>
+            <button class="nav-button" id="nextBtn" onclick="changeSlide(1)">Siguiente →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('currentSlide').textContent = index + 1;
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            const newIndex = currentSlideIndex + direction;
+            if (newIndex >= 0 && newIndex < totalSlides) {
+                currentSlideIndex = newIndex;
+                showSlide(currentSlideIndex);
+            }
+        }
+
+        // Navegación con teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'Home') {
+                currentSlideIndex = 0;
+                showSlide(currentSlideIndex);
+            }
+            if (e.key === 'End') {
+                currentSlideIndex = totalSlides - 1;
+                showSlide(currentSlideIndex);
+            }
+            // Navegación con números (1-9, 0)
+            if (e.key >= '1' && e.key <= '9') {
+                const slideNum = parseInt(e.key) - 1;
+                if (slideNum < totalSlides) {
+                    currentSlideIndex = slideNum;
+                    showSlide(currentSlideIndex);
+                }
+            }
+            if (e.key === '0' && totalSlides >= 10) {
+                currentSlideIndex = 9;
+                showSlide(currentSlideIndex);
+            }
+        });
+
+        // Navegación táctil para móviles
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe left - next slide
+                    changeSlide(1);
+                } else {
+                    // Swipe right - previous slide
+                    changeSlide(-1);
+                }
+            }
+        }
+
+        // Modo presentación (F11 o fullscreen)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'f' || e.key === 'F') {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                } else {
+                    document.documentElement.requestFullscreen();
+                }
+            }
+        });
+
+        // Inicializar
+        showSlide(0);
+
+        // Prevenir scroll accidental
+        const slideElements = document.querySelectorAll('.slide');
+        slideElements.forEach(slide => {
+            slide.addEventListener('wheel', (e) => {
+                const atTop = slide.scrollTop === 0;
+                const atBottom = slide.scrollHeight - slide.scrollTop === slide.clientHeight;
+                
+                if ((atTop && e.deltaY < 0) || (atBottom && e.deltaY > 0)) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        });
+    </script>
+</body>
+</html>
+                
