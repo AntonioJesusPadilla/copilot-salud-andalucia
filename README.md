@@ -37,6 +37,29 @@
 
 ---
 
+## 📊 Presentación Interactiva
+
+Visualiza la presentación completa del proyecto con 14 diapositivas profesionales:
+
+**[📥 Descargar Presentación HTML](./docs/presentacion.html)** 
+*(Click derecho → Guardar como... → Abrir en tu navegador)*
+
+### Características de la Presentación:
+- ✨ 14 diapositivas con diseño profesional y moderno
+- 🎨 Navegación intuitiva con teclado (flechas ← →) o botones
+- 📱 Diseño responsivo optimizado para PC, tablets y móviles
+- 🖥️ Modo fullscreen (presiona tecla 'F')
+- 🎯 Contenido completo: funcionalidades, tecnologías, métricas y casos de uso
+- 🗺️ Información detallada del sistema de mapas y seguridad
+
+### Navegación:
+- **Flechas del teclado**: ← → para cambiar de slide
+- **Números**: 1-9, 0 para ir a slide específico
+- **Home/End**: Primera/última diapositiva
+- **Táctil**: Swipe en dispositivos móviles
+
+---
+
 ## 📁 **Estructura del Proyecto**
 
 ```
