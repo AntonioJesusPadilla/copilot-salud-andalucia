@@ -41,7 +41,7 @@
 
 Visualiza la presentación completa del proyecto con 14 diapositivas profesionales:
 
-**[📥 Descargar Presentación HTML](./docs/presentacion.html)** 
+**[📥 Descargar Presentación HTML](./docs/index.html)** 
 *(Click derecho → Guardar como... → Abrir en tu navegador)*
 
 ### Características de la Presentación:
