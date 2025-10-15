@@ -41,8 +41,7 @@
 
 Visualiza la presentación completa del proyecto con 14 diapositivas profesionales:
 
-**[📥 Descargar Presentación HTML](./docs/index.html)** 
-*(Click derecho → Guardar como... → Abrir en tu navegador)*
+**[📥 Ver Presentación Pryecto en HTML]([https://antoniojesuspadilla.github.io/copilot-salud-andalucia/])** 
 
 ### Características de la Presentación:
 - ✨ 14 diapositivas con diseño profesional y moderno
