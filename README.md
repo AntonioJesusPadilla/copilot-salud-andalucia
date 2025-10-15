@@ -43,7 +43,7 @@
 
 ### **Visualiza la presentación completa del proyecto**
 
-[![Ver Presentación Online](https://img.shields.io/badge/🎯_VER_PRESENTACIÓN-ONLINE-blue?style=for-the-badge&logo=html5&logoColor=white)](https://antoniojesuspadilla.github.io/copilot-salud-andalucia/presentacion.html)
+[![Ver Presentación Online](https://img.shields.io/badge/🎯_VER_PRESENTACIÓN-ONLINE-blue?style=for-the-badge&logo=html5&logoColor=white)](https://antoniojesuspadilla.github.io/copilot-salud-andalucia/index.html)
 
 </div>
 
