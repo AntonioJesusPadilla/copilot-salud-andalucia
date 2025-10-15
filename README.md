@@ -39,23 +39,29 @@
 
 ## 📊 Presentación Interactiva
 
-Visualiza la presentación completa del proyecto con 14 diapositivas profesionales:
+<div align="center">
 
-**[📥 Ver Presentación Pryecto en HTML]([https://antoniojesuspadilla.github.io/copilot-salud-andalucia/])** 
+### **Visualiza la presentación completa del proyecto**
 
-### Características de la Presentación:
-- ✨ 14 diapositivas con diseño profesional y moderno
-- 🎨 Navegación intuitiva con teclado (flechas ← →) o botones
-- 📱 Diseño responsivo optimizado para PC, tablets y móviles
-- 🖥️ Modo fullscreen (presiona tecla 'F')
-- 🎯 Contenido completo: funcionalidades, tecnologías, métricas y casos de uso
-- 🗺️ Información detallada del sistema de mapas y seguridad
+[![Ver Presentación Online](https://img.shields.io/badge/🎯_VER_PRESENTACIÓN-ONLINE-blue?style=for-the-badge&logo=html5&logoColor=white)](https://antoniojesuspadilla.github.io/copilot-salud-andalucia/presentacion.html)
 
-### Navegación:
-- **Flechas del teclado**: ← → para cambiar de slide
-- **Números**: 1-9, 0 para ir a slide específico
-- **Home/End**: Primera/última diapositiva
-- **Táctil**: Swipe en dispositivos móviles
+</div>
+
+### ✨ Características:
+- **14 diapositivas** profesionales con información completa del sistema
+- **Diseño responsivo** - Funciona perfectamente en PC, tablets y móviles
+- **Navegación múltiple** - Teclado, táctil, botones y atajos numéricos
+- **Modo fullscreen** - Presiona 'F' para presentación inmersiva
+- **Actualizado 2025** - Con datos y métricas más recientes
+
+### 🎮 Controles:
+| Control | Acción |
+|---------|--------|
+| `← →` | Cambiar diapositiva |
+| `1-9, 0` | Ir a slide específico |
+| `Home/End` | Primera/Última slide |
+| `F` | Modo pantalla completa |
+| `Swipe` | Navegación táctil |
 
 ---
 
