@@ -1060,4 +1060,71 @@ section[data-testid="stMain"] {
     color: #ffffff !important;
 }
 
-/* CACHE INVALIDATION - FORCE RELOAD 2025-10-03-00:40:00-v10 */
+/* ========== MENÚ DE NAVEGACIÓN - HOVER Y ESTADO ACTIVO ========== */
+
+/* Transición suave para todos los links del menú - ULTRA ESPECÍFICO */
+[data-v-5af006b8] a.nav-link.nav-link-horizontal,
+a.nav-link.nav-link-horizontal[href="javascript:void(0);"],
+a.nav-link.nav-link-horizontal {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* HOVER: Efecto para links NO activos - TEMA CLARO */
+[data-theme="light"] [data-v-5af006b8] a.nav-link.nav-link-horizontal:not([aria-current="page"]):hover,
+[data-theme="light"] a.nav-link.nav-link-horizontal:not([aria-current="page"]):hover {
+    background-color: #e9ecef !important;
+    background-image: none !important;
+    background: #e9ecef !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* HOVER: Efecto para links NO activos - TEMA OSCURO */
+[data-theme="dark"] [data-v-5af006b8] a.nav-link.nav-link-horizontal:not([aria-current="page"]):hover,
+[data-theme="dark"] a.nav-link.nav-link-horizontal:not([aria-current="page"]):hover {
+    background-color: #64748b !important;
+    background-image: none !important;
+    background: #64748b !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Ícono en hover - Efecto de escala */
+[data-v-5af006b8] a.nav-link.nav-link-horizontal:not([aria-current="page"]):hover i.icon,
+[data-v-5af006b8] a.nav-link.nav-link-horizontal:not([aria-current="page"]):hover i[class*="bi-"],
+a.nav-link.nav-link-horizontal:not([aria-current="page"]):hover i.icon,
+a.nav-link.nav-link-horizontal:not([aria-current="page"]):hover i[class*="bi-"] {
+    transform: scale(1.1) !important;
+    transition: transform 0.3s ease !important;
+}
+
+/* ACTIVO: Elemento con aria-current="page" - Estilos persistentes */
+[data-v-5af006b8] a.nav-link.nav-link-horizontal[aria-current="page"],
+a.nav-link.nav-link-horizontal[aria-current="page"] {
+    background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+    background-color: #3b82f6 !important;
+    background-image: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+    color: white !important;
+    border-bottom-color: #3b82f6 !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4) !important;
+}
+
+/* Ícono del elemento activo - Siempre blanco */
+[data-v-5af006b8] a.nav-link.nav-link-horizontal[aria-current="page"] i.icon,
+[data-v-5af006b8] a.nav-link.nav-link-horizontal[aria-current="page"] i[class*="bi-"],
+a.nav-link.nav-link-horizontal[aria-current="page"] i.icon,
+a.nav-link.nav-link-horizontal[aria-current="page"] i[class*="bi-"] {
+    color: white !important;
+}
+
+/* Hover sobre elemento activo - Realce sutil (degradado más oscuro) */
+[data-v-5af006b8] a.nav-link.nav-link-horizontal[aria-current="page"]:hover,
+a.nav-link.nav-link-horizontal[aria-current="page"]:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+    background-image: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+    transform: translateY(0px) !important;
+    box-shadow: 0 3px 10px rgba(59, 130, 246, 0.6) !important;
+}
+
+/* CACHE INVALIDATION - FORCE RELOAD 2025-10-16-11:00:00-v12-MEGA-HOVER */

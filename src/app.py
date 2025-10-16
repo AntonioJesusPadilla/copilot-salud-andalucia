@@ -2723,124 +2723,108 @@ def render_page_navigation(app):
         # Página principal con tabs dinámicos
         tabs_available = []
         tab_functions = []
-        tab_icons = []
 
         # Dashboard siempre disponible para usuarios con ver_datos
         if app.has_permission('ver_datos'):
             tabs_available.append("Dashboard")
             tab_functions.append(lambda: render_secure_dashboard(app))
-            tab_icons.append("bar-chart-fill")
 
         if app.has_permission('analisis_ia'):
             tabs_available.append("Chat IA")
             tab_functions.append(lambda: render_secure_chat(app))
-            tab_icons.append("robot")
 
         if app.has_permission('reportes'):
             tabs_available.append("Reportes")
             tab_functions.append(lambda: render_secure_reportes(app))
-            tab_icons.append("file-earmark-text")
 
         if app.has_permission('planificacion'):
             tabs_available.append("Planificación")
             tab_functions.append(lambda: render_secure_planificacion(app))
-            tab_icons.append("geo-alt-fill")
 
         # Tab de mapas épicos disponible para usuarios con permisos de ver_datos o superior
         if app.has_permission('ver_datos') and MAPS_AVAILABLE:
             tabs_available.append("Mapas Épicos")
             tab_functions.append(lambda: render_epic_maps_tab(app))
-            tab_icons.append("map")
         
         # Si solo tiene un tab, mostrarlo directamente
         if len(tabs_available) == 1:
             tab_functions[0]()
         elif len(tabs_available) > 1:
-            # LAZY IMPORT: Importar option_menu solo cuando se necesita (después del login)
-            try:
-                from streamlit_option_menu import option_menu
-            except ImportError as e:
-                st.error(f"❌ No se pudo cargar el menú de navegación: {e}")
-                st.info("💡 Instala: pip install streamlit-option-menu")
-                return
-
-            # Usar option_menu para navegación persistente con aspecto elegante
             # Detectar tema actual para estilos
             current_theme = st.session_state.get('theme_mode', 'light')
 
-            # Estilos según tema - MEJORADO: Mayor especificidad para mantener estado activo visual
-            if current_theme == 'dark':
-                menu_styles = {
-                    "container": {"padding": "0!important", "background-color": "#475569"},
-                    "icon": {"color": "#cbd5e1", "font-size": "18px"},
-                    "nav-link": {
-                        "font-size": "16px",
-                        "text-align": "center",
-                        "margin": "0px",
-                        "padding": "12px 16px",
-                        "color": "#cbd5e1",
-                        "background-color": "#475569",
-                        "border-radius": "8px 8px 0 0",
-                        "border-bottom": "3px solid transparent",
-                        "transition": "all 0.2s ease",
-                    },
-                    "nav-link-selected": {
-                        "background-color": "#3b82f6 !important",
-                        "background": "linear-gradient(135deg, #3b82f6, #2563eb) !important",
-                        "color": "white !important",
-                        "border-bottom": "3px solid #3b82f6 !important",
-                        "font-weight": "600 !important",
-                        "box-shadow": "0 2px 8px rgba(59, 130, 246, 0.3) !important",
-                    },
-                }
-            else:
-                menu_styles = {
-                    "container": {"padding": "0!important", "background-color": "#f8f9fa"},
-                    "icon": {"color": "#495057", "font-size": "18px"},
-                    "nav-link": {
-                        "font-size": "16px",
-                        "text-align": "center",
-                        "margin": "0px",
-                        "padding": "12px 16px",
-                        "color": "#495057",
-                        "background-color": "#f8f9fa",
-                        "border-radius": "8px 8px 0 0",
-                        "border-bottom": "3px solid transparent",
-                        "transition": "all 0.2s ease",
-                    },
-                    "nav-link-selected": {
-                        "background-color": "#3b82f6 !important",
-                        "background": "linear-gradient(135deg, #3b82f6, #2563eb) !important",
-                        "color": "white !important",
-                        "border-bottom": "3px solid #3b82f6 !important",
-                        "font-weight": "600 !important",
-                        "box-shadow": "0 2px 8px rgba(59, 130, 246, 0.3) !important",
-                    },
-                }
+            # CSS personalizado para tabs nativos de Streamlit con hover
+            hover_bg = "#e9ecef" if current_theme == 'light' else "#64748b"
+            hover_shadow = "0.15" if current_theme == 'light' else "0.3"
 
-            # PERSISTENCIA DEL MENÚ: Usar key única y confiar en el estado del componente
-            username = st.session_state.user.get('username', 'default')
-            menu_key = f"main_navigation_menu_{username}"
+            st.markdown(f"""
+            <style>
+            /* ===== ESTILOS PARA TABS NATIVOS DE STREAMLIT ===== */
 
-            # El default_index solo se usa en la primera carga
-            # Después, option_menu mantiene su propio estado con la key
-            default_idx = 0
+            /* Contenedor de tabs */
+            .stTabs [data-baseweb="tab-list"] {{
+                gap: 4px;
+                background-color: transparent;
+                padding: 0;
+            }}
 
-            # Crear menú horizontal - option_menu mantiene su estado automáticamente
-            selected_tab = option_menu(
-                menu_title=None,
-                options=tabs_available,
-                icons=tab_icons,
-                menu_icon="cast",
-                default_index=default_idx,
-                orientation="horizontal",
-                styles=menu_styles,
-                key=menu_key  # Key única por usuario para aislar estados
-            )
+            /* Cada tab individual */
+            .stTabs [data-baseweb="tab"] {{
+                height: auto;
+                padding: 12px 20px;
+                background-color: {'#f8f9fa' if current_theme == 'light' else '#475569'};
+                color: {'#495057' if current_theme == 'light' else '#cbd5e1'};
+                border-radius: 8px 8px 0 0;
+                border: none;
+                font-size: 16px;
+                font-weight: 500;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                cursor: pointer;
+            }}
 
-            # Renderizar solo el contenido del tab seleccionado
-            selected_index = tabs_available.index(selected_tab)
-            tab_functions[selected_index]()
+            /* HOVER: Tab no activo */
+            .stTabs [data-baseweb="tab"]:not([aria-selected="true"]):hover {{
+                background-color: {hover_bg} !important;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, {hover_shadow}) !important;
+            }}
+
+            /* ACTIVO: Tab seleccionado */
+            .stTabs [data-baseweb="tab"][aria-selected="true"] {{
+                background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+                color: white !important;
+                font-weight: 600 !important;
+                border-bottom: 3px solid #3b82f6 !important;
+                box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4) !important;
+            }}
+
+            /* Hover sobre tab activo - realce sutil */
+            .stTabs [data-baseweb="tab"][aria-selected="true"]:hover {{
+                background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+                transform: none !important;
+                box-shadow: 0 3px 10px rgba(59, 130, 246, 0.6) !important;
+            }}
+
+            /* Ocultar barra inferior predeterminada */
+            .stTabs [data-baseweb="tab-highlight"] {{
+                display: none;
+            }}
+
+            /* Panel de contenido del tab */
+            .stTabs [data-baseweb="tab-panel"] {{
+                padding-top: 1rem;
+            }}
+            </style>
+            """, unsafe_allow_html=True)
+
+            # Usar tabs nativos de Streamlit - PERSISTENCIA AUTOMÁTICA
+            tabs_components = st.tabs(tabs_available)
+
+            # Renderizar contenido en cada tab
+            for i, tab in enumerate(tabs_components):
+                with tab:
+                    tab_functions[i]()
+
         else:
             if app.user['role'] == 'invitado':
                 st.info("ℹ️ **Usuario Invitado**: Solo tienes acceso al Dashboard básico. Para más funcionalidades, contacta al administrador.")
