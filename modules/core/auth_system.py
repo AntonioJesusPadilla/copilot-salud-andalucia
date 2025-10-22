@@ -380,1312 +380,116 @@ def render_login_page():
 
     current_theme = st.session_state.get('theme_mode', 'light')
 
-    # Botón de tema en login - parte superior derecha
-    theme_icon = "🌙" if current_theme == 'light' else "☀️"
-    theme_text = "Oscuro" if current_theme == 'light' else "Claro"
-
-    col1, col2, col3 = st.columns([1, 4, 1])
-    with col3:
-        if st.button(f"{theme_icon} {theme_text}", key="login_theme_btn", use_container_width=True):
-            new_theme = 'dark' if current_theme == 'light' else 'light'
-            st.session_state.theme_mode = new_theme
-            st.rerun()
-
     # CSS para la página de login
     from datetime import datetime
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    # ===== CARGAR CSS EXTERNO (Optimización Fase 1) =====
+    # En lugar de CSS inline, cargar desde archivo externo (cacheable)
+    import os
+    css_file = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'assets', 'login.min.css')
 
-    print(f"🔓 RENDERIZANDO LOGIN - Timestamp CSS: {timestamp}")
+    if os.path.exists(css_file):
+        with open(css_file, 'r', encoding='utf-8') as f:
+            login_css = f.read()
+        # Agregar marca de tiempo para forzar recarga de CSS (evitar caché navegador)
+        import time
+        cache_buster = f"/* CSS Version: {int(time.time())} - Padding Fix Applied */"
+        st.markdown(f'<style>{cache_buster}\n{login_css}</style>', unsafe_allow_html=True)
+    else:
+        # Fallback: usar CSS básico si el archivo no existe
+        st.markdown("""
+        <style>
+        .login-container { max-width: 400px; margin: 2rem auto; padding: 2rem; }
+        .stTextInput input { background: white !important; color: #1a202c !important; }
+        </style>
+        """, unsafe_allow_html=True)
 
-    # RESET CSS MEGA ULTRA AGRESIVO con ID único
-    # Este CSS se carga AL FINAL, después de TODO el CSS del tema oscuro
-    # Usar doble llaves {{}} para escapar llaves en f-string
-    reset_css_content = """<style id="login-reset-TIMESTAMP">
-/* ========== RESET BRUTAL LOGIN - ID: TIMESTAMP ========== */
-/* CRITICO: Estos estilos se aplican SOLO cuando existe .login-container */
-
-/* Forzar fondo claro cuando existe login-container */
-.login-container ~ * html body .stApp .main,
-body:has(.login-container) .stApp .main,
-body:has(.login-container) .stApp,
-body:has(.login-container),
-.login-container,
-html body .stApp .main:has(.login-container),
-html body .stApp:has(.login-container),
-html body:has(.login-container) {
-    background: #f8fafc !important;
-    background-color: #f8fafc !important;
-    background-image: none !important;
-    color: #1a202c !important;
-}
-
-/* INPUTS - MAXIMA ESPECIFICIDAD */
-html body .stApp .main .stTextInput,
-html body .stApp .main .stTextInput > div,
-html body .stApp .main .stTextInput > div > div,
-html body .stApp .main .stTextInput input,
-html body .stApp .main .stTextInput *,
-html body .stApp .main .stPassword input,
-html body .stApp .main input[type="text"],
-html body .stApp .main input[type="password"],
-html body .stApp .main textarea,
-html body .stApp .main select {
-    background: white !important;
-    background-color: white !important;
-    color: #1a202c !important;
-    border: 1px solid #cbd5e0 !important;
-    box-shadow: none !important;
-}
-
-/* BOTONES - MAXIMA ESPECIFICIDAD */
-html body .stApp .main button,
-html body .stApp .main .stButton button,
-html body .stApp .main .stButton > button,
-html body .stApp .main [data-testid="baseButton-secondary"],
-html body .stApp .main [data-testid="baseButton-primary"] {
-    background: white !important;
-    background-color: white !important;
-    color: #1a202c !important;
-    border: 1px solid #cbd5e0 !important;
-}
-
-/* TEXTO - MAXIMA ESPECIFICIDAD */
-html body .stApp .main,
-html body .stApp .main *,
-html body .stApp .main label,
-html body .stApp .main p,
-html body .stApp .main span,
-html body .stApp .main div,
-html body .stApp .main h1,
-html body .stApp .main h2,
-html body .stApp .main h3 {
-    color: #1a202c !important;
-}
-
-/* PLACEHOLDERS */
-html body .stApp .main input::placeholder,
-html body .stApp .main textarea::placeholder {
-    color: #a0aec0 !important;
-    opacity: 1 !important;
-}
-
-/* ELIMINAR BACKGROUND-IMAGE */
-html body .stApp *,
-html body .stApp .main * {
-    background-image: none !important;
-}
-</style>"""
-
-    # Reemplazar timestamp
-    reset_css_content = reset_css_content.replace("TIMESTAMP", timestamp)
-    st.markdown(reset_css_content, unsafe_allow_html=True)
-
-    # Aplicar CSS específico del login
+    # CSS INLINE ADICIONAL para sobrescribir padding (máxima prioridad)
     st.markdown("""
     <style>
-    /* CSS LOGIN - {timestamp} */
-        /* ========== OCULTAR SIDEBAR EN LOGIN ========== */
-        [data-testid="stSidebar"],
-        .stSidebar,
-        section[data-testid="stSidebar"] {
-            display: none !important;
-            visibility: hidden !important;
-            width: 0 !important;
-        }
+    /* FIX URGENTE: Limitar ancho del contenedor principal del login */
+    .stMainBlockContainer,
+    [class*="block-container"] {
+        max-width: 460px !important;
+        margin: 0 auto !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        padding-top: 1rem !important;
+    }
 
-        /* Expandir el contenido principal para ocupar todo el ancho */
-        .main .block-container {
-            max-width: 100% !important;
-            padding-left: 5rem !important;
-            padding-right: 5rem !important;
-        }
-
-        .login-container {
-            max-width: 420px;
-            margin: 0 auto;
-            padding: 0;
-            background: #ffffff;
-            border-radius: 24px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-        }
-        
-        .login-header {
-            text-align: center;
-            color: #1a202c;
-            padding: 2.5rem 2rem 1.5rem 2rem;
-            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
-            position: relative;
-        }
-        
-        .login-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(135deg, #00a86b 0%, #4CAF50 100%);
-            border-radius: 2px;
-        }
-        
-        .login-header h1 {
-            font-size: 2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #1a202c;
-            letter-spacing: -0.01em;
-        }
-        
-        .login-header h3 {
-            font-size: 1rem;
-            font-weight: 400;
-            margin-bottom: 0.25rem;
-            color: #4a5568;
-            opacity: 0.8;
-        }
-        
-        .login-header p {
-            font-size: 0.85rem;
-            color: #718096;
-            margin: 0;
-            font-weight: 400;
-        }
-        
-        .login-form-container {
-            padding: 2rem;
-        }
-        
-        .demo-credentials {
-            background: linear-gradient(135deg, #f0fff4 0%, #e6fffa 100%);
-            padding: 1.5rem;
-            border-radius: 12px;
-            color: #1a202c;
-            margin-top: 1.5rem;
-            border: 1px solid rgba(76, 175, 80, 0.2);
-            position: relative;
-        }
-        
-        .demo-credentials::before {
-            content: '🎯';
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-size: 1.2rem;
-            opacity: 0.6;
-        }
-        
-        .demo-credentials h4 {
-            color: #00a86b;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-            font-weight: 600;
-        }
-        
-        .demo-credentials p {
-            margin: 0.5rem 0;
-            font-size: 0.85rem;
-            color: #4a5568;
-        }
-        
-        .user-role-badge {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            margin: 0.25rem;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            background: #ffffff;
-        }
-        
-        .roles-section {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background: #fafafa;
-            border-radius: 12px;
-        }
-        
-        .roles-section h3 {
-            color: #1a202c;
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-
-        /* ========== MODO OSCURO ========== */
-        [data-theme="dark"] .login-container,
-        body[data-theme="dark"] .login-container {
-            background: #1e293b !important;
-            border: 1px solid #374151 !important;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2) !important;
-        }
-
-        [data-theme="dark"] .login-header,
-        body[data-theme="dark"] .login-header {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
-            color: #ffffff !important;
-        }
-
-        [data-theme="dark"] .login-header *,
-        [data-theme="dark"] .login-header div,
-        [data-theme="dark"] .login-header > div,
-        body[data-theme="dark"] .login-header *,
-        body[data-theme="dark"] .login-header div,
-        body[data-theme="dark"] .login-header > div {
-            color: #ffffff !important;
-        }
-
-        [data-theme="dark"] .login-header h1,
-        body[data-theme="dark"] .login-header h1 {
-            color: #ffffff !important;
-        }
-
-        [data-theme="dark"] .login-header h3,
-        body[data-theme="dark"] .login-header h3 {
-            color: #ffffff !important;
-        }
-
-        [data-theme="dark"] .login-header p,
-        body[data-theme="dark"] .login-header p {
-            color: #ffffff !important;
-        }
-
-        [data-theme="dark"] .login-form-container,
-        body[data-theme="dark"] .login-form-container {
-            background: #475569 !important;
-        }
-
-        [data-theme="dark"] .demo-credentials,
-        body[data-theme="dark"] .demo-credentials {
-            background: linear-gradient(135deg, #065f46 0%, #047857 100%) !important;
-            border: 1px solid rgba(52, 211, 153, 0.3) !important;
-            color: #f9fafb !important;
-        }
-
-        [data-theme="dark"] .demo-credentials h4,
-        body[data-theme="dark"] .demo-credentials h4 {
-            color: #34d399 !important;
-        }
-
-        [data-theme="dark"] .demo-credentials p,
-        body[data-theme="dark"] .demo-credentials p {
-            color: #e5e7eb !important;
-        }
-
-        [data-theme="dark"] .roles-section,
-        body[data-theme="dark"] .roles-section {
-            background: #334155 !important;
-        }
-
-        [data-theme="dark"] .roles-section h3,
-        body[data-theme="dark"] .roles-section h3 {
-            color: #f9fafb !important;
-        }
-
-        [data-theme="dark"] .user-role-badge,
-        body[data-theme="dark"] .user-role-badge {
-            background: #1e293b !important;
-            border: 1px solid #4b5563 !important;
-            color: #e5e7eb !important;
-        }
-
-        /* Estilos para elementos de Streamlit en modo oscuro */
-        [data-theme="dark"] .login-container .stButton > button,
-        body[data-theme="dark"] .login-container .stButton > button {
-            background: #334155 !important;
-            color: #f9fafb !important;
-            border: 1px solid #4b5563 !important;
-        }
-
-        [data-theme="dark"] .login-container .stButton > button:hover,
-        body[data-theme="dark"] .login-container .stButton > button:hover {
-            background: #4b5563 !important;
-            border-color: #6b7280 !important;
-        }
-
-        [data-theme="dark"] .login-container .stTextInput > div > div > input,
-        body[data-theme="dark"] .login-container .stTextInput > div > div > input {
-            background: #334155 !important;
-            color: #f9fafb !important;
-            border: 1px solid #4b5563 !important;
-        }
-
-        [data-theme="dark"] .login-container .stTextInput > div > div > input:focus,
-        body[data-theme="dark"] .login-container .stTextInput > div > div > input:focus {
-            border-color: #6b7280 !important;
-        }
-
-        [data-theme="dark"] .login-container label,
-        body[data-theme="dark"] .login-container label {
-            color: #f9fafb !important;
-        }
-
-        [data-theme="dark"] .login-container .stMarkdown h4,
-        body[data-theme="dark"] .login-container .stMarkdown h4 {
-            color: #f9fafb !important;
-        }
-
-        /* TARJETAS DE ROLES EN MODO OSCURO - MÁS AGRESIVO */
-        [data-theme="dark"] div[style*="background: #ffffff"],
-        [data-theme="dark"] div[style*="background:#ffffff"],
-        [data-theme="dark"] .role-card-login,
-        body[data-theme="dark"] div[style*="background: #ffffff"],
-        body[data-theme="dark"] div[style*="background:#ffffff"],
-        body[data-theme="dark"] .role-card-login {
-            background: #334155 !important;
-            border: 2px solid #6b7280 !important;
-            color: #f9fafb !important;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
-        }
-
-        [data-theme="dark"] div[style*="background: #ffffff"] *,
-        [data-theme="dark"] div[style*="background:#ffffff"] *,
-        [data-theme="dark"] .role-card-login *,
-        body[data-theme="dark"] div[style*="background: #ffffff"] *,
-        body[data-theme="dark"] div[style*="background:#ffffff"] *,
-        body[data-theme="dark"] .role-card-login * {
-            color: #f9fafb !important;
-        }
-
-        [data-theme="dark"] div[style*="background: #ffffff"] strong,
-        [data-theme="dark"] div[style*="background:#ffffff"] strong,
-        body[data-theme="dark"] div[style*="background: #ffffff"] strong,
-        body[data-theme="dark"] div[style*="background:#ffffff"] strong {
-            color: #ffffff !important;
-            font-weight: 700 !important;
-        }
-
-        [data-theme="dark"] div[style*="background: #ffffff"] small,
-        [data-theme="dark"] div[style*="background:#ffffff"] small,
-        body[data-theme="dark"] div[style*="background: #ffffff"] small,
-        body[data-theme="dark"] div[style*="background:#ffffff"] small {
-            color: #e5e7eb !important;
-            opacity: 0.9 !important;
-        }
-
-        /* FORZAR TODOS LOS DIV CON ESTILOS INLINE EN MODO OSCURO */
-        [data-theme="dark"] div[style],
-        body[data-theme="dark"] div[style] {
-            background: #334155 !important;
-            color: #f9fafb !important;
-        }
-
-        /* FORZAR VISIBILIDAD DE ELEMENTOS STREAMLIT EN MODO OSCURO */
-        [data-theme="dark"] .login-container *,
-        body[data-theme="dark"] .login-container * {
-            color: #f9fafb !important;
-        }
-
-        [data-theme="dark"] .login-container input,
-        [data-theme="dark"] .login-container textarea,
-        [data-theme="dark"] .login-container select,
-        body[data-theme="dark"] .login-container input,
-        body[data-theme="dark"] .login-container textarea,
-        body[data-theme="dark"] .login-container select {
-            background: #334155 !important;
-            color: #f9fafb !important;
-            border: 1px solid #6b7280 !important;
-        }
-
-        [data-theme="dark"] .login-container .stTextInput input,
-        [data-theme="dark"] .login-container [data-testid="textInput"] input,
-        body[data-theme="dark"] .login-container .stTextInput input,
-        body[data-theme="dark"] .login-container [data-testid="textInput"] input {
-            background: #334155 !important;
-            color: #f9fafb !important;
-            border: 1px solid #6b7280 !important;
-        }
-
-        /* BOTONES ESPECÍFICOS CON MEJOR CONTRASTE */
-        [data-theme="dark"] .login-container button,
-        [data-theme="dark"] .login-container .stButton > button,
-        body[data-theme="dark"] .login-container button,
-        body[data-theme="dark"] .login-container .stButton > button {
-            background: #334155 !important;
-            color: #ffffff !important;
-            border: 2px solid #6b7280 !important;
-            font-weight: 600 !important;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
-        }
-
-        [data-theme="dark"] .login-container button:hover,
-        [data-theme="dark"] .login-container .stButton > button:hover,
-        body[data-theme="dark"] .login-container button:hover,
-        body[data-theme="dark"] .login-container .stButton > button:hover {
-            background: #4b5563 !important;
-            border-color: #9ca3af !important;
-            color: #ffffff !important;
-            transform: translateY(-1px) !important;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
-        }
-
-        /* Forzar placeholder text en modo oscuro */
-        [data-theme="dark"] .login-container input::placeholder,
-        [data-theme="dark"] .login-container textarea::placeholder,
-        body[data-theme="dark"] .login-container input::placeholder,
-        body[data-theme="dark"] .login-container textarea::placeholder {
-            color: #9ca3af !important;
-            opacity: 0.8 !important;
-        }
-
-        /* Específico para elementos de form de Streamlit */
-        [data-theme="dark"] .login-container .stForm,
-        [data-theme="dark"] .login-container [data-testid="stForm"],
-        body[data-theme="dark"] .login-container .stForm,
-        body[data-theme="dark"] .login-container [data-testid="stForm"] {
-            background: transparent !important;
-        }
-
-        [data-theme="dark"] .login-container .stMarkdown,
-        body[data-theme="dark"] .login-container .stMarkdown {
-            color: #f9fafb !important;
-        }
-
-        [data-theme="dark"] .login-container .stMarkdown h1,
-        [data-theme="dark"] .login-container .stMarkdown h2,
-        [data-theme="dark"] .login-container .stMarkdown h3,
-        [data-theme="dark"] .login-container .stMarkdown h4,
-        [data-theme="dark"] .login-container .stMarkdown h5,
-        [data-theme="dark"] .login-container .stMarkdown h6,
-        body[data-theme="dark"] .login-container .stMarkdown h1,
-        body[data-theme="dark"] .login-container .stMarkdown h2,
-        body[data-theme="dark"] .login-container .stMarkdown h3,
-        body[data-theme="dark"] .login-container .stMarkdown h4,
-        body[data-theme="dark"] .login-container .stMarkdown h5,
-        body[data-theme="dark"] .login-container .stMarkdown h6 {
-            color: #f9fafb !important;
-        }
-
-        /* FORZAR TEMA OSCURO GLOBALMENTE CUANDO ESTÁ ACTIVO */
-        body[data-theme="dark"] {
-            background-color: #0f172a !important;
-            color: #f9fafb !important;
-        }
-
-        body[data-theme="dark"] .stApp,
-        body[data-theme="dark"] .main {
-            background-color: #0f172a !important;
-            color: #f9fafb !important;
-        }
-
-        body[data-theme="dark"] .stButton > button {
-            background: #4b5563 !important;
-            color: #f9fafb !important;
-            border: 1px solid #6b7280 !important;
-        }
-
-        body[data-theme="dark"] .stTextInput > div > div > input {
-            background: #334155 !important;
-            color: #f9fafb !important;
-            border: 1px solid #6b7280 !important;
-        }
-
-        body[data-theme="dark"] label {
-            color: #f9fafb !important;
-        }
-
-        body[data-theme="dark"] .stMarkdown {
-            color: #f9fafb !important;
-        }
-
-        body[data-theme="dark"] .stMarkdown h1,
-        body[data-theme="dark"] .stMarkdown h2,
-        body[data-theme="dark"] .stMarkdown h3,
-        body[data-theme="dark"] .stMarkdown h4 {
-            color: #f9fafb !important;
-        }
-
-        /* TOGGLE BUTTON STYLING EN MODO OSCURO */
-        [data-theme="dark"] button[key="theme_toggle_v6_positioned"],
-        body[data-theme="dark"] button[key="theme_toggle_v6_positioned"] {
-            background: #334155 !important;
-            color: #ffffff !important;
-            border: 2px solid #6b7280 !important;
-            font-weight: 600 !important;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
-        }
-
-        [data-theme="dark"] button[key="theme_toggle_v6_positioned"]:hover,
-        body[data-theme="dark"] button[key="theme_toggle_v6_positioned"]:hover {
-            background: #4b5563 !important;
-            border-color: #9ca3af !important;
-            transform: translateY(-1px) !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4) !important;
-        }
-
-        /* ========== FORZAR MODO CLARO ========== */
-        body[data-theme="light"],
-        body:not([data-theme="dark"]) {
-            background-color: #ffffff !important;
-            color: #1a202c !important;
-        }
-
-        body[data-theme="light"] .stApp,
-        body[data-theme="light"] .main,
-        body:not([data-theme="dark"]) .stApp,
-        body:not([data-theme="dark"]) .main {
-            background-color: #ffffff !important;
-            color: #1a202c !important;
-        }
-
-        body[data-theme="light"] .stButton > button,
-        body:not([data-theme="dark"]) .stButton > button {
-            background: #ffffff !important;
-            color: #1a202c !important;
-            border: 1px solid #d1d5db !important;
-        }
-
-        body[data-theme="light"] .stTextInput > div > div > input,
-        body:not([data-theme="dark"]) .stTextInput > div > div > input {
-            background: #ffffff !important;
-            color: #1a202c !important;
-            border: 1px solid #d1d5db !important;
-        }
-
-        body[data-theme="light"] label,
-        body:not([data-theme="dark"]) label {
-            color: #1a202c !important;
-        }
-
-        body[data-theme="light"] .stMarkdown,
-        body:not([data-theme="dark"]) .stMarkdown {
-            color: #1a202c !important;
-        }
-
-        body[data-theme="light"] .stMarkdown h1,
-        body[data-theme="light"] .stMarkdown h2,
-        body[data-theme="light"] .stMarkdown h3,
-        body[data-theme="light"] .stMarkdown h4,
-        body:not([data-theme="dark"]) .stMarkdown h1,
-        body:not([data-theme="dark"]) .stMarkdown h2,
-        body:not([data-theme="dark"]) .stMarkdown h3,
-        body:not([data-theme="dark"]) .stMarkdown h4 {
-            color: #1a202c !important;
-        }
-
-        /* SIDEBAR EN MODO CLARO */
-        body[data-theme="light"] .stSidebar,
-        body[data-theme="light"] [data-testid="stSidebar"],
-        body:not([data-theme="dark"]) .stSidebar,
-        body:not([data-theme="dark"]) [data-testid="stSidebar"] {
-            background-color: #f8fafc !important;
-            color: #1a202c !important;
-        }
-
-        body[data-theme="light"] .stSidebar *,
-        body[data-theme="light"] [data-testid="stSidebar"] *,
-        body:not([data-theme="dark"]) .stSidebar *,
-        body:not([data-theme="dark"]) [data-testid="stSidebar"] * {
-            color: #1a202c !important;
-        }
-
-        /* FORZAR ELEMENTOS GENERALES EN MODO CLARO */
-        body[data-theme="light"] *,
-        body:not([data-theme="dark"]) * {
-            color: #1a202c !important;
-        }
-
-        body[data-theme="light"] button,
-        body:not([data-theme="dark"]) button {
-            background: #ffffff !important;
-            color: #1a202c !important;
-            border: 1px solid #d1d5db !important;
-        }
-
-        body[data-theme="light"] input,
-        body[data-theme="light"] textarea,
-        body[data-theme="light"] select,
-        body:not([data-theme="dark"]) input,
-        body:not([data-theme="dark"]) textarea,
-        body:not([data-theme="dark"]) select {
-            background: #ffffff !important;
-            color: #1a202c !important;
-            border: 1px solid #d1d5db !important;
-        }
+    /* Asegurar que el login-container esté centrado con ancho correcto */
+    .login-container {
+        max-width: 420px !important;
+        margin: 0 auto !important;
+    }
     </style>
+    <script>
+    // JAVASCRIPT PARA FORZAR ANCHO CORRECTO DEL LOGIN - Ejecutar después de carga
+    (function() {
+        function fixLoginWidth() {
+            console.log('🔧 Aplicando fix de ancho del login...');
+
+            // Seleccionar el contenedor principal (Streamlit usa .stMainBlockContainer)
+            const blockContainer = document.querySelector('.stMainBlockContainer') ||
+                                 document.querySelector('[class*="block-container"]');
+
+            if (blockContainer) {
+                blockContainer.style.setProperty('max-width', '460px', 'important');
+                blockContainer.style.setProperty('margin', '0 auto', 'important');
+                blockContainer.style.setProperty('padding-left', '1rem', 'important');
+                blockContainer.style.setProperty('padding-right', '1rem', 'important');
+                blockContainer.style.setProperty('padding-top', '1rem', 'important');
+                console.log('✅ Ancho limitado a 460px en .stMainBlockContainer');
+            } else {
+                console.warn('⚠️ No se encontró .stMainBlockContainer');
+            }
+
+            // Asegurar login container centrado
+            const loginContainer = document.querySelector('.login-container');
+            if (loginContainer) {
+                loginContainer.style.setProperty('max-width', '420px', 'important');
+                loginContainer.style.setProperty('margin', '0 auto', 'important');
+                console.log('✅ Estilos aplicados a .login-container');
+            }
+
+            // Forzar ancho en todos los elementos hijos directos del block-container
+            if (blockContainer) {
+                const blockContainerChildren = blockContainer.querySelectorAll(':scope > *');
+                blockContainerChildren.forEach(child => {
+                    child.style.setProperty('max-width', '100%', 'important');
+                });
+                console.log('✅ Ancho aplicado a hijos del contenedor');
+            }
+        }
+
+        // Ejecutar inmediatamente
+        fixLoginWidth();
+
+        // Ejecutar cuando el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', fixLoginWidth);
+        } else {
+            fixLoginWidth();
+        }
+
+        // Ejecutar después de delays (por si Streamlit carga después)
+        setTimeout(fixLoginWidth, 100);
+        setTimeout(fixLoginWidth, 500);
+        setTimeout(fixLoginWidth, 1000);
+        setTimeout(fixLoginWidth, 2000);
+
+        // Observar cambios en el DOM por si Streamlit reenderiza
+        const observer = new MutationObserver(fixLoginWidth);
+        observer.observe(document.body, { childList: true, subtree: true });
+    })();
+    </script>
     """, unsafe_allow_html=True)
 
-    # Aplicar atributo data-theme para el modo oscuro
-    if 'theme_mode' in st.session_state:
-        current_theme = st.session_state.theme_mode
-    else:
-        current_theme = 'light'  # Valor por defecto
-
-    # CSS inmediato para modo oscuro si está activo
-    if current_theme == 'dark':
-        st.markdown("""
-        <style>
-        /* FORZAR MODO OSCURO INMEDIATO */
-            html, body, .stApp, .main {
-                background-color: #0f172a !important;
-                color: #f9fafb !important;
-            }
-
-            .stButton > button {
-                background: #4b5563 !important;
-                color: #f9fafb !important;
-                border: 1px solid #6b7280 !important;
-            }
-
-            .stTextInput > div > div > input {
-                background: #334155 !important;
-                color: #f9fafb !important;
-                border: 1px solid #6b7280 !important;
-            }
-
-            label, .stMarkdown, .stMarkdown * {
-                color: #f9fafb !important;
-            }
-
-            .login-container {
-                background: #1e293b !important;
-                border: 1px solid #374151 !important;
-            }
-
-            .login-header {
-                background: linear-gradient(135deg, #334155 0%, #1e293b 100%) !important;
-                color: #f9fafb !important;
-            }
-
-            .login-header,
-            .login-header *,
-            .login-header div,
-            .login-header h1,
-            .login-header h2,
-            .login-header h3,
-            .login-header p {
-                color: #ffffff !important;
-            }
-
-            .login-header > div {
-                color: #ffffff !important;
-            }
-
-            .login-header > div:first-child {
-                color: #ffffff !important;
-            }
-
-            .demo-credentials {
-                background: linear-gradient(135deg, #065f46 0%, #047857 100%) !important;
-                color: #ffffff !important;
-                border: 2px solid rgba(52, 211, 153, 0.5) !important;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
-            }
-
-            .demo-credentials * {
-                color: #ffffff !important;
-            }
-
-            .demo-credentials h4 {
-                color: #4ade80 !important;
-                font-weight: 700 !important;
-            }
-            </style>
-            """, unsafe_allow_html=True)
-
-        st.markdown(f"""
-        <script>
-        document.body.setAttribute('data-theme', '{current_theme}');
-        document.documentElement.setAttribute('data-theme', '{current_theme}');
-
-        // También aplicar a elementos principales de Streamlit
-        setTimeout(function() {{
-            const stApp = document.querySelector('.stApp');
-            if (stApp) {{
-                stApp.setAttribute('data-theme', '{current_theme}');
-            }}
-            const main = document.querySelector('.main');
-            if (main) {{
-                main.setAttribute('data-theme', '{current_theme}');
-            }}
-
-            // APLICAR ESTILOS SEGÚN TEMA
-            if ('{current_theme}' === 'dark') {{
-                // FORZAR ESTILOS DE MODO OSCURO
-                const buttons = document.querySelectorAll('button');
-                buttons.forEach(btn => {{
-                    btn.style.background = '#334155';
-                    btn.style.color = '#ffffff';
-                    btn.style.border = '2px solid #6b7280';
-                    btn.style.fontWeight = '600';
-                }});
-
-                // Forzar divs con estilos inline (tarjetas)
-                const divs = document.querySelectorAll('div[style*="background"]');
-                divs.forEach(div => {{
-                    if (div.style.background && div.style.background.includes('#ffffff')) {{
-                        div.style.background = '#334155';
-                        div.style.color = '#ffffff';
-                        div.style.border = '2px solid #6b7280';
-
-                        // Forzar todos los elementos hijos
-                        const children = div.querySelectorAll('*');
-                        children.forEach(child => {{
-                            child.style.color = '#ffffff';
-                        }});
-                    }}
-                }});
-
-                // Forzar inputs
-                const inputs = document.querySelectorAll('input');
-                inputs.forEach(input => {{
-                    input.style.background = '#334155';
-                    input.style.color = '#ffffff';
-                    input.style.border = '1px solid #6b7280';
-                }});
-
-                // Forzar labels
-                const labels = document.querySelectorAll('label');
-                labels.forEach(label => {{
-                    label.style.color = '#ffffff';
-                }});
-
-                // Forzar toggle button específico
-                const toggleBtn = document.querySelector('button[key="theme_toggle_v6_positioned"]');
-                if (toggleBtn) {{
-                    toggleBtn.style.background = '#334155';
-                    toggleBtn.style.color = '#ffffff';
-                    toggleBtn.style.border = '2px solid #6b7280';
-                }}
-            }} else {{
-                // FORZAR ESTILOS DE MODO CLARO - RESETEAR DARK MODE
-                const buttons = document.querySelectorAll('button');
-                buttons.forEach(btn => {{
-                    btn.style.background = '#ffffff';
-                    btn.style.color = '#1a202c';
-                    btn.style.border = '1px solid #d1d5db';
-                    btn.style.fontWeight = 'normal';
-                }});
-
-                // Resetear divs con estilos inline
-                const divs = document.querySelectorAll('div[style*="background"]');
-                divs.forEach(div => {{
-                    if (div.style.background && div.style.background.includes('#334155')) {{
-                        div.style.background = '#ffffff';
-                        div.style.color = '#1a202c';
-                        div.style.border = '1px solid #e5e7eb';
-
-                        // Resetear todos los elementos hijos
-                        const children = div.querySelectorAll('*');
-                        children.forEach(child => {{
-                            child.style.color = '#1a202c';
-                        }});
-                    }}
-                }});
-
-                // Resetear inputs
-                const inputs = document.querySelectorAll('input');
-                inputs.forEach(input => {{
-                    input.style.background = '#ffffff';
-                    input.style.color = '#1a202c';
-                    input.style.border = '1px solid #d1d5db';
-                }});
-
-                // Resetear labels
-                const labels = document.querySelectorAll('label');
-                labels.forEach(label => {{
-                    label.style.color = '#1a202c';
-                }});
-
-                // Resetear sidebar
-                const sidebar = document.querySelector('.stSidebar, [data-testid="stSidebar"]');
-                if (sidebar) {{
-                    sidebar.style.backgroundColor = '#f8fafc';
-                    const sidebarElements = sidebar.querySelectorAll('*');
-                    sidebarElements.forEach(el => {{
-                        el.style.color = '#1a202c';
-                    }});
-                }}
-
-                // Resetear toggle button específico
-                const toggleBtn = document.querySelector('button[key="theme_toggle_v6_positioned"]');
-                if (toggleBtn) {{
-                    toggleBtn.style.background = '#ffffff';
-                    toggleBtn.style.color = '#1a202c';
-                    toggleBtn.style.border = '1px solid #d1d5db';
-                }}
-            }}
-        }}, 200);
-
-        // Ejecutar nuevamente después de 1 segundo por si hay elementos que se cargan tarde
-        setTimeout(function() {{
-            if ('{current_theme}' === 'dark') {{
-                const buttons = document.querySelectorAll('button');
-                buttons.forEach(btn => {{
-                    if (!btn.style.background || btn.style.background.includes('rgb(255')) {{
-                        btn.style.background = '#334155';
-                        btn.style.color = '#ffffff';
-                        btn.style.border = '2px solid #6b7280';
-                    }}
-                }});
-            }} else {{
-                // Asegurar modo claro
-                const buttons = document.querySelectorAll('button');
-                buttons.forEach(btn => {{
-                    if (btn.style.background && btn.style.background.includes('#334155')) {{
-                        btn.style.background = '#ffffff';
-                        btn.style.color = '#1a202c';
-                        btn.style.border = '1px solid #d1d5db';
-                    }}
-                }});
-
-                // Asegurar sidebar en modo claro
-                const sidebar = document.querySelector('.stSidebar, [data-testid="stSidebar"]');
-                if (sidebar) {{
-                    const sidebarElements = sidebar.querySelectorAll('*');
-                    sidebarElements.forEach(el => {{
-                        if (el.style.color && el.style.color.includes('#f9fafb')) {{
-                            el.style.color = '#1a202c';
-                        }}
-                    }});
-                }}
-            }}
-        }}, 1000);
-        </script>
-        """, unsafe_allow_html=True)
-
-    # CSS FINAL SUPER AGRESIVO para modo oscuro
-    if 'theme_mode' in st.session_state and st.session_state.theme_mode == 'dark':
-        final_timestamp = datetime.now().strftime("%H%M%S%f")
-        dark_mode_css = """
-        <style>
-        /* ULTRA AGGRESSIVE DARK MODE ONLY - TIMESTAMP */
-
-        /* APLICAR SOLO CUANDO data-theme="dark" */
-        [data-theme="dark"] button,
-        body[data-theme="dark"] button,
-        [data-theme="dark"] .stButton > button,
-        body[data-theme="dark"] .stButton > button,
-        [data-theme="dark"] input[type="submit"],
-        body[data-theme="dark"] input[type="submit"] {{
-            background: #334155 !important;
-            color: #ffffff !important;
-            border: 2px solid #6b7280 !important;
-            font-weight: 600 !important;
-        }}
-
-        /* DIVS CON BACKGROUND BLANCO SOLO EN MODO OSCURO */
-        [data-theme="dark"] div[style*="#ffffff"],
-        [data-theme="dark"] div[style*="rgb(255, 255, 255)"],
-        [data-theme="dark"] div[style*="white"],
-        body[data-theme="dark"] div[style*="#ffffff"],
-        body[data-theme="dark"] div[style*="rgb(255, 255, 255)"],
-        body[data-theme="dark"] div[style*="white"] {{
-            background: #334155 !important;
-            color: #ffffff !important;
-            border: 2px solid #6b7280 !important;
-        }}
-
-        /* INPUTS SOLO EN MODO OSCURO */
-        [data-theme="dark"] input,
-        [data-theme="dark"] textarea,
-        [data-theme="dark"] select,
-        body[data-theme="dark"] input,
-        body[data-theme="dark"] textarea,
-        body[data-theme="dark"] select {{
-            background: #334155 !important;
-            color: #ffffff !important;
-            border: 1px solid #6b7280 !important;
-        }}
-
-        /* LABELS SOLO EN MODO OSCURO */
-        [data-theme="dark"] label,
-        body[data-theme="dark"] label {{
-            color: #ffffff !important;
-        }}
-
-        /* MARKDOWN SOLO EN MODO OSCURO */
-        [data-theme="dark"] .stMarkdown,
-        [data-theme="dark"] .stMarkdown *,
-        body[data-theme="dark"] .stMarkdown,
-        body[data-theme="dark"] .stMarkdown * {{
-            color: #ffffff !important;
-        }}
-
-        /* CONTAINERS SOLO EN MODO OSCURO */
-        [data-theme="dark"] .login-container,
-        [data-theme="dark"] .demo-credentials,
-        [data-theme="dark"] .roles-section,
-        body[data-theme="dark"] .login-container,
-        body[data-theme="dark"] .demo-credentials,
-        body[data-theme="dark"] .roles-section {{
-            background: #1e293b !important;
-            color: #ffffff !important;
-        }}
-
-        /* ELEMENTOS CON ESTILOS INLINE SOLO EN MODO OSCURO */
-        [data-theme="dark"] div[style],
-        body[data-theme="dark"] div[style] {{
-            background: #334155 !important;
-            color: #ffffff !important;
-        }}
-
-        [data-theme="dark"] div[style] *,
-        body[data-theme="dark"] div[style] * {{
-            color: #ffffff !important;
-        }}
-        </style>
-        """
-        dark_mode_css = dark_mode_css.replace("TIMESTAMP", final_timestamp)
-        st.markdown(dark_mode_css, unsafe_allow_html=True)
-
-    # CSS para asegurar modo claro correcto
-    else:
-        # Asegurar que en modo claro el texto sea negro
-        light_timestamp = datetime.now().strftime("%H%M%S%f")
-        light_mode_css = """
-        <style>
-        /* FORCE LIGHT MODE COLORS - TIMESTAMP */
-
-        /* ASEGURAR TEXTO NEGRO EN MODO CLARO */
-        [data-theme="light"] *,
-        body[data-theme="light"] *,
-        body:not([data-theme="dark"]) *,
-        html:not([data-theme="dark"]) * {{
-            color: #1f2937 !important;
-        }}
-
-        /* BOTONES EN MODO CLARO */
-        [data-theme="light"] button,
-        body[data-theme="light"] button,
-        body:not([data-theme="dark"]) button {{
-            background: #ffffff !important;
-            color: #1f2937 !important;
-            border: 1px solid #d1d5db !important;
-        }}
-
-        /* INPUTS EN MODO CLARO */
-        [data-theme="light"] input,
-        [data-theme="light"] textarea,
-        [data-theme="light"] select,
-        body[data-theme="light"] input,
-        body[data-theme="light"] textarea,
-        body[data-theme="light"] select,
-        body:not([data-theme="dark"]) input,
-        body:not([data-theme="dark"]) textarea,
-        body:not([data-theme="dark"]) select {{
-            background: #ffffff !important;
-            color: #1f2937 !important;
-            border: 1px solid #d1d5db !important;
-        }}
-
-        /* SIDEBAR EN MODO CLARO */
-        [data-theme="light"] .stSidebar,
-        [data-theme="light"] .stSidebar *,
-        body[data-theme="light"] .stSidebar,
-        body[data-theme="light"] .stSidebar *,
-        body:not([data-theme="dark"]) .stSidebar,
-        body:not([data-theme="dark"]) .stSidebar * {{
-            color: #1f2937 !important;
-            background: #ffffff !important;
-        }}
-
-        /* MARKDOWN EN MODO CLARO */
-        [data-theme="light"] .stMarkdown,
-        [data-theme="light"] .stMarkdown *,
-        body[data-theme="light"] .stMarkdown,
-        body[data-theme="light"] .stMarkdown *,
-        body:not([data-theme="dark"]) .stMarkdown,
-        body:not([data-theme="dark"]) .stMarkdown * {{
-            color: #1f2937 !important;
-        }}
-
-        /* ========== CHAT INPUT FORZADO EN MODO OSCURO ========== */
-        [data-theme="dark"] .stChatInput textarea,
-        [data-theme="dark"] .stChatInput input,
-        [data-theme="dark"] [data-testid="stChatInput"] textarea,
-        [data-theme="dark"] [data-testid="stChatInput"] input,
-        [data-theme="dark"] .stChatInput,
-        [data-theme="dark"] [data-testid="stChatInput"],
-        body[data-theme="dark"] .stChatInput textarea,
-        body[data-theme="dark"] .stChatInput input,
-        body[data-theme="dark"] [data-testid="stChatInput"] textarea,
-        body[data-theme="dark"] [data-testid="stChatInput"] input {{
-            background: #334155 !important;
-            color: #f8fafc !important;
-            border: 1px solid #6b7280 !important;
-        }}
-
-        [data-theme="dark"] .stChatInput textarea::placeholder,
-        [data-theme="dark"] .stChatInput input::placeholder,
-        [data-theme="dark"] [data-testid="stChatInput"] textarea::placeholder,
-        [data-theme="dark"] [data-testid="stChatInput"] input::placeholder,
-        body[data-theme="dark"] .stChatInput textarea::placeholder,
-        body[data-theme="dark"] .stChatInput input::placeholder {{
-            color: #9ca3af !important;
-            opacity: 1 !important;
-        }}
-
-        /* ========== ALERTAS FORZADAS EN MODO OSCURO ========== */
-        [data-theme="dark"] .alert-card,
-        body[data-theme="dark"] .alert-card {{
-            background: #1e293b !important;
-            border-color: #475569 !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
-        }}
-
-        [data-theme="dark"] .alert-message,
-        body[data-theme="dark"] .alert-message {{
-            color: #f8fafc !important;
-        }}
-
-        /* ========== SELECTBOX Y DROPDOWNS EN MODO OSCURO ========== */
-        [data-theme="dark"] .stSelectbox,
-        [data-theme="dark"] [data-baseweb="select"],
-        [data-theme="dark"] [data-testid="stSelectbox"],
-        body[data-theme="dark"] .stSelectbox,
-        body[data-theme="dark"] [data-baseweb="select"] {{
-            background: #334155 !important;
-            color: #f8fafc !important;
-        }}
-
-        [data-theme="dark"] .stSelectbox > div,
-        [data-theme="dark"] [data-baseweb="select"] > div,
-        body[data-theme="dark"] .stSelectbox > div,
-        body[data-theme="dark"] [data-baseweb="select"] > div {{
-            background: #334155 !important;
-            color: #f8fafc !important;
-            border-color: #6b7280 !important;
-        }}
-
-        /* Opciones del dropdown cuando se despliega */
-        [data-theme="dark"] [role="listbox"],
-        [data-theme="dark"] [data-baseweb="menu"],
-        [data-theme="dark"] ul[role="listbox"],
-        body[data-theme="dark"] [role="listbox"],
-        body[data-theme="dark"] [data-baseweb="menu"] {{
-            background: #1e293b !important;
-            border: 1px solid #6b7280 !important;
-        }}
-
-        [data-theme="dark"] [role="option"],
-        [data-theme="dark"] li[role="option"],
-        body[data-theme="dark"] [role="option"],
-        body[data-theme="dark"] li[role="option"] {{
-            background: #1e293b !important;
-            color: #f8fafc !important;
-        }}
-
-        [data-theme="dark"] [role="option"]:hover,
-        [data-theme="dark"] li[role="option"]:hover,
-        body[data-theme="dark"] [role="option"]:hover,
-        body[data-theme="dark"] li[role="option"]:hover {{
-            background: #334155 !important;
-            color: #ffffff !important;
-        }}
-
-        /* Texto seleccionado en el selectbox */
-        [data-theme="dark"] .stSelectbox input,
-        [data-theme="dark"] [data-baseweb="select"] input,
-        [data-theme="dark"] .stSelectbox div[data-baseweb="select"] > div,
-        body[data-theme="dark"] .stSelectbox input,
-        body[data-theme="dark"] [data-baseweb="select"] input {{
-            color: #f8fafc !important;
-            background: #334155 !important;
-        }}
-
-        /* ========== BOTONES GENERALES EN MODO OSCURO ========== */
-        [data-theme="dark"] .stButton > button,
-        [data-theme="dark"] button[kind="primary"],
-        [data-theme="dark"] button[kind="secondary"],
-        body[data-theme="dark"] .stButton > button,
-        body[data-theme="dark"] button[kind="primary"],
-        body[data-theme="dark"] button[kind="secondary"] {{
-            background: #334155 !important;
-            color: #f8fafc !important;
-            border: 1px solid #6b7280 !important;
-        }}
-
-        [data-theme="dark"] .stButton > button:hover,
-        [data-theme="dark"] button[kind="primary"]:hover,
-        [data-theme="dark"] button[kind="secondary"]:hover,
-        body[data-theme="dark"] .stButton > button:hover,
-        body[data-theme="dark"] button[kind="primary"]:hover,
-        body[data-theme="dark"] button[kind="secondary"]:hover {{
-            background: #475569 !important;
-            color: #ffffff !important;
-            border-color: #9ca3af !important;
-        }}
-
-        /* ========== TARJETAS DE ESTADO OPERATIVO ========== */
-        .status-card {{
-            text-align: center;
-            padding: 1.3rem;
-            border-radius: 12px;
-            border-width: 3px;
-            border-style: solid;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }}
-
-        .status-card-title {{
-            font-weight: 700;
-            color: #1a202c;
-            font-size: 1.1rem;
-            margin-bottom: 0.3rem;
-        }}
-
-        .status-card-subtitle {{
-            font-size: 1rem;
-            color: #2d3748;
-            font-weight: 600;
-        }}
-
-        /* Modo oscuro para tarjetas de estado */
-        [data-theme="dark"] .status-card,
-        body[data-theme="dark"] .status-card {{
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        }}
-
-        [data-theme="dark"] .status-card-title,
-        body[data-theme="dark"] .status-card-title {{
-            color: #f8fafc !important;
-        }}
-
-        [data-theme="dark"] .status-card-subtitle,
-        body[data-theme="dark"] .status-card-subtitle {{
-            color: #cbd5e1 !important;
-        }}
-        </style>
-        """
-        light_mode_css = light_mode_css.replace("TIMESTAMP", light_timestamp)
-        st.markdown(light_mode_css, unsafe_allow_html=True)
-
-    # Centrar la página de login
-    col1, col2, col3 = st.columns([1, 2, 1])
-    
-    with col2:
-        # Usar f-string para interpolar variables según el tema
-        if current_theme == 'dark':
-            header_color = '#ffffff'
-            subtitle_color = '#f1f5f9'
-            text_color = '#e2e8f0'
-            container_bg = '#334155'
-            container_border = '1px solid #475569'
-            container_shadow = '0 10px 40px rgba(0,0,0,0.5)'
-            header_bg = 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)'
-            form_bg = '#334155'
-        else:
-            header_color = '#1a202c'
-            subtitle_color = '#4a5568'
-            text_color = '#718096'
-            container_bg = '#ffffff'
-            container_border = '1px solid rgba(0, 0, 0, 0.05)'
-            container_shadow = '0 10px 40px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06)'
-            header_bg = 'linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)'
-            form_bg = '#ffffff'
-
-        st.markdown(f"""
-        <div class="login-container" style="max-width: 420px; margin: 0 auto; background: {container_bg}; border-radius: 24px; box-shadow: {container_shadow}; border: {container_border};">
-            <div class="login-header" style="background: {header_bg}; padding: 32px; border-radius: 24px 24px 0 0; text-align: center;">
-                <div style="color: {header_color} !important; font-size: 32px; font-weight: 700; margin-bottom: 8px;">🏥 Copilot Salud</div>
-                <div style="color: {subtitle_color} !important; font-size: 18px; font-weight: 500; margin: 8px 0;">Sistema de Análisis Sociosanitario</div>
-                <div style="color: {text_color} !important; font-size: 14px; margin-top: 8px;">Provincia de Málaga - Andalucía</div>
-            </div>
-            <div class="login-form-container" style="padding: 32px; background: {form_bg};">
-        """, unsafe_allow_html=True)
-        
-        st.markdown("#### 🔐 Iniciar Sesión")
-        
-        # Formulario de login
-        with st.form("login_form"):
-            username = st.text_input("👤 Usuario", placeholder="Ingresa tu usuario")
-            password = st.text_input("🔑 Contraseña", type="password", placeholder="Ingresa tu contraseña")
-            
-            col1, col2 = st.columns(2)
-            with col1:
-                login_button = st.form_submit_button("🚀 Iniciar Sesión", width="stretch")
-            with col2:
-                demo_button = st.form_submit_button("👤 Acceso Demo", width="stretch")
-        
-        # Procesar login
-        if login_button or demo_button:
-            auth = HealthAuthenticator()
-            
-            # Si es demo, usar credenciales demo
-            if demo_button:
-                username = "demo"
-                password = "demo123"
-            
-            if username and password:
-                user = auth.authenticate_user(username, password)
-                if user:
-                    # Crear token y guardar en session state
-                    token = auth.create_jwt_token(user)
-                    st.session_state.auth_token = token
-                    st.session_state.user = user
-                    st.session_state.authenticated = True
-                    
-                    # Mensaje de éxito
-                    role_info = auth.get_role_info(user['role'])
-                    st.success(f"✅ Bienvenido **{user['name']}** | Rol: {role_info['icon']} {role_info['name']}")
-                    st.rerun()
-                else:
-                    st.error("❌ Usuario o contraseña incorrectos")
-            else:
-                st.warning("⚠️ Por favor ingresa usuario y contraseña")
-        
-        # Mostrar credenciales demo
-        st.markdown("""
-        <div class="demo-credentials">
-            <h4>🎯 Credenciales de Demostración</h4>
-            <p><strong>Administrador:</strong> admin / admin123</p>
-            <p><strong>Gestor:</strong> gestor.malaga / gestor123</p>
-            <p><strong>Analista:</strong> analista.datos / analista123</p>
-            <p><strong>Demo:</strong> demo / demo123</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        st.markdown("</div></div>", unsafe_allow_html=True)
-        
-        # Información de roles
-        st.markdown('<div class="roles-section">', unsafe_allow_html=True)
-        st.markdown("### 👥 Roles del Sistema")
-        
-        auth = HealthAuthenticator()
-        
-        # Diccionario de traducción de permisos para la pantalla de login
-        permission_translations = {
-            'full_access': 'Acceso Total',
-            'user_management': 'Gestión de Usuarios',
-            'system_config': 'Configuración del Sistema',
-            'analytics': 'Análisis Avanzado',
-            'reports': 'Reportes',
-            'planning': 'Planificación',
-            'view_data': 'Visualización de Datos',
-            'basic_analytics': 'Análisis Básico',
-            'analisis_equidad': 'Análisis de Equidad'
-        }
-        
-        for role_key, role_info in auth.roles.items():
-            # Traducir permisos al español
-            translated_permissions = [permission_translations.get(perm, perm) for perm in role_info['permissions']]
-            permissions_text = ", ".join(translated_permissions)
-            
-            st.markdown(f"""
-            <div style="background: #ffffff; padding: 1rem; border-radius: 12px; margin: 0.75rem 0; border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
-                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                    <span style="font-size: 1.2rem; margin-right: 0.5rem;">{role_info['icon']}</span>
-                    <strong style="color: {role_info['color']}; font-size: 0.95rem;">{role_info['name']}</strong>
-                </div>
-                <small style="color: #4a5568; font-size: 0.8rem;">Permisos: {permissions_text}</small>
-            </div>
-            """, unsafe_allow_html=True)
-        
-        st.markdown('</div>', unsafe_allow_html=True)
-
-        # JAVASCRIPT SIMPLE PARA FORZAR TEMAS
-        st.markdown("""
+    # JAVASCRIPT SIMPLE PARA FORZAR TEMAS
+    st.markdown("""
         <script>
         function applyThemeStyles() {
             const isDark = document.body.getAttribute('data-theme') === 'dark' ||
                           document.documentElement.getAttribute('data-theme') === 'dark';
-
-            console.log('🎨 Aplicando tema:', isDark ? 'OSCURO' : 'CLARO');
 
             // Obtener TODOS los elementos
             const allElements = document.querySelectorAll('*');
@@ -1713,8 +517,6 @@ html body .stApp .main * {
                     }
                 }
             });
-
-            console.log('✅ Tema aplicado correctamente a', allElements.length, 'elementos');
         }
 
         // Ejecutar inmediatamente
@@ -1748,11 +550,137 @@ html body .stApp .main * {
         } catch(e) {
             console.warn('⚠️ No se pudo inicializar MutationObserver en login:', e);
         }
-
-        // Ejecutar cada 2 segundos como respaldo
-        setInterval(applyThemeStyles, 2000);
         </script>
         """, unsafe_allow_html=True)
+
+    # ===== FORMULARIO DE LOGIN =====
+    # Crear contenedor con estilos inline para temas
+    if current_theme == 'dark':
+        container_bg = '#1e293b'
+        container_shadow = '0 10px 40px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2)'
+        container_border = '1px solid #374151'
+        header_bg = 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)'
+        header_color = '#ffffff'
+        subtitle_color = '#ffffff'
+        text_color = '#ffffff'
+        form_bg = '#1e293b'
+    else:
+        container_bg = '#ffffff'
+        container_shadow = '0 10px 40px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.06)'
+        container_border = '1px solid rgba(0, 0, 0, 0.05)'
+        header_bg = 'linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)'
+        header_color = '#1a202c'
+        subtitle_color = '#4a5568'
+        text_color = '#718096'
+        form_bg = '#ffffff'
+
+    st.markdown(f"""
+    <div class="login-container" style="max-width: 420px; margin: 0 auto; background: {container_bg}; border-radius: 24px; box-shadow: {container_shadow}; border: {container_border};">
+        <div class="login-header" style="background: {header_bg}; padding: 32px; border-radius: 24px 24px 0 0; text-align: center;">
+            <div style="color: {header_color} !important; font-size: 32px; font-weight: 700; margin-bottom: 8px;">🏥 Copilot Salud</div>
+            <div style="color: {subtitle_color} !important; font-size: 18px; font-weight: 500; margin: 8px 0;">Sistema de Análisis Sociosanitario</div>
+            <div style="color: {text_color} !important; font-size: 14px; margin-top: 8px;">Provincia de Málaga - Andalucía</div>
+        </div>
+        <div class="login-form-container" style="padding: 32px; background: {form_bg};">
+    """, unsafe_allow_html=True)
+
+    # Título "Iniciar Sesión" con botón de tema a la derecha
+    col_title, col_theme = st.columns([5, 1])
+    with col_title:
+        st.markdown("#### 🔐 Iniciar Sesión")
+    with col_theme:
+        theme_icon = "🌙" if current_theme == 'light' else "☀️"
+        if st.button(theme_icon, key="login_theme_toggle", help="Cambiar tema", use_container_width=True):
+            new_theme = 'dark' if current_theme == 'light' else 'light'
+            st.session_state.theme_mode = new_theme
+            st.rerun()
+
+    # Formulario de login
+    with st.form("login_form"):
+        username = st.text_input("👤 Usuario", placeholder="Ingresa tu usuario")
+        password = st.text_input("🔑 Contraseña", type="password", placeholder="Ingresa tu contraseña")
+
+        col1, col2 = st.columns(2)
+        with col1:
+            login_button = st.form_submit_button("🚀 Iniciar Sesión", use_container_width=True)
+        with col2:
+            demo_button = st.form_submit_button("👤 Acceso Demo", use_container_width=True)
+
+    # Procesar login
+    if login_button or demo_button:
+        auth = HealthAuthenticator()
+
+        # Si es demo, usar credenciales demo
+        if demo_button:
+            username = "demo"
+            password = "demo123"
+
+        if username and password:
+            user = auth.authenticate_user(username, password)
+            if user:
+                # Crear token y guardar en session state
+                token = auth.create_jwt_token(user)
+                st.session_state.auth_token = token
+                st.session_state.user = user
+                st.session_state.authenticated = True
+
+                # Mensaje de éxito
+                role_info = auth.get_role_info(user['role'])
+                st.success(f"✅ Bienvenido **{user['name']}** | Rol: {role_info['icon']} {role_info['name']}")
+                st.rerun()
+            else:
+                st.error("❌ Usuario o contraseña incorrectos")
+        else:
+            st.warning("⚠️ Por favor ingresa usuario y contraseña")
+
+    # Mostrar credenciales demo
+    st.markdown("""
+    <div class="demo-credentials">
+        <h4>🎯 Credenciales de Demostración</h4>
+        <p><strong>Administrador:</strong> admin / admin123</p>
+        <p><strong>Gestor:</strong> gestor.malaga / gestor123</p>
+        <p><strong>Analista:</strong> analista.datos / analista123</p>
+        <p><strong>Demo:</strong> demo / demo123</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("</div></div>", unsafe_allow_html=True)
+
+    # Información de roles
+    st.markdown('<div class="roles-section">', unsafe_allow_html=True)
+    st.markdown("### 👥 Roles del Sistema")
+
+    auth = HealthAuthenticator()
+
+    # Diccionario de traducción de permisos para la pantalla de login
+    permission_translations = {
+        'full_access': 'Acceso Total',
+        'user_management': 'Gestión de Usuarios',
+        'system_config': 'Configuración del Sistema',
+        'analytics': 'Análisis Avanzado',
+        'reports': 'Reportes',
+        'planning': 'Planificación',
+        'view_data': 'Visualización de Datos',
+        'basic_analytics': 'Análisis Básico',
+        'analisis_equidad': 'Análisis de Equidad'
+    }
+
+    for role_key, role_info in auth.roles.items():
+        # Traducir permisos al español
+        translated_permissions = [permission_translations.get(perm, perm) for perm in role_info['permissions']]
+        permissions_text = ", ".join(translated_permissions)
+
+        st.markdown(f"""
+        <div style="background: #ffffff; padding: 1rem; border-radius: 12px; margin: 0.75rem 0; border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
+            <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                <span style="font-size: 1.2rem; margin-right: 0.5rem;">{role_info['icon']}</span>
+                <strong style="color: {role_info['color']}; font-size: 0.95rem;">{role_info['name']}</strong>
+            </div>
+            <small style="color: #4a5568; font-size: 0.8rem;">Permisos: {permissions_text}</small>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 def render_user_management():
     """Panel de gestión de usuarios (solo admin)"""
