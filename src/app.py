@@ -1122,9 +1122,9 @@ def load_optimized_css():
 
         # Usar versión optimizada para Cloud (sin variables CSS, con !important)
         if is_cloud:
-            theme_file = f'assets/theme_{st.session_state.theme_mode}_cloud.css'
+            theme_file = f'assets/theme_{st.session_state.theme_mode}_cloud.min.css'
         else:
-            theme_file = f'assets/theme_{st.session_state.theme_mode}.css'
+            theme_file = f'assets/theme_{st.session_state.theme_mode}.min.css'
 
         # print(f"🔍 Intentando cargar: {theme_file} (Cloud: {is_cloud})")
         # print(f"📁 Project root: {project_root}")
@@ -1176,7 +1176,7 @@ def load_optimized_css():
         except Exception as e2:
             # Último fallback con cache
             try:
-                css_content = load_css_file('assets/style.css')
+                css_content = load_css_file('assets/style.min.css')
                 if css_content:
                     # Solo cargar desktop_layout.css si no es móvil
                     is_mobile_fallback = False
@@ -2084,7 +2084,7 @@ def main():
         ])
 
         # Usar versión Cloud si está en Cloud
-        extra_css_file = 'assets/extra_styles_cloud.css' if is_cloud else 'assets/extra_styles.css'
+        extra_css_file = 'assets/extra_styles_cloud.min.css' if is_cloud else 'assets/extra_styles.min.css'
         extra_css = load_css_file(extra_css_file)
         if extra_css:
             # Agregar timestamp para romper caché del navegador
