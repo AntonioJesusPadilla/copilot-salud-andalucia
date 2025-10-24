@@ -24,33 +24,89 @@ for path in [project_root, src_dir]:
 def is_mobile_device():
     """
     Detecta si el usuario está usando un dispositivo móvil
-    basándose en el user agent del navegador
+    OPTIMIZADO: Usa st.context cuando está disponible, fallback rápido
     """
-    # Método 1: Intentar obtener user agent
+    # Cachear resultado en session_state para evitar detecciones repetidas
+    if 'device_type_detected' in st.session_state:
+        return st.session_state.get('is_mobile_cached', False)
+
     try:
-        import streamlit.web.server.websocket_headers as wsh
-        headers = wsh.get_websocket_headers()
-        user_agent = headers.get("User-Agent", "").lower()
+        # Método optimizado: Intentar obtener user agent de forma rápida
+        user_agent = ""
+
+        # Intentar obtener del contexto de Streamlit (más rápido)
+        try:
+            # En Streamlit >= 1.28, usar st.context
+            if hasattr(st, 'context') and hasattr(st.context, 'headers'):
+                user_agent = st.context.headers.get("User-Agent", "").lower()
+        except:
+            pass
+
+        # Fallback: Intentar websocket headers (solo si el anterior falla)
+        if not user_agent:
+            try:
+                import streamlit.web.server.websocket_headers as wsh
+                headers = wsh.get_websocket_headers()
+                user_agent = headers.get("User-Agent", "").lower()
+            except:
+                pass
 
         # Patrones comunes de dispositivos móviles
         mobile_patterns = [
             'iphone', 'ipad', 'ipod',  # iOS
             'android',                  # Android
             'mobile', 'phone',          # Genéricos
-            'blackberry', 'windows phone', 'webos'  # Otros
         ]
 
-        if any(pattern in user_agent for pattern in mobile_patterns):
-            # print(f"📱 Dispositivo móvil detectado: {user_agent[:50]}")
-            return True
-        else:
-            # print(f"💻 Dispositivo desktop detectado: {user_agent[:50]}")
-            return False
+        is_mobile = any(pattern in user_agent for pattern in mobile_patterns)
+
+        # Cachear resultado
+        st.session_state.device_type_detected = True
+        st.session_state.is_mobile_cached = is_mobile
+
+        return is_mobile
+
+    except Exception as e:
+        # Fallback rápido: Asumir desktop si no podemos detectar
+        st.session_state.device_type_detected = True
+        st.session_state.is_mobile_cached = False
+        return False
     except Exception as e:
         # print(f"⚠️ No se pudo detectar user agent: {e}")
         # FALLBACK: Asumir desktop si no podemos detectar
         # (Es mejor cargar de más que fallar)
         # print("💻 Fallback: asumiendo dispositivo desktop")
+        return False
+
+def is_ios_device():
+    """Detectar si el dispositivo es iOS específicamente"""
+    if 'is_ios_cached' in st.session_state:
+        return st.session_state.is_ios_cached
+
+    try:
+        user_agent = ""
+
+        # Intentar obtener user agent
+        try:
+            if hasattr(st, 'context') and hasattr(st.context, 'headers'):
+                user_agent = st.context.headers.get("User-Agent", "").lower()
+        except:
+            pass
+
+        if not user_agent:
+            try:
+                import streamlit.web.server.websocket_headers as wsh
+                headers = wsh.get_websocket_headers()
+                user_agent = headers.get("User-Agent", "").lower()
+            except:
+                pass
+
+        is_ios = any(pattern in user_agent for pattern in ['iphone', 'ipad', 'ipod'])
+        st.session_state.is_ios_cached = is_ios
+        return is_ios
+
+    except:
+        st.session_state.is_ios_cached = False
         return False
 
 # Detectar tipo de dispositivo
@@ -2073,8 +2129,8 @@ def main():
     </style>
     """, unsafe_allow_html=True)
 
-    # Cargar CSS extra solo en desktop
-    if css_loaded != "mobile_basic":
+    # Cargar CSS extra solo en desktop (Optimización Fase 2: evitar carga en móvil)
+    if css_loaded != "mobile_basic" and not IS_MOBILE:
         # Detectar si estamos en Cloud
         is_cloud = any([
             os.getenv('USER') == 'appuser',
@@ -2673,18 +2729,10 @@ def main():
     except Exception as e:
         print(f"⚠️ Error aplicando optimización de viewport: {e}")
 
-    # Aplicar fixes de iOS si es necesario
+    # Aplicar fixes de iOS si es necesario (Optimización Fase 2: carga condicional)
     try:
-        # Detectar si es posible que sea iOS
-        is_possible_ios = False
-        try:
-            if hasattr(st, 'context') and hasattr(st.context, 'user_agent'):
-                user_agent = str(st.context.user_agent or "").lower()
-                is_possible_ios = any(ios_term in user_agent for ios_term in ['iphone', 'ipad', 'safari'])
-        except:
-            pass  # No cargar iOS fixes si no podemos detectar
-
-        if is_possible_ios:
+        # Usar función optimizada con caché para detectar iOS
+        if is_ios_device():
             app.load_ios_fixes()
     except Exception as e:
         print(f"⚠️ Error aplicando fixes de iOS: {e}")
