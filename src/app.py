@@ -71,22 +71,17 @@ def is_mobile_device():
         st.session_state.device_type_detected = True
         st.session_state.is_mobile_cached = False
         return False
-    except Exception as e:
-        # print(f"⚠️ No se pudo detectar user agent: {e}")
-        # FALLBACK: Asumir desktop si no podemos detectar
-        # (Es mejor cargar de más que fallar)
-        # print("💻 Fallback: asumiendo dispositivo desktop")
-        return False
 
 def is_ios_device():
-    """Detectar si el dispositivo es iOS específicamente"""
-    if 'is_ios_cached' in st.session_state:
-        return st.session_state.is_ios_cached
-
+    """Detectar si el dispositivo es iOS específicamente - MODO SEGURO"""
     try:
+        # Cachear resultado para evitar detecciones repetidas
+        if 'is_ios_cached' in st.session_state:
+            return st.session_state.is_ios_cached
+
         user_agent = ""
 
-        # Intentar obtener user agent
+        # Intentar obtener user agent de forma segura
         try:
             if hasattr(st, 'context') and hasattr(st.context, 'headers'):
                 user_agent = st.context.headers.get("User-Agent", "").lower()
@@ -97,16 +92,26 @@ def is_ios_device():
             try:
                 import streamlit.web.server.websocket_headers as wsh
                 headers = wsh.get_websocket_headers()
-                user_agent = headers.get("User-Agent", "").lower()
+                user_agent = headers.get("User-Agent", "").lower() if headers else ""
             except:
                 pass
 
-        is_ios = any(pattern in user_agent for pattern in ['iphone', 'ipad', 'ipod'])
+        # Detectar iOS de forma segura
+        is_ios = False
+        if user_agent:
+            is_ios = any(pattern in user_agent for pattern in ['iphone', 'ipad', 'ipod'])
+
+        # Cachear resultado
         st.session_state.is_ios_cached = is_ios
         return is_ios
 
-    except:
-        st.session_state.is_ios_cached = False
+    except Exception as e:
+        # En caso de cualquier error, asumir que NO es iOS
+        # Esto es más seguro que romper la app
+        try:
+            st.session_state.is_ios_cached = False
+        except:
+            pass
         return False
 
 # Detectar tipo de dispositivo
