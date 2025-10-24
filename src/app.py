@@ -24,64 +24,74 @@ for path in [project_root, src_dir]:
 def is_mobile_device():
     """
     Detecta si el usuario está usando un dispositivo móvil
-    OPTIMIZADO: Usa st.context cuando está disponible, fallback rápido
+    VERSIÓN SEGURA PARA STREAMLIT CLOUD: No bloquea durante inicialización
     """
-    # Cachear resultado en session_state para evitar detecciones repetidas
-    if 'device_type_detected' in st.session_state:
-        return st.session_state.get('is_mobile_cached', False)
-
     try:
-        # Método optimizado: Intentar obtener user agent de forma rápida
+        # IMPORTANTE: Cachear resultado en session_state para evitar detecciones repetidas
+        # Pero NO intentar acceder a session_state durante inicialización global
+        if hasattr(st, 'session_state'):
+            try:
+                if 'device_type_detected' in st.session_state:
+                    return st.session_state.get('is_mobile_cached', False)
+            except:
+                # session_state no disponible aún, continuar con detección
+                pass
+
         user_agent = ""
 
-        # Intentar obtener del contexto de Streamlit (más rápido)
+        # Método 1: Intentar obtener del contexto de Streamlit (más rápido y seguro)
         try:
-            # En Streamlit >= 1.28, usar st.context
             if hasattr(st, 'context') and hasattr(st.context, 'headers'):
                 user_agent = st.context.headers.get("User-Agent", "").lower()
         except:
             pass
 
-        # Fallback: Intentar websocket headers (solo si el anterior falla)
+        # Método 2: Fallback a websocket headers con timeout implícito
         if not user_agent:
             try:
                 import streamlit.web.server.websocket_headers as wsh
                 headers = wsh.get_websocket_headers()
-                user_agent = headers.get("User-Agent", "").lower()
+                if headers:
+                    user_agent = headers.get("User-Agent", "").lower()
             except:
                 pass
 
-        # Patrones comunes de dispositivos móviles
-        mobile_patterns = [
-            'iphone', 'ipad', 'ipod',  # iOS
-            'android',                  # Android
-            'mobile', 'phone',          # Genéricos
-        ]
+        # Si no pudimos obtener user agent, asumir desktop y salir rápido
+        if not user_agent:
+            return False
 
+        # Patrones comunes de dispositivos móviles
+        mobile_patterns = ['iphone', 'ipad', 'ipod', 'android', 'mobile', 'phone']
         is_mobile = any(pattern in user_agent for pattern in mobile_patterns)
 
-        # Cachear resultado
-        st.session_state.device_type_detected = True
-        st.session_state.is_mobile_cached = is_mobile
+        # Intentar cachear resultado (solo si session_state está disponible)
+        try:
+            if hasattr(st, 'session_state'):
+                st.session_state.device_type_detected = True
+                st.session_state.is_mobile_cached = is_mobile
+        except:
+            pass  # No crítico si falla
 
         return is_mobile
 
     except Exception as e:
-        # Fallback rápido: Asumir desktop si no podemos detectar
-        st.session_state.device_type_detected = True
-        st.session_state.is_mobile_cached = False
+        # Fallback ultra-rápido: Asumir desktop para no bloquear
         return False
 
 def is_ios_device():
-    """Detectar si el dispositivo es iOS específicamente - MODO SEGURO"""
+    """Detectar si el dispositivo es iOS específicamente - VERSIÓN SEGURA"""
     try:
-        # Cachear resultado para evitar detecciones repetidas
-        if 'is_ios_cached' in st.session_state:
-            return st.session_state.is_ios_cached
+        # Cachear resultado para evitar detecciones repetidas (solo si session_state disponible)
+        if hasattr(st, 'session_state'):
+            try:
+                if 'is_ios_cached' in st.session_state:
+                    return st.session_state.is_ios_cached
+            except:
+                pass
 
         user_agent = ""
 
-        # Intentar obtener user agent de forma segura
+        # Intentar obtener user agent de forma segura y rápida
         try:
             if hasattr(st, 'context') and hasattr(st.context, 'headers'):
                 user_agent = st.context.headers.get("User-Agent", "").lower()
@@ -96,26 +106,42 @@ def is_ios_device():
             except:
                 pass
 
-        # Detectar iOS de forma segura
-        is_ios = False
-        if user_agent:
-            is_ios = any(pattern in user_agent for pattern in ['iphone', 'ipad', 'ipod'])
+        # Si no hay user agent, salir rápido
+        if not user_agent:
+            return False
 
-        # Cachear resultado
-        st.session_state.is_ios_cached = is_ios
+        # Detectar iOS de forma segura
+        is_ios = any(pattern in user_agent for pattern in ['iphone', 'ipad', 'ipod'])
+
+        # Intentar cachear resultado (no crítico si falla)
+        try:
+            if hasattr(st, 'session_state'):
+                st.session_state.is_ios_cached = is_ios
+        except:
+            pass
+
         return is_ios
 
     except Exception as e:
-        # En caso de cualquier error, asumir que NO es iOS
-        # Esto es más seguro que romper la app
-        try:
-            st.session_state.is_ios_cached = False
-        except:
-            pass
+        # Fallback seguro: Asumir que NO es iOS para no bloquear
         return False
 
 # Detectar tipo de dispositivo
-IS_MOBILE = is_mobile_device()
+# IMPORTANTE: Durante la carga inicial del módulo, NO intentar detectar dispositivo
+# para evitar bloqueos en Streamlit Cloud. La detección se hará después.
+# Por ahora, asumir desktop (False) para cargar configuración básica.
+IS_MOBILE = False  # Se actualizará después cuando Streamlit esté listo
+
+# Función helper para obtener el estado real de móvil cuando sea seguro
+def get_mobile_state_safe():
+    """Obtener estado de móvil de forma segura, después de que Streamlit esté listo"""
+    global IS_MOBILE
+    try:
+        detected = is_mobile_device()
+        IS_MOBILE = detected
+        return detected
+    except:
+        return False
 
 # Intentar usar favicon personalizado, fallback a emoji
 favicon_path = "assets/favicon.ico"
@@ -124,13 +150,14 @@ if os.path.exists(favicon_path):
 else:
     page_icon = "⚕️"
 
-# Configuración de página adaptativa: wide para desktop, centered para móvil
+# Configuración de página: wide por defecto (asumiendo desktop durante carga inicial)
+# La detección móvil real se hará después, pero set_page_config solo se puede llamar una vez
 try:
     st.set_page_config(
         page_title="Copilot Salud Andalucía - Sistema de Análisis Sociosanitario",
         page_icon=page_icon,
-        layout="centered" if IS_MOBILE else "wide",  # Adaptativo según dispositivo
-        initial_sidebar_state="collapsed" if IS_MOBILE else "expanded",  # Sidebar colapsado en móvil
+        layout="wide",  # Wide por defecto, se ajustará con CSS después
+        initial_sidebar_state="expanded",  # Expandido por defecto, se ajustará después
         menu_items={
             'Get Help': None,
             'Report a bug': None,
@@ -138,12 +165,12 @@ try:
         }
     )
 except Exception:
-    # Fallback a configuración básica adaptativa
+    # Fallback a configuración básica
     st.set_page_config(
         page_title="Copilot Salud Andalucía",
         page_icon="⚕️",
-        layout="centered" if IS_MOBILE else "wide",
-        initial_sidebar_state="collapsed" if IS_MOBILE else "expanded"
+        layout="wide",
+        initial_sidebar_state="expanded"
     )
 # ===== FIN CONFIGURACIÓN DE PÁGINA =====
 
@@ -284,28 +311,16 @@ st.markdown("""
 # print(f"Source dir: {src_dir}")
 # print(f"Python path: {repr(sys.path)}")
 
-# OPTIMIZACIÓN MÓVIL: Cargar módulos pesados solo cuando sea necesario
-if IS_MOBILE:
-    # print("📱 Dispositivo móvil detectado - carga optimizada de módulos")
-    # En móvil, importar solo lo esencial
-    from modules.ai.streamlit_async_wrapper import get_streamlit_async_wrapper
-else:
-    # print("💻 Dispositivo desktop detectado - carga completa de módulos")
-    pass
-    # En desktop, importar todo desde el inicio
-    import pandas as pd
-    import numpy as np
-    import plotly.express as px
-    import plotly.graph_objects as go
-    import plotly.io as pio
-    from io import StringIO
-    from modules.ai.streamlit_async_wrapper import get_streamlit_async_wrapper
+# ===== OPTIMIZACIÓN CRÍTICA: NO CARGAR MÓDULOS PESADOS A NIVEL GLOBAL =====
+# IMPORTANTE: No importar pandas, numpy, plotly, etc. durante la carga del módulo
+# Esto evita bloqueos en "spinning up manager process" en Streamlit Cloud
+# Todas las importaciones pesadas se harán vía lazy loading cuando se necesiten
 
-    # CONFIGURACIÓN GLOBAL DE PLOTLY: Deshabilitar hover por defecto
-    pio.templates.default = "plotly"
-
-# Imports comunes (ligeros) - necesarios para todos los dispositivos
+# Solo imports ligeros y esenciales a nivel global
 import re
+
+# Nota: pandas, numpy, plotly, etc. se cargarán vía lazy_import_data_modules()
+# cuando realmente se necesiten dentro de funciones
 # NOTA: option_menu se importa lazy después del login para evitar errores de registro
 
 # Cargar variables de entorno
@@ -370,61 +385,21 @@ def lazy_import_ai_modules():
             return None
     return _lazy_modules_cache['ai_modules']
 
-# Importar módulos IA solo si NO es móvil (para desktop sí cargar al inicio)
-if not IS_MOBILE:
-    try:
-        from modules.ai.ai_processor import HealthAnalyticsAI, HealthMetricsCalculator
-        from modules.visualization.chart_generator import SmartChartGenerator, DataAnalyzer
-        AI_AVAILABLE = True
-    except ImportError as e:
-        print(f"❌ Error importando módulos IA: {str(e)}")
-        AI_AVAILABLE = False
-else:
-    # En móvil, marcar como disponible pero NO importar aún (usar lazy loading)
-    AI_AVAILABLE = True
+# ===== NO IMPORTAR MÓDULOS IA A NIVEL GLOBAL =====
+# IMPORTANTE: Diferir importación de módulos IA para evitar bloqueos
+# Se cargarán vía lazy_import_ai_modules() cuando se necesiten
+AI_AVAILABLE = True  # Asumir disponibles, se verificará al cargar
 
-# Importar módulos de mapas (opcional para Streamlit Cloud y diferido en móvil)
-if not IS_MOBILE:
-    try:
-        import importlib
-        import sys
+# ===== NO IMPORTAR MÓDULOS DE MAPAS A NIVEL GLOBAL =====
+# IMPORTANTE: Diferir importación de folium, streamlit_folium para evitar bloqueos
+# Los módulos de mapas se verificarán y cargarán cuando se necesiten
+MAPS_AVAILABLE = True  # Asumir disponibles, se verificará al cargar
+MAPS_DEPENDENCIES_OK = False  # Se verificará después cuando se necesite
 
-        # Verificar dependencias básicas de mapas
-        try:
-            import folium
-            import streamlit_folium
-            # Test adicional: verificar que el módulo local existe
-            from modules.visualization.map_interface import MapInterface
+# ===== IMPORTACIONES LIGERAS - PERMITIDAS A NIVEL GLOBAL =====
+# Solo importar módulos ligeros que no bloquean Streamlit Cloud
 
-            MAPS_DEPENDENCIES_OK = True
-            print("✅ GLOBAL INIT: Dependencias de mapas encontradas: folium, streamlit_folium, MapInterface")
-        except ImportError as deps_error:
-            print(f"❌ GLOBAL INIT: Dependencias de mapas no disponibles: {str(deps_error)}")
-            # NO mostrar warning en la UI durante la inicialización global
-            MAPS_DEPENDENCIES_OK = False
-
-        # Carga diferida de mapas - solo marcar disponibilidad
-        MAPS_AVAILABLE = MAPS_DEPENDENCIES_OK
-        print(f"🔧 GLOBAL INIT: MAPS_AVAILABLE establecido en: {MAPS_AVAILABLE}")
-        print(f"🔧 GLOBAL INIT: MAPS_DEPENDENCIES_OK es: {MAPS_DEPENDENCIES_OK}")
-
-        # Si las dependencias no están disponibles globalmente, intentar verificación diferida
-        if not MAPS_DEPENDENCIES_OK:
-            print("⚠️ GLOBAL INIT: Dependencias no disponibles globalmente, se intentará carga diferida")
-
-    except Exception as e:
-        print(f"❌ GLOBAL INIT: Excepción en bloque de mapas: {str(e)}")
-        # NO mostrar warning en la UI durante la inicialización global
-        MAPS_AVAILABLE = False
-        MAPS_DEPENDENCIES_OK = False
-        print("🔧 GLOBAL INIT: MAPS_AVAILABLE y MAPS_DEPENDENCIES_OK establecidos en False por excepción")
-else:
-    # En móvil, diferir carga de mapas hasta que se necesite
-    print("📱 Móvil: Diferir carga de módulos de mapas")
-    MAPS_AVAILABLE = True
-    MAPS_DEPENDENCIES_OK = False
-
-# Importar dashboards personalizados por rol
+# Dashboards personalizados por rol (relativamente ligero)
 try:
     from modules.core.role_dashboards import RoleDashboards
     ROLE_DASHBOARDS_AVAILABLE = True
@@ -432,7 +407,7 @@ except ImportError as e:
     print(f"❌ Error importando dashboards por rol: {str(e)}")
     ROLE_DASHBOARDS_AVAILABLE = False
 
-# Importar sistemas de optimización y seguridad
+# Sistemas de optimización y seguridad (ligeros, solo imports de funciones)
 try:
     from modules.performance.performance_optimizer import get_performance_optimizer, PerformanceOptimizer
     from modules.security.security_auditor import get_security_auditor, SecurityAuditor
@@ -440,7 +415,8 @@ try:
     from modules.security.data_encryption import get_data_encryption, DataEncryption
     OPTIMIZATION_AVAILABLE = True
 except ImportError as e:
-    st.error(f"❌ Error importando sistemas de optimización: {str(e)}")
+    # NO usar st.error aquí durante carga global, solo print
+    print(f"❌ Error importando sistemas de optimización: {str(e)}")
     OPTIMIZATION_AVAILABLE = False
 
 # Cargar variables de entorno
@@ -1661,12 +1637,26 @@ class SecureHealthAnalyticsApp:
                 
                 # Cargar datasets con optimización
                 self.load_datasets()
-                
+
                 # Inicializar IA si está disponible y el usuario tiene permisos
+                # IMPORTANTE: Usar lazy loading para módulos IA
                 if AI_AVAILABLE and os.getenv('GROQ_API_KEY') and self.has_permission('analisis_ia'):
-                    self.ai_processor = HealthAnalyticsAI()
-                    self.chart_generator = SmartChartGenerator()
-                    self.metrics_calculator = HealthMetricsCalculator()
+                    try:
+                        ai_modules = lazy_import_ai_modules()
+                        if ai_modules:
+                            self.ai_processor = ai_modules['HealthAnalyticsAI']()
+                            self.chart_generator = ai_modules['SmartChartGenerator']()
+                            self.metrics_calculator = ai_modules['HealthMetricsCalculator']()
+                        else:
+                            print("⚠️ No se pudieron cargar módulos IA")
+                            self.ai_processor = None
+                            self.chart_generator = None
+                            self.metrics_calculator = None
+                    except Exception as e:
+                        print(f"❌ Error cargando módulos IA: {str(e)}")
+                        self.ai_processor = None
+                        self.chart_generator = None
+                        self.metrics_calculator = None
                 
                 # Carga diferida de mapas - no cargar hasta que se necesiten
                 # (map_interface y map_interface_loaded ya inicializados arriba)
@@ -2257,6 +2247,33 @@ def main():
     # Importar re localmente para evitar problemas de ámbito en funciones anidadas
     import re
 
+    # CRÍTICO: Detectar estado móvil real AHORA que Streamlit está completamente inicializado
+    # Esto actualiza la variable global IS_MOBILE con el valor correcto
+    global IS_MOBILE
+    IS_MOBILE = get_mobile_state_safe()
+
+    # ===== CARGAR MÓDULOS DE DATOS (pandas, plotly, numpy) Y ASYNC WRAPPER =====
+    # IMPORTANTE: Cargar aquí en lugar de a nivel global para evitar bloqueos en Streamlit Cloud
+    # pero hacerlos globales para que todas las funciones render_* puedan usarlos
+    global pd, np, px, go, pio, StringIO, get_streamlit_async_wrapper
+    try:
+        data_modules = lazy_import_data_modules()
+        pd = data_modules['pd']
+        np = data_modules['np']
+        px = data_modules['px']
+        go = data_modules['go']
+        pio = data_modules['pio']
+        StringIO = data_modules['StringIO']
+
+        # Importar wrapper asíncrono de Streamlit para chat IA
+        from modules.ai.streamlit_async_wrapper import get_streamlit_async_wrapper
+
+        print("✅ Módulos de datos cargados correctamente")
+    except Exception as e:
+        print(f"❌ Error cargando módulos de datos: {str(e)}")
+        st.error("❌ Error cargando bibliotecas necesarias. Por favor, recarga la página.")
+        return
+
     if not AUTH_AVAILABLE:
         st.error("❌ Sistema de autenticación no disponible. Instala: pip install bcrypt PyJWT")
         return
@@ -2339,7 +2356,8 @@ def main():
                 st.session_state['css_debug_info']['extra_css_file'] = extra_css_file
                 st.session_state['css_debug_info']['extra_css_size'] = len(extra_css)
 
-        # CSS crítico inline para tarjeta de sidebar
+        # CSS crítico inline para tarjeta de sidebar Y comportamiento dinámico
+        # IMPORTANTE: Este CSS se carga DESPUÉS de los temas para sobrescribirlos
         critical_css = """
         <style>
         /* CRÍTICO: Texto blanco en tarjeta de sidebar */
@@ -2354,13 +2372,70 @@ def main():
             text-shadow: 0 2px 4px rgba(0,0,0,0.6) !important;
         }
 
-        /* CRÍTICO: Expansión del sidebar */
-        section[data-testid="stSidebar"][aria-expanded="false"] ~ section[data-testid="stMain"] .main .block-container {
+        /* CRÍTICO: Comportamiento dinámico del sidebar - COMPLETO */
+        /* Forzar el sidebar a colapsarse completamente cuando está cerrado */
+        section[data-testid="stSidebar"][aria-expanded="false"] {
+            width: 0 !important;
+            min-width: 0 !important;
+            max-width: 0 !important;
+            overflow: hidden !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        section[data-testid="stSidebar"][aria-expanded="false"] > div {
+            width: 0 !important;
+            min-width: 0 !important;
+            overflow: hidden !important;
+        }
+
+        /* Cuando el sidebar está COLAPSADO - expandir la app al 100% */
+        section[data-testid="stSidebar"][aria-expanded="false"] ~ section[data-testid="stMain"] {
+            margin-left: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        section[data-testid="stSidebar"][aria-expanded="false"] ~ section[data-testid="stMain"] .main {
             max-width: 100% !important;
             width: 100% !important;
+        }
+
+        section[data-testid="stSidebar"][aria-expanded="false"] ~ section[data-testid="stMain"] .main .block-container {
+            max-width: calc(100vw - 4rem) !important;
+            width: calc(100vw - 4rem) !important;
             margin-left: 0 !important;
-            padding-left: 3rem !important;
-            padding-right: 3rem !important;
+            margin-right: 0 !important;
+            padding-left: 2rem !important;
+            padding-right: 2rem !important;
+        }
+
+        /* Forzar expansión completa de todos los contenedores cuando sidebar colapsado */
+        section[data-testid="stSidebar"][aria-expanded="false"] ~ section[data-testid="stMain"] > div,
+        section[data-testid="stSidebar"][aria-expanded="false"] ~ section[data-testid="stMain"] > div > div,
+        section[data-testid="stSidebar"][aria-expanded="false"] ~ section[data-testid="stMain"] .stMainBlockContainer {
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+
+        /* Cuando el sidebar está EXPANDIDO - reducir el ancho de la app */
+        section[data-testid="stSidebar"][aria-expanded="true"] {
+            width: 21rem !important;
+            min-width: 21rem !important;
+            max-width: 21rem !important;
+        }
+
+        section[data-testid="stSidebar"][aria-expanded="true"] ~ section[data-testid="stMain"] .main .block-container {
+            max-width: calc(100vw - 21rem - 4rem) !important;
+            width: calc(100vw - 21rem - 4rem) !important;
+        }
+
+        /* Transiciones suaves */
+        section[data-testid="stSidebar"],
+        section[data-testid="stMain"],
+        .main,
+        .main .block-container {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
         </style>
         """
@@ -4391,7 +4466,7 @@ def render_secure_planificacion(app):
 def render_location_planificacion(app):
     """Análisis de ubicación óptima"""
     st.markdown("#### 🏥 Análisis de Ubicación Óptima")
-    
+
     # Simular análisis de planificación
     planificacion_metrics = []
     
