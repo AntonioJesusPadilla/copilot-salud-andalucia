@@ -147,6 +147,137 @@ except Exception:
     )
 # ===== FIN CONFIGURACIÓN DE PÁGINA =====
 
+# ===== SISTEMA DE DETECCIÓN TEMPRANA DE ERRORES PARA iOS =====
+# Este código se ejecuta INMEDIATAMENTE después de set_page_config
+# para detectar y mostrar errores visibles en lugar de pantalla negra
+st.markdown("""
+<script>
+(function() {
+    'use strict';
+
+    // Detectar iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+    if (isIOS) {
+        console.log('🍎 iOS detectado - Iniciando sistema de detección de errores...');
+
+        // 1. Capturar TODOS los errores JavaScript
+        window.addEventListener('error', function(e) {
+            console.error('❌ Error JavaScript capturado:', e.message, e.filename, e.lineno);
+
+            // Mostrar error visible en la página
+            const errorDiv = document.createElement('div');
+            errorDiv.id = 'ios-error-display';
+            errorDiv.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: #ef4444;
+                color: white;
+                padding: 1rem;
+                z-index: 999999;
+                font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+                font-size: 14px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            `;
+            errorDiv.innerHTML = `
+                <strong>⚠️ Error en iOS:</strong> ${e.message}<br>
+                <small>Archivo: ${e.filename} | Línea: ${e.lineno}</small><br>
+                <small style="opacity: 0.8;">Recarga la página (swipe down) o contacta soporte</small>
+            `;
+
+            // Solo agregar si no existe ya
+            if (!document.getElementById('ios-error-display')) {
+                document.body.appendChild(errorDiv);
+            }
+        }, true);
+
+        // 2. Detectar si la app no carga en 15 segundos
+        let appLoadedSuccessfully = false;
+
+        setTimeout(function() {
+            // Verificar si la app cargó detectando elementos Streamlit
+            const streamlitElements = document.querySelectorAll('.stApp, [data-testid="stApp"], .main');
+            const hasContent = streamlitElements.length > 0 && streamlitElements[0].children.length > 0;
+
+            if (!hasContent && !appLoadedSuccessfully) {
+                console.warn('⚠️ La aplicación no ha cargado después de 15 segundos');
+
+                // Mostrar mensaje de carga lenta
+                const loadingDiv = document.createElement('div');
+                loadingDiv.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: white;
+                    padding: 2rem;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                    z-index: 999998;
+                    text-align: center;
+                    max-width: 80%;
+                `;
+                loadingDiv.innerHTML = `
+                    <h2 style="color: #1a202c; margin: 0 0 1rem 0;">⏳ Cargando...</h2>
+                    <p style="color: #4a5568; margin: 0;">La aplicación está tardando más de lo esperado.</p>
+                    <p style="color: #4a5568; margin: 0.5rem 0;">Por favor espera unos segundos más.</p>
+                    <div style="margin-top: 1rem; padding: 0.75rem; background: #fef3c7; border-radius: 8px; color: #92400e; font-size: 14px;">
+                        💡 Sugerencia: Si tarda demasiado, prueba recargando la página
+                    </div>
+                `;
+
+                document.body.appendChild(loadingDiv);
+
+                // Ocultar el mensaje después de 10 segundos más
+                setTimeout(function() {
+                    if (loadingDiv.parentNode) {
+                        loadingDiv.remove();
+                    }
+                }, 10000);
+            }
+        }, 15000);
+
+        // 3. Marcar como cargado cuando Streamlit esté listo
+        const checkStreamlitLoaded = setInterval(function() {
+            const streamlitApp = document.querySelector('.stApp, [data-testid="stApp"]');
+            if (streamlitApp && streamlitApp.children.length > 0) {
+                appLoadedSuccessfully = true;
+                console.log('✅ Streamlit cargado correctamente en iOS');
+                clearInterval(checkStreamlitLoaded);
+            }
+        }, 500);
+
+        // Limpiar el intervalo después de 30 segundos
+        setTimeout(function() {
+            clearInterval(checkStreamlitLoaded);
+        }, 30000);
+
+        // 4. Fix rápido de viewport para evitar pantalla negra
+        try {
+            let viewport = document.querySelector('meta[name="viewport"]');
+            if (!viewport) {
+                viewport = document.createElement('meta');
+                viewport.name = 'viewport';
+                document.head.appendChild(viewport);
+            }
+            viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover';
+
+            // Fix de altura mínima para evitar colapso visual
+            document.documentElement.style.minHeight = '100vh';
+            document.body.style.minHeight = '100vh';
+
+            console.log('✅ Viewport y altura mínima configurados para iOS');
+        } catch(e) {
+            console.error('❌ Error configurando viewport iOS:', e);
+        }
+    }
+})();
+</script>
+""", unsafe_allow_html=True)
+# ===== FIN SISTEMA DE DETECCIÓN DE ERRORES iOS =====
+
 # Imports críticos y ligeros primero
 # Debug info (comentado para evitar errores en reruns)
 # print(f"Project root: {project_root}")
@@ -1344,84 +1475,135 @@ clear_cache_if_needed()
 
 # Cargar detector y correcciones para iOS Safari (compatible con todas las versiones)
 def load_ios_fixes():
-    """Cargar fixes de iOS solo cuando sea necesario - SIN EVAL para evitar CSP"""
-    ios_detection_script = """
-    <script>
-(function() {
-    'use strict';
-
-    try {
-        // Detectar iOS Safari (cualquier versión)
-        function isIOSSafari() {
-            const userAgent = navigator.userAgent;
-            const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-            const isSafari = /Safari/.test(userAgent) && !/Chrome|CriOS|FxiOS/.test(userAgent);
-            return isIOS && isSafari;
-        }
-
-        // Solo aplicar correcciones si es iOS Safari
-        if (isIOSSafari()) {
-            console.log('iOS Safari detectado - Aplicando correcciones específicas...');
-
-            // Inyectar CSS específico para iOS (SIN eval)
-            const iosCSS = `PLACEHOLDER_CSS_CONTENT`;
-            const style = document.createElement('style');
-            style.textContent = iosCSS;
-            document.head.appendChild(style);
-
-            // Aplicar fixes JavaScript directamente (SIN eval)
-            PLACEHOLDER_JS_DIRECT
-
-            // Meta tags específicos para iOS
-            let viewport = document.querySelector('meta[name="viewport"]');
-            if (!viewport) {
-                viewport = document.createElement('meta');
-                viewport.name = 'viewport';
-                document.head.appendChild(viewport);
-            }
-            viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
-
-            const webAppCapable = document.createElement('meta');
-            webAppCapable.name = 'apple-mobile-web-app-capable';
-            webAppCapable.content = 'yes';
-            if (!document.querySelector('meta[name="apple-mobile-web-app-capable"]')) {
-                document.head.appendChild(webAppCapable);
-            }
-        }
-    } catch (error) {
-        console.error('Error aplicando fixes de iOS:', error);
-        // No romper la app si falla
-    }
-})();
-</script>
-"""
-
-    # Leer CSS y JS para iOS - SIN EVAL para máxima compatibilidad
+    """Cargar fixes de iOS solo cuando sea necesario - VERSIÓN SEGURA"""
     try:
+        # Leer archivos CSS y JS primero
         ios_fixes_css = load_css_file('assets/ios_safari_fixes.css')
         safari_js = load_css_file('assets/safari_detector.js')
 
-        if ios_fixes_css and safari_js:
-            # Escapar caracteres especiales para template literals
-            ios_fixes_css = ios_fixes_css.replace('`', '\\`').replace('${', '\\${')
+        # Si no se cargan los archivos, usar un fix mínimo y seguro
+        if not ios_fixes_css or not safari_js:
+            print("⚠️ Archivos iOS no disponibles - usando fixes mínimos")
+            minimal_ios_fix = """
+            <script>
+            (function() {
+                'use strict';
+                try {
+                    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                    if (isIOS) {
+                        console.log('iOS detectado - Aplicando fixes mínimos...');
+                        // Fix básico de viewport
+                        let viewport = document.querySelector('meta[name="viewport"]');
+                        if (!viewport) {
+                            viewport = document.createElement('meta');
+                            viewport.name = 'viewport';
+                            document.head.appendChild(viewport);
+                        }
+                        viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover';
 
-            # Extraer solo el cuerpo de la función IIFE de safari_js para evitar eval
-            # Eliminar el wrapper IIFE externo y dejar solo el código interno
-            safari_js_clean = safari_js.replace('(function() {', '').replace('})();', '')
-            safari_js_clean = safari_js_clean.strip()
+                        // Fix básico de altura
+                        document.documentElement.style.height = '100vh';
+                        document.body.style.minHeight = '100vh';
+                    }
+                } catch (error) {
+                    console.error('Error en fixes iOS mínimos:', error);
+                }
+            })();
+            </script>
+            """
+            st.markdown(minimal_ios_fix, unsafe_allow_html=True)
+            return
 
-            ios_detection_script = ios_detection_script.replace('PLACEHOLDER_CSS_CONTENT', ios_fixes_css or '/* CSS not loaded */')
-            ios_detection_script = ios_detection_script.replace('PLACEHOLDER_JS_DIRECT', safari_js_clean or '// JS not loaded')
-        else:
-            # Fallback si no se cargan los archivos
-            ios_detection_script = ios_detection_script.replace('PLACEHOLDER_CSS_CONTENT', '/* CSS not available */')
-            ios_detection_script = ios_detection_script.replace('PLACEHOLDER_JS_DIRECT', '// JS not available')
+        # Procesar archivos cargados de forma segura
+        # 1. Escapar CSS para template literals
+        ios_fixes_css_escaped = ios_fixes_css.replace('\\', '\\\\').replace('`', '\\`').replace('${', '\\${')
 
-        st.markdown(ios_detection_script, unsafe_allow_html=True)
+        # 2. NO intentar extraer el IIFE de safari_js, usarlo directamente en el HTML
+        # El safari_js ya viene con su propia estructura IIFE completa
+
+        # Crear script seguro con CSS inline y JS separado
+        safe_ios_script = f"""
+        <script>
+        (function() {{
+            'use strict';
+            try {{
+                // Detectar iOS Safari
+                const userAgent = navigator.userAgent;
+                const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+                const isSafari = /Safari/.test(userAgent) && !/Chrome|CriOS|FxiOS/.test(userAgent);
+
+                if (isIOS && isSafari) {{
+                    console.log('iOS Safari detectado - Cargando fixes específicos...');
+
+                    // Inyectar CSS de forma segura
+                    const style = document.createElement('style');
+                    style.id = 'ios-safari-fixes';
+                    style.textContent = `{ios_fixes_css_escaped}`;
+                    document.head.appendChild(style);
+
+                    // Meta tags específicos
+                    let viewport = document.querySelector('meta[name="viewport"]');
+                    if (!viewport) {{
+                        viewport = document.createElement('meta');
+                        viewport.name = 'viewport';
+                        document.head.appendChild(viewport);
+                    }}
+                    viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover';
+
+                    const webAppCapable = document.createElement('meta');
+                    webAppCapable.name = 'apple-mobile-web-app-capable';
+                    webAppCapable.content = 'yes';
+                    if (!document.querySelector('meta[name="apple-mobile-web-app-capable"]')) {{
+                        document.head.appendChild(webAppCapable);
+                    }}
+
+                    console.log('✅ Fixes iOS aplicados correctamente');
+                }}
+            }} catch (error) {{
+                console.error('Error aplicando fixes de iOS:', error);
+                // Aplicar fix mínimo de emergencia
+                try {{
+                    let viewport = document.querySelector('meta[name="viewport"]');
+                    if (!viewport) {{
+                        viewport = document.createElement('meta');
+                        viewport.name = 'viewport';
+                        document.head.appendChild(viewport);
+                    }}
+                    viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
+                }} catch(e) {{
+                    console.error('Error en fix de emergencia:', e);
+                }}
+            }}
+        }})();
+        </script>
+        """
+
+        # Cargar el script seguro
+        st.markdown(safe_ios_script, unsafe_allow_html=True)
+
+        # Cargar el safari_detector.js por separado (ya tiene su propia protección)
+        st.markdown(f"<script>{safari_js}</script>", unsafe_allow_html=True)
+
     except Exception as e:
-        # Si hay error, no cargar nada para evitar romper la app en iOS
-        print(f"⚠️ No se pudieron cargar archivos iOS específicos: {e}")
-        # La app debe funcionar sin los fixes de iOS
+        # Si hay cualquier error, usar fix ultra mínimo de emergencia
+        print(f"❌ Error cargando iOS fixes: {e}")
+        emergency_fix = """
+        <script>
+        (function() {
+            try {
+                if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                    console.log('iOS detectado - Fix de emergencia');
+                    let viewport = document.querySelector('meta[name="viewport"]');
+                    if (viewport) {
+                        viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
+                    }
+                    document.body.style.minHeight = '100vh';
+                }
+            } catch(e) { console.error('Error en fix iOS de emergencia:', e); }
+        })();
+        </script>
+        """
+        st.markdown(emergency_fix, unsafe_allow_html=True)
 
 # NOTA: Los fixes de iOS se cargan ahora de forma diferida en la aplicación principal
 # para evitar que aparezcan como texto durante el login
