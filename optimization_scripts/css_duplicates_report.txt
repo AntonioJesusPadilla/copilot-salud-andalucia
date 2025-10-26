@@ -1,0 +1,883 @@
+================================================================================
+REPORTE DE ANÁLISIS DE CSS DUPLICADOS
+================================================================================
+Generado: analyze_css_duplicates.py
+
+ARCHIVOS ANALIZADOS:
+--------------------------------------------------------------------------------
+  adaptive_theme.css                          54 selectores |    11833 bytes
+  desktop_layout.css                           7 selectores |     2546 bytes
+  extra_styles.css                            74 selectores |    32377 bytes
+  extra_styles_cloud.css                      46 selectores |    15440 bytes
+  ios_safari_fixes.css                        27 selectores |    12861 bytes
+  login.css                                   55 selectores |    22347 bytes
+  style.css                                  168 selectores |    32949 bytes
+  theme_dark.css                              38 selectores |    12461 bytes
+  theme_dark_cloud.css                        42 selectores |    23693 bytes
+  theme_light.css                             38 selectores |    12579 bytes
+  theme_light_cloud.css                       38 selectores |    13359 bytes
+--------------------------------------------------------------------------------
+  TOTAL                                      587 selectores |   192445 bytes
+
+
+================================================================================
+DUPLICADOS EXACTOS: 51
+================================================================================
+(Mismo selector con las mismas propiedades en múltiples archivos)
+Estos pueden ser eliminados moviendo el código a un archivo común.
+
+
+[1] SELECTOR: .access-granted h4, .access-granted p, .access-granted span, .access-granted *
+--------------------------------------------------------------------------------
+  Aparece en 3 archivos:
+    • theme_dark.css
+    • theme_light_cloud.css
+    • theme_dark_cloud.css
+
+  Propiedades:
+    color: white !important
+
+
+[2] SELECTOR: .align-center
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • style.css
+    • adaptive_theme.css
+
+  Propiedades:
+    align-items: center
+
+
+[3] SELECTOR: .chart-container
+--------------------------------------------------------------------------------
+  Aparece en 4 archivos:
+    • style.css
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    padding: 1rem
+    margin-bottom: 1.5rem
+
+
+[4] SELECTOR: .chart-container:hover
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • style.css
+    • adaptive_theme.css
+
+  Propiedades:
+    box-shadow: var(--shadow-hover)
+    transform: translateY(-1px)
+
+
+[5] SELECTOR: .chart-title
+--------------------------------------------------------------------------------
+  Aparece en 3 archivos:
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    font-size: 1.4rem
+    font-weight: 600
+    color: var(--text-primary)
+    margin: 0
+    display: flex
+    ... y 5 propiedades más
+
+
+[6] SELECTOR: .chat-messages::-webkit-scrollbar-thumb
+--------------------------------------------------------------------------------
+  Aparece en 4 archivos:
+    • style.css
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    background: var(--primary-color)
+    border-radius: 3px
+    transition: background 0.3s ease
+
+
+[7] SELECTOR: .chat-messages::-webkit-scrollbar-thumb:hover
+--------------------------------------------------------------------------------
+  Aparece en 4 archivos:
+    • style.css
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    background: var(--secondary-color)
+
+
+[8] SELECTOR: .chat-messages::-webkit-scrollbar-track
+--------------------------------------------------------------------------------
+  Aparece en 3 archivos:
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    background: var(--bg-secondary)
+    border-radius: 3px
+
+
+[9] SELECTOR: .chat-title
+--------------------------------------------------------------------------------
+  Aparece en 3 archivos:
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    font-size: 1.6rem
+    font-weight: 600
+    color: var(--text-primary)
+    margin: 0
+    display: flex
+    ... y 3 propiedades más
+
+
+[10] SELECTOR: .d-flex
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • style.css
+    • adaptive_theme.css
+
+  Propiedades:
+    display: flex
+
+
+[11] SELECTOR: .gap-05
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • style.css
+    • adaptive_theme.css
+
+  Propiedades:
+    gap: 0.5rem
+
+
+[12] SELECTOR: .gap-1
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • style.css
+    • adaptive_theme.css
+
+  Propiedades:
+    gap: 1rem
+
+
+[13] SELECTOR: .info-box
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • theme_light.css
+    • adaptive_theme.css
+
+  Propiedades:
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05))
+    border: 1px solid rgba(59, 130, 246, 0.2)
+    color: var(--info-color)
+    padding: 1rem
+    border-radius: var(--border-radius)
+    ... y 2 propiedades más
+
+
+[14] SELECTOR: .justify-between
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • style.css
+    • adaptive_theme.css
+
+  Propiedades:
+    justify-content: space-between
+
+
+[15] SELECTOR: .main .block-container
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • desktop_layout.css
+    • desktop_layout.css
+
+  Propiedades:
+    min-width: 1200px !important
+    overflow-x: auto !important
+
+
+[16] SELECTOR: .main-header h1
+--------------------------------------------------------------------------------
+  Aparece en 3 archivos:
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    font-family: var(--font-primary)
+    font-size: 2.2rem
+    font-weight: 600
+    margin-bottom: 0.5rem
+    color: var(--text-primary)
+    ... y 5 propiedades más
+
+  Aparece en 3 archivos:
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    font-size: 1.8rem
+
+  Aparece en 3 archivos:
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    font-size: 1.6rem
+
+  Aparece en 2 archivos:
+    • theme_light_cloud.css
+    • theme_dark_cloud.css
+
+  Propiedades:
+    font-size: 1.8rem !important
+
+
+[17] SELECTOR: .main-header h3
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • theme_light.css
+    • adaptive_theme.css
+
+  Propiedades:
+    font-size: 1.1rem
+    opacity: 0.8
+    font-weight: 400
+    margin-bottom: 0.75rem
+    position: relative
+    ... y 3 propiedades más
+
+
+[18] SELECTOR: .main-header p
+--------------------------------------------------------------------------------
+  Aparece en 3 archivos:
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    font-size: 0.95rem
+    color: var(--text-muted)
+    margin: 0.25rem 0
+    position: relative
+    z-index: 2
+    ... y 2 propiedades más
+
+
+[19] SELECTOR: .main-header::after
+--------------------------------------------------------------------------------
+  Aparece en 4 archivos:
+    • style.css
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    content: ''
+    position: absolute
+    top: 0
+    left: 0
+    width: 4px
+    ... y 4 propiedades más
+
+
+[20] SELECTOR: .mb-1
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • style.css
+    • adaptive_theme.css
+
+  Propiedades:
+    margin-bottom: 1rem
+
+
+[21] SELECTOR: .mb-2
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • style.css
+    • adaptive_theme.css
+
+  Propiedades:
+    margin-bottom: 2rem
+
+
+[22] SELECTOR: .metric-card
+--------------------------------------------------------------------------------
+  Aparece en 4 archivos:
+    • style.css
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    padding: 0.75rem
+    margin-bottom: 0.75rem
+
+
+[23] SELECTOR: .metric-label
+--------------------------------------------------------------------------------
+  Aparece en 3 archivos:
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    font-size: 0.9rem
+    color: var(--text-secondary)
+    font-weight: 500
+
+
+[24] SELECTOR: .metric-value
+--------------------------------------------------------------------------------
+  Aparece en 4 archivos:
+    • style.css
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    font-size: 2rem
+    font-weight: 700
+    color: var(--primary-color)
+    margin-bottom: 0.25rem
+    display: block
+    ... y 1 propiedades más
+
+
+[25] SELECTOR: .mt-1
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • style.css
+    • adaptive_theme.css
+
+  Propiedades:
+    margin-top: 1rem
+
+
+[26] SELECTOR: .mt-2
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • style.css
+    • adaptive_theme.css
+
+  Propiedades:
+    margin-top: 2rem
+
+
+[27] SELECTOR: .p-1
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • style.css
+    • adaptive_theme.css
+
+  Propiedades:
+    padding: 1rem
+
+
+[28] SELECTOR: .p-2
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • style.css
+    • adaptive_theme.css
+
+  Propiedades:
+    padding: 2rem
+
+
+[29] SELECTOR: .rounded
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • style.css
+    • adaptive_theme.css
+
+  Propiedades:
+    border-radius: var(--border-radius)
+
+
+[30] SELECTOR: .shadow
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • style.css
+    • adaptive_theme.css
+
+  Propiedades:
+    box-shadow: var(--shadow)
+
+
+[31] SELECTOR: .sidebar-content h3
+--------------------------------------------------------------------------------
+  Aparece en 4 archivos:
+    • style.css
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    color: var(--primary-color)
+    font-size: 1.2rem
+    font-weight: 600
+    margin-bottom: 1rem
+    display: flex
+    ... y 3 propiedades más
+
+
+[32] SELECTOR: .stButton > button
+--------------------------------------------------------------------------------
+  Aparece en 3 archivos:
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    min-height: 44px
+    padding: 0.75rem 1rem
+    font-size: 0.9rem
+    width: 100%
+    touch-action: manipulation
+    ... y 1 propiedades más
+
+  Aparece en 3 archivos:
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    min-height: 48px
+    padding: 0.875rem 1rem
+    font-size: 0.9rem
+    touch-action: manipulation
+    -webkit-tap-highlight-color: transparent
+    ... y 1 propiedades más
+
+  Aparece en 2 archivos:
+    • theme_light_cloud.css
+    • theme_dark_cloud.css
+
+  Propiedades:
+    width: 100% !important
+    padding: 0.75rem 1rem !important
+
+
+[33] SELECTOR: .stButton > button:hover
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • theme_light.css
+    • adaptive_theme.css
+
+  Propiedades:
+    transform: translateY(-1px)
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25), 0 2px 4px rgba(5, 150, 105, 0.15)
+    background: linear-gradient(135deg, #047857, #10b981)
+
+
+[34] SELECTOR: .stChatMessage .stMarkdown p, .stChatMessage .stMarkdown div, .stChatMessage .stMarkdown span
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • theme_light.css
+    • theme_dark.css
+
+  Propiedades:
+    color: var(--text-primary) !important
+
+
+[35] SELECTOR: .stDataFrame tbody tr:hover
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • theme_light.css
+    • adaptive_theme.css
+
+  Propiedades:
+    background: rgba(5, 150, 105, 0.1)
+    transition: background 0.2s ease
+
+
+[36] SELECTOR: .stDataFrame tbody tr:nth-child(even)
+--------------------------------------------------------------------------------
+  Aparece en 3 archivos:
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    background: var(--bg-secondary)
+
+
+[37] SELECTOR: .stDataFrame td
+--------------------------------------------------------------------------------
+  Aparece en 3 archivos:
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    padding: 0.75rem
+    border-bottom: 1px solid var(--border-color)
+    color: var(--text-primary)
+
+
+[38] SELECTOR: .stSelectbox > div > div:focus-within, .stTextInput > div > div:focus-within
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • theme_light.css
+    • adaptive_theme.css
+
+  Propiedades:
+    border-color: var(--primary-color)
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1)
+
+
+[39] SELECTOR: .stSelectbox > div > div:hover, .stTextInput > div > div:hover
+--------------------------------------------------------------------------------
+  Aparece en 3 archivos:
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    border-color: var(--primary-color)
+
+
+[40] SELECTOR: .stSidebar
+--------------------------------------------------------------------------------
+  Aparece en 3 archivos:
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    width: 21rem !important
+    min-width: 21rem !important
+
+
+[41] SELECTOR: .stTabs [data-baseweb="tab"]
+--------------------------------------------------------------------------------
+  Aparece en 3 archivos:
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    background: transparent
+    border-radius: var(--border-radius)
+    transition: var(--transition)
+    font-weight: 500
+    color: var(--text-primary)
+    ... y 1 propiedades más
+
+
+[42] SELECTOR: .stTabs [data-baseweb="tab"]:hover
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • theme_light.css
+    • adaptive_theme.css
+
+  Propiedades:
+    background: rgba(5, 150, 105, 0.1)
+
+
+[43] SELECTOR: .stTabs [data-baseweb="tab"][aria-selected="true"]
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • theme_light.css
+    • adaptive_theme.css
+
+  Propiedades:
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color))
+    color: white
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.2)
+
+
+[44] SELECTOR: .text-left
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • style.css
+    • adaptive_theme.css
+
+  Propiedades:
+    text-align: left
+
+
+[45] SELECTOR: .text-right
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • style.css
+    • adaptive_theme.css
+
+  Propiedades:
+    text-align: right
+
+
+[46] SELECTOR: .warning-box
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • theme_light.css
+    • adaptive_theme.css
+
+  Propiedades:
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05))
+    border: 1px solid rgba(245, 158, 11, 0.2)
+    color: var(--warning-color)
+    padding: 1rem
+    border-radius: var(--border-radius)
+    ... y 2 propiedades más
+
+
+[47] SELECTOR: div[data-testid="column"]
+--------------------------------------------------------------------------------
+  Aparece en 3 archivos:
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    min-width: 300px !important
+    flex: 1 !important
+
+
+[48] SELECTOR: to
+--------------------------------------------------------------------------------
+  Aparece en 3 archivos:
+    • style.css
+    • adaptive_theme.css
+    • ios_safari_fixes.css
+
+  Propiedades:
+    opacity: 1
+    transform: translateY(0)
+
+  Aparece en 2 archivos:
+    • style.css
+    • style.css
+
+  Propiedades:
+    opacity: 1
+    transform: translateX(0)
+
+
+[49] SELECTOR: } .fade-in
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • style.css
+    • adaptive_theme.css
+
+  Propiedades:
+    animation: fadeIn 0.6s ease-out
+
+
+[50] SELECTOR: } /* ========== LAYOUT DESKTOP ========== */ .main .block-container
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos:
+    • theme_light.css
+    • theme_dark.css
+
+  Propiedades:
+    max-width: none !important
+    min-width: 1200px !important
+    padding-top: 2rem !important
+    padding-bottom: 2rem !important
+    padding-left: 2rem !important
+    ... y 2 propiedades más
+
+
+[51] SELECTOR: } @media (max-width: 480px)
+--------------------------------------------------------------------------------
+  Aparece en 3 archivos:
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+  Propiedades:
+    .main-header { padding: 1rem 0.5rem
+
+
+
+================================================================================
+DUPLICADOS PARCIALES: 76
+================================================================================
+(Mismo selector pero con propiedades diferentes en distintos archivos)
+Estos pueden ser consolidados o necesitar refactorización.
+
+
+[1] SELECTOR: .access-granted h4, .access-granted p, .access-granted span, .access-granted *
+--------------------------------------------------------------------------------
+  Aparece en 4 archivos con diferentes estilos:
+    • theme_light.css
+    • theme_dark.css
+    • theme_light_cloud.css
+    • theme_dark_cloud.css
+
+
+[2] SELECTOR: .alert-content
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos con diferentes estilos:
+    • extra_styles.css
+    • extra_styles_cloud.css
+
+
+[3] SELECTOR: .alert-icon
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos con diferentes estilos:
+    • extra_styles.css
+    • extra_styles_cloud.css
+
+
+[4] SELECTOR: .alert-info
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos con diferentes estilos:
+    • theme_light_cloud.css
+    • theme_dark_cloud.css
+
+
+[5] SELECTOR: .alert-message
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos con diferentes estilos:
+    • extra_styles.css
+    • extra_styles_cloud.css
+
+
+[6] SELECTOR: .alert-message-container
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos con diferentes estilos:
+    • extra_styles.css
+    • extra_styles_cloud.css
+
+
+[7] SELECTOR: .alert-priority
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos con diferentes estilos:
+    • extra_styles.css
+    • extra_styles_cloud.css
+
+
+[8] SELECTOR: .alert-warning
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos con diferentes estilos:
+    • theme_light_cloud.css
+    • theme_dark_cloud.css
+
+
+[9] SELECTOR: .analysis-card:hover
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos con diferentes estilos:
+    • extra_styles.css
+    • extra_styles_cloud.css
+
+
+[10] SELECTOR: .analysis-highlight
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos con diferentes estilos:
+    • extra_styles.css
+    • extra_styles_cloud.css
+
+
+[11] SELECTOR: .analysis-highlight:hover
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos con diferentes estilos:
+    • extra_styles.css
+    • extra_styles_cloud.css
+
+
+[12] SELECTOR: .analysis-subtitle
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos con diferentes estilos:
+    • extra_styles.css
+    • extra_styles_cloud.css
+
+
+[13] SELECTOR: .analysis-table tbody tr
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos con diferentes estilos:
+    • extra_styles.css
+    • extra_styles_cloud.css
+
+
+[14] SELECTOR: .analysis-table tbody tr:hover
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos con diferentes estilos:
+    • extra_styles.css
+    • extra_styles_cloud.css
+
+
+[15] SELECTOR: .analysis-table td
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos con diferentes estilos:
+    • extra_styles.css
+    • extra_styles_cloud.css
+
+
+[16] SELECTOR: .analysis-table th
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos con diferentes estilos:
+    • extra_styles.css
+    • extra_styles_cloud.css
+
+
+[17] SELECTOR: .analysis-title
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos con diferentes estilos:
+    • extra_styles.css
+    • extra_styles_cloud.css
+
+
+[18] SELECTOR: .chart-container
+--------------------------------------------------------------------------------
+  Aparece en 8 archivos con diferentes estilos:
+    • style.css
+    • style.css
+    • style.css
+    • style.css
+    • style.css
+    • theme_light.css
+    • theme_dark.css
+    • adaptive_theme.css
+
+
+[19] SELECTOR: .chart-container:hover
+--------------------------------------------------------------------------------
+  Aparece en 6 archivos con diferentes estilos:
+    • style.css
+    • theme_light.css
+    • theme_dark.css
+    • theme_light_cloud.css
+    • theme_dark_cloud.css
+    • adaptive_theme.css
+
+
+[20] SELECTOR: .chart-header
+--------------------------------------------------------------------------------
+  Aparece en 2 archivos con diferentes estilos:
+    • style.css
+    • style.css
+
+
+... y 56 selectores parcialmente duplicados más
+
+
+================================================================================
+RESUMEN DE OPTIMIZACIÓN
+================================================================================
+Total de selectores únicos:        342
+Selectores con duplicación:        100
+Duplicados exactos (eliminar):     51
+Duplicados parciales (revisar):    76
+
+RECOMENDACIONES:
+--------------------------------------------------------------------------------
+1. Eliminar 51 duplicados exactos moviendo código a archivo común
+   Ahorro estimado: ~7650 bytes
+2. Revisar 76 duplicados parciales para refactorización
+
