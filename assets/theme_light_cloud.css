@@ -209,6 +209,15 @@ button[kind="secondary"] {
 .stTextInput > div > div:hover,
 .stTextArea > div > div:hover {
     border-color: #059669 !important;
+    background-color: #ffffff !important;
+}
+
+/* Forzar texto oscuro y fondo blanco en hover del selectbox */
+.stSelectbox > div > div:hover input,
+.stSelectbox > div > div:hover span,
+.stSelectbox > div > div:hover div {
+    color: #0f172a !important;
+    background-color: #ffffff !important;
 }
 
 .stSelectbox > div > div:focus-within,
@@ -221,6 +230,109 @@ button[kind="secondary"] {
 /* Input text color */
 .stSelectbox input, .stTextInput input, .stTextArea textarea {
     color: #0f172a !important;
+}
+
+/* Selectbox específico - Asegurar contraste */
+.stSelectbox label {
+    color: #0f172a !important;
+    font-weight: 600 !important;
+}
+
+.stSelectbox input,
+.stSelectbox span,
+div[data-baseweb="select"] input,
+div[data-baseweb="select"] span,
+div[data-baseweb="select"] > div {
+    color: #0f172a !important;
+    background-color: #ffffff !important;
+}
+
+/* Evitar fondo verde en hover del selectbox - BaseWeb */
+div[data-baseweb="select"]:hover,
+div[data-baseweb="select"]:hover > div,
+div[data-baseweb="select"]:hover input,
+div[data-baseweb="select"]:hover span {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+}
+
+/* Dropdown del selectbox */
+div[role="listbox"],
+ul[role="listbox"] {
+    background-color: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    max-height: 400px !important;
+    overflow-y: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 0 !important;
+}
+
+/* ========== OPCIONES SELECTBOX - ESPECIFICIDAD MÁXIMA ========== */
+/* Estrategia: Copiar EXACTAMENTE las reglas del modo oscuro */
+
+/* Opciones del selectbox - Emotion classes */
+html body .stApp li[role="option"],
+html body .stApp li[class*="st-emotion-cache"],
+html body .stApp li[class*="eg1z3xh0"],
+html body .stApp ul[role="listbox"] li,
+html body .stApp div[role="listbox"] li {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Texto dentro de opciones - Emotion */
+html body .stApp li[role="option"] div,
+html body .stApp li[role="option"] span,
+html body .stApp [class*="etx0m6x0"],
+html body .stApp [class*="etx0m6x1"],
+html body .stApp .st-emotion-cache-11loom0,
+html body .stApp .st-emotion-cache-qiev7j {
+    background: transparent !important;
+    color: #0f172a !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Opción seleccionada (aria-selected="true") */
+html body .stApp li[role="option"][aria-selected="true"] {
+    background: #10b981 !important;
+    background-color: #10b981 !important;
+    color: #ffffff !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Hover en opciones - Gris suave */
+html body .stApp li[role="option"]:hover:not([aria-selected="true"]) {
+    background: #f3f4f6 !important;
+    background-color: #f3f4f6 !important;
+    color: #0f172a !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Texto dentro de opción seleccionada */
+html body .stApp li[role="option"][aria-selected="true"] span,
+html body .stApp li[role="option"][aria-selected="true"] div {
+    color: #ffffff !important;
+    background-color: transparent !important;
+}
+
+/* Texto dentro de hover */
+html body .stApp li[role="option"]:hover:not([aria-selected="true"]) span,
+html body .stApp li[role="option"]:hover:not([aria-selected="true"]) div {
+    color: #0f172a !important;
+    background-color: transparent !important;
 }
 
 /* ========== STATUS MESSAGES ========== */
@@ -399,17 +511,17 @@ button[kind="secondary"] {
 /* ========== LAYOUT ========== */
 .main .block-container {
     max-width: none !important;
-    padding-top: 2rem !important;
+    padding-top: 0 !important;
     padding-bottom: 2rem !important;
     padding-left: 2rem !important;
     padding-right: 2rem !important;
 }
 
 /* ========== OVERRIDES DE ELEMENTOS INLINE ========== */
-[style*="color: white"]:not(.access-granted *):not(.status-card-operativo *):not(.status-card-alerta *):not(.status-card-monitoreo *):not(.status-card-predictivo *),
-[style*="color:white"]:not(.access-granted *):not(.status-card-operativo *):not(.status-card-alerta *):not(.status-card-monitoreo *):not(.status-card-predictivo *),
-[style*="color:#ffffff"]:not(.access-granted *):not(.status-card-operativo *):not(.status-card-alerta *):not(.status-card-monitoreo *):not(.status-card-predictivo *),
-[style*="color:#fff"]:not(.access-granted *):not(.status-card-operativo *):not(.status-card-alerta *):not(.status-card-monitoreo *):not(.status-card-predictivo *) {
+[style*="color: white"]:not(.access-granted *):not(.status-card-operativo *):not(.status-card-alerta *):not(.status-card-monitoreo *):not(.status-card-predictivo *):not(.main-header-secure *):not(.executive-badge *):not(div[style*="#1a365d"] *):not(div[style*="#2d3748"] *),
+[style*="color:white"]:not(.access-granted *):not(.status-card-operativo *):not(.status-card-alerta *):not(.status-card-monitoreo *):not(.status-card-predictivo *):not(.main-header-secure *):not(.executive-badge *):not(div[style*="#1a365d"] *):not(div[style*="#2d3748"] *),
+[style*="color:#ffffff"]:not(.access-granted *):not(.status-card-operativo *):not(.status-card-alerta *):not(.status-card-monitoreo *):not(.status-card-predictivo *):not(.main-header-secure *):not(.executive-badge *):not(div[style*="#1a365d"] *):not(div[style*="#2d3748"] *),
+[style*="color:#fff"]:not(.access-granted *):not(.status-card-operativo *):not(.status-card-alerta *):not(.status-card-monitoreo *):not(.status-card-predictivo *):not(.main-header-secure *):not(.executive-badge *):not(div[style*="#1a365d"] *):not(div[style*="#2d3748"] *) {
     color: #0f172a !important;
 }
 

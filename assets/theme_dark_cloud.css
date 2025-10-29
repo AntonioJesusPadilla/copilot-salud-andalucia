@@ -257,11 +257,14 @@ li[role="option"][aria-selected="true"] {
     color: #ffffff !important;
 }
 
-/* Hover en opciones */
-li[role="option"]:hover {
+/* Hover en opciones - Gris más oscuro (#334155 más oscuro que #475569) */
+li[role="option"]:hover:not([aria-selected="true"]) {
     background: #334155 !important;
     background-color: #334155 !important;
     color: #ffffff !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 /* ========== SELECTBOX INPUT CERRADO ========== */
@@ -424,6 +427,24 @@ html body .stApp .main select {
 .stTextArea > div:hover,
 .stTextArea > div > div:hover {
     border-color: #4ade80 !important;
+    background-color: #475569 !important;
+}
+
+/* Forzar fondo y texto en hover del selectbox */
+.stSelectbox > div > div:hover input,
+.stSelectbox > div > div:hover span,
+.stSelectbox > div > div:hover div {
+    color: #ffffff !important;
+    background-color: #475569 !important;
+}
+
+/* Evitar fondo verde en hover del selectbox - BaseWeb */
+div[data-baseweb="select"]:hover,
+div[data-baseweb="select"]:hover > div,
+div[data-baseweb="select"]:hover input,
+div[data-baseweb="select"]:hover span {
+    background-color: #475569 !important;
+    color: #ffffff !important;
 }
 
 /* Focus states */
@@ -651,7 +672,7 @@ div[class*="status-card-purple"],
 /* ========== LAYOUT ========== */
 .main .block-container {
     max-width: none !important;
-    padding-top: 2rem !important;
+    padding-top: 0 !important;
     padding-bottom: 2rem !important;
     padding-left: 2rem !important;
     padding-right: 2rem !important;

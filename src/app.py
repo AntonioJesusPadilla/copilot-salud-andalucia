@@ -1947,21 +1947,21 @@ class SecureHealthAnalyticsApp:
             # Estilos específicos por tipo de header
             if header_style == 'executive':
                 header_content = f"""
-                <div class="main-header-secure" style="background: {gradient}; color: white;">
+                <div class="main-header-secure executive-header-dark" style="background: {gradient}; color: white;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <h1 style="color: white;">🏛️ {welcome_message}</h1>
-                            <h2 style="color: rgba(255,255,255,0.9); font-size: 1.2rem;">Sistema Integrado de Gestión Sanitaria</h2>
+                            <h1 class="header-title-white" style="color: white !important; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">🏛️ {welcome_message}</h1>
+                            <h2 class="header-subtitle-white" style="color: rgba(255,255,255,0.95) !important; font-size: 1.2rem; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">Sistema Integrado de Gestión Sanitaria</h2>
                         </div>
                         <div style="text-align: right;">
                             <div class="executive-badge" style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 12px;">
                                 <div style="font-size: 2rem;">{role_icon}</div>
-                                <strong style="color: white;">{user_name}</strong><br>
-                                <small style="color: rgba(255,255,255,0.8);">{role_name}</small>
+                                <strong class="badge-text-white" style="color: white !important; text-shadow: 0 2px 4px rgba(0,0,0,0.4);">{user_name}</strong><br>
+                                <small class="badge-text-white" style="color: rgba(255,255,255,0.9) !important; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">{role_name}</small>
                             </div>
                         </div>
                     </div>
-                    <p style="color: rgba(255,255,255,0.8); margin-top: 1rem;">🔐 Acceso Ejecutivo Autorizado | Provincia de Málaga</p>
+                    <p class="header-text-white" style="color: rgba(255,255,255,0.9) !important; margin-top: 1rem; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">🔐 Acceso Ejecutivo Autorizado | Provincia de Málaga</p>
                 </div>
                 """
             elif header_style == 'operational':
@@ -2473,10 +2473,37 @@ def main():
                 st.session_state['css_debug_info']['extra_css_file'] = extra_css_file
                 st.session_state['css_debug_info']['extra_css_size'] = len(extra_css)
 
+        # IMPORTANTE: Cargar selectbox fix CSS DESPUÉS de extra_styles para que sobrescriba
+        selectbox_fix_css = load_css_file('assets/selectbox_fix.css')
+        if selectbox_fix_css:
+            selectbox_fix_with_version = f"/* Selectbox Fix CSS - CARGA FINAL - Version: {datetime.now().strftime('%Y%m%d_%H%M%S')} */\n{selectbox_fix_css}"
+            st.markdown(f"<style>{selectbox_fix_with_version}</style>", unsafe_allow_html=True)
+
+        # NO USAR JAVASCRIPT - CSS puro solamente
+        # El selectbox fix se maneja completamente via CSS crítico más abajo
+
         # CSS crítico inline para tarjeta de sidebar Y comportamiento dinámico
         # IMPORTANTE: Este CSS se carga DESPUÉS de los temas para sobrescribirlos
         critical_css = """
         <style>
+        /* CRÍTICO: ELIMINAR PADDING SUPERIOR DEL MAIN - TODAS LAS VARIANTES */
+        .main,
+        .main > div,
+        .main .block-container,
+        .stMain,
+        .stMain > div,
+        section[data-testid="stMain"],
+        section[data-testid="stMain"] > div,
+        section[data-testid="stMain"] .main,
+        section[data-testid="stMain"] .main > div,
+        section[data-testid="stMain"] .main .block-container,
+        div[data-testid="stMainBlockContainer"],
+        div[class*="block-container"],
+        .appview-container > section > div {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+        }
+
         /* CRÍTICO: Texto blanco en tarjeta de sidebar */
         .sidebar-user-card,
         .sidebar-user-card *,
@@ -2557,6 +2584,149 @@ def main():
         </style>
         """
         st.markdown(critical_css, unsafe_allow_html=True)
+
+        # FORZAR TEXTO BLANCO - Carga final con máxima prioridad
+        # Este archivo se carga AL FINAL para sobrescribir TODOS los temas
+        force_white_css = load_css_file('assets/force_white_text.css')
+        if force_white_css:
+            force_white_with_version = f"/* Force White Text CSS | Version: {datetime.now().strftime('%Y%m%d_%H%M%S')} */\n{force_white_css}"
+            st.markdown(f"<style>{force_white_with_version}</style>", unsafe_allow_html=True)
+
+        # CSS CRÍTICO SELECTBOX - VERSIÓN 8.3 - FORZAR ESPACIADO COMPACTO
+        # Este CSS se carga AL FINAL con máxima especificidad para sobrescribir TODO
+        critical_selectbox_css = """
+        <style id="selectbox-ultra-critical">
+        /* ========== SELECTBOX FIX - VERSIÓN 8.3 - ESPACIADO COMPACTO FORZADO ========== */
+
+        /* CONTENEDOR LISTBOX - ELIMINAR GAPS */
+        html body .stApp ul[role="listbox"],
+        html body .stApp div[role="listbox"],
+        html body ul[role="listbox"],
+        html body div[role="listbox"],
+        ul[role="listbox"],
+        div[role="listbox"] {
+            padding: 0 !important;
+            margin: 0 !important;
+            gap: 0 !important;
+            row-gap: 0 !important;
+            column-gap: 0 !important;
+            display: block !important;
+        }
+
+        /* OPCIONES - PADDING Y MARGIN CERO ABSOLUTO */
+        html body .stApp ul[role="listbox"] li,
+        html body .stApp div[role="listbox"] li,
+        html body .stApp li[role="option"],
+        html body ul[role="listbox"] li,
+        html body div[role="listbox"] li,
+        html body li[role="option"],
+        ul[role="listbox"] li,
+        div[role="listbox"] li,
+        li[role="option"],
+        li[role="option"][aria-selected="true"],
+        li[role="option"]:hover,
+        li[role="option"]:focus {
+            padding: 0 !important;
+            padding-top: 0 !important;
+            padding-right: 0 !important;
+            padding-bottom: 0 !important;
+            padding-left: 0 !important;
+            margin: 0 !important;
+            margin-top: 0 !important;
+            margin-right: 0 !important;
+            margin-bottom: 0 !important;
+            margin-left: 0 !important;
+            border: none !important;
+            border-width: 0 !important;
+            outline: none !important;
+            box-shadow: none !important;
+            min-height: 0 !important;
+            height: auto !important;
+            line-height: normal !important;
+            display: block !important;
+            position: relative !important;
+            top: 0 !important;
+            left: 0 !important;
+        }
+
+        /* ELEMENTOS HIJOS - PADDING Y MARGIN CERO */
+        html body .stApp li[role="option"] > *,
+        html body li[role="option"] > *,
+        li[role="option"] > *,
+        li[role="option"] span,
+        li[role="option"] div,
+        li[role="option"] p {
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
+            background-color: transparent !important;
+        }
+
+        /* PSEUDO-ELEMENTOS - ELIMINAR */
+        li[role="option"]::before,
+        li[role="option"]::after {
+            display: none !important;
+            content: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            height: 0 !important;
+        }
+
+        /* COLORES - MODO LIGHT */
+        [data-theme="light"] li[role="option"],
+        html body [data-theme="light"] li[role="option"] {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+        }
+
+        [data-theme="light"] li[role="option"]:hover:not([aria-selected="true"]),
+        html body [data-theme="light"] li[role="option"]:hover:not([aria-selected="true"]) {
+            background-color: #f3f4f6 !important;
+            color: #0f172a !important;
+        }
+
+        [data-theme="light"] li[role="option"][aria-selected="true"],
+        html body [data-theme="light"] li[role="option"][aria-selected="true"] {
+            background-color: #10b981 !important;
+            color: #ffffff !important;
+        }
+
+        /* COLORES - MODO DARK */
+        [data-theme="dark"] li[role="option"],
+        html body [data-theme="dark"] li[role="option"] {
+            background-color: #475569 !important;
+            color: #ffffff !important;
+        }
+
+        [data-theme="dark"] li[role="option"]:hover:not([aria-selected="true"]),
+        html body [data-theme="dark"] li[role="option"]:hover:not([aria-selected="true"]) {
+            background-color: #334155 !important;
+            color: #ffffff !important;
+        }
+
+        [data-theme="dark"] li[role="option"][aria-selected="true"],
+        html body [data-theme="dark"] li[role="option"][aria-selected="true"] {
+            background-color: #2563eb !important;
+            color: #ffffff !important;
+        }
+
+        /* TEXTO DENTRO - HEREDAR COLOR DEL PADRE */
+        [data-theme="light"] li[role="option"] span,
+        [data-theme="light"] li[role="option"] div,
+        html body [data-theme="light"] li[role="option"] span,
+        html body [data-theme="light"] li[role="option"] div {
+            color: inherit !important;
+        }
+
+        [data-theme="dark"] li[role="option"] span,
+        [data-theme="dark"] li[role="option"] div,
+        html body [data-theme="dark"] li[role="option"] span,
+        html body [data-theme="dark"] li[role="option"] div {
+            color: inherit !important;
+        }
+        </style>
+        """
+        st.markdown(critical_selectbox_css, unsafe_allow_html=True)
 
         # NOTA: JavaScript no funciona en Cloud (filtrado por Streamlit)
         # Toda la solución de estilos se hace via CSS puro en theme_dark_cloud.css

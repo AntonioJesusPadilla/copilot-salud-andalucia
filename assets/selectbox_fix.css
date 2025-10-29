@@ -1,0 +1,257 @@
+/* ================================================================
+   SELECTBOX FIX - Corrección de Espaciado Excesivo
+   VERSIÓN: 7.0 - SIN MARCOS NI SEPARACIÓN
+   ================================================================
+   Este archivo contiene reglas CSS ultra-específicas para eliminar
+   COMPLETAMENTE los marcos y el espaciado excesivo en selectbox.
+   ================================================================ */
+
+/* ESTRATEGIA 1: Atacar directamente los elementos li */
+/* CRÍTICO: Desactivar position: absolute que causa el espaciado */
+ul[role="listbox"] li,
+ul[role="listbox"] li[role="option"],
+div[role="listbox"] li,
+div[role="listbox"] li[role="option"] {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    padding: 10px 16px !important;
+    margin: 0 !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    height: auto !important;
+    line-height: 1.5 !important;
+    display: block !important;
+    box-sizing: border-box !important;
+
+    /* ELIMINAR TODOS LOS BORDES Y SOMBRAS */
+    border: none !important;
+    border-top: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+
+    /* COLORES CONTROLADOS */
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+}
+
+/* Opción seleccionada */
+ul[role="listbox"] li[aria-selected="true"],
+ul[role="listbox"] li[role="option"][aria-selected="true"],
+div[role="listbox"] li[aria-selected="true"],
+div[role="listbox"] li[role="option"][aria-selected="true"] {
+    background-color: #10b981 !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* HOVER - Gris suave, NO verde - REGLAS ULTRA ESPECÍFICAS */
+ul[role="listbox"] li:hover:not([aria-selected="true"]),
+ul[role="listbox"] li[role="option"]:hover:not([aria-selected="true"]),
+div[role="listbox"] li:hover:not([aria-selected="true"]),
+div[role="listbox"] li[role="option"]:hover:not([aria-selected="true"]),
+li[role="option"]:hover:not([aria-selected="true"]),
+[role="listbox"] [role="option"]:hover:not([aria-selected="true"]),
+div[data-baseweb="popover"] li:hover:not([aria-selected="true"]),
+div[data-baseweb="menu"] li:hover:not([aria-selected="true"]) {
+    background-color: #f3f4f6 !important;
+    color: #0f172a !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* ELIMINAR hover verde de variables CSS */
+li[role="option"]:hover:not([aria-selected="true"]) {
+    background-color: #f3f4f6 !important;
+    color: #0f172a !important;
+}
+
+/* Focus states - Sin bordes ni outlines */
+li[role="option"]:focus,
+li[role="option"]:focus-visible,
+ul[role="listbox"] li:focus,
+div[role="listbox"] li:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+/* ESTRATEGIA 2: Forzar line-height compacto en todos los elementos internos */
+ul[role="listbox"] li *,
+ul[role="listbox"] li[role="option"] *,
+div[role="listbox"] li *,
+div[role="listbox"] li[role="option"] * {
+    padding: 0 !important;
+    margin: 0 !important;
+    line-height: 1.5 !important;
+    display: inline !important;
+    vertical-align: middle !important;
+
+    /* ELIMINAR BORDES DE ELEMENTOS INTERNOS TAMBIÉN */
+    border: none !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+}
+
+/* ESTRATEGIA 3: Eliminar todos los pseudo-elementos */
+ul[role="listbox"] li::before,
+ul[role="listbox"] li::after,
+ul[role="listbox"] li[role="option"]::before,
+ul[role="listbox"] li[role="option"]::after,
+div[role="listbox"] li::before,
+div[role="listbox"] li::after {
+    display: none !important;
+    content: none !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* ESTRATEGIA 4: Contenedor compacto */
+ul[role="listbox"],
+div[role="listbox"] {
+    padding: 0 !important;
+    margin: 0 !important;
+    list-style: none !important;
+    line-height: 1 !important;
+}
+
+/* ESTRATEGIA 5: Eliminar gaps entre elementos adyacentes */
+ul[role="listbox"] li + li,
+div[role="listbox"] li + li {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/* ESTRATEGIA 6: BaseWeb específico */
+div[data-baseweb="popover"] ul[role="listbox"],
+div[data-baseweb="menu"] ul {
+    gap: 0 !important;
+    row-gap: 0 !important;
+}
+
+div[data-baseweb="popover"] ul[role="listbox"] li,
+div[data-baseweb="menu"] li,
+div[data-baseweb="menu"] > li {
+    padding: 8px 12px !important;
+    margin: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+}
+
+/* ESTRATEGIA 7: Forzar contenedor flex compacto si existe */
+ul[role="listbox"][style*="display: flex"],
+div[role="listbox"][style*="display: flex"] {
+    gap: 0 !important;
+    row-gap: 0 !important;
+}
+
+/* ESTRATEGIA 8: Sobreescribir cualquier padding/margin inline */
+ul[role="listbox"] li[style],
+div[role="listbox"] li[style] {
+    padding: 8px 12px !important;
+    margin: 0 !important;
+    height: auto !important;
+}
+
+/* ================================================================
+   VERSIÓN 7.0 - ELIMINACIÓN NUCLEAR DE MARCOS Y SEPARACIÓN
+   ================================================================ */
+
+/* PASO 1: Eliminar TODO tipo de borde con todas las propiedades posibles */
+li[role="option"],
+li[role="option"][role="option"],
+ul[role="listbox"] li,
+ul[role="listbox"] li[role="option"],
+div[role="listbox"] li,
+div[role="listbox"] li[role="option"],
+[role="listbox"] [role="option"],
+[data-baseweb="popover"] li,
+[data-baseweb="menu"] li {
+    /* Bordes */
+    border: 0 !important;
+    border-width: 0 !important;
+    border-style: none !important;
+    border-color: transparent !important;
+    border-top: 0 !important;
+    border-top-width: 0 !important;
+    border-right: 0 !important;
+    border-right-width: 0 !important;
+    border-bottom: 0 !important;
+    border-bottom-width: 0 !important;
+    border-left: 0 !important;
+    border-left-width: 0 !important;
+    border-radius: 0 !important;
+
+    /* Outlines */
+    outline: 0 !important;
+    outline-width: 0 !important;
+    outline-style: none !important;
+    outline-color: transparent !important;
+    outline-offset: 0 !important;
+
+    /* Sombras */
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+
+    /* Espaciado MÍNIMO */
+    padding: 6px 12px !important;
+    margin: 0 !important;
+    gap: 0 !important;
+}
+
+/* PASO 2: Focus, Hover y Active - SIN MARCOS */
+li[role="option"]:focus,
+li[role="option"]:hover,
+li[role="option"]:active,
+li[role="option"]:focus-visible,
+ul[role="listbox"] li:focus,
+ul[role="listbox"] li:hover,
+ul[role="listbox"] li:active {
+    border: 0 !important;
+    border-width: 0 !important;
+    outline: 0 !important;
+    outline-width: 0 !important;
+    box-shadow: none !important;
+}
+
+/* PASO 3: Eliminar separación entre elementos adyacentes */
+li[role="option"] + li[role="option"],
+ul[role="listbox"] li + li,
+div[role="listbox"] li + li {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    border-top: 0 !important;
+    padding-top: 6px !important;
+}
+
+/* PASO 4: Contenedores - Sin gap ni spacing */
+ul[role="listbox"],
+div[role="listbox"],
+[role="listbox"],
+[data-baseweb="popover"] ul,
+[data-baseweb="menu"] ul {
+    gap: 0 !important;
+    row-gap: 0 !important;
+    column-gap: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-spacing: 0 !important;
+}
+
+/* PASO 5: Forzar altura compacta */
+li[role="option"] {
+    min-height: auto !important;
+    max-height: none !important;
+    height: auto !important;
+    line-height: 1.4 !important;
+}

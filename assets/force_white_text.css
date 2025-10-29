@@ -1,0 +1,248 @@
+/* ================================================================================
+   FORCE WHITE TEXT - MÁXIMA PRIORIDAD
+   Este archivo se carga AL FINAL para sobrescribir todos los temas
+   ================================================================================ */
+
+/* HEADERS EJECUTIVOS - Especificidad máxima */
+div.executive-header-dark h1.header-title-white,
+div.executive-header-dark > div > div > h1.header-title-white,
+h1.header-title-white[style*="color: white"],
+h1.header-title-white[style*="color:white"] {
+    color: white !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+}
+
+div.executive-header-dark h2.header-subtitle-white,
+div.executive-header-dark > div > div > h2.header-subtitle-white,
+h2.header-subtitle-white[style*="color"],
+h2.header-subtitle-white {
+    color: rgba(255,255,255,0.95) !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
+}
+
+div.executive-header-dark p.header-text-white,
+div.executive-header-dark > div > p.header-text-white,
+p.header-text-white[style*="color"],
+p.header-text-white {
+    color: rgba(255,255,255,0.9) !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
+}
+
+/* BADGE EJECUTIVO */
+div.executive-badge strong.badge-text-white,
+div.executive-badge small.badge-text-white,
+strong.badge-text-white[style*="color"],
+small.badge-text-white[style*="color"],
+.badge-text-white {
+    color: white !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.4) !important;
+}
+
+/* DASHBOARD HEADERS */
+div.dashboard-header-dark h2.dashboard-title-white,
+h2.dashboard-title-white[style*="color"],
+h2.dashboard-title-white {
+    color: white !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+}
+
+div.dashboard-header-dark p.dashboard-subtitle-white,
+p.dashboard-subtitle-white[style*="color"],
+p.dashboard-subtitle-white {
+    color: rgba(255,255,255,0.95) !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
+}
+
+/* REGLA GENERAL DE RESPALDO - Sobrescribir CUALQUIER tema */
+div.executive-header-dark h1,
+div.executive-header-dark h2,
+div.executive-header-dark p,
+div.executive-header-dark strong,
+div.executive-header-dark small,
+div.executive-header-dark span,
+div.dashboard-header-dark h1,
+div.dashboard-header-dark h2,
+div.dashboard-header-dark h3,
+div.dashboard-header-dark p,
+div.dashboard-header-dark strong,
+div.dashboard-header-dark small,
+div.dashboard-header-dark span {
+    color: white !important;
+}
+
+/* SOBRESCRIBIR stMarkdown que aplica el tema */
+div.executive-header-dark .stMarkdown h1,
+div.executive-header-dark .stMarkdown h2,
+div.executive-header-dark .stMarkdown p,
+div.dashboard-header-dark .stMarkdown h1,
+div.dashboard-header-dark .stMarkdown h2,
+div.dashboard-header-dark .stMarkdown h3,
+div.dashboard-header-dark .stMarkdown p {
+    color: white !important;
+}
+
+/* EXCEPCIÓN: Select boxes y otros inputs NO deben tener texto forzado blanco */
+/* Esto previene texto blanco sobre fondo blanco en modo claro */
+
+/* Selectboxes y sus elementos internos */
+.stSelectbox,
+.stSelectbox label,
+.stSelectbox > div,
+.stSelectbox > div > div,
+.stSelectbox > div > div > div,
+.stSelectbox input,
+.stSelectbox option,
+.stSelectbox select,
+.stSelectbox span,
+.stSelectbox [role="button"],
+.stSelectbox [role="listbox"],
+.stSelectbox [role="option"],
+
+/* Selectbox base-web components */
+div[data-baseweb="select"],
+div[data-baseweb="select"] *,
+div[data-baseweb="select"] > div,
+div[data-baseweb="select"] input,
+div[data-baseweb="select"] span,
+div[data-baseweb="select"] [role="button"],
+div[data-baseweb="select"] [role="listbox"],
+div[data-baseweb="select"] [role="option"],
+
+/* Multi-select */
+.stMultiSelect,
+.stMultiSelect *,
+.stMultiSelect label,
+.stMultiSelect input,
+.stMultiSelect span,
+
+/* Text inputs */
+.stTextInput,
+.stTextInput *,
+.stTextInput input,
+.stTextInput label,
+
+/* Number inputs */
+.stNumberInput,
+.stNumberInput *,
+.stNumberInput input,
+.stNumberInput label,
+
+/* Base-web inputs */
+div[data-baseweb="input"],
+div[data-baseweb="input"] *,
+div[data-baseweb="input"] input {
+    color: inherit !important;
+    text-shadow: none !important;
+}
+
+/* ========== SELECTBOX EN MODO CLARO ========== */
+/* Forzar color oscuro en modo claro para elementos de selectbox */
+
+/* Label del selectbox en modo claro */
+[data-theme="light"] .stSelectbox label,
+[data-theme="light"] div[data-testid="stSelectbox"] label {
+    color: #0f172a !important;
+    font-weight: 600 !important;
+}
+
+/* Selector del input principal en modo claro */
+[data-theme="light"] .stSelectbox input,
+[data-theme="light"] .stSelectbox > div,
+[data-theme="light"] .stSelectbox > div > div,
+[data-theme="light"] .stSelectbox [data-baseweb="select"] > div,
+[data-theme="light"] div[data-baseweb="select"] > div,
+[data-theme="light"] div[data-baseweb="select"] input,
+[data-theme="light"] div[data-baseweb="select"] span {
+    color: #0f172a !important;
+    background-color: #ffffff !important;
+}
+
+/* Container del select en modo claro */
+[data-theme="light"] div[data-baseweb="select"] {
+    background-color: #ffffff !important;
+    border-color: #cbd5e1 !important;
+}
+
+/* Opciones del dropdown (listbox) en modo claro */
+[data-theme="light"] div[role="listbox"],
+[data-theme="light"] div[role="listbox"] *,
+[data-theme="light"] li[role="option"],
+[data-theme="light"] li[role="option"] span,
+[data-theme="light"] li[role="option"] div,
+[data-theme="light"] ul[role="listbox"],
+[data-theme="light"] ul[role="listbox"] li,
+[data-theme="light"] div[data-baseweb="popover"] div,
+[data-theme="light"] div[data-baseweb="popover"] ul,
+[data-theme="light"] div[data-baseweb="popover"] li {
+    color: #0f172a !important;
+    background-color: #ffffff !important;
+}
+
+/* Hover en opciones en modo claro - GRIS SUAVE (NO VERDE) */
+[data-theme="light"] li[role="option"]:hover:not([aria-selected="true"]),
+[data-theme="light"] li[role="option"]:hover:not([aria-selected="true"]) *,
+[data-theme="light"] li[role="option"]:hover:not([aria-selected="true"]) span,
+[data-theme="light"] li[role="option"]:hover:not([aria-selected="true"]) div,
+[data-theme="light"] div[data-baseweb="menu-item"]:hover:not([aria-selected="true"]),
+[data-theme="light"] div[data-baseweb="menu-item"]:hover:not([aria-selected="true"]) * {
+    color: #0f172a !important;
+    background-color: #f3f4f6 !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Selected option en modo claro */
+[data-theme="light"] li[role="option"][aria-selected="true"],
+[data-theme="light"] li[role="option"][aria-selected="true"] *,
+[data-theme="light"] li[role="option"][aria-selected="true"] span,
+[data-theme="light"] li[role="option"][aria-selected="true"] div {
+    color: #ffffff !important;
+    background-color: #10b981 !important;
+}
+
+/* ========== SELECTBOX EN MODO OSCURO ========== */
+/* En modo oscuro usar los estilos definidos en extra_styles.css */
+/* Asegurar que no se sobrescriban incorrectamente */
+
+[data-theme="dark"] .stSelectbox label,
+[data-theme="dark"] div[data-testid="stSelectbox"] label {
+    color: #f8fafc !important;
+    font-weight: 600 !important;
+}
+
+[data-theme="dark"] .stSelectbox input,
+[data-theme="dark"] div[data-baseweb="select"] input,
+[data-theme="dark"] div[data-baseweb="select"] span {
+    color: #f8fafc !important;
+    background-color: #334155 !important;
+}
+
+[data-theme="dark"] div[data-baseweb="select"] {
+    background-color: #334155 !important;
+    border-color: #6b7280 !important;
+}
+
+[data-theme="dark"] div[role="listbox"],
+[data-theme="dark"] li[role="option"],
+[data-theme="dark"] li[role="option"] span,
+[data-theme="dark"] li[role="option"] div {
+    color: #f8fafc !important;
+    background-color: #1e293b !important;
+}
+
+[data-theme="dark"] li[role="option"]:hover,
+[data-theme="dark"] li[role="option"]:hover *,
+[data-theme="dark"] li[role="option"]:hover span {
+    color: #ffffff !important;
+    background-color: #3b82f6 !important;
+}
+
+[data-theme="dark"] li[role="option"][aria-selected="true"],
+[data-theme="dark"] li[role="option"][aria-selected="true"] * {
+    color: #ffffff !important;
+    background-color: #2563eb !important;
+}
+
+/* CACHE BUSTER */
+/* Version: v19-SELECTBOX-HOVER-CONTRAST-FIX-2025-10-26-14:00:00 */
