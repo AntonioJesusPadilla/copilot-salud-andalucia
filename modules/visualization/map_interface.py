@@ -92,11 +92,34 @@ class MapInterface:
         
         # Generar el mapa seleccionado
         if st.button("🚀 Generar Mapa Épico", type="primary"):
-            with st.spinner("🎨 Creando mapa épico..."):
+            # Filtrar datos según permisos del usuario
+            filtered_data = self.filter_data_by_permissions(data, user_permissions)
+
+            # Guardar configuración pero NO el mapa (para regenerarlo fresh cada vez)
+            st.session_state.map_generated = True
+            st.session_state.current_map_type = selected_map
+            st.session_state.filtered_data = filtered_data
+            st.session_state.zoom_level = zoom_level
+
+            # Limpiar mapa anterior para forzar regeneración
+            if 'current_map' in st.session_state:
+                del st.session_state.current_map
+
+            st.success(f"✅ Mapa '{selected_map}' configurado - Renderizando...")
+            st.rerun()
+        
+        # Mostrar el mapa si ya está generado
+        if st.session_state.map_generated:
+            st.markdown(f"### 🗺️ {st.session_state.current_map_type}")
+
+            # Generar mapa FRESH cada vez para evitar conflictos de IDs
+            with st.spinner("🎨 Renderizando mapa..."):
                 try:
-                    # Filtrar datos según permisos del usuario
-                    filtered_data = self.filter_data_by_permissions(data, user_permissions)
-                    
+                    selected_map = st.session_state.current_map_type
+                    filtered_data = st.session_state.filtered_data
+                    zoom_level = st.session_state.get('zoom_level', 9)
+
+                    # Crear mapa fresh
                     if "Completo" in selected_map:
                         epic_map = self.create_complete_epic_map(filtered_data, zoom_level)
                     elif "Hospitales" in selected_map or "Ubicaciones Básicas" in selected_map:
@@ -111,33 +134,20 @@ class MapInterface:
                         epic_map = self.create_routes_map(filtered_data, zoom_level)
                     else:
                         epic_map = self.create_complete_epic_map(filtered_data, zoom_level)
-                    
-                    # Guardar el mapa en session_state
-                    st.session_state.map_generated = True
-                    st.session_state.current_map = epic_map
-                    st.session_state.current_map_type = selected_map
-                    st.session_state.filtered_data = filtered_data
-                    
-                    st.success(f"✅ Mapa '{selected_map}' generado correctamente")
-                    
+
+                    # Renderizar con key estática (ya no necesitamos IDs únicos porque el mapa es fresh)
+                    map_data = st_folium(
+                        epic_map,
+                        width=1200,
+                        height=600,
+                        returned_objects=["last_clicked"],
+                        key="epic_map_display"
+                    )
+
                 except Exception as e:
-                    st.error(f"❌ Error generando mapa: {str(e)}")
+                    st.error(f"❌ Error renderizando mapa: {str(e)}")
                     st.session_state.map_generated = False
-        
-        # Mostrar el mapa si ya está generado
-        if st.session_state.map_generated and st.session_state.current_map is not None:
-            st.markdown(f"### 🗺️ {st.session_state.current_map_type}")
-            
-            # Configurar el mapa para Streamlit con key única para evitar recargas
-            map_key = f"epic_map_{hash(str(st.session_state.current_map_type))}"
-            
-            map_data = st_folium(
-                st.session_state.current_map, 
-                width=1200, 
-                height=600,
-                returned_objects=["last_clicked"],
-                key=map_key
-            )
+                    return
             
             # Información del objeto clickeado (sin causar recarga)
             if map_data and map_data.get('last_clicked') is not None:

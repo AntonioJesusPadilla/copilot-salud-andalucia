@@ -299,12 +299,45 @@
 .stSelectbox > div > div:hover,
 .stTextInput > div > div:hover {
     border-color: var(--primary-color);
+    background-color: var(--bg-primary) !important;
+}
+
+.stSelectbox > div > div:hover input,
+.stSelectbox > div > div:hover span,
+.stSelectbox > div > div:hover div {
+    color: var(--text-primary) !important;
+    background-color: var(--bg-primary) !important;
 }
 
 .stSelectbox > div > div:focus-within,
 .stTextInput > div > div:focus-within {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+    background-color: var(--bg-primary) !important;
+}
+
+/* Selectbox - BaseWeb component styling */
+.stSelectbox label {
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+}
+
+.stSelectbox input,
+.stSelectbox span,
+div[data-baseweb="select"] input,
+div[data-baseweb="select"] span,
+div[data-baseweb="select"] > div {
+    color: var(--text-primary) !important;
+    background-color: var(--bg-primary) !important;
+}
+
+/* Evitar fondo verde en hover del selectbox - BaseWeb */
+div[data-baseweb="select"]:hover,
+div[data-baseweb="select"]:hover > div,
+div[data-baseweb="select"]:hover input,
+div[data-baseweb="select"]:hover span {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
 }
 
 /* --- Tabs --- */

@@ -687,8 +687,34 @@ body:has(section[data-testid="stSidebar"].collapsed) .main .block-container {
 .sidebar-user-card span,
 .sidebar-user-card p,
 .sidebar-user-card br + *,
-section[data-testid="stSidebar"] .sidebar-user-card * {
+section[data-testid="stSidebar"] .sidebar-user-card *,
+section[data-testid="stSidebar"] .sidebar-user-card h1,
+section[data-testid="stSidebar"] .sidebar-user-card h2,
+section[data-testid="stSidebar"] .sidebar-user-card h3,
+section[data-testid="stSidebar"] .sidebar-user-card h4 {
     color: #ffffff !important;
+}
+
+/* Asegurar contraste en headers con gradientes oscuros */
+.main-header-secure h1,
+.main-header-secure h2,
+.main-header-secure h3,
+.main-header-secure p,
+.main-header-secure strong,
+.main-header-secure small,
+.main-header-secure * {
+    color: white !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+}
+
+/* Asegurar contraste en paneles de dashboard con gradientes oscuros */
+div[style*="background: linear-gradient"][style*="#1a365d"] *,
+div[style*="background: linear-gradient"][style*="#2d3748"] *,
+div[style*="background-color: #1a365d"] *,
+div[style*="background-color: #2d3748"] *,
+div[style*="background: #1a365d"] *,
+div[style*="background: #2d3748"] * {
+    color: white !important;
 }
 
 /* Selector específico para el nombre (strong) */
@@ -1127,4 +1153,7 @@ a.nav-link.nav-link-horizontal[aria-current="page"]:hover {
     box-shadow: 0 3px 10px rgba(59, 130, 246, 0.6) !important;
 }
 
-/* CACHE INVALIDATION - FORCE RELOAD 2025-10-16-11:00:00-v12-MEGA-HOVER */
+/* NOTA: Las reglas de forzado de texto blanco ahora están en assets/force_white_text.css */
+/* que se carga al final de todos los temas para máxima prioridad */
+
+/* CACHE INVALIDATION - FORCE RELOAD 2025-10-26-14:00:00-v16-SELECTBOX-HOVER-FIX */

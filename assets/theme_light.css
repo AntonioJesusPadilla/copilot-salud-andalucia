@@ -122,9 +122,119 @@ body {
     color: var(--text-primary);
 }
 
-.stSelectbox > div > div:hover,
+/* Selectbox específico - Asegurar contraste */
+.stSelectbox label {
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+}
 
-.stSelectbox > div > div:focus-within,
+.stSelectbox input,
+.stSelectbox span,
+div[data-baseweb="select"] input,
+div[data-baseweb="select"] span,
+div[data-baseweb="select"] > div {
+    color: var(--text-primary) !important;
+    background-color: var(--bg-primary) !important;
+}
+
+/* Evitar fondo verde en hover del selectbox */
+div[data-baseweb="select"]:hover,
+div[data-baseweb="select"]:hover > div,
+div[data-baseweb="select"]:hover input,
+div[data-baseweb="select"]:hover span {
+    background-color: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Dropdown del selectbox */
+div[role="listbox"],
+ul[role="listbox"] {
+    background-color: var(--bg-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow-hover) !important;
+    max-height: 400px !important;
+    overflow-y: auto !important;
+}
+
+li[role="option"] {
+    color: var(--text-primary) !important;
+    background-color: var(--bg-primary) !important;
+    padding: 0.5rem 1rem !important;
+    margin: 0 !important;
+    transition: var(--transition) !important;
+    min-height: auto !important;
+    height: auto !important;
+    line-height: 1.5 !important;
+    display: block !important;
+    cursor: pointer !important;
+    border: none !important;
+    position: relative !important;
+}
+
+li[role="option"] span,
+li[role="option"] div {
+    color: var(--text-primary) !important;
+    background-color: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: inline !important;
+    line-height: inherit !important;
+}
+
+/* Forzar eliminación de espaciado excesivo */
+li[role="option"]::before,
+li[role="option"]::after {
+    display: none !important;
+}
+
+li[role="option"] > * {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* HOVER GRIS SUAVE - NO VERDE */
+li[role="option"]:hover:not([aria-selected="true"]) {
+    color: var(--text-primary) !important;
+    background-color: #f3f4f6 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+li[role="option"]:hover:not([aria-selected="true"]) span,
+li[role="option"]:hover:not([aria-selected="true"]) div {
+    color: var(--text-primary) !important;
+    background-color: transparent !important;
+}
+
+li[role="option"][aria-selected="true"] {
+    color: #ffffff !important;
+    background-color: var(--secondary-color) !important;
+    font-weight: 600 !important;
+}
+
+li[role="option"][aria-selected="true"] span,
+li[role="option"][aria-selected="true"] div {
+    color: #ffffff !important;
+    background-color: transparent !important;
+    font-weight: 600 !important;
+}
+
+.stSelectbox > div > div:hover {
+    border-color: var(--primary-color) !important;
+    background-color: var(--bg-primary) !important;
+}
+
+.stSelectbox > div > div:hover input,
+.stSelectbox > div > div:hover span,
+.stSelectbox > div > div:hover div {
+    color: var(--text-primary) !important;
+    background-color: var(--bg-primary) !important;
+}
+
+.stSelectbox > div > div:focus-within {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1) !important;
+}
 
 /* ========== STATUS MESSAGES ========== */
 .success-box {
@@ -213,11 +323,11 @@ body {
     color: var(--text-primary) !important;
 }
 
-/* Override específico para elementos con color blanco forzado EXCEPTO en fondos verdes */
-[style*="color: white"]:not(.access-granted *),
-[style*="color:white"]:not(.access-granted *),
-[style*="color:#ffffff"]:not(.access-granted *),
-[style*="color:#fff"]:not(.access-granted *) {
+/* Override específico para elementos con color blanco forzado EXCEPTO en fondos verdes, headers ejecutivos y dashboards */
+[style*="color: white"]:not(.access-granted *):not(.main-header-secure *):not(.executive-badge *):not(div[style*="#1a365d"] *):not(div[style*="#2d3748"] *),
+[style*="color:white"]:not(.access-granted *):not(.main-header-secure *):not(.executive-badge *):not(div[style*="#1a365d"] *):not(div[style*="#2d3748"] *),
+[style*="color:#ffffff"]:not(.access-granted *):not(.main-header-secure *):not(.executive-badge *):not(div[style*="#1a365d"] *):not(div[style*="#2d3748"] *),
+[style*="color:#fff"]:not(.access-granted *):not(.main-header-secure *):not(.executive-badge *):not(div[style*="#1a365d"] *):not(div[style*="#2d3748"] *) {
     color: var(--text-primary) !important;
 }
 

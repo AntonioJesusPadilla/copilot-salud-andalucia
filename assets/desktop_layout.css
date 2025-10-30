@@ -8,14 +8,26 @@
     }
 }
 
-/* Contenedor principal siempre en desktop */
+/* Contenedor principal siempre en desktop - EXPANDIR AL MÁXIMO */
 .main .block-container {
-    max-width: none !important;
+    max-width: 100% !important;
+    width: 100% !important;
     min-width: 1200px !important;
     padding-top: 2rem !important;
     padding-bottom: 2rem !important;
     padding-left: 2rem !important;
     padding-right: 2rem !important;
+}
+
+/* Forzar que el área main use todo el espacio disponible */
+section[data-testid="stMain"] {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.main {
+    width: 100% !important;
+    max-width: 100% !important;
 }
 
 /* Forzar sidebar desktop en TODOS los tamaños */

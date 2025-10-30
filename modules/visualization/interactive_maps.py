@@ -19,7 +19,7 @@ class EpicHealthMaps:
     def __init__(self):
         # Coordenadas centrales de Málaga
         self.malaga_center = [36.7213, -4.4214]
-        
+
         # Colores épicos para diferentes tipos de centros
         self.hospital_colors = {
             'Hospital Regional': '#e74c3c',      # Rojo intenso
@@ -27,17 +27,28 @@ class EpicHealthMaps:
             'Hospital Comarcal': '#f39c12',      # Naranja vibrante
             'Centro Alta Resolución': '#27ae60'   # Verde esmeralda
         }
-        
+
         # Colores para especialidades médicas
         self.specialty_colors = {
             'cardiologia': '#e74c3c',
-            'neurologia': '#9b59b6', 
+            'neurologia': '#9b59b6',
             'oncologia_medica': '#34495e',
             'pediatria': '#f1c40f',
             'ginecologia': '#e91e63',
             'traumatologia': '#ff5722',
             'urgencias_generales': '#f44336'
         }
+
+        # Generador de IDs únicos para evitar conflictos en Folium
+        import time
+        import random
+        self._unique_counter = 0
+        self._base_id = f"{int(time.time() * 1000)}_{random.randint(1000, 9999)}"
+
+    def _get_unique_id(self, prefix="feature_group"):
+        """Generar ID único para feature groups"""
+        self._unique_counter += 1
+        return f"{prefix}_{self._base_id}_{self._unique_counter}"
     
     def create_epic_base_map(self, style: str = 'OpenStreetMap', zoom_start: int = 9) -> folium.Map:
         """Crear mapa base épico de Málaga"""
@@ -93,9 +104,16 @@ class EpicHealthMaps:
     
     def add_epic_hospitals(self, map_obj: folium.Map, hospitals_data: pd.DataFrame) -> folium.Map:
         """Añadir hospitales con marcadores épicos y popups interactivos"""
-        
-        # Crear grupo de capas para hospitales
-        hospital_layer = folium.FeatureGroup(name="🏥 Hospitales")
+
+        # Crear grupo de capas para hospitales con ID único
+        hospital_layer = folium.FeatureGroup(
+            name="🏥 Hospitales",
+            overlay=True,
+            control=True,
+            show=True
+        )
+        # Asignar ID único manualmente
+        hospital_layer._name = self._get_unique_id("hospitals")
         
         for idx, hospital in hospitals_data.iterrows():
             # Determinar color y tamaño según tipo
@@ -181,8 +199,14 @@ class EpicHealthMaps:
     
     def add_epic_municipalities(self, map_obj: folium.Map, demographics_data: pd.DataFrame) -> folium.Map:
         """Añadir municipios con círculos proporcionales a población"""
-        
-        municipalities_layer = folium.FeatureGroup(name="🏘️ Municipios")
+
+        municipalities_layer = folium.FeatureGroup(
+            name="🏘️ Municipios",
+            overlay=True,
+            control=True,
+            show=True
+        )
+        municipalities_layer._name = self._get_unique_id("municipalities")
         
         for idx, muni in demographics_data.iterrows():
             población = muni['poblacion_2025']
@@ -278,17 +302,24 @@ class EpicHealthMaps:
                 intensity = max(0.1, 1 - (tiempo / 120))  # Normalizar a 0-1
                 heat_data.append([coords[0], coords[1], intensity])
         
-        # Crear heatmap
-        if heat_data:
-            heatmap_layer = folium.FeatureGroup(name="🔥 Heatmap Accesibilidad")
-            
+        # Crear heatmap solo si hay suficientes datos (mínimo 3 puntos)
+        if heat_data and len(heat_data) >= 3:
+            heatmap_layer = folium.FeatureGroup(
+                name="🔥 Heatmap Accesibilidad",
+                overlay=True,
+                control=True,
+                show=True
+            )
+            heatmap_layer._name = self._get_unique_id("heatmap")
+
             folium.plugins.HeatMap(
                 heat_data,
                 name="Accesibilidad Sanitaria",
-                min_opacity=0.3,
-                max_zoom=18,
-                radius=25,
-                blur=15,
+                min_opacity=0.4,
+                max_zoom=13,
+                radius=30,
+                blur=20,
+                max_val=1.0,
                 gradient={
                     0.0: '#e74c3c',    # Rojo (baja accesibilidad)
                     0.3: '#f39c12',    # Naranja
@@ -309,7 +340,13 @@ class EpicHealthMaps:
             if specialty not in services_data.columns:
                 continue
             
-            specialty_layer = folium.FeatureGroup(name=f"💊 {specialty.replace('_', ' ').title()}")
+            specialty_layer = folium.FeatureGroup(
+                name=f"💊 {specialty.replace('_', ' ').title()}",
+                overlay=True,
+                control=True,
+                show=True
+            )
+            specialty_layer._name = self._get_unique_id(f"specialty_{specialty}")
             
             # Hospitales con esta especialidad
             hospitals_with_specialty = services_data[services_data[specialty] == True]
@@ -342,8 +379,14 @@ class EpicHealthMaps:
     
     def add_epic_routes(self, map_obj: folium.Map, accessibility_data: pd.DataFrame) -> folium.Map:
         """Añadir rutas épicas entre municipios y hospitales"""
-        
-        routes_layer = folium.FeatureGroup(name="🛣️ Rutas Principales")
+
+        routes_layer = folium.FeatureGroup(
+            name="🛣️ Rutas Principales",
+            overlay=True,
+            control=True,
+            show=True
+        )
+        routes_layer._name = self._get_unique_id("routes")
         
         # Seleccionar algunas rutas importantes para mostrar
         important_routes = accessibility_data[
@@ -421,12 +464,17 @@ class EpicHealthMaps:
     
     def create_epic_control_panel(self, map_obj: folium.Map) -> folium.Map:
         """Añadir panel de control épico con leyenda"""
-        
-        # Control de capas personalizado
+
+        # Control de capas personalizado con nombre único basado en timestamp
+        import time
+        import random
+        unique_suffix = f"{int(time.time() * 1000)}_{random.randint(1000, 9999)}"
+
         folium.LayerControl(
             position='topright',
             collapsed=False,
-            autoZIndex=True
+            autoZIndex=True,
+            name=f'layer_control_{unique_suffix}'
         ).add_to(map_obj)
         
         # Leyenda épica con clases CSS

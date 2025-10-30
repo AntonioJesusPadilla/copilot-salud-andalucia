@@ -44,12 +44,12 @@ class RoleDashboards:
         
         # Header personalizado del dashboard
         st.markdown(f"""
-        <div style="background: {theme.get('primary_gradient', 'linear-gradient(135deg, #6b7280, #9ca3af)')}; 
+        <div class="dashboard-header-dark" style="background: {theme.get('primary_gradient', 'linear-gradient(135deg, #6b7280, #9ca3af)')};
                     padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; color: white;">
-            <h2 style="color: white; margin: 0;">
+            <h2 class="dashboard-title-white" style="color: white !important; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
                 {role_info['icon']} Dashboard {role_info['name']}
             </h2>
-            <p style="color: rgba(255,255,255,0.8); margin: 0.5rem 0 0 0;">
+            <p class="dashboard-subtitle-white" style="color: rgba(255,255,255,0.95) !important; margin: 0.5rem 0 0 0; text-shadow: 0 1px 3px rgba(0,0,0,0.2);">
                 {theme.get('welcome_message', 'Dashboard personalizado')}
             </p>
         </div>

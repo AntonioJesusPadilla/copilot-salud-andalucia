@@ -2187,19 +2187,8 @@ def fix_plotly_hover_issues(fig):
 
         # PASO 2: RECREAR COMPLETAMENTE la figura sin hover
         try:
-            # Obtener datos y layout limpios
-            data = fig.data
+            # Obtener layout limpio
             layout_dict = dict(fig.layout)
-
-            # Debug: verificar estructura de data
-            print(f"🔍 Debug - Tipo de data: {type(data)}")
-            print(f"🔍 Debug - Longitud de data: {len(data) if hasattr(data, '__len__') else 'N/A'}")
-            if hasattr(data, '__iter__'):
-                for i, trace in enumerate(data):
-                    print(f"🔍 Debug - Trace {i}: tipo={type(trace)}")
-                    if hasattr(trace, 'keys'):
-                        print(f"🔍 Debug - Trace {i} keys: {list(trace.keys())[:5]}...")  # Primeras 5 keys
-                    break  # Solo mostrar el primero
 
             # Eliminar TODAS las configuraciones de hover del layout
             hover_keys = [
@@ -2236,16 +2225,31 @@ def fix_plotly_hover_issues(fig):
                                 del clean_layout[axis][hk]
 
             # Crear nueva figura completamente limpia
-            # Simplificar: usar add_trace en lugar de pasar data directamente
             new_fig = go.Figure(layout=clean_layout)
 
             # Agregar traces uno por uno para evitar problemas de estructura
-            for trace in data:
+            for trace in fig.data:
                 try:
-                    new_fig.add_trace(trace)
+                    # Crear un nuevo trace limpio sin hover
+                    new_trace = type(trace)()
+                    # Copiar propiedades del trace original excepto hover
+                    for key in dir(trace):
+                        if not key.startswith('_') and key not in ['hoverinfo', 'hovertemplate', 'hoverlabel', 'hovertext']:
+                            try:
+                                value = getattr(trace, key)
+                                # Solo copiar atributos de datos, no métodos
+                                if not callable(value):
+                                    setattr(new_trace, key, value)
+                            except:
+                                pass
+                    new_fig.add_trace(new_trace)
                 except Exception as trace_error:
                     print(f"Error agregando trace: {trace_error}")
-                    continue
+                    # Fallback: agregar el trace original
+                    try:
+                        new_fig.add_trace(trace)
+                    except:
+                        continue
 
             fig = new_fig
 
@@ -3282,7 +3286,7 @@ def main():
     try:
         # Usar función optimizada con caché para detectar iOS
         if is_ios_device():
-            app.load_ios_fixes()
+            load_ios_fixes()
     except Exception as e:
         print(f"⚠️ Error aplicando fixes de iOS: {e}")
 
