@@ -288,48 +288,29 @@ class EpicHealthMaps:
     
     def create_accessibility_heatmap(self, map_obj: folium.Map, accessibility_data: pd.DataFrame) -> folium.Map:
         """Crear heatmap épico de accesibilidad"""
-        
-        # Procesar datos de accesibilidad
-        heat_data = []
-        
-        for idx, row in accessibility_data.iterrows():
-            municipio = row['municipio_origen']
-            tiempo = row['tiempo_coche_minutos']
-            
-            coords = self.get_municipality_coords(municipio)
-            if coords:
-                # Intensidad inversa al tiempo (menor tiempo = mayor intensidad)
-                intensity = max(0.1, 1 - (tiempo / 120))  # Normalizar a 0-1
-                heat_data.append([coords[0], coords[1], intensity])
-        
-        # Crear heatmap solo si hay suficientes datos (mínimo 3 puntos)
-        if heat_data and len(heat_data) >= 3:
-            heatmap_layer = folium.FeatureGroup(
-                name="🔥 Heatmap Accesibilidad",
-                overlay=True,
-                control=True,
-                show=True
-            )
-            heatmap_layer._name = self._get_unique_id("heatmap")
 
-            folium.plugins.HeatMap(
-                heat_data,
-                name="Accesibilidad Sanitaria",
-                min_opacity=0.4,
-                max_zoom=13,
-                radius=30,
-                blur=20,
-                max_val=1.0,
-                gradient={
-                    0.0: '#e74c3c',    # Rojo (baja accesibilidad)
-                    0.3: '#f39c12',    # Naranja
-                    0.6: '#f1c40f',    # Amarillo
-                    1.0: '#27ae60'     # Verde (alta accesibilidad)
-                }
-            ).add_to(heatmap_layer)
-            
-            map_obj.add_child(heatmap_layer)
-        
+        import streamlit as st
+
+        # DESACTIVADO TEMPORALMENTE: HeatMap causa error "canvas width is 0" en Streamlit
+        st.warning("⚠️ El heatmap está temporalmente desactivado debido a problemas de compatibilidad con el canvas HTML.")
+        st.info("📊 Puedes ver la accesibilidad mediante las **Rutas Principales** que muestran tiempos de viaje por color.")
+
+        # Alternativa: Mostrar información de accesibilidad como texto
+        if not accessibility_data.empty:
+            st.markdown("### 📍 Datos de Accesibilidad Disponibles")
+
+            avg_time = accessibility_data['tiempo_coche_minutos'].mean()
+            max_time = accessibility_data['tiempo_coche_minutos'].max()
+            min_time = accessibility_data['tiempo_coche_minutos'].min()
+
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("⏱️ Tiempo Medio", f"{avg_time:.0f} min")
+            with col2:
+                st.metric("⏱️ Tiempo Máximo", f"{max_time:.0f} min")
+            with col3:
+                st.metric("⏱️ Tiempo Mínimo", f"{min_time:.0f} min")
+
         return map_obj
     
     def add_service_coverage_circles(self, map_obj: folium.Map, hospitals_data: pd.DataFrame, services_data: pd.DataFrame) -> folium.Map:
@@ -349,15 +330,15 @@ class EpicHealthMaps:
             specialty_layer._name = self._get_unique_id(f"specialty_{specialty}")
             
             # Hospitales con esta especialidad
-            hospitals_with_specialty = services_data[services_data[specialty] == True]
+            hospitals_with_specialty = services_data[services_data[specialty] == True].copy()
             
             for idx, service_row in hospitals_with_specialty.iterrows():
                 # Encontrar hospital correspondiente
                 hospital_row = hospitals_data[hospitals_data['nombre'].str.contains(
                     service_row['centro_sanitario'].replace('Hospital ', '').replace('CAR ', ''), na=False
-                )]
-                
-                if not hospital_row.empty:
+                )].copy()
+
+                if len(hospital_row) > 0:
                     hospital = hospital_row.iloc[0]
                     color = self.specialty_colors.get(specialty, '#95a5a6')
                     
@@ -389,10 +370,10 @@ class EpicHealthMaps:
         routes_layer._name = self._get_unique_id("routes")
         
         # Seleccionar algunas rutas importantes para mostrar
-        important_routes = accessibility_data[
+        important_routes = accessibility_data.loc[
             (accessibility_data['tiempo_coche_minutos'] > 45) |
             (accessibility_data['municipio_origen'].isin(['Marbella', 'Vélez-Málaga', 'Antequera', 'Ronda']))
-        ]
+        ].copy()
         
         for idx, route in important_routes.iterrows():
             municipio_coords = self.get_municipality_coords(route['municipio_origen'])
@@ -465,17 +446,20 @@ class EpicHealthMaps:
     def create_epic_control_panel(self, map_obj: folium.Map) -> folium.Map:
         """Añadir panel de control épico con leyenda"""
 
-        # Control de capas personalizado con nombre único basado en timestamp
-        import time
-        import random
-        unique_suffix = f"{int(time.time() * 1000)}_{random.randint(1000, 9999)}"
+        # Control de capas - Solo añadir si no existe ya uno
+        # Verificar si ya hay un LayerControl en el mapa
+        has_layer_control = False
+        for child in map_obj._children.values():
+            if isinstance(child, folium.LayerControl):
+                has_layer_control = True
+                break
 
-        folium.LayerControl(
-            position='topright',
-            collapsed=False,
-            autoZIndex=True,
-            name=f'layer_control_{unique_suffix}'
-        ).add_to(map_obj)
+        if not has_layer_control:
+            folium.LayerControl(
+                position='topright',
+                collapsed=False,
+                autoZIndex=True
+            ).add_to(map_obj)
         
         # Leyenda épica con clases CSS
         legend_html = '''
@@ -509,7 +493,52 @@ class EpicHealthMaps:
         '''
         
         map_obj.get_root().html.add_child(folium.Element(legend_html))
-        
+
+        # JavaScript para renombrar IDs duplicados del LayerControl
+        fix_duplicate_ids_js = f'''
+        <script>
+        (function() {{
+            // Generar timestamp único para este mapa
+            const uniqueId = Date.now() + '_' + Math.floor(Math.random() * 10000);
+
+            // Esperar a que el DOM esté listo
+            setTimeout(function() {{
+                // Buscar todos los divs con id layer_control_div
+                const layerControlDivs = document.querySelectorAll('[id^="layer_control_div"]');
+
+                layerControlDivs.forEach((div, index) => {{
+                    // Renombrar el div para evitar duplicados
+                    const oldId = div.id;
+                    const newId = 'layer_control_div_' + uniqueId + '_' + index;
+
+                    // Cambiar el ID del div
+                    div.id = newId;
+
+                    // Actualizar referencias en el script
+                    const scripts = document.querySelectorAll('script');
+                    scripts.forEach(script => {{
+                        if (script.textContent && script.textContent.includes(oldId)) {{
+                            try {{
+                                // Reemplazar referencias al ID antiguo
+                                const newScript = document.createElement('script');
+                                newScript.textContent = script.textContent.replace(
+                                    new RegExp(oldId, 'g'),
+                                    newId
+                                );
+                                script.parentNode.replaceChild(newScript, script);
+                            }} catch(e) {{
+                                console.log('Could not update script reference:', e);
+                            }}
+                        }}
+                    }});
+                }});
+            }}, 100);
+        }})();
+        </script>
+        '''
+
+        map_obj.get_root().html.add_child(folium.Element(fix_duplicate_ids_js))
+
         return map_obj
     
     def create_epic_complete_map(self, hospitals_data: pd.DataFrame, demographics_data: pd.DataFrame, 
@@ -522,7 +551,9 @@ class EpicHealthMaps:
         # 2. Añadir todas las capas épicas
         epic_map = self.add_epic_hospitals(epic_map, hospitals_data)
         epic_map = self.add_epic_municipalities(epic_map, demographics_data)
-        epic_map = self.create_accessibility_heatmap(epic_map, accessibility_data)
+        # NOTA: Heatmap desactivado en mapa completo - causa error "canvas width is 0"
+        # El heatmap está disponible en el mapa específico "Heatmap de Accesibilidad"
+        # epic_map = self.create_accessibility_heatmap(epic_map, accessibility_data)
         epic_map = self.add_service_coverage_circles(epic_map, hospitals_data, services_data)
         epic_map = self.add_epic_routes(epic_map, accessibility_data)
         

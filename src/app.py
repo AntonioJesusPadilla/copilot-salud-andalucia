@@ -1008,7 +1008,15 @@ st.markdown("""
 .sidebar-user-card div,
 section[data-testid="stSidebar"] .sidebar-user-card *,
 section[data-testid="stSidebar"] .sidebar-user-card strong,
-section[data-testid="stSidebar"] .sidebar-user-card small {
+section[data-testid="stSidebar"] .sidebar-user-card small,
+.sidebar-user-name,
+strong.sidebar-user-name,
+section[data-testid="stSidebar"] .sidebar-user-name,
+section[data-testid="stSidebar"] strong.sidebar-user-name,
+.sidebar-user-role,
+small.sidebar-user-role,
+section[data-testid="stSidebar"] .sidebar-user-role,
+section[data-testid="stSidebar"] small.sidebar-user-role {
     color: #ffffff !important;
     text-shadow: 0 2px 4px rgba(0,0,0,0.7) !important;
 }
@@ -2393,13 +2401,42 @@ def main():
     # FORZAR LAYOUT WIDE CON CSS (set_page_config no siempre funciona en Cloud)
     st.markdown("""
     <style>
-    /* FORZAR WIDE MODE */
+    /* FORZAR WIDE MODE - Versión mejorada para Streamlit Cloud */
+
+    /* Contenedor principal de la app */
+    [data-testid="stAppViewContainer"] {
+        max-width: 100vw !important;
+        width: 100vw !important;
+    }
+
+    /* Sección principal */
+    section[data-testid="stMain"] {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    /* Contenedor interno */
+    .main {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    /* Block container - el contenedor de contenido */
     .main .block-container {
         max-width: 100% !important;
+        width: 100% !important;
         padding-left: 2rem !important;
         padding-right: 2rem !important;
     }
-    section[data-testid="stMain"] {
+
+    /* Contenedor de bloques principal */
+    div[data-testid="stMainBlockContainer"] {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    /* Contenedor vertical de elementos */
+    div[data-testid="stVerticalBlock"] {
         max-width: 100% !important;
     }
     </style>
@@ -2443,15 +2480,123 @@ def main():
     # CARGAR CSS DE LA APLICACIÓN (Solo para usuarios autenticados)
     css_loaded = load_optimized_css()
 
+    # Obtener tema actual ANTES del CSS Guardián
+    current_theme = st.session_state.get('theme_mode', 'light')
+
     # CSS GUARDIÁN: Asegurar que SIEMPRE se puede resetear en login
     # Este CSS se carga DESPUÉS del tema y tiene timestamp único
     guardian_css_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')
     st.markdown(f"""
     <style id="guardian-reset-{guardian_css_timestamp}">
     /* CSS GUARDIÁN - Se carga DESPUÉS del tema para permitir reset en login */
-    /* Este CSS NO hace nada cuando estás autenticado */
-    /* Pero en login, render_login_page() puede sobrescribirlo fácilmente */
+    /* CRÍTICO: Proteger login-container de CUALQUIER CSS de tema */
+
+    /* RESET: MÁXIMA PRIORIDAD para login */
+    /* Este CSS se carga DESPUÉS de theme_*.css y SOBRESCRIBE TODO */
+
+    /* COLORES ESPECÍFICOS PARA CLASES DE LOGIN */
+    .login-title-main {{
+        color: {'#ffffff' if current_theme == 'dark' else '#1a202c'} !important;
+        font-size: 32px !important;
+        font-weight: 700 !important;
+        margin-bottom: 8px !important;
+    }}
+    .login-title-sub {{
+        color: {'#ffffff' if current_theme == 'dark' else '#4a5568'} !important;
+        font-size: 18px !important;
+        font-weight: 500 !important;
+        margin: 8px 0 !important;
+    }}
+    .login-title-location {{
+        color: {'#ffffff' if current_theme == 'dark' else '#718096'} !important;
+        font-size: 14px !important;
+        margin-top: 8px !important;
+    }}
+
+    /* FORZAR colores para elementos de login (por si acaso) */
+    .login-container h4,
+    .login-container p:not(input *),
+    .login-container span:not(input *),
+    .login-container label {{
+        color: {'#f9fafb' if current_theme == 'dark' else '#1a202c'} !important;
+    }}
+
+    /* Botones del login */
+    .login-form-container button,
+    .login-form-container .stButton button {{
+        color: #ffffff !important;
+    }}
     </style>
+
+    <script>
+    // JAVASCRIPT FINAL: Forzar colores del login con máxima prioridad
+    (function() {{
+        const theme = '{current_theme}';
+        const colors = {{
+            dark: {{
+                main: '#ffffff',
+                sub: '#ffffff',
+                location: '#ffffff',
+                text: '#f9fafb'
+            }},
+            light: {{
+                main: '#1a202c',
+                sub: '#4a5568',
+                location: '#718096',
+                text: '#1a202c'
+            }}
+        }};
+
+        function forceLoginColors() {{
+            console.log('🎨 Forzando colores del login - Tema:', theme);
+
+            // Seleccionar elementos por clase
+            const mainTitle = document.querySelector('.login-title-main');
+            const subTitle = document.querySelector('.login-title-sub');
+            const location = document.querySelector('.login-title-location');
+
+            if (mainTitle) {{
+                mainTitle.style.setProperty('color', colors[theme].main, 'important');
+                console.log('✅ Color aplicado a título principal:', colors[theme].main);
+            }}
+            if (subTitle) {{
+                subTitle.style.setProperty('color', colors[theme].sub, 'important');
+                console.log('✅ Color aplicado a subtítulo:', colors[theme].sub);
+            }}
+            if (location) {{
+                location.style.setProperty('color', colors[theme].location, 'important');
+                console.log('✅ Color aplicado a ubicación:', colors[theme].location);
+            }}
+
+            // Aplicar a h4, p, span del login
+            const loginElements = document.querySelectorAll('.login-container h4, .login-container p:not(input *), .login-container span:not(input *), .login-container label');
+            loginElements.forEach(el => {{
+                if (!el.closest('input') && !el.closest('.stTextInput')) {{
+                    el.style.setProperty('color', colors[theme].text, 'important');
+                }}
+            }});
+            console.log('✅ Colores aplicados a', loginElements.length, 'elementos del login');
+        }}
+
+        // Ejecutar inmediatamente
+        forceLoginColors();
+
+        // Ejecutar después de 500ms
+        setTimeout(forceLoginColors, 500);
+
+        // Ejecutar después de 1 segundo
+        setTimeout(forceLoginColors, 1000);
+
+        // Observar cambios en el DOM
+        const observer = new MutationObserver(function(mutations) {{
+            if (document.querySelector('.login-container')) {{
+                forceLoginColors();
+            }}
+        }});
+
+        observer.observe(document.body, {{ childList: true, subtree: true }});
+    }})();
+    </script>
     """, unsafe_allow_html=True)
 
     # Cargar CSS extra solo en desktop (Optimización Fase 2: evitar carga en móvil)
@@ -2515,7 +2660,15 @@ def main():
         .sidebar-user-card small,
         section[data-testid="stSidebar"] .sidebar-user-card *,
         section[data-testid="stSidebar"] strong,
-        section[data-testid="stSidebar"] small {
+        section[data-testid="stSidebar"] small,
+        .sidebar-user-name,
+        strong.sidebar-user-name,
+        section[data-testid="stSidebar"] .sidebar-user-name,
+        section[data-testid="stSidebar"] strong.sidebar-user-name,
+        .sidebar-user-role,
+        small.sidebar-user-role,
+        section[data-testid="stSidebar"] .sidebar-user-role,
+        section[data-testid="stSidebar"] small.sidebar-user-role {
             color: #ffffff !important;
             text-shadow: 0 2px 4px rgba(0,0,0,0.6) !important;
         }
@@ -2984,12 +3137,13 @@ def main():
     }}
 
     /* ========== FORZAR COLOR DE TEXTO GLOBAL (EXCEPTO LOGIN Y SIDEBAR) ========== */
-    /* NO aplicar a elementos dentro de login-container */
+    /* Aplicar SOLO cuando NO hay login en la página */
     .main:not(:has(.login-container)) {{
         color: {text_color} !important;
     }}
 
-    .main > div:not(.login-container) *:not(.stButton *):not([data-testid="stAlert"] *):not([data-baseweb="notification"] *):not(.main-header-secure *) {{
+    /* Aplicar a elementos específicos del dashboard, NUNCA al login */
+    .main:not(:has(.login-container)) * {{
         color: {text_color} !important;
     }}
 
@@ -3050,11 +3204,10 @@ def main():
 
     /* ========== CONTRASTE DASHBOARD (NO TOCAR LOGIN) ========== */
 
-    /* Texto principal de la app */
-    .main .block-container div[data-testid="stVerticalBlock"] > div,
-    .stMarkdown:not(.login-container .stMarkdown),
-    .element-container:not(.login-container .element-container),
-    [data-testid="stMarkdownContainer"]:not(.login-container [data-testid="stMarkdownContainer"]) {{
+    /* Solo aplicar cuando NO hay login */
+    .main:not(:has(.login-container)) .stMarkdown,
+    .main:not(:has(.login-container)) .element-container,
+    .main:not(:has(.login-container)) [data-testid="stMarkdownContainer"] {{
         color: {text_color} !important;
     }}
 
@@ -3128,16 +3281,14 @@ def main():
     /* SIDEBAR COLOR: {sidebar_text_color} */
 
     /* ========== LOGIN FINAL OVERRIDE - MÁXIMA ESPECIFICIDAD ========== */
-    html body .stApp .main .login-container,
-    html body .stApp .main .login-header,
-    html body .stApp .main .login-container h1,
-    html body .stApp .main .login-container h2,
-    html body .stApp .main .login-container h3,
-    html body .stApp .main .login-container p,
-    html body .stApp .main .login-header h1,
-    html body .stApp .main .login-header h2,
-    html body .stApp .main .login-header h3,
-    html body .stApp .main .login-header p {{
+    /* NO forzar colores en login - dejar que los estilos inline y JavaScript manejen */
+    /* Los estilos inline en auth_system.py ya tienen los colores correctos */
+
+    /* Solo asegurar que elementos SIN estilos inline tengan color legible */
+    .login-container h4:not([style*="color"]),
+    .login-container p:not([style*="color"]):not(input *),
+    .login-container span:not([style*="color"]):not(input *),
+    .login-container [data-testid="stMarkdown"]:not([style*="color"]) {{
         color: {'#f9fafb' if current_theme == 'dark' else '#1a202c'} !important;
     }}
 
@@ -3184,38 +3335,38 @@ def main():
                 }});
                 console.log('✅ Estilos dashboard aplicados:', mainElements.length, 'elementos');
             }} else {{
-                // FORZAR texto claro en login con inline styles
-                console.log('✅ Login detectado - aplicando estilos de login');
+                // Login detectado - NO sobrescribir estilos inline
+                // Los divs del login-header ya tienen color correcto desde auth_system.py
+                console.log('✅ Login detectado - respetando estilos inline del tema:', theme);
 
-                // Forzar texto claro en login-header
-                const loginHeaderElements = document.querySelectorAll('.login-header, .login-header *, .login-header h1, .login-header h2, .login-header h3, .login-header p');
-                loginHeaderElements.forEach(function(el) {{
-                    el.style.setProperty('color', '#f9fafb', 'important');
-                }});
+                // Color para elementos SIN estilos inline
+                const loginTextColor = theme === 'dark' ? '#f9fafb' : '#1a202c';
 
-                // Forzar texto claro en login-container (excepto inputs)
-                const loginElements = document.querySelectorAll('.login-container h4, .login-container p:not(input *), .login-container span:not(input *)');
+                // Solo aplicar a elementos SIN atributo style (ej: el h4 "Iniciar Sesión")
+                const loginElements = document.querySelectorAll('.login-container h4:not([style]), .login-container p:not([style]):not(input *), .login-container span:not([style]):not(input *)');
                 loginElements.forEach(function(el) {{
                     if (!el.closest('input') && !el.closest('.stTextInput')) {{
-                        el.style.setProperty('color', '#f9fafb', 'important');
+                        el.style.setProperty('color', loginTextColor, 'important');
                     }}
                 }});
 
-                console.log('✅ Login text forced to white:', loginHeaderElements.length + loginElements.length, 'elementos');
+                console.log('✅ Login text color applied only to elements without inline styles:', loginElements.length, 'elementos');
             }}
         }}, 1000);  // Aumentar delay a 1 segundo
 
-        // Repetir después de 2 segundos por si acaso
+        // Repetir después de 2 segundos por si acaso - solo para elementos sin estilos inline
         setTimeout(function() {{
             const isLoginPage = document.querySelector('.login-container') !== null;
-            if (isLoginPage && theme === 'dark') {{
-                const loginAllText = document.querySelectorAll('.login-header *, .login-container *:not(input):not(.stTextInput *)');
+            if (isLoginPage) {{
+                const loginTextColor = theme === 'dark' ? '#f9fafb' : '#1a202c';
+                // Solo elementos sin atributo style
+                const loginAllText = document.querySelectorAll('.login-container h4:not([style]), .login-container p:not([style]):not(input *), .login-container span:not([style]):not(input *)');
                 loginAllText.forEach(function(el) {{
                     if (!el.closest('input') && !el.closest('.stTextInput') && !el.closest('button')) {{
-                        el.style.setProperty('color', '#f9fafb', 'important');
+                        el.style.setProperty('color', loginTextColor, 'important');
                     }}
                 }});
-                console.log('✅ Login reapplied (2s):', loginAllText.length, 'elementos');
+                console.log('✅ Login reapplied (2s) only to non-inline elements:', loginAllText.length, 'elementos');
             }}
         }}, 2000);
 

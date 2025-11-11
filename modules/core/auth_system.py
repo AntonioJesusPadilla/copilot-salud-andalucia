@@ -574,14 +574,87 @@ def render_login_page():
         text_color = '#718096'
         form_bg = '#ffffff'
 
+    # CSS + HTML del login con JavaScript para forzar colores
     st.markdown(f"""
+    <style>
+    /* ESTILOS DEL LOGIN CON MÁXIMA PRIORIDAD */
+    .login-title-main {{
+        color: {header_color} !important;
+        font-size: 32px !important;
+        font-weight: 700 !important;
+        margin-bottom: 8px !important;
+    }}
+    .login-title-sub {{
+        color: {subtitle_color} !important;
+        font-size: 18px !important;
+        font-weight: 500 !important;
+        margin: 8px 0 !important;
+    }}
+    .login-title-location {{
+        color: {text_color} !important;
+        font-size: 14px !important;
+        margin-top: 8px !important;
+    }}
+    </style>
+
     <div class="login-container" style="max-width: 420px; margin: 0 auto; background: {container_bg}; border-radius: 24px; box-shadow: {container_shadow}; border: {container_border};">
         <div class="login-header" style="background: {header_bg}; padding: 32px; border-radius: 24px 24px 0 0; text-align: center;">
-            <div style="color: {header_color} !important; font-size: 32px; font-weight: 700; margin-bottom: 8px;">🏥 Copilot Salud</div>
-            <div style="color: {subtitle_color} !important; font-size: 18px; font-weight: 500; margin: 8px 0;">Sistema de Análisis Sociosanitario</div>
-            <div style="color: {text_color} !important; font-size: 14px; margin-top: 8px;">Provincia de Málaga - Andalucía</div>
+            <div class="login-title-main">🏥 Copilot Salud</div>
+            <div class="login-title-sub">Sistema de Análisis Sociosanitario</div>
+            <div class="login-title-location">Provincia de Málaga - Andalucía</div>
         </div>
         <div class="login-form-container" style="padding: 32px; background: {form_bg};">
+
+    <script>
+    // FORZAR COLORES DEL LOGIN CON JAVASCRIPT
+    (function() {{
+        const colors = {{
+            main: '{header_color}',
+            sub: '{subtitle_color}',
+            location: '{text_color}'
+        }};
+
+        function applyLoginColors() {{
+            console.log('🎨 Aplicando colores del login - Tema: {current_theme}');
+
+            const mainTitle = document.querySelector('.login-title-main');
+            const subTitle = document.querySelector('.login-title-sub');
+            const locationTitle = document.querySelector('.login-title-location');
+
+            if (mainTitle) {{
+                mainTitle.style.setProperty('color', colors.main, 'important');
+                console.log('✅ Título principal:', colors.main);
+            }}
+            if (subTitle) {{
+                subTitle.style.setProperty('color', colors.sub, 'important');
+                console.log('✅ Subtítulo:', colors.sub);
+            }}
+            if (locationTitle) {{
+                locationTitle.style.setProperty('color', colors.location, 'important');
+                console.log('✅ Ubicación:', colors.location);
+            }}
+
+            // Aplicar a todos los elementos de texto del login
+            const allLoginText = document.querySelectorAll('.login-container h4, .login-container p:not(input *), .login-container span:not(input *), .login-container label');
+            allLoginText.forEach(el => {{
+                if (!el.closest('input') && !el.closest('.stTextInput')) {{
+                    el.style.setProperty('color', colors.main, 'important');
+                }}
+            }});
+            console.log('✅ Total elementos coloreados:', allLoginText.length);
+        }}
+
+        // Ejecutar múltiples veces para asegurar
+        applyLoginColors();
+        setTimeout(applyLoginColors, 100);
+        setTimeout(applyLoginColors, 500);
+        setTimeout(applyLoginColors, 1000);
+
+        // Observar cambios
+        const observer = new MutationObserver(applyLoginColors);
+        observer.observe(document.body, {{ childList: true, subtree: true }});
+    }})();
+    </script>
     """, unsafe_allow_html=True)
 
     # Título "Iniciar Sesión" con botón de tema a la derecha

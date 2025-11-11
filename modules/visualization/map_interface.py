@@ -345,8 +345,8 @@ class MapInterface:
                     st.write(f"**Municipio:** {closest_municipality}")
                     
                     # Información demográfica
-                    muni_data = data['demografia'][data['demografia']['municipio'] == closest_municipality]
-                    if not muni_data.empty:
+                    muni_data = data['demografia'].loc[data['demografia']['municipio'] == closest_municipality]
+                    if len(muni_data) > 0:
                         muni_info = muni_data.iloc[0]
                         st.write(f"**Población:** {muni_info['poblacion_2025']:,}")
                         st.write(f"**Crecimiento:** +{muni_info['crecimiento_2024_2025']:,}")
@@ -362,7 +362,7 @@ class MapInterface:
             total_hospitals = len(data['hospitales'])
             st.metric("🏥 Total Hospitales", total_hospitals)
             
-            regional_hospitals = len(data['hospitales'][data['hospitales']['tipo_centro'] == 'Hospital Regional'])
+            regional_hospitals = len(data['hospitales'].loc[data['hospitales']['tipo_centro'] == 'Hospital Regional'])
             st.metric("🏥 Hospitales Regionales", regional_hospitals)
         
         with col2:
@@ -393,7 +393,7 @@ class MapInterface:
             else:
                 st.metric("📊 Camas/1000 hab", "N/A")
             
-            growing_municipalities = len(data['demografia'][data['demografia']['crecimiento_2024_2025'] > 0])
+            growing_municipalities = len(data['demografia'].loc[data['demografia']['crecimiento_2024_2025'] > 0])
             st.metric("📈 Municipios en Crecimiento", growing_municipalities)
         
         # Gráfico épico adicional
@@ -713,7 +713,7 @@ class MapInterface:
         if user_permissions == ["mapas_publicos"] or (len(user_permissions) == 2 and "ver_datos" in user_permissions):
             # Solo hospitales públicos básicos
             if 'hospitales' in filtered_data:
-                public_hospitals = filtered_data['hospitales'][
+                public_hospitals = filtered_data['hospitales'].loc[
                     filtered_data['hospitales']['tipo_centro'].isin(['Hospital Regional', 'Hospital Universitario'])
                 ].copy()
                 # Solo columnas básicas
